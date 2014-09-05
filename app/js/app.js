@@ -28,16 +28,37 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-    .state('orderState', {
-      url: "/orderView/:id",
+    .state('newOrder', {
+      url: "/newOrderView",
+      templateUrl: "partials/order.html",
+      controller: 'OrderCtrl as orderModel',
+      resolve: {
+        currentOrder: [function () {
+          return null;
+        }],
+        customers: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryCustomers().then(function (objs) {
+            return objs;
+          })
+        }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }]
+      }
+    })
+    .state('editOrder', {
+      url: "/editOrderView/:id",
       templateUrl: "partials/order.html",
       controller: 'OrderCtrl as orderModel',
       resolve: {
         currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryOrders().then(function (objs) {
-           return objs.filter(function (obj) {
-             return $stateParams.id === obj.id;
-           })[0];
+            return objs.filter(function (obj) {
+              return $stateParams.id === obj.id;
+            })[0];
           });
         }],
         customers: ['$stateParams', 'api', function ($stateParams, api) {
@@ -74,8 +95,30 @@ config(function($stateProvider, $urlRouterProvider) {
     })
 });
 
-// Aba - this is the old code that ngRoute used - very similar.
-//  $routeProvider.when('/view1', {templateUrl: 'partials/orderList.html', controller: 'MyCtrl1 as orderListModel'});
-//  $routeProvider.when('/view2', {templateUrl: 'partials/order.html', controller: 'MyCtrl2 as orderModel'});
-//  $routeProvider.otherwise({redirectTo: '/view1'});
-//});
+/*
+.state('orderState', {
+  url: "/orderView/:id",
+  templateUrl: "partials/order.html",
+  controller: 'OrderCtrl as orderModel',
+  resolve: {
+    currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
+      return api.queryOrders().then(function (objs) {
+        return objs.filter(function (obj) {
+          return $stateParams.id === obj.id;
+        })[0];
+      });
+    }],
+    customers: ['$stateParams', 'api', function ($stateParams, api) {
+      return api.queryCustomers().then(function (objs) {
+        return objs;
+      })
+    }],
+    eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+      return eventTypesPromise;
+    }],
+    bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+      return bidTextTypesPromise;
+    }]
+  }
+})
+*/

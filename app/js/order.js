@@ -67,7 +67,11 @@ angular.module('myApp')
       }
       this.order.attributes.customer = this.currentOrderCustomer.id;
       this.order.attributes.orderStatus = this.currentOrderStatus.id;
-      api.saveObj (this.order);
+      return api.saveObj (this.order).then (function (obj) {
+        if ($state.current.name === 'newOrder') {
+          $state.go ('editOrder',{id:obj.id});
+        }
+      })
     };
 
 //TODO: clicking "new order" link when page is shown with existing order, does not refresh

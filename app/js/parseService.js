@@ -14,17 +14,23 @@ angular.module('myApp').
 // -----------------
 
   this.saveObj = function (obj) {
+    var promise = $q.defer();
     for (var fieldName in obj.attributes) {
       obj.set (fieldName, obj.attributes[fieldName]);
     }
     obj.save({}, {
       success: function (o) {
         console.log (o.attributes);
+        promise.resolve(o);
+        $rootScope.$digest();
       },
       error: function (model, error) {
         alert('Save Error ' + error.code + ", " + error.message);
+        promise.reject(error);
+        $rootScope.$digest();
       }
     });
+    return promise.promise;
   };
 
 
