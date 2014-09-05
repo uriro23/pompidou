@@ -9,6 +9,7 @@
       <span ng-show="orderModel.currentOrderCustomer.homePhone">טל' בית: </span><span>{{orderModel.currentOrderCustomer.homePhone}}</span>
       <span ng-show="orderModel.currentOrderCustomer.workPhone">טל עבודה: </span><span>{{orderModel.currentOrderCustomer.workPhone}}</span>
       <span ng-show="orderModel.currentOrderCustomer.email">דואל: </span><span>{{orderModel.currentOrderCustomer.email}}</span><br/>
+      <p>github test</p>
       <label>תאריך</label><input type='date' name="eventDate" ng-model="orderModel.eventDate" min="orderModel.today" required>
       <p ng-show="orderForm.eventDate.$error.min && !orderForm.eventDate.$pristine">תאריך האירוע לא יכול להיות בעבר</p>
       <label>שעה</label><input type="text" ng-model="orderModel.order.attributes.eventTime">
