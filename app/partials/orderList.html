@@ -1,0 +1,33 @@
+<h1>רשימת הזמנות</h1>
+    <label>עתידיות</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
+    <label>ללקוח</label><select ng-model="orderListModel.filterByCustomer"
+                               ng-options="customer.firstName+' '+customer.lastName for customer in orderListModel.customerList"
+                               ng-change="orderListModel.filterOrders()">
+                           <option value="">בחר לקוח</option>
+                         </select>
+    <label>תבניות</label><input type="checkbox" ng-model="orderListModel.isFilterTemplates" ng-change="orderListModel.filterOrders()"><br/>
+
+    <table border="0">
+      <thead>
+      <th>תאריך</th>
+      <th>שעה</th>
+      <th>לקוח</th>
+      <th>משתתפים</th>
+      <th>סוג אירוע</th>
+      <th>סטטוס הזמנה</th>
+      <th>תבנית</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="order in orderListModel.orders">
+        <td>
+          <a ui-sref="orderState({id:order.id})">{{order.attributes.eventDate | date: 'dd/MM/yyyy'}}</a>
+        </td>
+        <td>{{order.attributes.eventTime}}</td>
+        <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
+        <td>{{order.attributes.noOfParticipants}}</td>
+        <td>{{order.view.eventType.label}}</td>
+        <td>{{order.view.orderStatus.name}}</td>
+        <td>{{order.attributes.template}}</td>
+      </tr>
+      </tbody>
+    </table>

@@ -1,0 +1,14 @@
+<h1>לקוח</h1>
+    <form name="customerForm" ng-submit="customerModel.submitCustomer(customerForm.$valid)" novalidate>
+      <label>שם פרטי</label><input type="text" name="firstName" ng-model="customerModel.customer.attributes.firstName" required>
+      <p ng-show="customerForm.firstName.$invalid && !customerForm.firstName.$pristine">חובה לציין שם פרטי</p>
+      <label>שם משפחה</label><input type="text" ng-model="customerModel.customer.attributes.lastName"><br />
+      <label>כתובת</label><input type="text" ng-model="customerModel.customer.attributes.address"><br/>
+      <label>טל' נייד</label><input type="tel" ng-model="customerModel.customer.attributes.mobilePhone"><br/>
+      <label>טל' בית</label><input type="tel" ng-model="customerModel.customer.attributes.homePhone"><br/>
+      <label>טל' עבודה</label><input type="tel" ng-model="customerModel.customer.attributes.workPhone"><br/>
+      <label>דוא"ל</label><input type="email" ng-model="customerModel.customer.attributes.email"><br/>
+
+      <button type="submit" ng-disabled="customerForm.$invalid">שמור</button><br/>
+      <button ng-click="customerModel.deleteCustomer()" ng-show="customerModel.customer.id">מחק</button>
+    </form>

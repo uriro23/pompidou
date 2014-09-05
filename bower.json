@@ -1,0 +1,23 @@
+{
+  "name": "pompidou",
+  "version": "0.1.0",
+  "main": "dist/scripts/pompidou.js",
+  "ignore": [
+    ".*",
+    "Gemfile*",
+    "Gruntfile.js",
+    "pom.xml",
+    "*.json",
+    "*.conf.js",
+    "app",
+    "test",
+    "maven",
+    "*.sublime*"
+  ],
+  "dependencies": {
+    "angular": "~1.2.0",
+    "parse-js-sdk": "~1.2.19",
+    "angular-ui-router": null
+  },
+  "devDependencies": {}
+}

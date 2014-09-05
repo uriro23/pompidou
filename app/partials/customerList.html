@@ -1,0 +1,28 @@
+<h1>רשימת לקוחות</h1>
+<table border="0">
+  <thead>
+  <th>שם פרטי</th>
+  <th>שם משפחה</th>
+  <th>כתובת</th>
+  <th>טלפון נייד</th>
+  <th>טלפון בית</th>
+  <th>טלפון עבודה</th>
+  <th>דוא"ל</th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="customer in customerListModel.customers">
+    <td>
+      <a ui-sref="customerState({id:customer.id})">{{customer.attributes.firstName}}</a>
+    </td>
+    <td>{{customer.attributes.lastName}}</td>
+    <td>{{customer.attributes.address}}</td>
+    <td>{{customer.attributes.mobilePhone}}</td>
+    <td>{{customer.attributes.homePhone}}</td>
+    <td>{{customer.attributes.workPhone}}</td>
+    <td>{{customer.attributes.email}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<!--       <a ui-sref="state2({id:order.id})">{{order.attributes.eventDate}}</a> -->
+
