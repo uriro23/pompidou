@@ -7,8 +7,8 @@
 // In this case it is a simple value service.
 angular.module('myApp').
   value('version', '0.1')
-  .service ('api', function($q, $rootScope) {
-  Parse.initialize("ikU36rPcwfQvduIJox9pgYLtYgSEvMqooJsQnDHy", "JFnub9JL8rVe3OVvdwE4rbrss4OEDWvAPC6O8EXN");
+  .service ('api', function($q, $rootScope,secrets) {
+  Parse.initialize(secrets.parseKey, secrets.parseSecret);
 
 // Generic functions
 // -----------------
