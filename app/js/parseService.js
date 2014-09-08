@@ -35,13 +35,21 @@ angular.module('myApp').
 
 
   this.deleteObj = function (obj) {
+    var promise = $q.defer();
     obj.destroy({
       success: function (o) {
+        console.log('object '+ o.id+' deleted')
+        promise.resolve(o);
+        $rootScope.$digest();
       },
       error: function (model, error) {
+        console.log (error);
         alert('delete Error ' + error.code + ", " + error.message);
+        promise.reject(error);
+        $rootScope.digest();
       }
     });
+    return promise.promise;
   };
 
 

@@ -1,7 +1,6 @@
 <h1>הזמנה</h1>
     <form name="orderForm" ng-submit="orderModel.submitOrder(orderForm.$valid)" novalidate>
       <button type="submit" ng-disabled="orderForm.$invalid">שמור</button>
-      <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק</button><br/>
       <label>תבנית</label><input type="text" ng-model="orderModel.order.attributes.template"><br/>
       <label>לקוח</label><select ng-model="orderModel.currentOrderCustomer"
                              ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required></select>
@@ -28,3 +27,4 @@
       <label>טקסט סיום</label><select ng-model="orderModel.currentEndBidTextType"
                                       ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
   </form>
+  <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק</button><br/>

@@ -74,13 +74,11 @@ angular.module('myApp')
       })
     };
 
-//TODO: clicking "new order" link when page is shown with existing order, does not refresh
-//TODO: delete button not shown after new order is created
-//TODO: route to orderList page after deletion
     this.deleteOrder = function () {
-      api.deleteObj (this.order);
-      $state.go('orderListState');
-    };
+      return api.deleteObj (this.order).then (function (obj) {
+        $state.go('orderList');
+      })
+     };
   });
 
 

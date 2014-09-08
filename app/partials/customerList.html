@@ -12,7 +12,7 @@
   <tbody>
   <tr ng-repeat="customer in customerListModel.customers">
     <td>
-      <a ui-sref="customerState({id:customer.id})">{{customer.attributes.firstName}}</a>
+      <a ui-sref="editCustomer({id:customer.id})">{{customer.attributes.firstName}}</a>
     </td>
     <td>{{customer.attributes.lastName}}</td>
     <td>{{customer.attributes.address}}</td>

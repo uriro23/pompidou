@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CustomerCtrl', function(api, currentCustomer) {
+  .controller('CustomerCtrl', function($state, api, currentCustomer) {
 
 // test if existing customer or new one
     if (currentCustomer) {
@@ -21,14 +21,17 @@ angular.module('myApp')
     }
 
     this.saveCustomer = function () {
-      api.saveObj (this.customer);
+      return api.saveObj(this.customer).then(function (obj) {
+          if ($state.current.name === 'newCusomer') {
+            $state.go ('editCustomer',{id:obj.id});
+          }
+      });
     };
 
-//TODO: clicking "new customer" link when page is shown with existing customer, does not refresh
-//TODO: delete button not shown after new customer is created
-//TODO: route to customerList page after deletion
     this.deleteCustomer = function () {
-      api.deleteObj (this.customer);
+      return api.deleteObj (this.customer).then (function (obj) {
+          $state.go ('customerList');
+      })
     };
   });
 

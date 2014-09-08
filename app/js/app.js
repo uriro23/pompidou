@@ -8,7 +8,7 @@ angular.module('myApp', [
 config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/orderListView");
   $stateProvider
-    .state('orderListState', {
+    .state('orderList', {
       url: "/orderListView",
       templateUrl: "partials/orderList.html",
       controller: 'OrderListCtrl as orderListModel',
@@ -74,13 +74,23 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-    .state('customerListState', {
+    .state('customerList', {
       url: "/customerListView",
       templateUrl: "partials/customerList.html",
       controller: 'CustomerListCtrl as customerListModel'
     })
-    .state('customerState', {
-      url: "/customerView/:id",
+    .state('newCustomer', {
+      url: "/newCustomerView",
+      templateUrl: "partials/customer.html",
+      controller: 'CustomerCtrl as customerModel',
+      resolve: {
+        currentCustomer: [function () {
+          return null;
+        }]
+      }
+    })
+    .state('editCustomer', {
+      url: "/editCustomerView/:id",
       templateUrl: "partials/customer.html",
       controller: 'CustomerCtrl as customerModel',
       resolve: {
@@ -95,30 +105,3 @@ config(function($stateProvider, $urlRouterProvider) {
     })
 });
 
-/*
-.state('orderState', {
-  url: "/orderView/:id",
-  templateUrl: "partials/order.html",
-  controller: 'OrderCtrl as orderModel',
-  resolve: {
-    currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
-      return api.queryOrders().then(function (objs) {
-        return objs.filter(function (obj) {
-          return $stateParams.id === obj.id;
-        })[0];
-      });
-    }],
-    customers: ['$stateParams', 'api', function ($stateParams, api) {
-      return api.queryCustomers().then(function (objs) {
-        return objs;
-      })
-    }],
-    eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-      return eventTypesPromise;
-    }],
-    bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
-      return bidTextTypesPromise;
-    }]
-  }
-})
-*/

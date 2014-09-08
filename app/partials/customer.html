@@ -8,7 +8,6 @@
       <label>טל' בית</label><input type="tel" ng-model="customerModel.customer.attributes.homePhone"><br/>
       <label>טל' עבודה</label><input type="tel" ng-model="customerModel.customer.attributes.workPhone"><br/>
       <label>דוא"ל</label><input type="email" ng-model="customerModel.customer.attributes.email"><br/>
-
       <button type="submit" ng-disabled="customerForm.$invalid">שמור</button><br/>
-      <button ng-click="customerModel.deleteCustomer()" ng-show="customerModel.customer.id">מחק</button>
     </form>
+    <button ng-click="customerModel.deleteCustomer()" ng-show="customerModel.customer.id">מחק</button>
