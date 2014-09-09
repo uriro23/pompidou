@@ -80,10 +80,19 @@ angular.module('myApp').
 
    this.queryOrders = function () {
     var orderQuery = new Parse.Query(Order);
-    orderQuery.descending("eventDate");
-    return query(orderQuery);
+     return query(orderQuery);
   };
 
+
+  //  OrderNum
+  //  --------
+
+  var OrderNum = Parse.Object.extend("OrderNum");
+
+  this.queryOrderNum = function () {
+      var orderNumQuery = new Parse.Query(OrderNum);
+      return query(orderNumQuery);
+  }
 
   // Customer
   // --------

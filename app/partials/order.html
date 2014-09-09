@@ -1,4 +1,4 @@
-<h1>הזמנה</h1>
+    <h1 ng-show="orderModel.isNewOrder">הזמנה חדשה</h1><h1 ng-hide="orderModel.isNewOrder">הזמנה מס' {{orderModel.order.attributes.number}}</h1>
     <form name="orderForm" ng-submit="orderModel.submitOrder(orderForm.$valid)" novalidate>
       <button type="submit" ng-disabled="orderForm.$invalid">שמור</button>
       <label>תבנית</label><input type="text" ng-model="orderModel.order.attributes.template"><br/>
