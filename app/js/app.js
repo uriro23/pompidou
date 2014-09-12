@@ -13,12 +13,12 @@ config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "partials/orderList.html",
       controller: 'OrderListCtrl as orderListModel',
       resolve: {
-        orders: ['$stateParams', 'api', function ($stateParams, api) {
+        orders: ['api', function (api) {
           return api.queryOrders().then(function (objs) {
             return objs;
           })
         }],
-        customers: ['$stateParams', 'api', function ($stateParams, api) {
+        customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           })
@@ -36,7 +36,7 @@ config(function($stateProvider, $urlRouterProvider) {
         currentOrder: [function () {
           return null;
         }],
-        customers: ['$stateParams', 'api', function ($stateParams, api) {
+        customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           })
@@ -61,7 +61,7 @@ config(function($stateProvider, $urlRouterProvider) {
             })[0];
           });
         }],
-        customers: ['$stateParams', 'api', function ($stateParams, api) {
+        customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           })
@@ -103,5 +103,23 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
+    .state('catalog', {
+      url: "/catalog",
+      templateUrl: "partials/catalog.html",
+      controller: 'CatalogCtrl as catalogModel',
+      resolve: {
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        catalog: ['api', function (api) {
+            return api.queryCatalog(1).then (function (obj) { // load by default products domain
+                return obj;
+            })
+        }]
+      }
+     })
 });
 

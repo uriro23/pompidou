@@ -2,7 +2,8 @@
 
 /* list of values */
 angular.module('myApp')
-// load eventType objects - just once
+
+// load lovs from DB - just once
   .factory('eventTypesPromise', function (api) {
     return api.queryEventTypes().then(function (res) {
       return res.map(function (obj) {
@@ -19,6 +20,22 @@ angular.module('myApp')
     });
   })
 
+  .factory('measurementUnitsPromise', function (api) {
+    return api.queryMeasurementUnits().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
+  .factory('categoriesPromise', function (api) {
+    return api.queryCategories().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory ('today',function ($filter) {
     return $filter('date')(new Date(),'yyyy-MM-dd');
 })
@@ -28,19 +45,19 @@ angular.module('myApp')
     domains: [
       {
         id: 1,
-        name: 'מוצרים',
+        label: 'מוצרים',
         single: 'מוצר',
         forWorkItem: 'מנות'
       },
       {
         id: 2,
-        name: 'מרכיבים',
+        label: 'מרכיבים',
         single: 'מרכיב',
         forWorkItem: 'הכנות'
       },
       {
         id: 3,
-        name: 'חומרים',
+        label: 'חומרים',
         single: 'חומר',
         forWorkItem: 'קניות'
       }

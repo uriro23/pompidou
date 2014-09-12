@@ -1,0 +1,43 @@
+<h1>קטלוג</h1>
+<label>בחר תחום</label><select ng-model="catalogModel.currentDomain"
+                                ng-options="domain.label for domain in catalogModel.domains"></select>
+    <button ng-click="catalogModel.updateItems()" ng-disabled="!catalogModel.isChanged">שמור</button>
+    <button ng-click="catalogModel.addItem()">הוסף</button>
+    <table border="0">
+      <thead>
+        <th>קטגוריה</th>
+        <th>תיאור</th>
+        <th>יח' מידה</th>
+        <th>כמות</th>
+        <th>מחיר</th>
+        <th>כמות ייצור</th>
+        <th>changed</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="catalogItem in catalogModel.catalog">
+        <td>
+          <select ng-model="catalogItem.view.category" ng-blur="catalogModel.itemChanged($index)"
+                ng-options="category.label for category in catalogModel.categories"></select>
+        </td>
+        <td>
+          <input ng-model="catalogItem.attributes.productDescription" ng-blur="catalogModel.itemChanged($index)">
+        </td>
+        <td>
+          <select ng-model="catalogItem.view.measurementUnit" ng-blur="catalogModel.itemChanged($index)"
+                  ng-options="measurementUnit.label for measurementUnit in catalogModel.measurementUnits"></select>
+        </td>
+        <td>
+          <input ng-model="catalogItem.attributes.priceQuantity" ng-blur="catalogModel.itemChanged($index)">
+        </td>
+        <td>
+          <input ng-model="catalogItem.attributes.price" ng-blur="catalogModel.itemChanged($index)">
+        </td>
+        <td>
+          <input ng-model="catalogItem.attributes.productionQuantity" ng-blur="catalogModel.itemChanged($index)">
+        </td>
+        <td>
+          {{catalogItem.isChanged}}
+        </td>
+      </tr>
+      </tbody>
+    </table>

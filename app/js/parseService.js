@@ -111,6 +111,23 @@ angular.module('myApp').
   };
 
 
+  // Catalog
+  // -------
+
+  var Catalog = Parse.Object.extend("Catalog");
+
+  this.initCatalog = function () {
+    var catalog = new Catalog();
+    return catalog;
+  }
+
+  this.queryCatalog = function (domain) {
+    var catalogQuery = new Parse.Query(Catalog);
+    catalogQuery.equalTo('domain',domain);
+    return query(catalogQuery);
+  };
+
+
 
   // EventType
   // -----------
@@ -132,6 +149,28 @@ angular.module('myApp').
     var bidTextTypesQuery = new Parse.Query(BidTextType);
     bidTextTypesQuery.ascending("tId");
     return query(bidTextTypesQuery);
+  };
+
+  // Category
+  // -----------
+
+  var Category = Parse.Object.extend("Category");
+
+  this.queryCategories = function () {
+    var categoriesQuery = new Parse.Query(Category);
+    categoriesQuery.ascending("tId");
+    return query(categoriesQuery);
+  };
+
+  // MeasurementUnit
+  // ---------------
+
+  var MeasurementUnit = Parse.Object.extend("MeasurementUnit");
+
+  this.queryMeasurementUnits = function () {
+    var measurementUnitsQuery = new Parse.Query(MeasurementUnit);
+    measurementUnitsQuery.ascending("tId");
+    return query(measurementUnitsQuery);
   };
 
 
