@@ -46,7 +46,7 @@ angular.module('myApp').
         console.log (error);
         alert('delete Error ' + error.code + ", " + error.message);
         promise.reject(error);
-        $rootScope.digest();
+        $rootScope.$digest();
       }
     });
     return promise.promise;

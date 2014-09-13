@@ -1,8 +1,15 @@
 <h1>קטלוג</h1>
 <label>בחר תחום</label><select ng-model="catalogModel.currentDomain" ng-change="catalogModel.setDomain()"
                                 ng-options="domain.label for domain in catalogModel.domains"></select>
-    <button ng-click="catalogModel.updateItems()" ng-disabled="!catalogModel.isChanged">שמור</button>
     <button ng-click="catalogModel.addItem()">הוסף</button>
+    <div ng-show="catalogModel.isChanged">
+      <br/>
+      <span>הקש על </span>
+      <button ng-click="catalogModel.updateItems()" ng-disabled="!catalogModel.isChanged">שמור</button>
+      <span> לשמירת העדכונים שבוצעו, או על </span>
+      <button ng-click="catalogModel.setDomain()">ביטול</button>
+      <span> כדי לבטלם</span>
+    </div>
     <table border="0">
       <thead>
         <th>קטגוריה</th>
@@ -11,6 +18,7 @@
         <th>כמות</th>
         <th>מחיר</th>
         <th>כמות ייצור</th>
+        <th>מחק</th>
         <th>changed</th>
       </thead>
       <tbody>
@@ -34,6 +42,9 @@
         </td>
         <td>
           <input type="number" ng-model="catalogItem.attributes.productionQuantity" ng-blur="catalogModel.itemChanged($index)">
+        </td>
+        <td>
+          <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">
         </td>
         <td>
           {{catalogItem.isChanged}}

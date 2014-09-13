@@ -38,7 +38,9 @@ angular.module('myApp')
 
     this.updateItems = function () {
       for (var i=0; i<this.catalog.length; i++) {
-        if (this.catalog[i].isChanged) {
+        if (this.catalog[i].isDelete) {
+          api.deleteObj (this.catalog[i]);
+        } else if (this.catalog[i].isChanged) {
           this.catalog[i].attributes.category = this.catalog[i].view.category.tId;
           this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
           this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
@@ -46,6 +48,12 @@ angular.module('myApp')
           this.catalog[i].attributes.productionQuantity = Number(this.catalog[i].attributes.productionQuantity);
           api.saveObj (this.catalog[i]);
           this.catalog[i].isChanged = false;
+        }
+      }
+      // now remove deleted items from array
+      for (i=this.catalog.length-1;i>=0;i--) {
+        if (this.catalog[i].isDelete) {
+          this.catalog.splice(i,1);
         }
       }
       this.isChanged = false;
