@@ -28,17 +28,9 @@ angular.module('myApp')
     });
   })
 
-  .factory('categoriesPromise', function (api) {
-    return api.queryCategories().then(function (res) {
-      return res.map(function (obj) {
-        return obj.attributes;
-      });
-    });
-  })
-
   .factory ('today',function ($filter) {
     return $filter('date')(new Date(),'yyyy-MM-dd');
-})
+  })
 
  .value ('lov',
   {

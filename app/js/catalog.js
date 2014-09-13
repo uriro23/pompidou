@@ -2,25 +2,33 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CatalogCtrl', function($state, api, catalog, lov, measurementUnits, categories) {
-    this.domains = lov.domains;
-    this.currentDomain = lov.domains[0];
-    this.categories = categories;
-    this.measurementUnits = measurementUnits;
-    this.catalog = catalog;
-    this.isChanged = false;
+  .controller('CatalogCtrl', function($state, api, lov, measurementUnits) {
 
-    // enrich catalog data
-    for (var i=0; i<this.catalog.length; i++) {
+    this.setDomain = function () {
       var that = this;
-      this.catalog[i].view = {};
-      this.catalog[i].isChanged = false;
-      this.catalog[i].view.category = categories.filter (function (cat) {
-        return cat.tId === that.catalog[i].attributes.category;
-      }) [0];
-      this.catalog[i].view.measurementUnit = measurementUnits.filter (function (mes) {
-        return mes.tId === that.catalog[i].attributes.measurementUnit;
-      }) [0];
+      return api.queryCategories(that.currentDomain.id)
+        .then(function (results) {
+          that.categories = results.map (function (cat) {
+            return cat.attributes;
+          });
+          return api.queryCatalog (that.currentDomain.id)
+            .then (function (results) {
+              that.catalog = results;
+              // enrich catalog data
+              for (var i=0; i<that.catalog.length; i++) {
+                that.catalog[i].view = {};
+                that.catalog[i].isChanged = false;
+                that.catalog[i].view.category = that.categories.filter (function (cat) {
+                  return cat.tId === that.catalog[i].attributes.category;
+                }) [0];
+                that.catalog[i].view.measurementUnit = that.measurementUnits.filter (function (mes) {
+                  return mes.tId === that.catalog[i].attributes.measurementUnit;
+                }) [0];
+                that.catalog[i].isChanged = false;
+              }
+              that.isChanged = false;
+              })
+        })
     }
 
     this.itemChanged = function (ind) {
@@ -48,7 +56,7 @@ angular.module('myApp')
       newItem.view = {};
       newItem.isChanged = true;
       newItem.attributes.domain = this.currentDomain.id;
-      newItem.view.category = categories[0];
+      newItem.view.category = this.categories[0];
       newItem.view.measurementUnit = measurementUnits[0];
       newItem.attributes.priceQuantity = 0;
       newItem.attributes.price = 0;
@@ -57,6 +65,10 @@ angular.module('myApp')
       this.isChanged = true;
     }
 
+    this.domains = lov.domains;
+    this.currentDomain = lov.domains[0];
+    this.measurementUnits = measurementUnits;
+    this.setDomain();
   });
 
 

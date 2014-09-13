@@ -108,8 +108,12 @@ config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "partials/catalog.html",
       controller: 'CatalogCtrl as catalogModel',
       resolve: {
-        categories: ['categoriesPromise', function (categoriesPromise) {
-          return categoriesPromise;
+        categories: ['api', function (api) {
+          return api.queryCategories(1).then (function (res) {  // load by default categories of products domain
+            return res.map(function (obj) {
+              return obj.attributes;
+            })
+          });
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;

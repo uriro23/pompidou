@@ -156,8 +156,9 @@ angular.module('myApp').
 
   var Category = Parse.Object.extend("Category");
 
-  this.queryCategories = function () {
+  this.queryCategories = function (domain) {
     var categoriesQuery = new Parse.Query(Category);
+    categoriesQuery.equalTo('domain',domain);
     categoriesQuery.ascending("tId");
     return query(categoriesQuery);
   };
