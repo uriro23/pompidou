@@ -127,6 +127,12 @@ angular.module('myApp').
     return query(catalogQuery);
   };
 
+  this.queryCatalogByCategory = function (category) {
+    var catalogQuery = new Parse.Query(Catalog);
+    catalogQuery.equalTo('category',category);
+    return query(catalogQuery);
+  };
+
 
 
   // EventType

@@ -20,6 +20,14 @@ angular.module('myApp')
     });
   })
 
+  .factory('categoriesPromise', function (api) {
+    return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('measurementUnitsPromise', function (api) {
     return api.queryMeasurementUnits().then(function (res) {
       return res.map(function (obj) {

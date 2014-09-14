@@ -9,6 +9,7 @@
 
     <table border="0">
       <thead>
+      <th>מס'</th>
       <th>תאריך</th>
       <th>שעה</th>
       <th>לקוח</th>
@@ -19,6 +20,7 @@
       </thead>
       <tbody>
       <tr ng-repeat="order in orderListModel.orders">
+        <td>{{order.attributes.number}}</td>
         <td>
           <a ui-sref="editOrder({id:order.id})">{{order.attributes.eventDate | date: 'dd/MM/yyyy'}}</a>
         </td>

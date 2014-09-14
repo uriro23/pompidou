@@ -41,6 +41,12 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs;
           })
         }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
         eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
           return eventTypesPromise;
         }],
@@ -65,6 +71,12 @@ config(function($stateProvider, $urlRouterProvider) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           })
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
         }],
         eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
           return eventTypesPromise;
