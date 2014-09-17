@@ -56,10 +56,13 @@ angular.module('myApp')
        this.order.attributes.includeRemarksInBid = false;
        this.order.attributes.items = [];
      }
-     this.backupOrderAttr = utils.clone(this.order.attributes);
-     this.backupOrderView = utils.clone(this.order.view);
-    console.log('backup after clone');
-    console.log(this.backupOrderView);
+    // we clone (rather than just assign) so we get a new copy and not a ref to the same object, so the backup is not updated
+    // when the order is.
+    // we use non recursive clone (just the top level of the object) so that embedded objects still reference the same thing
+    // e.g. the embedded customer object backupOrderView must point to the same object as the customer object in order.view
+    // or else the select tag on the page won't work.
+     this.backupOrderAttr = utils.nonRecursiveClone(this.order.attributes);
+     this.backupOrderView = utils.nonRecursiveClone(this.order.view);
      this.isChanged = false;
 
       this.orderChanged = function () {
@@ -67,12 +70,8 @@ angular.module('myApp')
       }
 
       this.cancel = function () {
-        console.log('view before cancel');
-        console.log(this.order.view);
-        this.order.attributes = utils.clone(this.backupOrderAttr);
-        this.order.view = utils.clone(this.backupOrderView);
-        console.log('order after cancel')
-        console.log(this.order);
+        this.order.attributes = utils.nonRecursiveClone(this.backupOrderAttr);
+        this.order.view = utils.nonRecursiveClone(this.backupOrderView);
         this.isChanged = false;
       }
 
@@ -169,8 +168,8 @@ angular.module('myApp')
           api.saveObj (this.order);
         }
   //  backup order for future cancel
-        this.backupOrderAttr = utils.clone(this.order.attributes);
-        this.backupOrderView = utils.clone(this.order.view);
+        this.backupOrderAttr = utils.nonRecursiveClone(this.order.attributes);
+        this.backupOrderView = utils.nonRecursiveClone(this.order.view);
         this.isChanged = false;
       };
 

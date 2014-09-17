@@ -16,5 +16,20 @@ angular.module('myApp').
       }
     }
     return temp;
-  }
+  };
+
+  this.nonRecursiveClone = function (obj) {
+    if(obj == null || typeof(obj) != 'object')
+      return obj;
+
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj) {
+      if(obj.hasOwnProperty(key)) {
+        temp[key] = obj[key];
+      }
+    }
+    return temp;
+  };
+
   })
