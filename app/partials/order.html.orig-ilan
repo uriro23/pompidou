@@ -1,0 +1,226 @@
+<<<<<<< HEAD
+    <h1 ng-show="orderModel.isNewOrder">הזמנה חדשה</h1><h1 ng-hide="orderModel.isNewOrder">הזמנה מס' {{orderModel.order.attributes.number}}</h1>
+    <form name="orderForm" ng-submit="orderModel.submitOrder(orderForm.$valid)" novalidate>
+      <button type="submit" ng-disabled="orderForm.$invalid">שמור</button></br>
+      <table>
+          <tr>
+              <td><label>תבנית</label></td>
+              <td><input type="text" ng-model="orderModel.order.attributes.template"><br/></td>
+          </tr>
+          <tr>
+              <td><label>לקוח</label></td>
+              <td><select ng-model="orderModel.currentOrderCustomer"
+                             ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required></select></td>
+          </tr>
+          <tr>    
+              <td><span ng-show="orderModel.currentOrderCustomer.mobilePhone">טל' נייד: </span></td>
+              <td><span>{{orderModel.currentOrderCustomer.mobilePhone}}</span></td>
+          </tr>
+          <tr>
+              <td><span ng-show="orderModel.currentOrderCustomer.homePhone">טל' בית: </span></td>
+              <td><span>{{orderModel.currentOrderCustomer.homePhone}}</span></td>
+          </tr>        
+          <tr>   
+              <td><span ng-show="orderModel.currentOrderCustomer.workPhone">טל עבודה: </span>
+              <td><span>{{orderModel.currentOrderCustomer.workPhone}}</span></td>
+          </tr>
+          <tr>  
+              <td><span ng-show="orderModel.currentOrderCustomer.email">דואל: </span></td>
+              <td><span>{{orderModel.currentOrderCustomer.email}}</span></td>
+          </tr>
+          <tr>
+              <td><label>תאריך</label></td>
+              <td><input type='date' name="eventDate" ng-model="orderModel.eventDate" min="orderModel.today" required>
+                  <p ng-show="orderForm.eventDate.$error.min && !orderForm.eventDate.$pristine">תאריך האירוע לא יכול להיות בעבר</p>
+              </td>
+          </tr>
+          <tr>    
+              <td><label>שעה</label></td>
+              <td><input type="text" ng-model="orderModel.order.attributes.eventTime"></td>
+          </tr>
+          <tr>    
+              
+              <td><label>מספר משתתפים</label></td>
+              <td><input type="number" name="noOfParticipants" min="1" max="1000" ng-model="orderModel.order.attributes.noOfParticipants" required>                  
+                  <p ng-show="orderForm.noOfParticipants.$error.min && !orderForm.noOfParticipants.$pristine">חייב להיות לפחות משתתף אחד</p>
+              
+                  <p ng-show="orderForm.noOfParticipants.$error.max && !orderForm.noOfParticipants.$pristine">פומפידו תומכת באירועים עד 1000 משתתפים בלבד</p>
+                  
+                  <p ng-show="orderForm.noOfParticipants.$error.required && !orderForm.noOfParticipants.$pristine">יש לציין מספר משתתפים באירוע</p>
+              </td>
+          </tr>
+          <tr>                      
+              <td><label>סוג אירוע</label></td>
+              <td><select ng-model="orderModel.currentEventType"
+                                              ng-options="eventType.label for eventType in orderModel.eventTypes"></select></td>
+          </tr>
+          <tr>                                                                                  
+              <td><label>מקום משלוח</label></td>
+              <td><textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"></textarea></td>
+          </tr>
+          <tr>    
+              <td><label>הערות</label></td>
+              <td><textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"></textarea></td>
+          </tr>
+          <tr>                 
+              <td><label>הכלל הערות בהצעה</label></td>
+              <td><input type="checkbox" ng-model="orderModel.order.attributes.includeRemarksInBid"></td>
+          </tr>
+          <tr>   
+              
+              <td><label>סטטוס</label></td>
+              <td><select ng-model="orderModel.currentOrderStatus"
+                                        ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"></select></td>
+          </tr>
+          <tr>                              
+                                        
+              <td><label>טקסט מבוא</label></td>
+              <td><select ng-model="orderModel.currentStartBidTextType"
+                                              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select></td>
+          </tr>
+          <tr>                                   
+              <td><label>טקסט סיום</label></td>
+              <td><select ng-model="orderModel.currentEndBidTextType"
+                                              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select></td>
+          </tr>
+      </table>                            
+  </form>
+  
+  <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק</button><br/>
+        <hr>
+  <button ng-click="orderModel.addItem()">הוסף מוצר</button>
+  <span ng-show="orderModel.isAddItem">
+    <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
+            ng-options="category.label for category in orderModel.categories"></select>
+    <label>סינון:</label><input type="text" ng-model="orderModel.filterText" ng-change="orderModel.filterProducts()">
+  <table>
+    <tbody>
+    <tr ng-repeat="product in orderModel.filteredCatalog">
+      <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
+    </tr>
+    </tbody>
+  </table>
+  </span>
+        <table>
+          <thead>
+          <th>קטגוריה</th>
+          <th>מוצר</th>
+          <th>יח' מידה</th>
+          <th>כמות</th>
+          <th>מחיר</th>
+          <th>בונוס</th>
+          </thead>
+          <tbody>
+          <tr ng-repeat="item in orderModel.order.attributes.items">
+            <td>{{item.category.label}}</td>
+            <td>
+              <input type="text" ng-model="item.productDescription">
+            </td>
+            <td>{{item.measurementUnit.label}}</td>
+            <td>
+              <input type="number" ng-model="item.quantity">
+            </td>
+            <td>
+              <input type="number" ng-model="item.price">
+            </td>
+            <td>
+              <input type="checkbox" ng-model="item.isFreeItem">
+            </td>
+            <td>
+              <button ng-click="orderModel.deleteItem($index)">מחק</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+=======
+    <h1 ng-show="orderModel.isNewOrder">הזמנה חדשה</h1>
+    <h1 ng-hide="orderModel.isNewOrder">הזמנה מס' {{orderModel.order.attributes.number}}</h1>
+        <div ng-show="orderModel.isChanged">
+          <span>לשמירת העדכונים הקש על </span>
+          <button ng-click="orderModel.saveOrder()"> שמור</button>
+          <span> לביטול הקש על </span>
+          <button ng-click="orderModel.cancel()">ביטול</button>
+        </div>
+        <label>לקוח</label><select ng-model="orderModel.order.view.customer" ng-change="orderModel.orderChanged()"
+                                   ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required></select>
+        <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span><span>{{orderModel.order.view.customer.mobilePhone}}</span>
+        <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span><span>{{orderModel.order.view.customer.homePhone}}</span>
+        <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span><span>{{orderModel.order.view.customer.workPhone}}</span>
+        <span ng-show="orderModel.order.view.customer.email">דואל: </span><span>{{orderModel.order.view.customer.email}}</span><br/>
+        <label>תאריך</label><input type='date' name="eventDate" ng-model="orderModel.eventDate" min="orderModel.today"
+                                   ng-change="orderModel.orderChanged()" required>
+        <p ng-show="orderForm.eventDate.$error.min && !orderForm.eventDate.$pristine">תאריך האירוע לא יכול להיות בעבר</p>
+        <label>שעה</label><input type="text" ng-model="orderModel.order.attributes.eventTime" ng-blur="orderModel.orderChanged()">
+        <label>מספר משתתפים</label><input type="number" name="noOfParticipants" min="1" max="1000"
+                                          ng-model="orderModel.order.attributes.noOfParticipants"
+                                          ng-blur="orderModel.orderChanged()" required>
+        <p ng-show="orderForm.noOfParticipants.$error.min && !orderForm.noOfParticipants.$pristine">חייב להיות לפחות משתתף אחד</p>
+        <p ng-show="orderForm.noOfParticipants.$error.max && !orderForm.noOfParticipants.$pristine">פומפידו תומכת באירועים עד 1000 משתתפים בלבד</p>
+        <p ng-show="orderForm.noOfParticipants.$error.required && !orderForm.noOfParticipants.$pristine">יש לציין מספר משתתפים באירוע</p>
+        <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType" ng-change="orderModel.orderChanged()"
+                                        ng-options="eventType.label for eventType in orderModel.eventTypes"></select>
+        <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus" ng-change="orderModel.orderChanged()"
+                                    ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"></select><br/>
+        <tabset>
+          <tab heading="פרטים כלליים">
+            <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק</button>
+            <label>תבנית</label><input type="text" ng-model="orderModel.order.attributes.template" ng-blur="orderModel.orderChanged()"><br/>
+            <label>מקום משלוח</label><textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"
+                                                ng-blur="orderModel.orderChanged()"></textarea><br/>
+            <label>הערות</label><textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"
+                                           ng-blur="orderModel.orderChanged()"></textarea><br/>
+            <label>הכלל הערות בהצעה</label><input type="checkbox" ng-model="orderModel.order.attributes.includeRemarksInBid"
+                                                  ng-change="orderModel.orderChanged()"><br/>
+            <label>טקסט מבוא</label><select ng-model="orderModel.order.view.startBidTextType" ng-change="orderModel.orderChanged()"
+                                            ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
+            <label>טקסט סיום</label><select ng-model="orderModel.order.view.endBidTextType" ng-change="orderModel.orderChanged()"
+                                            ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
+          </tab>
+          <tab heading="מוצרים">
+            <button ng-click="orderModel.addItem()">הוסף מוצר</button>
+            <span ng-show="orderModel.isAddItem">
+            <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
+                    ng-options="category.label for category in orderModel.categories"></select>
+            <label>סינון:</label><input type="text" ng-model="orderModel.filterText" ng-change="orderModel.filterProducts()">
+            <table>
+              <tbody>
+              <tr ng-repeat="product in orderModel.filteredCatalog">
+                <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
+              </tr>
+              </tbody>
+            </table>
+            </span>
+            <table>
+              <thead>
+              <th>קטגוריה</th>
+              <th>מוצר</th>
+              <th>יח' מידה</th>
+              <th>כמות</th>
+              <th>מחיר</th>
+              <th>בונוס</th>
+              </thead>
+              <tbody>
+              <tr ng-repeat="item in orderModel.order.attributes.items">
+                <td>{{item.category.label}}</td>
+                <td>
+                  <input type="text" ng-model="item.productDescription" ng-blur="orderModel.orderChanged()">
+                </td>
+                <td>{{item.measurementUnit.label}}</td>
+                <td>
+                  <input type="number" ng-model="item.quantity" ng-blur="orderModel.orderChanged()">
+                </td>
+                <td>
+                  <input type="number" ng-model="item.price" ng-blur="orderModel.orderChanged()">
+                </td>
+                <td>
+                  <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.orderChanged()">
+                </td>
+                <td>
+                  <button ng-click="orderModel.deleteItem($index)">מחק</button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </tab>
+        </tabset>
+>>>>>>> Angular UI tabs in order
