@@ -36,6 +36,22 @@ angular.module('myApp')
     });
   })
 
+  .factory('discountCausesPromise', function (api) {
+    return api.queryDiscountCauses().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
+  .factory('vatPromise', function (api) {
+    return api.queryVat().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory ('today',function ($filter) {
     return $filter('date')(new Date(),'yyyy-MM-dd');
   })

@@ -38,7 +38,7 @@
           <input type="number" ng-model="catalogItem.attributes.priceQuantity" ng-blur="catalogModel.itemChanged($index)">
         </td>
         <td>
-          <input type="number" ng-model="catalogItem.attributes.price" ng-blur="catalogModel.itemChanged($index)">
+          <input type="text" money min=0 ng-model="catalogItem.attributes.price" ng-blur="catalogModel.itemChanged($index)">
         </td>
         <td>
           <input type="number" ng-model="catalogItem.attributes.productionQuantity" ng-blur="catalogModel.itemChanged($index)">

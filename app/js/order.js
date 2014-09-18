@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('OrderCtrl', function(api, $state, $filter,
                                     currentOrder, today, utils, lov, customers, eventTypes,
-                                    bidTextTypes, categories, measurementUnits) {
+                                    bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
      this.isNewOrder = $state.current.name === 'newOrder';
      this.eventTypes = eventTypes;
@@ -13,6 +13,8 @@ angular.module('myApp')
      this.categories = categories;
      this.currentCategory = this.categories[0];
      this.measurementUnits = measurementUnits;
+     this.discountCauses = discountCauses;
+     this.vatRate = vat[0].vatRate;
      this.today = today;
      this.customers = customers;
      this.customerList = customers.map (function (cust) {
@@ -45,7 +47,14 @@ angular.module('myApp')
         this.order.view.orderStatus = this.orderStatuses.filter (function (obj) {
            return (obj.id === that.order.attributes.orderStatus);
        })[0];
+       this.order.view.discountCause = discountCauses.filter(function (obj) {
+         return (obj.tId === that.order.attributes.discountCause);
+       })[0];
        this.eventDate = $filter('date')(this.order.attributes.eventDate,'yyyy-MM-dd');
+       if (this.order.attributes.vatRate != this.vatrate) {
+         alert ("VAT rate changed from "+ this.order.attributes.vatRate + " to " + this.vatRate);
+         this.order.attributes.vatRate = this.vatRate;
+       }
     }  else { // new order
        this.order = api.initOrder();
        this.order.view = {};
@@ -53,8 +62,10 @@ angular.module('myApp')
        this.eventDate = today;
        this.order.attributes.noOfParticipants = 1;
        this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
+       this.order.view.discountCause = this.discountCauses[0]; // set to "no"
        this.order.attributes.includeRemarksInBid = false;
        this.order.attributes.items = [];
+       this.order.attributes.vatRate = this.vatRate;
      }
     // we clone (rather than just assign) so we get a new copy and not a ref to the same object, so the backup is not updated
     // when the order is.
@@ -67,13 +78,35 @@ angular.module('myApp')
 
       this.orderChanged = function () {
         this.isChanged = true;
-      }
+      };
 
       this.cancel = function () {
         this.order.attributes = utils.nonRecursiveClone(this.backupOrderAttr);
         this.order.view = utils.nonRecursiveClone(this.backupOrderView);
         this.isChanged = false;
-      }
+      };
+
+    // TODO: handle VAT
+      this.calcTotal = function () {
+        var t = this.order.attributes.subTotal +
+                this.order.attributes.discount +
+                this.order.attributes.transportation +
+                this.order.attributes.transportationBonus;
+        var r = Math.round(t);
+        this.order.attributes.rounding = r - t;
+        this.order.attributes.totalBeforeVat = r;
+        this.order.attributes.vat = 0;
+        this.order.attributes.total = this.order.attributes.totalBeforeVat + this.order.attributes.vat;
+      };
+
+      this.calcSubTotal = function () {
+        var t = 0;
+        for (var i=0;i<this.order.attributes.items.length;i++) {
+          t += this.order.attributes.items[i].price;
+        }
+        this.order.attributes.subTotal = t;
+        this.calcTotal();
+      };
 
       this.setCategory = function () {
         var that = this;
@@ -93,24 +126,24 @@ angular.module('myApp')
             });
             that.filteredCatalog = that.catalogData;
            })
-      }
+      };
 
       this.addItem = function () {
         this.isAddItem = true;
         this.setCategory();
-      }
+      };
 
       this.deleteItem = function (ind) {
         this.order.attributes.items.splice(ind,1);
         this.isChanged = true;
-      }
+      };
 
       this.filterProducts = function () {
         var that = this;
         this.filteredCatalog = this.catalogData.filter(function (cat) {
           return cat.productDescription.indexOf (that.filterText)> -1;
         })
-      }
+      };
 
       this.setProduct = function (catalogEntry) {
         this.order.attributes.items.splice(0,0,{});
@@ -121,11 +154,91 @@ angular.module('myApp')
         this.order.attributes.items[0].measurementUnit = this.measurementUnits.filter(function (mes) {
           return mes.tId === catalogEntry.measurementUnit;
         })[0];
-        this.order.attributes.items[0].quantity = catalogEntry.priceQuantity;
-        this.order.attributes.items[0].price = catalogEntry.price;
-        this.isChanged = true;
+        this.order.attributes.items[0].catalogQuantity = catalogEntry.priceQuantity;  // for price computation
+        this.order.attributes.items[0].quantity = catalogEntry.priceQuantity; // as default quantity
+        this.order.attributes.items[0].catalogPrice = catalogEntry.price; // for price computation
+        this.order.attributes.items[0].price = catalogEntry.price;  // as default price
         this.isAddItem = false;
+        this.calcSubTotal();
+        this.orderChanged();
       }
+
+      this.setQuantity = function (ind) {
+        if (Number(this.order.attributes.items[ind].quantity) !== this.order.attributes.items[ind].quantity) {
+          this.order.attributes.items[ind].quantity = 0;
+          this.order.attributes.items[ind].price = 0;
+        } else {
+          this.order.attributes.items[ind].price =
+            this.order.attributes.items[ind].quantity *
+            this.order.attributes.items[ind].catalogPrice /
+            this.order.attributes.items[ind].catalogQuantity;
+        };
+        this.calcSubTotal();
+        this.orderChanged();
+      };
+
+      this.setPrice = function () {
+        this.calcSubTotal();
+        this.orderChanged();
+      };
+
+      this.setFreeItem = function (ind) {
+        if (this.order.attributes.items[ind].isFreeItem) {
+          this.order.attributes.items[ind].price = 0;
+        } else {
+          this.order.attributes.items[ind].price =
+            this.order.attributes.items[ind].quantity *
+            this.order.attributes.items[ind].catalogPrice /
+            this.order.attributes.items[ind].catalogQuantity;
+        }
+        this.calcSubTotal();
+        this.orderChanged();
+      };
+
+// TODO: in converting from access remember in access discount is positive
+    this.setDiscount = function () {
+      if (Number(this.order.attributes.discountRate) !== this.order.attributes.discountRate) {
+        this.order.attributes.discountRate = 0;
+        this.order.attributes.discount = 0;
+      } else {
+        this.order.attributes.discount =  - this.order.attributes.subTotal * this.order.attributes.discountRate / 100;
+      }
+      this.calcTotal();
+      this.orderChanged();
+    };
+
+    this.setDiscountCause = function () {
+      if (this.order.view.discountCause.tId === 0) {
+        this.order.attributes.discount = 0;
+      } else {
+        this.setDiscount();
+      }
+      this.calcTotal();
+      this.orderChanged();
+    };
+
+    this.setTransportationBonus = function () {
+      if (this.order.attributes.isTransportationBonus) {
+        this.order.attributes.transportationBonus = - this.order.attributes.transportation;
+      } else {
+        this.order.attributes.transportationBonus = 0;
+      }
+      this.calcTotal();
+      this.orderChanged();
+    };
+
+    this.setTransportation = function () {
+      if (Number(this.order.attributes.transportationInclVat) !== this.order.attributes.transportationInclVat) {
+        this.order.attributes.transportationInclVat = 0;
+        this.order.attributes.transportation = 0;
+      } else {
+        this.order.attributes.transportation = this.order.attributes.transportationInclVat;
+        // TODO: reduce vat
+      }
+      this.setTransportationBonus();
+      this.calcTotal();
+      this.orderChanged();
+    };
 
       this.saveOrder = function () {
         this.order.attributes.eventDate = new Date(this.eventDate);
@@ -138,6 +251,9 @@ angular.module('myApp')
         }
         if (this.order.view.endBidTextType) {
           this.order.attributes.endBidTextType = this.order.view.endBidTextType.tId;
+        }
+        if (this.order.view.discountCause) {
+          this.order.attributes.discountCause = this.order.view.discountCause.tId;
         }
         this.order.attributes.customer = this.order.view.customer.id;
         this.order.attributes.orderStatus = this.order.view.orderStatus.id;

@@ -180,5 +180,27 @@ angular.module('myApp').
     return query(measurementUnitsQuery);
   };
 
+  // DiscountCause
+  // -------------
+
+  var DiscountCause = Parse.Object.extend("DiscountCause");
+
+  this.queryDiscountCauses = function () {
+    var discountCausesQuery = new Parse.Query(DiscountCause);
+    discountCausesQuery.ascending("tId");
+    return query(discountCausesQuery);
+  };
+
+
+  // Vat
+  // ---
+
+  var Vat = Parse.Object.extend("Vat");
+
+  this.queryVat = function () {
+    var vatQuery = new Parse.Query(Vat);
+    return query(vatQuery);
+  };
+
 
 });

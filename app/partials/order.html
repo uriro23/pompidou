@@ -105,17 +105,82 @@
                 </td>
                 <td>{{item.measurementUnit.label}}</td>
                 <td>
-                  <input type="number" ng-model="item.quantity" ng-blur="orderModel.orderChanged()">
+                  <input type="number" ng-model="item.quantity" ng-blur="orderModel.setQuantity($index)">
                 </td>
                 <td>
-                  <input type="number" ng-model="item.price" ng-blur="orderModel.orderChanged()">
+                  <input type="text" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice()">
                 </td>
                 <td>
-                  <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.orderChanged()">
+                  <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.setFreeItem($index)">
                 </td>
                 <td>
                   <button ng-click="orderModel.deleteItem($index)">מחק</button>
                 </td>
+              </tr>
+              </tbody>
+            </table>
+          </tab>
+          <tab heading="נתונים כספיים">
+            <table>
+              <tbody>
+              <tr>
+                <td><label>ס"ה ביניים</label></td>
+                <td></td>
+                <td>{{orderModel.order.attributes.subTotal | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>סיבת הנחה</label></td>
+                <td>
+                  <select ng-model="orderModel.order.view.discountCause" ng-change="orderModel.setDiscountCause()"
+                          ng-options="discountCause.label for discountCause in orderModel.discountCauses"></select>
+                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><label>% הנחה</label></td>
+                <td>
+                  <input type="number" ng-model="orderModel.order.attributes.discountRate"
+                         ng-disabled="!orderModel.order.view.discountCause.tId>0"
+                         ng-blur="orderModel.setDiscount()">
+                </td>
+                <td>{{orderModel.order.attributes.discount | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>משלוח</label></td>
+                <td>
+                  <input type="text" money min=0 ng-model="orderModel.order.attributes.transportationInclVat"
+                         ng-blur="orderModel.setTransportation()">
+                </td>
+                <td>{{orderModel.order.attributes.transportation | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>זיכוי משלוח</label></td>
+                <td>
+                  <input type="checkbox" ng-model="orderModel.order.attributes.isTransportationBonus"
+                         ng-disabled="!orderModel.order.attributes.transportation > 0"
+                         ng-change="orderModel.setTransportationBonus()">
+                </td>
+                <td>{{orderModel.order.attributes.transportationBonus | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>עיגול</label></td>
+                <td></td>
+                <td>{{orderModel.order.attributes.rounding | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>לפני מע"מ</label></td>
+                <td></td>
+                <td>{{orderModel.order.attributes.totalBeforeVat | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>מע"מ</label></td>
+                <td></td>
+                <td>{{orderModel.order.attributes.vat | currency:" ₪"}}</td>
+              </tr>
+              <tr>
+                <td><label>לתשלום</label></td>
+                <td></td>
+                <td>{{orderModel.order.attributes.total | currency:" ₪"}}</td>
               </tr>
               </tbody>
             </table>

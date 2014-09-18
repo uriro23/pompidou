@@ -44,6 +44,12 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
+        discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+          return discountCausesPromise;
+        }],
+        vat: ['vatPromise', function (vatPromise) {
+          return vatPromise;
+        }],
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
         }],
@@ -74,6 +80,12 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
+        }],
+        discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+          return discountCausesPromise;
+        }],
+        vat: ['vatPromise', function (vatPromise) {
+          return vatPromise;
         }],
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;

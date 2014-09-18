@@ -8,6 +8,9 @@ h1.content{
     text-align: center; 
 }
 
+th.content{
+    text-align: right;
+}
 .menu {
   list-style: none;
   width: 960px;
