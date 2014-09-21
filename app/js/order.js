@@ -6,7 +6,42 @@ angular.module('myApp')
                                     currentOrder, today, utils, lov, customers, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
-     this.isNewOrder = $state.current.name === 'newOrder';
+    var i;
+
+    this.calcTotal = function () {
+      var t = this.order.attributes.subTotal +
+        this.order.attributes.discount +
+        this.order.attributes.transportation +
+        this.order.attributes.transportationBonus;
+      if (this.order.attributes.isBusinessEvent) {
+        var v = t * this.order.attributes.vatRate;
+      } else {
+        v = 0;
+      }
+      this.order.attributes.total = Math.round(t+v);
+      if (this.order.attributes.isBusinessEvent) {
+        this.order.attributes.totalBeforeVat =  this.order.attributes.total /
+          (1 + this.order.attributes.vatRate);
+      } else {
+        this.order.attributes.totalBeforeVat =  this.order.attributes.total;
+      }
+      this.order.attributes.rounding = this.order.attributes.totalBeforeVat - t;
+      this.order.attributes.vat = this.order.attributes.total - this.order.attributes.totalBeforeVat;
+    };
+
+    this.calcSubTotal = function () {
+      var t = 0;
+      for (i=0;i<this.order.attributes.items.length;i++) {
+        t += this.order.attributes.items[i].price;
+      }
+      this.order.attributes.subTotal = t;
+      this.order.attributes.discount = -(t * this.order.attributes.discountRate / 100);
+      this.calcTotal();
+    };
+
+
+
+    this.isNewOrder = $state.current.name === 'newOrder';
      this.eventTypes = eventTypes;
      this.bidTextTypes = bidTextTypes;
      this.orderStatuses = lov.orderStatuses;
@@ -51,7 +86,8 @@ angular.module('myApp')
          return (obj.tId === that.order.attributes.discountCause);
        })[0];
        this.eventDate = $filter('date')(this.order.attributes.eventDate,'yyyy-MM-dd');
-       if (this.order.attributes.vatRate != this.vatrate) {
+// TODO: change alert to modal, give option to accept/decline new rate and if accepted, to change prices (yes or no)
+       if (this.order.attributes.vatRate != this.vatRate) {
          alert ("VAT rate changed from "+ this.order.attributes.vatRate + " to " + this.vatRate);
          this.order.attributes.vatRate = this.vatRate;
        }
@@ -66,7 +102,15 @@ angular.module('myApp')
        this.order.attributes.includeRemarksInBid = false;
        this.order.attributes.items = [];
        this.order.attributes.vatRate = this.vatRate;
+       this.order.attributes.subTotal = 0;
+       this.order.attributes.discountRate = 0;
+       this.order.attributes.discount = 0;
+       this.order.attributes.transportation = 0;
+       this.order.attributes.transportationBonus = 0;
      }
+    this.calcSubTotal();
+
+    // TODO: change clone to to deep cloning except for selection items which should be copied as references to same item
     // we clone (rather than just assign) so we get a new copy and not a ref to the same object, so the backup is not updated
     // when the order is.
     // we use non recursive clone (just the top level of the object) so that embedded objects still reference the same thing
@@ -84,28 +128,6 @@ angular.module('myApp')
         this.order.attributes = utils.nonRecursiveClone(this.backupOrderAttr);
         this.order.view = utils.nonRecursiveClone(this.backupOrderView);
         this.isChanged = false;
-      };
-
-    // TODO: handle VAT
-      this.calcTotal = function () {
-        var t = this.order.attributes.subTotal +
-                this.order.attributes.discount +
-                this.order.attributes.transportation +
-                this.order.attributes.transportationBonus;
-        var r = Math.round(t);
-        this.order.attributes.rounding = r - t;
-        this.order.attributes.totalBeforeVat = r;
-        this.order.attributes.vat = 0;
-        this.order.attributes.total = this.order.attributes.totalBeforeVat + this.order.attributes.vat;
-      };
-
-      this.calcSubTotal = function () {
-        var t = 0;
-        for (var i=0;i<this.order.attributes.items.length;i++) {
-          t += this.order.attributes.items[i].price;
-        }
-        this.order.attributes.subTotal = t;
-        this.calcTotal();
       };
 
       this.setCategory = function () {
@@ -157,27 +179,52 @@ angular.module('myApp')
         this.order.attributes.items[0].catalogQuantity = catalogEntry.priceQuantity;  // for price computation
         this.order.attributes.items[0].quantity = catalogEntry.priceQuantity; // as default quantity
         this.order.attributes.items[0].catalogPrice = catalogEntry.price; // for price computation
-        this.order.attributes.items[0].price = catalogEntry.price;  // as default price
+        this.order.attributes.items[0].priceInclVat = catalogEntry.price;  // prices in catalog include vat
+        this.order.attributes.items[0].priceBeforeVat = catalogEntry.price /
+          (1 + this.order.attributes.vatRate);
+        if (this.order.attributes.isBusinessEvent) {
+          this.order.attributes.items[0].price = this.order.attributes.items[0].priceBeforeVat;
+        } else {
+          this.order.attributes.items[0].price = this.order.attributes.items[0].priceInclVat;
+        }
         this.isAddItem = false;
         this.calcSubTotal();
         this.orderChanged();
-      }
+      };
 
       this.setQuantity = function (ind) {
         if (Number(this.order.attributes.items[ind].quantity) !== this.order.attributes.items[ind].quantity) {
           this.order.attributes.items[ind].quantity = 0;
           this.order.attributes.items[ind].price = 0;
+          this.order.attributes.items[ind].priceInclVat = 0;
+          this.order.attributes.items[ind].priceBeforeVat = 0;
         } else {
-          this.order.attributes.items[ind].price =
+          this.order.attributes.items[ind].priceInclVat =
             this.order.attributes.items[ind].quantity *
             this.order.attributes.items[ind].catalogPrice /
             this.order.attributes.items[ind].catalogQuantity;
-        };
+          this.order.attributes.items[ind].priceBeforeVat = this.order.attributes.items[ind].priceInclVat /
+            (1 + this.order.attributes.vatRate);
+          if (this.order.attributes.isBusinessEvent) {
+            this.order.attributes.items[0].price = this.order.attributes.items[0].priceBeforeVat;
+          } else {
+            this.order.attributes.items[0].price = this.order.attributes.items[0].priceInclVat;
+          }
+        }
         this.calcSubTotal();
         this.orderChanged();
       };
 
-      this.setPrice = function () {
+      this.setPrice = function (ind) {
+        if (this.order.attributes.isBusinessEvent) {
+          this.order.attributes.items[ind].priceInclVat = this.order.attributes.items[ind].price *
+            (1 + this.order.attributes.vatRate);
+          this.order.attributes.items[ind].priceBeforeVat = this.order.attributes.items[ind].price;
+        } else {
+          this.order.attributes.items[ind].priceInclVat = this.order.attributes.items[ind].price;
+          this.order.attributes.items[ind].priceBeforeVat = this.order.attributes.items[ind].price /
+            (1 + this.order.attributes.vatRate);
+        }
         this.calcSubTotal();
         this.orderChanged();
       };
@@ -185,11 +232,10 @@ angular.module('myApp')
       this.setFreeItem = function (ind) {
         if (this.order.attributes.items[ind].isFreeItem) {
           this.order.attributes.items[ind].price = 0;
+          this.order.attributes.items[ind].priceInclVat = 0;
+          this.order.attributes.items[ind].priceBeforeVat = 0;
         } else {
-          this.order.attributes.items[ind].price =
-            this.order.attributes.items[ind].quantity *
-            this.order.attributes.items[ind].catalogPrice /
-            this.order.attributes.items[ind].catalogQuantity;
+          this.setQuantity(ind);
         }
         this.calcSubTotal();
         this.orderChanged();
@@ -232,13 +278,32 @@ angular.module('myApp')
         this.order.attributes.transportationInclVat = 0;
         this.order.attributes.transportation = 0;
       } else {
-        this.order.attributes.transportation = this.order.attributes.transportationInclVat;
-        // TODO: reduce vat
+        if (this.order.attributes.isBusinessEvent) {
+          this.order.attributes.transportation = this.order.attributes.transportationInclVat /
+            (1 + this.order.attributes.vatRate);
+        } else {
+          this.order.attributes.transportation = this.order.attributes.transportationInclVat;
+        }
       }
       this.setTransportationBonus();
       this.calcTotal();
       this.orderChanged();
     };
+
+      this.setBusinessEvent = function () {
+        if (this.order.attributes.isBusinessEvent) {
+          for (i=0;i<this.order.attributes.items.length;i++) {
+            this.order.attributes.items[i].price = this.order.attributes.items[i].priceBeforeVat;
+          }
+        } else {
+          for (i=0;i<this.order.attributes.items.length;i++) {
+            this.order.attributes.items[i].price = this.order.attributes.items[i].priceInclVat;
+          }
+        }
+        this.setTransportation(); // recalc considering vat reduced or not
+        this.calcSubTotal();
+        this.orderChanged();
+      };
 
       this.saveOrder = function () {
         this.order.attributes.eventDate = new Date(this.eventDate);

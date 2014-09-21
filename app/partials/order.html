@@ -108,7 +108,7 @@
                   <input type="number" ng-model="item.quantity" ng-blur="orderModel.setQuantity($index)">
                 </td>
                 <td>
-                  <input type="text" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice()">
+                  <input type="text" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice($index)">
                 </td>
                 <td>
                   <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.setFreeItem($index)">
@@ -174,7 +174,10 @@
               </tr>
               <tr>
                 <td><label>מע"מ</label></td>
-                <td></td>
+                <td>אירוע עסקי?
+                  <input type="checkbox" ng-model="orderModel.order.attributes.isBusinessEvent"
+                         ng-change="orderModel.setBusinessEvent()">
+                </td>
                 <td>{{orderModel.order.attributes.vat | currency:" ₪"}}</td>
               </tr>
               <tr>
