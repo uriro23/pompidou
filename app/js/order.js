@@ -59,6 +59,8 @@ angular.module('myApp')
      });
      this.isAddItem = false;
      this.filterText='';
+     this.activityDate = new Date();
+     this.activityText = '';
 
 
      if ($state.current.name === 'editOrder') {
@@ -107,6 +109,7 @@ angular.module('myApp')
        this.order.attributes.discount = 0;
        this.order.attributes.transportation = 0;
        this.order.attributes.transportationBonus = 0;
+       this.order.attributes.activities = [];
      }
     this.calcSubTotal();
 
@@ -304,6 +307,24 @@ angular.module('myApp')
         this.calcSubTotal();
         this.orderChanged();
       };
+
+    // activities tab
+    // --------------
+
+    this.addActivity = function () {
+      if (this.activityText.length > 0) {
+        this.order.attributes.activities.splice(0, 0, {date: new Date(), text: this.activityText});
+        this.orderChanged();
+      }
+    };
+
+    this.delActivity = function (ind) {
+      this.order.attributes.activities.splice(ind,1);
+      this.orderChanged();
+    };
+
+    // common
+    // ------
 
       this.saveOrder = function () {
         this.order.attributes.eventDate = new Date(this.eventDate);

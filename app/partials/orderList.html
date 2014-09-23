@@ -17,6 +17,8 @@
       <th>סוג אירוע</th>
       <th>סטטוס הזמנה</th>
       <th>תבנית</th>
+      <th>תאריך פעילות</th>
+      <th>פעילות</th>
       </thead>
       <tbody>
       <tr ng-repeat="order in orderListModel.orders">
@@ -30,6 +32,8 @@
         <td>{{order.view.eventType.label}}</td>
         <td>{{order.view.orderStatus.name}}</td>
         <td>{{order.attributes.template}}</td>
+        <td>{{order.attributes.activities[0].date | date: 'HH:mm dd/MM/yyyy'}}</td>
+        <td>{{order.attributes.activities[0].text}}</td>
       </tr>
       </tbody>
     </table>
