@@ -149,5 +149,29 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
      })
+    .state('conversion', {
+      url: "/conversion",
+      templateUrl: "partials/conversion.html",
+      controller: "ConversionCtrl as conversionModel",
+      resolve: {
+        categories: ['api', function (api) {
+          return api.queryCategories().then (function (res) {
+            return res.map(function (obj) {
+              return obj.attributes;
+            })
+          });
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        accessCatalog: ['api', function (api) {
+           return api.queryAccessCatalog().then (function (res) {
+             return res.map(function (obj) {
+               return obj.attributes;
+             })
+           })
+        }]
+      }
+    })
 });
 

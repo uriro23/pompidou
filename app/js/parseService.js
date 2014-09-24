@@ -123,7 +123,9 @@ angular.module('myApp').
 
   this.queryCatalog = function (domain) {
     var catalogQuery = new Parse.Query(Catalog);
-    catalogQuery.equalTo('domain',domain);
+    if (domain) {
+      catalogQuery.equalTo('domain', domain);
+    }
     return query(catalogQuery);
   };
 
@@ -164,7 +166,9 @@ angular.module('myApp').
 
   this.queryCategories = function (domain) {
     var categoriesQuery = new Parse.Query(Category);
-    categoriesQuery.equalTo('domain',domain);
+    if (domain) {
+      categoriesQuery.equalTo('domain', domain);
+    }
     categoriesQuery.ascending("tId");
     return query(categoriesQuery);
   };
@@ -202,5 +206,15 @@ angular.module('myApp').
     return query(vatQuery);
   };
 
+
+  // AccessCatalog
+  // -------------
+
+  var AccessCatalog = Parse.Object.extend("AccessCatalog");
+
+  this.queryAccessCatalog = function () {
+    var accessCatalogQuery = new Parse.Query(AccessCatalog);
+    return query(accessCatalogQuery);
+  };
 
 });
