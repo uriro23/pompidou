@@ -71,3 +71,11 @@ a:link, a:visited  {
   padding: 0;
 }
 */
+
+.myError {
+    background-color: red;
+}
+
+.myChanged {
+    background-color: yellowgreen;
+}

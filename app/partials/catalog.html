@@ -19,35 +19,39 @@
         <th>מחיר</th>
         <th>כמות ייצור</th>
         <th>מחק</th>
-        <th>changed</th>
       </thead>
       <tbody>
-      <tr ng-repeat="catalogItem in catalogModel.catalog">
+      <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?catalogModel.changedClass:null">
         <td>
           <select ng-model="catalogItem.view.category" ng-change="catalogModel.itemChanged($index)"
                 ng-options="category.label for category in catalogModel.categories"></select>
         </td>
         <td>
-          <input type="text" ng-model="catalogItem.attributes.productDescription" ng-blur="catalogModel.itemChanged($index)">
+          <input type="text" ng-model="catalogItem.attributes.productDescription"
+                 ng-change="catalogModel.productDescriptionChanged($index)" ng-blur="catalogModel.setProductDescription($index)"
+                 ng-class="catalogItem.isProductDescriptionError?catalogModel.errorClass:null">
         </td>
         <td>
           <select ng-model="catalogItem.view.measurementUnit" ng-change="catalogModel.itemChanged($index)"
                   ng-options="measurementUnit.label for measurementUnit in catalogModel.measurementUnits"></select>
         </td>
         <td>
-          <input type="number" ng-model="catalogItem.attributes.priceQuantity" ng-blur="catalogModel.itemChanged($index)">
+          <input type="number" ng-model="catalogItem.attributes.priceQuantity"
+                 ng-change="catalogModel.priceQuantityChanged($index)" ng-blur="catalogModel.setPriceQuantity($index)"
+                 ng-class="catalogItem.isPriceQuantityError?catalogModel.errorClass:null">
         </td>
         <td>
-          <input type="text" money min=0 ng-model="catalogItem.attributes.price" ng-blur="catalogModel.itemChanged($index)">
+          <input type="text" money min=0 ng-model="catalogItem.attributes.price"
+                 ng-change="catalogModel.priceChanged($index)" ng-blur="catalogModel.setPrice($index)"
+                 ng-class="catalogItem.isPriceError?catalogModel.errorClass:null">
         </td>
         <td>
-          <input type="number" ng-model="catalogItem.attributes.productionQuantity" ng-blur="catalogModel.itemChanged($index)">
+          <input type="number" ng-model="catalogItem.attributes.productionQuantity"
+                 ng-change="catalogModel.productionQuantityChanged($index)" ng-blur="catalogModel.setProductionQuantity($index)"
+                 ng-class="catalogItem.isProductionQuantityError?catalogModel.errorClass:null">
         </td>
         <td>
           <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">
-        </td>
-        <td>
-          {{catalogItem.isChanged}}
         </td>
       </tr>
       </tbody>

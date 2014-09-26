@@ -126,6 +126,7 @@ angular.module('myApp').
     if (domain) {
       catalogQuery.equalTo('domain', domain);
     }
+    catalogQuery.limit(1000);
     return query(catalogQuery);
   };
 
@@ -207,6 +208,10 @@ angular.module('myApp').
   };
 
 
+  //
+  //  CONVERSION
+  //  ----------
+  //
   // AccessCatalog
   // -------------
 
@@ -214,6 +219,7 @@ angular.module('myApp').
 
   this.queryAccessCatalog = function () {
     var accessCatalogQuery = new Parse.Query(AccessCatalog);
+    accessCatalogQuery.limit(1000);
     return query(accessCatalogQuery);
   };
 
