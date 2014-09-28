@@ -2,14 +2,13 @@
 <label>בחר תחום</label><select ng-model="catalogModel.currentDomain" ng-change="catalogModel.setDomain()"
                                 ng-options="domain.label for domain in catalogModel.domains"></select>
     <button ng-click="catalogModel.addItem()">הוסף</button>
-    <div ng-show="catalogModel.isChanged">
-      <br/>
-      <span>הקש על </span>
+    <span ng-show="catalogModel.isChanged">
+      <span>     הקש על</span>
       <button ng-click="catalogModel.updateItems()" ng-disabled="!catalogModel.isChanged">שמור</button>
       <span> לשמירת העדכונים שבוצעו, או על </span>
       <button ng-click="catalogModel.setDomain()">ביטול</button>
       <span> כדי לבטלם</span>
-    </div>
+    </span>
     <table border="0">
       <thead>
         <th>קטגוריה</th>
@@ -21,7 +20,7 @@
         <th>מחק</th>
       </thead>
       <tbody>
-      <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?catalogModel.changedClass:null">
+      <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?'myChanged':null">
         <td>
           <select ng-model="catalogItem.view.category" ng-change="catalogModel.itemChanged($index)"
                 ng-options="category.label for category in catalogModel.categories"></select>
@@ -29,7 +28,7 @@
         <td>
           <input type="text" ng-model="catalogItem.attributes.productDescription"
                  ng-change="catalogModel.productDescriptionChanged($index)" ng-blur="catalogModel.setProductDescription($index)"
-                 ng-class="catalogItem.isProductDescriptionError?catalogModel.errorClass:null">
+                 ng-class="catalogItem.isProductDescriptionError?'myError':null">
         </td>
         <td>
           <select ng-model="catalogItem.view.measurementUnit" ng-change="catalogModel.itemChanged($index)"
@@ -38,17 +37,17 @@
         <td>
           <input type="number" ng-model="catalogItem.attributes.priceQuantity"
                  ng-change="catalogModel.priceQuantityChanged($index)" ng-blur="catalogModel.setPriceQuantity($index)"
-                 ng-class="catalogItem.isPriceQuantityError?catalogModel.errorClass:null">
+                 ng-class="catalogItem.isPriceQuantityError?'myError':null">
         </td>
         <td>
           <input type="text" money min=0 ng-model="catalogItem.attributes.price"
                  ng-change="catalogModel.priceChanged($index)" ng-blur="catalogModel.setPrice($index)"
-                 ng-class="catalogItem.isPriceError?catalogModel.errorClass:null">
+                 ng-class="catalogItem.isPriceError?'myError':null">
         </td>
         <td>
           <input type="number" ng-model="catalogItem.attributes.productionQuantity"
                  ng-change="catalogModel.productionQuantityChanged($index)" ng-blur="catalogModel.setProductionQuantity($index)"
-                 ng-class="catalogItem.isProductionQuantityError?catalogModel.errorClass:null">
+                 ng-class="catalogItem.isProductionQuantityError?'myError':null">
         </td>
         <td>
           <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">

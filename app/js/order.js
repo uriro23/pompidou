@@ -150,6 +150,7 @@ angular.module('myApp')
               }
             });
             that.filteredCatalog = that.catalogData;
+            that.filterText = '';
            })
       };
 
@@ -191,6 +192,7 @@ angular.module('myApp')
           this.order.attributes.items[0].price = this.order.attributes.items[0].priceInclVat;
         }
         this.isAddItem = false;
+        this.filterText = '';
         this.calcSubTotal();
         this.orderChanged();
       };

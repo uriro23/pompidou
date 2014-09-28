@@ -4,49 +4,6 @@
 angular.module('myApp')
   .controller('CatalogCtrl', function($state, api, lov, measurementUnits) {
 
-    this.setDomain = function () {
-      var that = this;
-      return api.queryCategories(that.currentDomain.id)
-        .then(function (results) {
-          that.categories = results.map (function (cat) {
-            return cat.attributes;
-          });
-          return api.queryCatalog (that.currentDomain.id)
-            .then (function (results) {
-            // sort results by category order and product description
-            // first build an index of category order by tId (which is the value stored in category field of catalog)
-            var catOrder = [];
-            for (var i=0;i<that.categories.length;i++) {
-              catOrder[that.categories[i].tId] = that.categories[i].order;
-            }
-              that.catalog = results.sort (function (a,b) {
-                if (catOrder[a.attributes.category] > catOrder[b.attributes.category]) {
-                  return 1;
-                } else if (catOrder[a.attributes.category] < catOrder[b.attributes.category]) {
-                  return -1;
-                } else if (a.attributes.productDescription > b.attributes.productDescription ) {
-                  return 1;
-                } else {
-                  return -1;
-                }
-              });
-              // enrich catalog data
-              for (var i=0; i<that.catalog.length; i++) {
-                that.catalog[i].view = {};
-                that.catalog[i].isChanged = false;
-                that.catalog[i].view.category = that.categories.filter (function (cat) {
-                  return cat.tId === that.catalog[i].attributes.category;
-                }) [0];
-                that.catalog[i].view.measurementUnit = that.measurementUnits.filter (function (mes) {
-                  return mes.tId === that.catalog[i].attributes.measurementUnit;
-                }) [0];
-                that.catalog[i].isChanged = false;
-              }
-              that.isChanged = false;
-              })
-        })
-    };
-
     this.addItem = function () {
       var newItem = api.initCatalog();
       newItem.view = {};
@@ -54,13 +11,13 @@ angular.module('myApp')
       newItem.attributes.domain = this.currentDomain.id;
       newItem.view.category = this.categories[0];
       newItem.view.measurementUnit = measurementUnits[0];
-      newItem.attributes.priceQuantity = 0;
-      newItem.attributes.price = 0;
-      newItem.attributes.productionQuantity = 0;
+      newItem.attributes.priceQuantity = null;
+      newItem.attributes.price = null;
+      newItem.attributes.productionQuantity = null;
       newItem.isNewItem = true; // used to do validity checks on new items before storing them
       this.catalog.splice (0,0,newItem); // add new item at the front of the array
       this.isChanged = true;
-    }
+    };
 
     this.itemChanged = function (ind) {
       this.catalog[ind].isChanged = true;
@@ -76,6 +33,7 @@ angular.module('myApp')
       if (!this.catalog[ind].attributes.productDescription ||
           this.catalog[ind].attributes.productDescription.length === 0) {
         this.catalog[ind].isProductDescriptionError = true;
+        this.itemChanged(ind);
       } else {
         if (this.catalog[ind].isProductDescriptionChanged) {
           this.itemChanged(ind);
@@ -91,9 +49,11 @@ angular.module('myApp')
     };
 
     this.setPriceQuantity = function (ind) {
-      if (this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
-          Number(this.catalog[ind].attributes.priceQuantity) <= 0) {
+      if ((this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
+        ((this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
+          Number(this.catalog[ind].attributes.priceQuantity) <= 0))) {
         this.catalog[ind].isPriceQuantityError = true;
+        this.itemChanged(ind);
       } else {
         if (this.catalog[ind].isPriceQuantityChanged) {
           this.itemChanged(ind);
@@ -109,9 +69,11 @@ angular.module('myApp')
     };
 
     this.setPrice = function (ind) {
-      if (this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
-        Number(this.catalog[ind].attributes.price) <= 0) {
+      if ((this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
+        ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
+           Number(this.catalog[ind].attributes.price) <= 0))) {
         this.catalog[ind].isPriceError = true;
+        this.itemChanged(ind);
       } else {
         if (this.catalog[ind].isPriceChanged) {
           this.itemChanged(ind);
@@ -130,6 +92,7 @@ angular.module('myApp')
       if (this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
         Number(this.catalog[ind].attributes.productionQuantity) <= 0) {
         this.catalog[ind].isProductionQuantityError = true;
+        this.itemChanged(ind);
       } else {
         if (this.catalog[ind].isProductionQuantityChanged) {
           this.itemChanged(ind);
@@ -138,6 +101,27 @@ angular.module('myApp')
       }
       this.isProductionQuantityChanged = false;
     };
+
+     this.sortCatalog = function (catalog) {
+      // sort results by category order and product description
+      // first build a hash of category order by tId (which is the value stored in category field of catalog)
+      var catOrder = [];
+      for (var i=0;i<this.categories.length;i++) {
+        catOrder[this.categories[i].tId] = this.categories[i].order;
+      }
+      return catalog.sort (function (a,b) {
+        if (catOrder[a.attributes.category] > catOrder[b.attributes.category]) {
+          return 1;
+        } else if (catOrder[a.attributes.category] < catOrder[b.attributes.category]) {
+          return -1;
+        } else if (a.attributes.productDescription > b.attributes.productDescription ) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    };
+
 
 
     // update / delete all changed / marked catalog items
@@ -154,8 +138,8 @@ angular.module('myApp')
             this.catalog[j].isPriceQuantityError ||
             this.catalog[j].isPriceError ||
             this.catalog[j].isProductionQuantityError) {
-          alert ('לא ניתן לעדכן. תקן קודם את השגיאות המסומנות');
-          return;
+         alert ('לא ניתן לעדכן. תקן קודם את השגיאות המסומנות');
+          return false;
         }
       }
       for (var i=0; i<this.catalog.length; i++) {
@@ -164,13 +148,13 @@ angular.module('myApp')
         } else if (this.catalog[i].isChanged) {
           if (!this.catalog[i].view.category.tId) {
             alert ('Missing category in line ' + i+1);
-            return;
+            return false;
           } else {
             this.catalog[i].attributes.category = this.catalog[i].view.category.tId;
           }
           if (!this.catalog[i].view.measurementUnit.tId) {
             alert ('Missing measurement unit in line ' + i+1);
-            return;
+            return false;
           }
           this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
           this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
@@ -186,17 +170,49 @@ angular.module('myApp')
           this.catalog.splice(i,1);
         }
       }
+      this.catalog = this.sortCatalog(this.catalog);
       this.isChanged = false;
+      return true;
       // TODO: sort items after save
-    }
+    };
 
+    this.setDomain = function () {
+      var that = this;
+      // if there have been changes in previous domain, save them
+      if (that.isChanged) {
+        if (!that.updateItems()) {
+          return;
+        }
+      }
+      return api.queryCategories(that.currentDomain.id)
+        .then(function (results) {
+          that.categories = results.map (function (cat) {
+            return cat.attributes;
+          });
+          return api.queryCatalog (that.currentDomain.id)
+            .then (function (results) {
+            that.catalog = that.sortCatalog(results);
+            // enrich catalog data
+            for (var i=0; i<that.catalog.length; i++) {
+              that.catalog[i].view = {};
+              that.catalog[i].view.category = that.categories.filter (function (cat) {
+                return cat.tId === that.catalog[i].attributes.category;
+              }) [0];
+              that.catalog[i].view.measurementUnit = that.measurementUnits.filter (function (mes) {
+                return mes.tId === that.catalog[i].attributes.measurementUnit;
+              }) [0];
+              that.catalog[i].isChanged = false;
+            }
+            that.isChanged = false;
+          })
+        })
+    };
+
+    this.isChanged = false;
     this.domains = lov.domains;
     this.currentDomain = lov.domains[0];
     this.measurementUnits = measurementUnits;
     this.setDomain();
-    //TODO: how to avoid mentioning classes in js code?
-    this.changedClass = 'myChanged';
-    this.errorClass = 'myError';
   });
 
 
