@@ -8,8 +8,8 @@ h1.content{
     text-align: center; 
 }
 
-th.content{
-    text-align: right;
+th {
+    text-align: center;
 }
 .menu {
   list-style: none;
@@ -27,7 +27,7 @@ td {
 }
 
 tr {
-    background-color: wheat;
+    /* background-color: wheat; */
     /*display:block; */   
 }
 

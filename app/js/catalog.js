@@ -173,7 +173,6 @@ angular.module('myApp')
       this.catalog = this.sortCatalog(this.catalog);
       this.isChanged = false;
       return true;
-      // TODO: sort items after save
     };
 
     this.setDomain = function () {

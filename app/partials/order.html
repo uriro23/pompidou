@@ -12,16 +12,12 @@
         <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span><span>{{orderModel.order.view.customer.homePhone}}</span>
         <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span><span>{{orderModel.order.view.customer.workPhone}}</span>
         <span ng-show="orderModel.order.view.customer.email">דואל: </span><span>{{orderModel.order.view.customer.email}}</span><br/>
-        <label>תאריך</label><input type='date' name="eventDate" ng-model="orderModel.eventDate" min="orderModel.today"
-                                   ng-change="orderModel.orderChanged()" required>
-        <p ng-show="orderForm.eventDate.$error.min && !orderForm.eventDate.$pristine">תאריך האירוע לא יכול להיות בעבר</p>
-        <label>שעה</label><input type="text" ng-model="orderModel.order.attributes.eventTime" ng-blur="orderModel.orderChanged()">
-        <label>מספר משתתפים</label><input type="number" name="noOfParticipants" min="1" max="1000"
-                                          ng-model="orderModel.order.attributes.noOfParticipants"
-                                          ng-blur="orderModel.orderChanged()" required>
-        <p ng-show="orderForm.noOfParticipants.$error.min && !orderForm.noOfParticipants.$pristine">חייב להיות לפחות משתתף אחד</p>
-        <p ng-show="orderForm.noOfParticipants.$error.max && !orderForm.noOfParticipants.$pristine">פומפידו תומכת באירועים עד 1000 משתתפים בלבד</p>
-        <p ng-show="orderForm.noOfParticipants.$error.required && !orderForm.noOfParticipants.$pristine">יש לציין מספר משתתפים באירוע</p>
+        <label>תאריך</label><input type='date' ng-model="orderModel.eventDate" ng-change="orderModel.setEventDate()" required
+                                   ng-class="orderModel.errors.eventDate?'myError':null">
+        <label>שעה</label><input type="text" size="8" ng-model="orderModel.order.attributes.eventTime" ng-blur="orderModel.orderChanged()">
+        <label>מספר משתתפים</label><input type="text" size="4" ng-model="orderModel.noOfParticipants"
+                                          ng-blur="orderModel.setNoOfParticipants()"
+                                          ng-class="orderModel.errors.noOfParticipants?'myError':null">
         <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType" ng-change="orderModel.orderChanged()"
                                         ng-options="eventType.label for eventType in orderModel.eventTypes"></select>
         <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus" ng-change="orderModel.orderChanged()"
@@ -80,7 +76,7 @@
               <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
                       ng-options="category.label for category in orderModel.categories"></select>
               <label>סינון:</label><input type="text" ng-model="orderModel.filterText" ng-change="orderModel.filterProducts()">
-              <table>
+              <table border="1">
                 <tbody>
                 <tr ng-repeat="product in orderModel.filteredCatalog">
                   <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
@@ -101,15 +97,17 @@
               <tr ng-repeat="item in orderModel.order.attributes.items">
                 <td>{{item.category.label}}</td>
                 <td>
-                  <input type="text" ng-model="item.productDescription" ng-blur="orderModel.orderChanged()">
+                  <input type="text" size="70" ng-model="item.productDescription" ng-blur="orderModel.orderChanged()">
                 </td>
                 <td>{{item.measurementUnit.label}}</td>
                 <td>
-                  <input type="number" ng-model="item.quantity" ng-blur="orderModel.setQuantity($index)">
+                  <input type="text" size="3" ng-model="item.quantity" ng-blur="orderModel.setQuantity($index)"
+                  ng-class="orderModel.errors.items[$index].quantity?'myError':null">
                 </td>
                 <td>
-                  <input type="text" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice($index)">
-                </td>
+                  <input type="text" size="7" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice($index)"
+                         ng-class="orderModel.errors.items[$index].price?'myError':null">
+                 </td>
                 <td>
                   <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.setFreeItem($index)">
                 </td>
@@ -139,17 +137,19 @@
               <tr>
                 <td><label>% הנחה</label></td>
                 <td>
-                  <input type="number" ng-model="orderModel.order.attributes.discountRate"
+                  <input type="text" ng-model="orderModel.order.attributes.discountRate"
                          ng-disabled="!orderModel.order.view.discountCause.tId>0"
-                         ng-blur="orderModel.setDiscount()">
+                         ng-blur="orderModel.setDiscountRate()"
+                         ng-class="orderModel.errors.discountRate?'myError':null">
                 </td>
                 <td>{{orderModel.order.attributes.discount | currency:" ₪"}}</td>
               </tr>
               <tr>
                 <td><label>משלוח</label></td>
                 <td>
-                  <input type="text" money min=0 ng-model="orderModel.order.attributes.transportationInclVat"
-                         ng-blur="orderModel.setTransportation()">
+                  <input type="text" money ng-model="orderModel.order.attributes.transportationInclVat"
+                         ng-blur="orderModel.setTransportation()"
+                         ng-class="orderModel.errors.transportationInclVat?'myError':null">
                 </td>
                 <td>{{orderModel.order.attributes.transportation | currency:" ₪"}}</td>
               </tr>
