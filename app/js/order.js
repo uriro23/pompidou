@@ -8,33 +8,33 @@ angular.module('myApp')
 
 
     this.calcTotal = function () {
-      var t = this.order.attributes.subTotal +
-        this.order.attributes.discount +
-        this.order.attributes.transportation +
-        this.order.attributes.transportationBonus;
-      if (this.order.attributes.isBusinessEvent) {
-        var v = t * this.order.attributes.vatRate;
+      var thisOrder = this.order.attributes;
+
+      var t = thisOrder.subTotal + thisOrder.discount + thisOrder.transportation + thisOrder.transportationBonus;
+      if (thisOrder.isBusinessEvent) {
+        var v = t * thisOrder.vatRate;
       } else {
         v = 0;
       }
-      this.order.attributes.total = Math.round(t+v);
-      if (this.order.attributes.isBusinessEvent) {
-        this.order.attributes.totalBeforeVat =  this.order.attributes.total /
-          (1 + this.order.attributes.vatRate);
+      thisOrder.total = Math.round(t+v);
+      if (thisOrder.isBusinessEvent) {
+        thisOrder.totalBeforeVat =  thisOrder.total / (1 + thisOrder.vatRate);
       } else {
-        this.order.attributes.totalBeforeVat =  this.order.attributes.total;
+        thisOrder.totalBeforeVat =  thisOrder.total;
       }
-      this.order.attributes.rounding = this.order.attributes.totalBeforeVat - t;
-      this.order.attributes.vat = this.order.attributes.total - this.order.attributes.totalBeforeVat;
+      thisOrder.rounding = thisOrder.totalBeforeVat - t;
+      thisOrder.vat = thisOrder.total - thisOrder.totalBeforeVat;
     };
 
     this.calcSubTotal = function () {
+      var thisOrder = this.order.attributes;
+
       var t = 0;
-      for (i=0;i<this.order.attributes.items.length;i++) {
-        t += this.order.attributes.items[i].price;
+      for (i=0;i<thisOrder.items.length;i++) {
+        t += thisOrder.items[i].price;
       }
-      this.order.attributes.subTotal = t;
-      this.order.attributes.discount = -(t * this.order.attributes.discountRate / 100);
+      thisOrder.subTotal = t;
+      thisOrder.discount = -(t * thisOrder.discountRate / 100);
       this.calcTotal();
     };
 
@@ -96,26 +96,30 @@ angular.module('myApp')
       };
 
       this.setProduct = function (catalogEntry) {
-        this.order.attributes.items.splice(0,0,{});
-        this.order.attributes.items[0].category = this.categories.filter(function (cat) {
+        var thisOrder = this.order.attributes;
+
+        thisOrder.items.splice(0,0,{});
+ 
+        var thisItem = thisOrder.items[0];
+ 
+        thisItem.category = this.categories.filter(function (cat) {
             return cat.tId === catalogEntry.category;
         })[0];
-        this.order.attributes.items[0].productDescription = catalogEntry.productDescription;
-        this.order.attributes.items[0].measurementUnit = this.measurementUnits.filter(function (mes) {
+        thisItem.productDescription = catalogEntry.productDescription;
+        thisItem.measurementUnit = this.measurementUnits.filter(function (mes) {
           return mes.tId === catalogEntry.measurementUnit;
         })[0];
-        this.order.attributes.items[0].catalogQuantity = catalogEntry.priceQuantity;  // for price computation
-        this.order.attributes.items[0].quantity = catalogEntry.priceQuantity; // as default quantity
-        this.order.attributes.items[0].catalogPrice = catalogEntry.price; // for price computation
-        this.order.attributes.items[0].priceInclVat = catalogEntry.price;  // prices in catalog include vat
-        this.order.attributes.items[0].priceBeforeVat = catalogEntry.price /
-          (1 + this.order.attributes.vatRate);
-        if (this.order.attributes.isBusinessEvent) {
-          this.order.attributes.items[0].price = this.order.attributes.items[0].priceBeforeVat;
+        thisItem.catalogQuantity = catalogEntry.priceQuantity;  // for price computation
+        thisItem.quantity = catalogEntry.priceQuantity; // as default quantity
+        thisItem.catalogPrice = catalogEntry.price; // for price computation
+        thisItem.priceInclVat = catalogEntry.price;  // prices in catalog include vat
+        thisItem.priceBeforeVat = catalogEntry.price / (1 + thisOrder.vatRate);
+        if (thisOrder.isBusinessEvent) {
+          thisItem.price = thisItem.priceBeforeVat;
         } else {
-          this.order.attributes.items[0].price = this.order.attributes.items[0].priceInclVat;
+          thisItem.price = thisItem.priceInclVat;
         }
-        this.order.attributes.items[0].errors = {};
+        thisItem.errors = {}; // initialize errors object for new item
         this.isAddItem = false;
         this.filterText = '';
         this.calcSubTotal();
@@ -123,19 +127,16 @@ angular.module('myApp')
       };
 
       this.setQuantity = function (ind) {
-        this.order.attributes.items[ind].errors.quantity =
-          Number(this.order.attributes.items[ind].quantity) !== this.order.attributes.items[ind].quantity ||
-            Number(this.order.attributes.items[ind].quantity) < 0;
-          this.order.attributes.items[ind].priceInclVat =
-            this.order.attributes.items[ind].quantity *
-            this.order.attributes.items[ind].catalogPrice /
-            this.order.attributes.items[ind].catalogQuantity;
-          this.order.attributes.items[ind].priceBeforeVat = this.order.attributes.items[ind].priceInclVat /
-            (1 + this.order.attributes.vatRate);
-          if (this.order.attributes.isBusinessEvent) {
-            this.order.attributes.items[ind].price = this.order.attributes.items[ind].priceBeforeVat;
+        var thisOrder = this.order.attributes;
+        var thisItem = thisOrder.items[ind];
+        
+        thisItem.errors.quantity = Number(thisItem.quantity) != thisItem.quantity || Number(thisItem.quantity) < 0;
+          thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
+          thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
+          if (thisOrder.isBusinessEvent) {
+            thisItem.price = thisItem.priceBeforeVat;
           } else {
-            this.order.attributes.items[ind].price = this.order.attributes.items[ind].priceInclVat;
+            thisItem.price = thisItem.priceInclVat;
           }
         this.calcSubTotal();
         this.orderChanged();
@@ -144,25 +145,27 @@ angular.module('myApp')
       this.setPrice = function (ind) {
         var thisOrder = this.order.attributes;
         var thisItem = thisOrder.items[ind];
-        thisItem.errors.price = Number(thisItem.price) !== thisItem.price || Number(thisItem.price) < 0;
+        
+        thisItem.errors.price = Number(thisItem.price) != thisItem.price || Number(thisItem.price) < 0;
         if (thisOrder.isBusinessEvent) {
-          thisItem.priceInclVat = thisItem.price *
-            (1 + thisOrder.vatRate);
+          thisItem.priceInclVat = thisItem.price * (1 + thisOrder.vatRate);
           thisItem.priceBeforeVat = thisItem.price;
         } else {
           thisItem.priceInclVat = thisItem.price;
-          thisItem.priceBeforeVat = thisItem.price /
-            (1 + thisOrder.vatRate);
+          thisItem.priceBeforeVat = thisItem.price / (1 + thisOrder.vatRate);
         }
         this.calcSubTotal();
         this.orderChanged();
       };
 
       this.setFreeItem = function (ind) {
-        if (this.order.attributes.items[ind].isFreeItem) {
-          this.order.attributes.items[ind].price = 0;
-          this.order.attributes.items[ind].priceInclVat = 0;
-          this.order.attributes.items[ind].priceBeforeVat = 0;
+        var thisOrder = this.order.attributes;
+        var thisItem = thisOrder.items[ind];
+
+        if (thisItem.isFreeItem) {
+          thisItem.price = 0;
+          thisItem.priceInclVat = 0;
+          thisItem.priceBeforeVat = 0;
         } else {
           this.setQuantity(ind);
         }
@@ -174,16 +177,19 @@ angular.module('myApp')
     // financial tab
 // TODO: in converting from access remember in access discount is positive
     this.setDiscountRate = function () {
-      this.errors.discountRate = Number(this.order.attributes.discountRate) !== this.order.attributes.discountRate ||
-        Number(this.order.attributes.discountRate) < 0;
-     this.order.attributes.discount =  - this.order.attributes.subTotal * this.order.attributes.discountRate / 100;
-     this.calcTotal();
-     this.orderChanged();
+      var thisOrder = this.order.attributes;
+
+      this.errors.discountRate = Number(thisOrder.discountRate) != thisOrder.discountRate || Number(thisOrder.discountRate) < 0;
+      thisOrder.discount =  - thisOrder.subTotal * thisOrder.discountRate / 100;
+      this.calcTotal();
+      this.orderChanged();
     };
 
     this.setDiscountCause = function () {
+      var thisOrder = this.order.attributes;
+
       if (this.order.view.discountCause.tId === 0) {
-        this.order.attributes.discount = 0;
+        thisOrder.discount = 0;
       } else {
         this.setDiscountRate();
       }
@@ -192,23 +198,26 @@ angular.module('myApp')
     };
 
     this.setTransportationBonus = function () {
-      if (this.order.attributes.isTransportationBonus) {
-        this.order.attributes.transportationBonus = - this.order.attributes.transportation;
+      var thisOrder = this.order.attributes;
+
+      if (thisOrder.isTransportationBonus) {
+        thisOrder.transportationBonus = - thisOrder.transportation;
       } else {
-        this.order.attributes.transportationBonus = 0;
+        thisOrder.transportationBonus = 0;
       }
       this.calcTotal();
       this.orderChanged();
     };
 
     this.setTransportation = function () {
-      this.errors.transportationInclVat = Number(this.order.attributes.transportationInclVat) !== this.order.attributes.transportationInclVat ||
-        Number(this.order.attributes.transportationInclVat) < 0;
-        if (this.order.attributes.isBusinessEvent) {
-          this.order.attributes.transportation = this.order.attributes.transportationInclVat /
-            (1 + this.order.attributes.vatRate);
+      var thisOrder = this.order.attributes;
+
+      this.errors.transportationInclVat = Number(thisOrder.transportationInclVat) != thisOrder.transportationInclVat ||
+        Number(thisOrder.transportationInclVat) < 0;
+        if (thisOrder.isBusinessEvent) {
+          thisOrder.transportation = thisOrder.transportationInclVat / (1 + thisOrder.vatRate);
         } else {
-          this.order.attributes.transportation = this.order.attributes.transportationInclVat;
+          thisOrder.transportation = thisOrder.transportationInclVat;
         }
       this.setTransportationBonus();
       this.calcTotal();
@@ -216,13 +225,15 @@ angular.module('myApp')
     };
 
       this.setBusinessEvent = function () {
-        if (this.order.attributes.isBusinessEvent) {
-          for (i=0;i<this.order.attributes.items.length;i++) {
-            this.order.attributes.items[i].price = this.order.attributes.items[i].priceBeforeVat;
+        var thisOrder = this.order.attributes;
+
+        if (thisOrder.isBusinessEvent) {
+          for (i=0;i<thisOrder.items.length;i++) {
+            thisOrder.items[i].price = thisOrder.items[i].priceBeforeVat;
           }
         } else {
-          for (i=0;i<this.order.attributes.items.length;i++) {
-            this.order.attributes.items[i].price = this.order.attributes.items[i].priceInclVat;
+          for (i=0;i<thisOrder.items.length;i++) {
+            thisOrder.items[i].price = thisOrder.items[i].priceInclVat;
           }
         }
         this.setTransportation(); // recalc considering vat reduced or not
@@ -248,30 +259,50 @@ angular.module('myApp')
     // common
     // ------
 
+//TODO: delete $$hashKey property from items before save. It causes parse to produce an error
+
       this.saveOrder = function () {
+        var thisOrder = this.order.attributes;
+
         // check for errors
         for (var fieldName in this.errors) {
           if (this.errors[fieldName]) {
-            alert('לא ניתן לממור. תקן קודם את השגיאות המסומנות');
+            alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
             return;
           }
         }
-        this.order.attributes.eventDate = new Date(this.eventDate);
-        this.order.attributes.noOfParticipants = Number(this.noOfParticipants);
+        // check for errors in items
+        for (i=0;i<thisOrder.items.length;i++) {
+          var thisItem = thisOrder.items[i];
+          for ( fieldName in thisItem.errors) {
+            if (thisItem.errors[fieldName]) {
+              alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
+              return;
+            }
+          }
+        }
+
+        thisOrder.eventDate = new Date(this.eventDate);
+        thisOrder.noOfParticipants = Number(this.noOfParticipants);
         if (this.order.view.eventType) {
-          this.order.attributes.eventType = this.order.view.eventType.tId;
+          thisOrder.eventType = this.order.view.eventType.tId;
         }
         if (this.order.view.startBidTextType) {
-          this.order.attributes.startBidTextType = this.order.view.startBidTextType.tId;
+          thisOrder.startBidTextType = this.order.view.startBidTextType.tId;
         }
         if (this.order.view.endBidTextType) {
-          this.order.attributes.endBidTextType = this.order.view.endBidTextType.tId;
+          thisOrder.endBidTextType = this.order.view.endBidTextType.tId;
         }
         if (this.order.view.discountCause) {
-          this.order.attributes.discountCause = this.order.view.discountCause.tId;
+          thisOrder.discountCause = this.order.view.discountCause.tId;
         }
-        this.order.attributes.customer = this.order.view.customer.id;
-        this.order.attributes.orderStatus = this.order.view.orderStatus.id;
+        thisOrder.customer = this.order.view.customer.id;
+        thisOrder.orderStatus = this.order.view.orderStatus.id;
+
+        // delete errors property in items
+        for (i=0;i<thisOrder.items.length;i++) {
+          delete thisOrder.items[i].errors;
+        }
 
   //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
   //  we do this in 4 steps by chaining 'then's

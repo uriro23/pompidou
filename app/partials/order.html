@@ -102,11 +102,11 @@
                 <td>{{item.measurementUnit.label}}</td>
                 <td>
                   <input type="text" size="3" ng-model="item.quantity" ng-blur="orderModel.setQuantity($index)"
-                  ng-class="orderModel.errors.items[$index].quantity?'myError':null">
+                  ng-class="item.errors.quantity?'myError':null">
                 </td>
                 <td>
                   <input type="text" size="7" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice($index)"
-                         ng-class="orderModel.errors.items[$index].price?'myError':null">
+                         ng-class="item.errors.price?'myError':null">
                  </td>
                 <td>
                   <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.setFreeItem($index)">
