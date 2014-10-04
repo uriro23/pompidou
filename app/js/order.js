@@ -59,6 +59,7 @@ angular.module('myApp')
      // items tab
      this.setCategory = function () {
         var that = this;
+        var thisOrder = this.order.attributes;
         return api.queryCatalogByCategory (this.currentCategory.tId)
           .then (function (cat) {
             that.catalogData = cat.map (function (c) {
@@ -66,14 +67,22 @@ angular.module('myApp')
               cc.id = c.id;
               return cc;
             });
-            that.catalogData.sort (function (a,b) {
+            // exclude items already in order
+            that.filteredCatalog = that.catalogData.filter(function (cat) {
+              for (i=0;i<thisOrder.items.length;i++) {
+                if (thisOrder.items[i].catalogId === cat.id) {
+                  return false;
+                }
+              }
+              return true;
+            });
+            that.filteredCatalog.sort (function (a,b) {
               if (a.productDescription > b.productDescription) {
                 return 1
               } else {
                 return -1
               }
             });
-            that.filteredCatalog = that.catalogData;
             that.filterText = '';
            })
       };
@@ -105,6 +114,7 @@ angular.module('myApp')
         thisItem.category = this.categories.filter(function (cat) {
             return cat.tId === catalogEntry.category;
         })[0];
+        thisItem.catalogId = catalogEntry.id;
         thisItem.productDescription = catalogEntry.productDescription;
         thisItem.measurementUnit = this.measurementUnits.filter(function (mes) {
           return mes.tId === catalogEntry.measurementUnit;
@@ -259,7 +269,7 @@ angular.module('myApp')
     // common
     // ------
 
-//TODO: delete $$hashKey property from items before save. It causes parse to produce an error
+//TODO: before saving, check if customer is empty
 
       this.saveOrder = function () {
         var thisOrder = this.order.attributes;

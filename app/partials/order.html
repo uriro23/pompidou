@@ -68,7 +68,6 @@
               </tr>
             </table>
             <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק הזמנה</button>
-
           </tab>
           <tab heading="מוצרים">
             <button ng-click="orderModel.addItem()">הוסף מוצר</button>
@@ -94,7 +93,7 @@
               <th>בונוס</th>
               </thead>
               <tbody>
-              <tr ng-repeat="item in orderModel.order.attributes.items">
+              <tr ng-repeat="item in orderModel.order.attributes.items track by item.catalogId">
                 <td>{{item.category.label}}</td>
                 <td>
                   <input type="text" size="70" ng-model="item.productDescription" ng-blur="orderModel.orderChanged()">
