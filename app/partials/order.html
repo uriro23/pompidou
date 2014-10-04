@@ -6,9 +6,10 @@
           <span> לביטול הקש על </span>
           <button ng-click="orderModel.cancel()">ביטול</button>
         </div>
-        <label>לקוח</label><select ng-model="orderModel.order.view.customer" ng-change="orderModel.orderChanged()"
-                                   ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required></select>
-        <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span><span>{{orderModel.order.view.customer.mobilePhone}}</span>
+        <label>לקוח</label><select ng-model="orderModel.order.view.customer" ng-change="orderModel.setCustomer()"
+                                   ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required
+                                   ng-class="orderModel.errors.customer?'myError':null"></select>
+         <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span><span>{{orderModel.order.view.customer.mobilePhone}}</span>
         <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span><span>{{orderModel.order.view.customer.homePhone}}</span>
         <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span><span>{{orderModel.order.view.customer.workPhone}}</span>
         <span ng-show="orderModel.order.view.customer.email">דואל: </span><span>{{orderModel.order.view.customer.email}}</span><br/>

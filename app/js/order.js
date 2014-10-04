@@ -45,6 +45,11 @@ angular.module('myApp')
       };
 
     // general tab
+    this.setCustomer = function () {
+      this.orderChanged();
+      this.errors.customer = false;
+    };
+
     this.setEventDate = function () {
       this.orderChanged();
       this.errors.eventDate = this.eventDate < today;  // past dates not allowed
@@ -432,6 +437,7 @@ angular.module('myApp')
       this.order.attributes.transportation = 0;
       this.order.attributes.transportationBonus = 0;
       this.order.attributes.activities = [];
+      this.errors.customer = true; // empty customer is error
     }
     this.calcSubTotal();
 
