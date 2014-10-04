@@ -4,7 +4,7 @@
     <button ng-click="catalogModel.addItem()">הוסף</button>
     <span ng-show="catalogModel.isChanged">
       <span>     הקש על</span>
-      <button ng-click="catalogModel.updateItems()" ng-disabled="!catalogModel.isChanged">שמור</button>
+      <button ng-click="catalogModel.updateItems()">שמור</button>
       <span> לשמירת העדכונים שבוצעו, או על </span>
       <button ng-click="catalogModel.setDomain()">ביטול</button>
       <span> כדי לבטלם</span>
@@ -27,7 +27,7 @@
         </td>
         <td>
           <input type="text" ng-model="catalogItem.attributes.productDescription"
-                 ng-change="catalogModel.productDescriptionChanged($index)" ng-blur="catalogModel.setProductDescription($index)"
+                 ng-change="catalogModel.setProductDescription($index)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isProductDescriptionError?'myError':null">
         </td>
         <td>
@@ -36,17 +36,17 @@
         </td>
         <td>
           <input type="number" ng-model="catalogItem.attributes.priceQuantity"
-                 ng-change="catalogModel.priceQuantityChanged($index)" ng-blur="catalogModel.setPriceQuantity($index)"
+                 ng-change="catalogModel.setPriceQuantity($index)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isPriceQuantityError?'myError':null">
         </td>
         <td>
           <input type="text" money min=0 ng-model="catalogItem.attributes.price"
-                 ng-change="catalogModel.priceChanged($index)" ng-blur="catalogModel.setPrice($index)"
+                 ng-change="catalogModel.setPrice($index)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isPriceError?'myError':null">
         </td>
         <td>
           <input type="number" ng-model="catalogItem.attributes.productionQuantity"
-                 ng-change="catalogModel.productionQuantityChanged($index)" ng-blur="catalogModel.setProductionQuantity($index)"
+                 ng-change="catalogModel.setProductionQuantity($index)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isProductionQuantityError?'myError':null">
         </td>
         <td>

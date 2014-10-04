@@ -51,8 +51,9 @@ angular.module('myApp')
     };
 
     this.setEventDate = function () {
+      var thisOrder = this.order.attributes;
       this.orderChanged();
-      this.errors.eventDate = this.eventDate < today;  // past dates not allowed
+      this.errors.eventDate = thisOrder.eventDate < new Date();  // past dates not allowed
     };
 
     this.setNoOfParticipants = function () {
@@ -99,7 +100,7 @@ angular.module('myApp')
 
       this.deleteItem = function (ind) {
         this.order.attributes.items.splice(ind,1);
-        this.isChanged = true;
+        this.orderChanged();
       };
 
       this.filterProducts = function () {
@@ -297,7 +298,6 @@ angular.module('myApp')
           }
         }
 
-        thisOrder.eventDate = new Date(this.eventDate);
         thisOrder.noOfParticipants = Number(this.noOfParticipants);
         if (this.order.view.eventType) {
           thisOrder.eventType = this.order.view.eventType.tId;
@@ -413,7 +413,6 @@ angular.module('myApp')
       this.order.view.discountCause = discountCauses.filter(function (obj) {
         return (obj.tId === that.order.attributes.discountCause);
       })[0];
-      this.eventDate = $filter('date')(this.order.attributes.eventDate,'yyyy-MM-dd');
 // TODO: change alert to modal, give option to accept/decline new rate and if accepted, to change prices (yes or no)
       if (this.order.attributes.vatRate != this.vatRate) {
         alert ("VAT rate changed from "+ this.order.attributes.vatRate + " to " + this.vatRate);
@@ -423,7 +422,7 @@ angular.module('myApp')
       this.order = api.initOrder();
       this.order.view = {};
       this.order.view.customer = {};
-      this.eventDate = today;
+     this.order.attributes.eventDate = new Date();
       this.noOfParticipants = 1;
       this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
       this.order.view.discountCause = this.discountCauses[0]; // set to "no"

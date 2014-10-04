@@ -73,7 +73,7 @@ a:link, a:visited  {
 */
 
 .myError {
-    background-color: red;
+    background-color: rgba(255, 32, 17, 0.33);
 }
 
 .myChanged {

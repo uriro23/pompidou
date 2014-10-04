@@ -24,82 +24,35 @@ angular.module('myApp')
       this.isChanged = true;
     };
 
-    // productDescription
-    this.productDescriptionChanged = function (ind) {
-      this.catalog[ind].isProductDescriptionChanged = true;
-    };
-
     this.setProductDescription = function (ind) {
-      if (!this.catalog[ind].attributes.productDescription ||
-          this.catalog[ind].attributes.productDescription.length === 0) {
-        this.catalog[ind].isProductDescriptionError = true;
-        this.itemChanged(ind);
-      } else {
-        if (this.catalog[ind].isProductDescriptionChanged) {
-          this.itemChanged(ind);
-          this.catalog[ind].isProductDescriptionError = false;
-        }
-      }
-      this.isProductDescriptionChanged = false;
+      this.itemChanged(ind);
+      this.catalog[ind].isProductDescriptionError =
+        !this.catalog[ind].attributes.productDescription || this.catalog[ind].attributes.productDescription.length === 0;
     };
 
-    // priceQuantity
-    this.priceQuantityChanged = function (ind) {
-      this.catalog[ind].isPriceQuantityChanged = true;
-    };
-
-    this.setPriceQuantity = function (ind) {
-      if ((this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
+   this.setPriceQuantity = function (ind) {
+     this.itemChanged(ind);
+     // TODO: check logic. alpha values in domain > 1 do not cause error. bad
+     this.catalog[ind].isPriceQuantityError =
+        (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
         ((this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
-          Number(this.catalog[ind].attributes.priceQuantity) <= 0))) {
-        this.catalog[ind].isPriceQuantityError = true;
-        this.itemChanged(ind);
-      } else {
-        if (this.catalog[ind].isPriceQuantityChanged) {
-          this.itemChanged(ind);
-          this.catalog[ind].isPriceQuantityError = false;
-        }
-      }
-      this.isPriceQuantityChanged = false;
-    };
-
-    // price
-    this.priceChanged = function (ind) {
-      this.catalog[ind].isPriceChanged = true;
+          Number(this.catalog[ind].attributes.priceQuantity) <= 0));
     };
 
     this.setPrice = function (ind) {
-      if ((this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
+      this.itemChanged(ind);
+      // TODO: check logic. alpha values in domain > 1 do not cause error. bad
+      this.catalog[ind].isPriceError =
+        (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
         ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
-           Number(this.catalog[ind].attributes.price) <= 0))) {
-        this.catalog[ind].isPriceError = true;
-        this.itemChanged(ind);
-      } else {
-        if (this.catalog[ind].isPriceChanged) {
-          this.itemChanged(ind);
-          this.catalog[ind].isPriceError = false;
-        }
-      }
-      this.isPriceChanged = false;
-    };
-
-    // productionQuantity
-    this.productionQuantityChanged = function (ind) {
-      this.catalog[ind].isProductionQuantityChanged = true;
+           Number(this.catalog[ind].attributes.price) <= 0));
     };
 
     this.setProductionQuantity = function (ind) {
-      if (this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
-        Number(this.catalog[ind].attributes.productionQuantity) <= 0) {
-        this.catalog[ind].isProductionQuantityError = true;
-        this.itemChanged(ind);
-      } else {
-        if (this.catalog[ind].isProductionQuantityChanged) {
-          this.itemChanged(ind);
-          this.catalog[ind].isProductionQuantityError = false;
-        }
-      }
-      this.isProductionQuantityChanged = false;
+      this.itemChanged(ind);
+      this.catalog[ind].isProductionQuantityError =
+        this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
+        Number(this.catalog[ind].attributes.productionQuantity) <= 0;
     };
 
      this.sortCatalog = function (catalog) {

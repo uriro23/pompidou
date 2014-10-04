@@ -24,7 +24,7 @@
       <tr ng-repeat="order in orderListModel.orders">
         <td>{{order.attributes.number}}</td>
         <td>
-          <a ui-sref="editOrder({id:order.id})">{{order.attributes.eventDate | date: 'dd/MM/yyyy'}}</a>
+          <a ui-sref="editOrder({id:order.id})">{{order.attributes.eventDate | date: 'EEEE dd/MM/yyyy'}}</a>
         </td>
         <td>{{order.attributes.eventTime}}</td>
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
