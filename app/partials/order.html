@@ -6,76 +6,110 @@
           <span> לביטול הקש על </span>
           <button ng-click="orderModel.cancel()">ביטול</button>
         </div>
-        <label>לקוח</label><select ng-model="orderModel.order.view.customer" ng-change="orderModel.setCustomer()"
-                                   ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required
-                                   ng-class="orderModel.errors.customer?'myError':null"></select>
-         <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span><span>{{orderModel.order.view.customer.mobilePhone}}</span>
-        <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span><span>{{orderModel.order.view.customer.homePhone}}</span>
-        <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span><span>{{orderModel.order.view.customer.workPhone}}</span>
-        <span ng-show="orderModel.order.view.customer.email">דואל: </span><span>{{orderModel.order.view.customer.email}}</span><br/>
-        <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate" ng-change="orderModel.setEventDate()" required
-                                   ng-class="orderModel.errors.eventDate?'myError':null">
-        <label>שעה</label><input type="text" size="8" ng-model="orderModel.order.attributes.eventTime" ng-blur="orderModel.orderChanged()">
-        <label>מספר משתתפים</label><input type="text" size="4" ng-model="orderModel.noOfParticipants"
-                                          ng-blur="orderModel.setNoOfParticipants()"
-                                          ng-class="orderModel.errors.noOfParticipants?'myError':null">
-        <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType" ng-change="orderModel.orderChanged()"
-                                        ng-options="eventType.label for eventType in orderModel.eventTypes"></select>
-        <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus" ng-change="orderModel.orderChanged()"
-                                    ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"></select><br/>
+        <table>
+          <tbody>
+          <tr ng-class="orderModel.changes.header?'myChanged':null">
+            <td>
+              <label>לקוח</label><select ng-model="orderModel.order.view.customer" ng-change="orderModel.setCustomer()"
+                ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required
+                ng-class="orderModel.errors.customer?'myError':null"></select>
+              <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span>
+              <span>{{orderModel.order.view.customer.mobilePhone}}</span>
+              <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span>
+              <span>{{orderModel.order.view.customer.homePhone}}</span>
+              <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span>
+              <span>{{orderModel.order.view.customer.workPhone}}</span>
+              <span ng-show="orderModel.order.view.customer.email">דואל: </span>
+              <span>{{orderModel.order.view.customer.email}}</span><br/>
+            </td>
+            <td>
+              <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
+                ng-change="orderModel.setEventDate()" required
+                ng-class="orderModel.errors.eventDate?'myError':null">
+            </td>
+            <td>
+              <label>שעה</label><input type="text" size="8" ng-model="orderModel.order.attributes.eventTime"
+                ng-change="orderModel.orderChanged('header')" ng-model-options="{updateOn: 'blur'}">
+            </td>
+            <td>
+              <label>מספר משתתפים</label><input type="number" min=1 max=1000
+                ng-model="orderModel.order.attributes.noOfParticipants"
+                ng-change="orderModel.setNoOfParticipants()"
+                ng-model-options="{updateOn: 'blur'}"
+                ng-class="orderModel.errors.noOfParticipants?'myError':null">
+            </td>
+            <td>
+              <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType"
+                ng-change="orderModel.orderChanged('header')"
+                ng-options="eventType.label for eventType in orderModel.eventTypes"></select>
+            <td>
+              <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus"
+                ng-change="orderModel.orderChanged('header')"
+                ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"></select><br/>
+            </td>
+          </tr>
+          </tbody>
+        </table>
         <tabset>
           <tab heading="פרטים כלליים">
             <table>
-              <tr>
+              <tr ng-class="orderModel.changes.template?'myChanged':null">
                 <td>תבנית</td>
                 <td>
-                  <input type="text" ng-model="orderModel.order.attributes.template" ng-blur="orderModel.orderChanged()">
+                  <input type="text" ng-model="orderModel.order.attributes.template"
+                         ng-model-options="{updateOn: 'blur'}"
+                         ng-change="orderModel.orderChanged('template')">
                 </td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.deliveryLocation?'myChanged':null">
                 <td>מקום משלוח</td>
                 <td>
                   <textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"
-                            ng-blur="orderModel.orderChanged()"></textarea>
+                            ng-model-options="{updateOn: 'blur'}"
+                            ng-change="orderModel.orderChanged('deliveryLocation')"></textarea>
                 </td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.remarks?'myChanged':null">
                 <td>הערות</td>
                 <td>
                   <textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"
-                            ng-blur="orderModel.orderChanged()"></textarea>
+                            ng-model-options="{updateOn: 'blur'}"
+                            ng-change="orderModel.orderChanged('remarks')"></textarea>
                 </td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.includeRemarksInBid?'myChanged':null">
                 <td>הכלל הערות בהצעה</td>
                 <td>
                   <input type="checkbox" ng-model="orderModel.order.attributes.includeRemarksInBid"
-                         ng-change="orderModel.orderChanged()">
+                         ng-change="orderModel.orderChanged('includeRemarksInBid')">
                 </td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.startBidTextType?'myChanged':null">
                 <td>טקסט מבוא</td>
                 <td>
-                  <select ng-model="orderModel.order.view.startBidTextType" ng-change="orderModel.orderChanged()"
+                  <select ng-model="orderModel.order.view.startBidTextType"
+                          ng-change="orderModel.orderChanged('startBidTextType')"
                           ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
                 </td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.endBidTextType?'myChanged':null">
                 <td>טקסט סיום</td>
                 <td>
-                  <select ng-model="orderModel.order.view.endBidTextType" ng-change="orderModel.orderChanged()"
+                  <select ng-model="orderModel.order.view.endBidTextType"
+                          ng-change="orderModel.orderChanged('endBidTextType')"
                           ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
                 </td>
               </tr>
             </table>
             <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק הזמנה</button>
           </tab>
-          <tab heading="מוצרים">
-            <button ng-click="orderModel.addItem()">הוסף מוצר</button>
+          <tab heading="פריטים">
+            <button ng-click="orderModel.addItem()">הוסף פריט</button>
             <span ng-show="orderModel.isAddItem">
               <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
                       ng-options="category.label for category in orderModel.categories"></select>
-              <label>סינון:</label><input type="text" ng-model="orderModel.filterText" ng-change="orderModel.filterProducts()">
+              <label>סינון:</label><input type="text" ng-model="orderModel.filterText"
+                                          ng-change="orderModel.filterProducts()">
               <table border="1">
                 <tbody>
                 <tr ng-repeat="product in orderModel.filteredCatalog">
@@ -94,18 +128,27 @@
               <th>בונוס</th>
               </thead>
               <tbody>
-              <tr ng-repeat="item in orderModel.order.attributes.items track by item.catalogId">
+              <tr ng-repeat="item in orderModel.order.attributes.items track by item.catalogId"
+                  ng-class="item.isChanged?'myChanged':null">
                 <td>{{item.category.label}}</td>
                 <td>
-                  <input type="text" size="70" ng-model="item.productDescription" ng-blur="orderModel.orderChanged()">
+                  <input type="text" size="90" ng-model="item.productDescription"
+                         ng-model-options="{updateOn: 'blur'}"
+                         ng-change="orderModel.setProductDescription($index)"
+                         ng-class="item.errors.productDescription?'myError':null">
                 </td>
                 <td>{{item.measurementUnit.label}}</td>
                 <td>
-                  <input type="text" size="3" ng-model="item.quantity" ng-blur="orderModel.setQuantity($index)"
-                  ng-class="item.errors.quantity?'myError':null">
+                  <input type="number" size="3" max=1000 min=1
+                         ng-model="item.quantity"
+                         ng-model-options="{updateOn: 'blur'}"
+                         ng-change="orderModel.setQuantity($index)"
+                         ng-class="item.errors.quantity?'myError':null">
                 </td>
-                <td>
-                  <input type="text" size="7" money min=0 ng-model="item.price" ng-blur="orderModel.setPrice($index)"
+                <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
+                  <input type="text" size="7" money min=0 ng-model="item.price"
+                         ng-change="orderModel.priceChanged($index)"
+                         ng-blur="orderModel.setPrice($index)"
                          ng-class="item.errors.price?'myError':null">
                  </td>
                 <td>
@@ -126,7 +169,7 @@
                 <td></td>
                 <td>{{orderModel.order.attributes.subTotal | currency}}</td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.discountCause?'myChanged':null">
                 <td><label>סיבת הנחה</label></td>
                 <td>
                   <select ng-model="orderModel.order.view.discountCause" ng-change="orderModel.setDiscountCause()"
@@ -134,26 +177,28 @@
                 </td>
                 <td></td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.discountRate?'myChanged':null">
                 <td><label>% הנחה</label></td>
                 <td>
-                  <input type="text" ng-model="orderModel.order.attributes.discountRate"
+                  <input type="number" ng-model="orderModel.order.attributes.discountRate"
                          ng-disabled="!orderModel.order.view.discountCause.tId>0"
-                         ng-blur="orderModel.setDiscountRate()"
+                         ng-model-options="{updateOn: 'blur'}"
+                         ng-change="orderModel.setDiscountRate()"
                          ng-class="orderModel.errors.discountRate?'myError':null">
                 </td>
                 <td>{{orderModel.order.attributes.discount | currency}}</td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.transportationInclVat?'myChanged':null">
                 <td><label>משלוח</label></td>
-                <td>
+                <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
                   <input type="text" money ng-model="orderModel.order.attributes.transportationInclVat"
                          ng-blur="orderModel.setTransportation()"
+                         ng-change="orderModel.transportatioChanged()"
                          ng-class="orderModel.errors.transportationInclVat?'myError':null">
                 </td>
                 <td>{{orderModel.order.attributes.transportation | currency}}</td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.isTransportationBonus?'myChanged':null">
                 <td><label>זיכוי משלוח</label></td>
                 <td>
                   <input type="checkbox" ng-model="orderModel.order.attributes.isTransportationBonus"
@@ -172,7 +217,7 @@
                 <td></td>
                 <td>{{orderModel.order.attributes.totalBeforeVat | currency}}</td>
               </tr>
-              <tr>
+              <tr ng-class="orderModel.changes.isBusinessEvent?'myChanged':null">
                 <td><label>מע"מ</label></td>
                 <td>אירוע עסקי?
                   <input type="checkbox" ng-model="orderModel.order.attributes.isBusinessEvent"
@@ -200,7 +245,9 @@
               <tr>
                 <td>{{orderModel.activityDate | date: 'dd/MM/yyyy HH:mm'}}</td>
                 <td>
-                  <input type="text" ng-model="orderModel.activityText" ng-blur="orderModel.addActivity()">
+                  <input type="text" ng-model="orderModel.activityText"
+                         ng-model-options="{updateOn: 'blur'}"
+                         ng-change="orderModel.addActivity()">
                 </td>
                 <td></td>
               </tr>

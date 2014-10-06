@@ -32,20 +32,25 @@ angular.module('myApp')
 
    this.setPriceQuantity = function (ind) {
      this.itemChanged(ind);
-     // TODO: check logic. alpha values in domain > 1 do not cause error. bad
      this.catalog[ind].isPriceQuantityError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
         ((this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
           Number(this.catalog[ind].attributes.priceQuantity) <= 0));
     };
 
+    this.priceChanged = function (ind) {
+      this.catalog[ind].isPriceChanged = true;
+    };
     this.setPrice = function (ind) {
+      if (!this.catalog[ind].isPriceChanged) {
+        return;
+      }
       this.itemChanged(ind);
-      // TODO: check logic. alpha values in domain > 1 do not cause error. bad
       this.catalog[ind].isPriceError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
         ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
            Number(this.catalog[ind].attributes.price) <= 0));
+      this.catalog[ind].isPriceChanged = false;
     };
 
     this.setProductionQuantity = function (ind) {

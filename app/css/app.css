@@ -32,7 +32,7 @@ tr {
 }
 
 tr:hover {
-    background-color: yellow;
+   /* background-color: yellow; */
 }
 /**this came with the app - might have a reson??? 
 .menu:before {
@@ -77,5 +77,5 @@ a:link, a:visited  {
 }
 
 .myChanged {
-    background-color: yellowgreen;
+    background-color: rgba(0,255,0,0.33);
 }

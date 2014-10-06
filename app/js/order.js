@@ -40,29 +40,32 @@ angular.module('myApp')
 
 
 
-      this.orderChanged = function () {
+      this.orderChanged = function (field) {
         this.isChanged = true;
+        if (field) {
+          this.changes[field] = true;
+        }
       };
 
-    // general tab
+    // order header
     this.setCustomer = function () {
-      this.orderChanged();
+      this.orderChanged('header');
       this.errors.customer = false;
     };
 
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
-      this.orderChanged();
+      this.orderChanged('header');
       this.errors.eventDate = thisOrder.eventDate < new Date();  // past dates not allowed
     };
 
     this.setNoOfParticipants = function () {
-      this.orderChanged();
-      this.errors.noOfParticipants = this.noOfParticipants != Number(this.noOfParticipants) ||
-          Number(this.noOfParticipants <= 0);
+      var thisOrder = this.order.attributes;
+      this.orderChanged('header');
+      this.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
     };
 
-     // items tab
+    // items tab
      this.setCategory = function () {
         var that = this;
         var thisOrder = this.order.attributes;
@@ -136,10 +139,20 @@ angular.module('myApp')
           thisItem.price = thisItem.priceInclVat;
         }
         thisItem.errors = {}; // initialize errors object for new item
+        thisItem.isChanged = true;
         this.isAddItem = false;
         this.filterText = '';
         this.calcSubTotal();
         this.orderChanged();
+      };
+
+      this.setProductDescription = function (ind) {
+        var thisOrder = this.order.attributes;
+        var thisItem = thisOrder.items[ind];
+
+        thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
+        this.orderChanged();
+        thisItem.isChanged = true;
       };
 
       this.setQuantity = function (ind) {
@@ -156,12 +169,20 @@ angular.module('myApp')
           }
         this.calcSubTotal();
         this.orderChanged();
+        thisItem.isChanged = true;
+      };
+
+      this.priceChanged = function(ind) {
+        this.order.attributes.items[ind].isPriceChanged = true;
       };
 
       this.setPrice = function (ind) {
         var thisOrder = this.order.attributes;
         var thisItem = thisOrder.items[ind];
-        
+
+        if (!thisItem.isPriceChanged) {
+          return;
+        }
         thisItem.errors.price = Number(thisItem.price) != thisItem.price || Number(thisItem.price) < 0;
         if (thisOrder.isBusinessEvent) {
           thisItem.priceInclVat = thisItem.price * (1 + thisOrder.vatRate);
@@ -172,6 +193,8 @@ angular.module('myApp')
         }
         this.calcSubTotal();
         this.orderChanged();
+        thisItem.isChanged = true;
+        thisItem.isPriceChanged = false;
       };
 
       this.setFreeItem = function (ind) {
@@ -187,6 +210,7 @@ angular.module('myApp')
         }
         this.calcSubTotal();
         this.orderChanged();
+        thisItem.isChanged = true;
       };
 
 
@@ -198,7 +222,7 @@ angular.module('myApp')
       this.errors.discountRate = Number(thisOrder.discountRate) != thisOrder.discountRate || Number(thisOrder.discountRate) < 0;
       thisOrder.discount =  - thisOrder.subTotal * thisOrder.discountRate / 100;
       this.calcTotal();
-      this.orderChanged();
+      this.orderChanged('discountRate');
     };
 
     this.setDiscountCause = function () {
@@ -210,7 +234,7 @@ angular.module('myApp')
         this.setDiscountRate();
       }
       this.calcTotal();
-      this.orderChanged();
+      this.orderChanged('discountCause');
     };
 
     this.setTransportationBonus = function () {
@@ -222,12 +246,19 @@ angular.module('myApp')
         thisOrder.transportationBonus = 0;
       }
       this.calcTotal();
-      this.orderChanged();
+      this.orderChanged('isTransportationBonus');
+    };
+
+    this.transportationChanged = function () {
+      this.isTransportationChanged = true;
     };
 
     this.setTransportation = function () {
       var thisOrder = this.order.attributes;
 
+      if (!this.isTransportationChanged) {
+        return;
+      }
       this.errors.transportationInclVat = Number(thisOrder.transportationInclVat) != thisOrder.transportationInclVat ||
         Number(thisOrder.transportationInclVat) < 0;
         if (thisOrder.isBusinessEvent) {
@@ -237,7 +268,8 @@ angular.module('myApp')
         }
       this.setTransportationBonus();
       this.calcTotal();
-      this.orderChanged();
+      this.orderChanged('transportationInclVat');
+      this.isTransportationChanged = false;
     };
 
       this.setBusinessEvent = function () {
@@ -254,7 +286,7 @@ angular.module('myApp')
         }
         this.setTransportation(); // recalc considering vat reduced or not
         this.calcSubTotal();
-        this.orderChanged();
+        this.orderChanged('isBusinessEvent');
       };
 
     // activities tab
@@ -274,8 +306,6 @@ angular.module('myApp')
 
     // common
     // ------
-
-//TODO: before saving, check if customer is empty
 
       this.saveOrder = function () {
         var thisOrder = this.order.attributes;
@@ -298,7 +328,6 @@ angular.module('myApp')
           }
         }
 
-        thisOrder.noOfParticipants = Number(this.noOfParticipants);
         if (this.order.view.eventType) {
           thisOrder.eventType = this.order.view.eventType.tId;
         }
@@ -314,12 +343,13 @@ angular.module('myApp')
         thisOrder.customer = this.order.view.customer.id;
         thisOrder.orderStatus = this.order.view.orderStatus.id;
 
-        // delete errors property in items
+        // wipe errors and changes indication from items
         for (i=0;i<thisOrder.items.length;i++) {
-          delete thisOrder.items[i].errors;
+          thisOrder.items[i].errors = {};
+          thisOrder.items[i].isChanged = false;
         }
 
-  //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
+          //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
   //  we do this in 4 steps by chaining 'then's
         if ($state.current.name === 'newOrder') {
           var that = this;
@@ -348,6 +378,7 @@ angular.module('myApp')
         this.backupOrderAttr = utils.nonRecursiveClone(this.order.attributes);
         this.backupOrderView = utils.nonRecursiveClone(this.order.view);
         this.isChanged = false;
+        this.changes = {};
       };
 
       this.deleteOrder = function () {
@@ -387,6 +418,7 @@ angular.module('myApp')
     this.activityDate = new Date();
     this.activityText = '';
     this.errors = {};
+    this.changes = {};
 
 
     if ($state.current.name === 'editOrder') {
@@ -423,8 +455,7 @@ angular.module('myApp')
       this.order.view = {};
       this.order.view.customer = {};
      this.order.attributes.eventDate = new Date();
-      this.noOfParticipants = 1;
-      this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
+     this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
       this.order.view.discountCause = this.discountCauses[0]; // set to "no"
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.items = [];
@@ -437,6 +468,7 @@ angular.module('myApp')
       this.order.attributes.transportationBonus = 0;
       this.order.attributes.activities = [];
       this.errors.customer = true; // empty customer is error
+      this.errors.noOfParticipants = true; // empty no of participants is error
     }
     this.calcSubTotal();
 

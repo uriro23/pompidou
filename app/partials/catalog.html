@@ -35,17 +35,18 @@
                   ng-options="measurementUnit.label for measurementUnit in catalogModel.measurementUnits"></select>
         </td>
         <td>
-          <input type="number" ng-model="catalogItem.attributes.priceQuantity"
+          <input type="text" ng-model="catalogItem.attributes.priceQuantity"
                  ng-change="catalogModel.setPriceQuantity($index)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isPriceQuantityError?'myError':null">
         </td>
-        <td>
+        <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
           <input type="text" money min=0 ng-model="catalogItem.attributes.price"
-                 ng-change="catalogModel.setPrice($index)" ng-model-options="{updateOn: 'blur'}"
+                 ng-blur="catalogModel.setPrice($index)"
+                 ng-change="catalogModel.priceChanged($index)"
                  ng-class="catalogItem.isPriceError?'myError':null">
         </td>
         <td>
-          <input type="number" ng-model="catalogItem.attributes.productionQuantity"
+          <input type="text" ng-model="catalogItem.attributes.productionQuantity"
                  ng-change="catalogModel.setProductionQuantity($index)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isProductionQuantityError?'myError':null">
         </td>
