@@ -1,0 +1,23 @@
+<table>
+  <thead>
+  <th><label>תאריך</label></th>
+  <th><label>פעילות</label></th>
+  <th></th>
+  </thead>
+  <tr>
+    <td>{{orderModel.activityDate | date: 'dd/MM/yyyy HH:mm'}}</td>
+    <td>
+      <input type="text" ng-model="orderModel.activityText"
+             ng-model-options="{updateOn: 'blur'}"
+             ng-change="orderModel.addActivity()">
+    </td>
+    <td></td>
+  </tr>
+  <tr ng-repeat="activity in orderModel.order.attributes.activities track by activity.date">
+    <td>{{activity.date | date: 'dd/MM/yyyy HH:mm'}}</td>
+    <td>{{activity.text}}</td>
+    <td>
+      <button ng-click="orderModel.delActivity($index)">מחק</button>
+    </td>
+  </tr>
+</table>

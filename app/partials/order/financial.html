@@ -1,0 +1,72 @@
+<table>
+  <tbody>
+  <tr>
+    <td><label>ס"ה ביניים</label></td>
+    <td></td>
+    <td>{{orderModel.order.attributes.subTotal | currency}}</td>
+  </tr>
+  <tr ng-class="orderModel.changes.discountCause?'myChanged':null">
+    <td><label>סיבת הנחה</label></td>
+    <td>
+      <select ng-model="orderModel.order.view.discountCause" ng-change="orderModel.setDiscountCause()"
+              ng-options="discountCause.label for discountCause in orderModel.discountCauses"></select>
+    </td>
+    <td></td>
+  </tr>
+  <tr ng-class="orderModel.changes.discountRate?'myChanged':null">
+    <td><label>% הנחה</label></td>
+    <td>
+      <input type="number" ng-model="orderModel.order.attributes.discountRate"
+             ng-disabled="!orderModel.order.view.discountCause.tId>0"
+             ng-model-options="{updateOn: 'blur'}"
+             ng-change="orderModel.setDiscountRate()"
+             ng-class="orderModel.errors.discountRate?'myError':null">
+    </td>
+    <td>{{orderModel.order.attributes.discount | currency}}</td>
+  </tr>
+  <tr ng-class="orderModel.changes.transportationInclVat?'myChanged':null">
+    <td><label>משלוח</label></td>
+    <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
+      <input type="text" money ng-model="orderModel.order.attributes.transportationInclVat"
+             ng-blur="orderModel.setTransportation()"
+             ng-change="orderModel.transportatioChanged()"
+             ng-class="orderModel.errors.transportationInclVat?'myError':null">
+    </td>
+    <td>{{orderModel.order.attributes.transportation | currency}}</td>
+  </tr>
+  <tr ng-class="orderModel.changes.isTransportationBonus?'myChanged':null">
+    <td><label>זיכוי משלוח</label></td>
+    <td>
+      <input type="checkbox" ng-model="orderModel.order.attributes.isTransportationBonus"
+             ng-disabled="!orderModel.order.attributes.transportation > 0"
+             ng-change="orderModel.setTransportationBonus()">
+    </td>
+    <td>{{orderModel.order.attributes.transportationBonus | currency}}</td>
+  </tr>
+  <tr>
+    <td><label>עיגול</label></td>
+    <td></td>
+    <td>{{orderModel.order.attributes.rounding | currency}}</td>
+  </tr>
+  <tr>
+    <td><label>לפני מע"מ</label></td>
+    <td></td>
+    <td>{{orderModel.order.attributes.totalBeforeVat | currency}}</td>
+  </tr>
+  <tr ng-class="orderModel.changes.isBusinessEvent?'myChanged':null">
+    <td><label>מע"מ</label></td>
+    <td>אירוע עסקי?
+      <input type="checkbox" ng-model="orderModel.order.attributes.isBusinessEvent"
+             ng-change="orderModel.setBusinessEvent()">
+    </td>
+    <td>{{orderModel.order.attributes.vat | currency}}</td>
+  </tr>
+  <tr>
+    <td><label>לתשלום</label></td>
+    <td></td>
+    <td>{{orderModel.order.attributes.total | currency}}</td>
+    <td>למשתתף:</td>
+    <td>{{orderModel.order.attributes.total / orderModel.order.attributes.noOfParticipants | currency}}</td>
+  </tr>
+  </tbody>
+</table>
