@@ -173,5 +173,19 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
+    .state ('bid', {
+    url: "/bid/:id",
+    templateUrl: "partials/bid.html",
+    controller: "BidCtrl as bidModel",
+    resolve: {
+      currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryOrders().then(function (objs) {
+          return objs.filter(function (obj) {
+            return $stateParams.id === obj.id;
+          })[0];
+        });
+      }]
+    }
+  })
 });
 
