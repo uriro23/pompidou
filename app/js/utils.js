@@ -5,7 +5,7 @@ angular.module('myApp').
   service ('utils', function() {
 
   this.clone = function (obj) {
-    if(obj == null || typeof(obj) != 'object')
+    if(obj == null || typeof(obj) != 'object' || obj._noClone)
       return obj;
 
     var temp = obj.constructor(); // changed

@@ -1,5 +1,5 @@
 <table>
-  <tr ng-class="orderModel.changes.template?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.template?'myChanged':null">
     <td>תבנית</td>
     <td>
       <input type="text" ng-model="orderModel.order.attributes.template"
@@ -7,7 +7,7 @@
              ng-change="orderModel.orderChanged('template')">
     </td>
   </tr>
-  <tr ng-class="orderModel.changes.deliveryLocation?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.deliveryLocation?'myChanged':null">
     <td>מקום משלוח</td>
     <td>
       <textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"
@@ -15,7 +15,7 @@
                 ng-change="orderModel.orderChanged('deliveryLocation')"></textarea>
     </td>
   </tr>
-  <tr ng-class="orderModel.changes.remarks?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.remarks?'myChanged':null">
     <td>הערות</td>
     <td>
       <textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"
@@ -23,14 +23,14 @@
                 ng-change="orderModel.orderChanged('remarks')"></textarea>
     </td>
   </tr>
-  <tr ng-class="orderModel.changes.includeRemarksInBid?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.includeRemarksInBid?'myChanged':null">
     <td>הכלל הערות בהצעה</td>
     <td>
       <input type="checkbox" ng-model="orderModel.order.attributes.includeRemarksInBid"
              ng-change="orderModel.orderChanged('includeRemarksInBid')">
     </td>
   </tr>
-  <tr ng-class="orderModel.changes.startBidTextType?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
     <td>טקסט מבוא</td>
     <td>
       <select ng-model="orderModel.order.view.startBidTextType"
@@ -38,7 +38,7 @@
               ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
     </td>
   </tr>
-  <tr ng-class="orderModel.changes.endBidTextType?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.endBidTextType?'myChanged':null">
     <td>טקסט סיום</td>
     <td>
       <select ng-model="orderModel.order.view.endBidTextType"

@@ -5,7 +5,7 @@
     <td></td>
     <td>{{orderModel.order.attributes.subTotal | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.changes.discountCause?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.discountCause?'myChanged':null">
     <td><label>סיבת הנחה</label></td>
     <td>
       <select ng-model="orderModel.order.view.discountCause" ng-change="orderModel.setDiscountCause()"
@@ -13,28 +13,28 @@
     </td>
     <td></td>
   </tr>
-  <tr ng-class="orderModel.changes.discountRate?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.discountRate?'myChanged':null">
     <td><label>% הנחה</label></td>
     <td>
       <input type="number" ng-model="orderModel.order.attributes.discountRate"
              ng-disabled="!orderModel.order.view.discountCause.tId>0"
              ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setDiscountRate()"
-             ng-class="orderModel.errors.discountRate?'myError':null">
+             ng-class="orderModel.order.viewerrors.discountRate?'myError':null">
     </td>
     <td>{{orderModel.order.attributes.discount | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.changes.transportationInclVat?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.transportationInclVat?'myChanged':null">
     <td><label>משלוח</label></td>
     <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
       <input type="text" money ng-model="orderModel.order.attributes.transportationInclVat"
-             ng-blur="orderModel.setTransportation()"
-             ng-change="orderModel.transportatioChanged()"
-             ng-class="orderModel.errors.transportationInclVat?'myError':null">
+             ng-change="orderModel.isTransportationChanged = true"
+             ng-blur="orderModel.setTransportation(orderModel.isTransportationChanged)"
+             ng-class="orderModel.order.view.errors.transportationInclVat?'myError':null">
     </td>
     <td>{{orderModel.order.attributes.transportation | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.changes.isTransportationBonus?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.isTransportationBonus?'myChanged':null">
     <td><label>זיכוי משלוח</label></td>
     <td>
       <input type="checkbox" ng-model="orderModel.order.attributes.isTransportationBonus"
@@ -53,7 +53,7 @@
     <td></td>
     <td>{{orderModel.order.attributes.totalBeforeVat | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.changes.isBusinessEvent?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.isBusinessEvent?'myChanged':null">
     <td><label>מע"מ</label></td>
     <td>אירוע עסקי?
       <input type="checkbox" ng-model="orderModel.order.attributes.isBusinessEvent"

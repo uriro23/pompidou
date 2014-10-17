@@ -7,7 +7,9 @@ angular.module('myApp')
   .factory('eventTypesPromise', function (api) {
     return api.queryEventTypes().then(function (res) {
       return res.map(function (obj) {
-        return obj.attributes;
+        var o = obj.attributes;
+        o._noClone = true;
+        return o;
       });
     });
   })
@@ -15,7 +17,9 @@ angular.module('myApp')
   .factory('bidTextTypesPromise', function (api) {
     return api.queryBidTextTypes().then(function (res) {
       return res.map(function (obj) {
-        return obj.attributes;
+        var o = obj.attributes;
+        o._noClone = true;
+        return o;
       });
     });
   })
@@ -23,7 +27,9 @@ angular.module('myApp')
   .factory('categoriesPromise', function (api) {
     return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
       return res.map(function (obj) {
-        return obj.attributes;
+        var o = obj.attributes;
+        o._noClone = true;
+        return o;
       });
     });
   })
@@ -31,7 +37,9 @@ angular.module('myApp')
   .factory('measurementUnitsPromise', function (api) {
     return api.queryMeasurementUnits().then(function (res) {
       return res.map(function (obj) {
-        return obj.attributes;
+        var o = obj.attributes;
+        o._noClone = true;
+        return o;
       });
     });
   })
@@ -39,7 +47,9 @@ angular.module('myApp')
   .factory('discountCausesPromise', function (api) {
     return api.queryDiscountCauses().then(function (res) {
       return res.map(function (obj) {
-        return obj.attributes;
+        var o = obj.attributes;
+        o._noClone = true;
+        return o;
       });
     });
   })
@@ -47,13 +57,11 @@ angular.module('myApp')
   .factory('vatPromise', function (api) {
     return api.queryVat().then(function (res) {
       return res.map(function (obj) {
-        return obj.attributes;
+        var o = obj.attributes;
+        o._noClone = true;
+        return o;
       });
     });
-  })
-
-  .factory ('today',function ($filter) {
-    return $filter('date')(new Date(),'yyyy-MM-dd');
   })
 
  .value ('lov',
@@ -63,45 +71,54 @@ angular.module('myApp')
         id: 1,
         label: 'מוצרים',
         single: 'מוצר',
-        forWorkItem: 'מנות'
+        forWorkItem: 'מנות',
+        _noClone: true
       },
       {
         id: 2,
         label: 'מרכיבים',
         single: 'מרכיב',
-        forWorkItem: 'הכנות'
+        forWorkItem: 'הכנות',
+        _noClone: true
       },
       {
         id: 3,
         label: 'חומרים',
         single: 'חומר',
-        forWorkItem: 'קניות'
+        forWorkItem: 'קניות',
+        _noClone: true
       }
     ],
     orderStatuses: [
       {
         id: 1,
-        name: 'חדשה'
+        name: 'חדשה',
+        _noClone: true
       },
       {
         id: 2,
-        name: 'סוכמה'
+        name: 'סוכמה',
+        _noClone: true
       },
       {
         id: 3,
-        name: 'בביצוע'
+        name: 'בביצוע',
+        _noClone: true
       },
       {
         id: 4,
-        name: 'בוצעה'
+        name: 'בוצעה',
+        _noClone: true
       },
       {
         id: 5,
-        name: 'בוטלה'
+        name: 'בוטלה',
+        _noClone: true
       },
       {
         id: 6,
-        name: 'אלטרנטיבה'
+        name: 'אלטרנטיבה',
+        _noClone: true
       }
     ]
   }

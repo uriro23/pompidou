@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function(api, $state, $filter,
-                                    currentOrder, today, utils, lov, customers, eventTypes,
+                                    currentOrder, utils, lov, customers, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
 
@@ -41,28 +41,29 @@ angular.module('myApp')
 
 
       this.orderChanged = function (field) {
-        this.isChanged = true;
+        this.order.view.isChanged = true;
         if (field) {
-          this.changes[field] = true;
+          this.order.view.changes[field] = true;
         }
       };
 
     // order header
     this.setCustomer = function () {
+      var thisOrder = this.order.attributes;
       this.orderChanged('header');
-      this.errors.customer = false;
+      this.order.view.errors.customer = false;
     };
 
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
       this.orderChanged('header');
-      this.errors.eventDate = thisOrder.eventDate < new Date();  // past dates not allowed
+      this.order.view.errors.eventDate = thisOrder.eventDate < new Date();  // past dates not allowed
     };
 
     this.setNoOfParticipants = function () {
       var thisOrder = this.order.attributes;
       this.orderChanged('header');
-      this.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
+      this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
     };
 
     // items tab
@@ -219,7 +220,7 @@ angular.module('myApp')
     this.setDiscountRate = function () {
       var thisOrder = this.order.attributes;
 
-      this.errors.discountRate = Number(thisOrder.discountRate) != thisOrder.discountRate || Number(thisOrder.discountRate) < 0;
+      this.order.view.errors.discountRate = Number(thisOrder.discountRate) != thisOrder.discountRate || Number(thisOrder.discountRate) < 0;
       thisOrder.discount =  - thisOrder.subTotal * thisOrder.discountRate / 100;
       this.calcTotal();
       this.orderChanged('discountRate');
@@ -249,17 +250,13 @@ angular.module('myApp')
       this.orderChanged('isTransportationBonus');
     };
 
-    this.transportationChanged = function () {
-      this.isTransportationChanged = true;
-    };
-
-    this.setTransportation = function () {
+    this.setTransportation = function (doIt) {
       var thisOrder = this.order.attributes;
 
-      if (!this.isTransportationChanged) {
+      if (!doIt) {
         return;
       }
-      this.errors.transportationInclVat = Number(thisOrder.transportationInclVat) != thisOrder.transportationInclVat ||
+      this.order.view.errors.transportationInclVat = Number(thisOrder.transportationInclVat) != thisOrder.transportationInclVat ||
         Number(thisOrder.transportationInclVat) < 0;
         if (thisOrder.isBusinessEvent) {
           thisOrder.transportation = thisOrder.transportationInclVat / (1 + thisOrder.vatRate);
@@ -284,7 +281,7 @@ angular.module('myApp')
             thisOrder.items[i].price = thisOrder.items[i].priceInclVat;
           }
         }
-        this.setTransportation(); // recalc considering vat reduced or not
+        this.setTransportation(true); // recalc considering vat reduced or not
         this.calcSubTotal();
         this.orderChanged('isBusinessEvent');
       };
@@ -311,8 +308,8 @@ angular.module('myApp')
         var thisOrder = this.order.attributes;
 
         // check for errors
-        for (var fieldName in this.errors) {
-          if (this.errors[fieldName]) {
+        for (var fieldName in this.order.view.errors) {
+          if (this.order.view.errors[fieldName]) {
             alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
             return;
           }
@@ -375,10 +372,9 @@ angular.module('myApp')
           api.saveObj (this.order);
         }
   //  backup order for future cancel
-        this.backupOrderAttr = utils.nonRecursiveClone(this.order.attributes);
-        this.backupOrderView = utils.nonRecursiveClone(this.order.view);
-        this.isChanged = false;
-        this.changes = {};
+        this.order.view.isChanged = false;
+        this.order.view.changes = {};
+        this.backupOrderAttr = angular.copy(this.order.attributes);
       };
 
       this.deleteOrder = function () {
@@ -387,26 +383,61 @@ angular.module('myApp')
         })
        };
 
+    this.setupOrderView = function () {
+      this.order.view = {};
+      this.order.view.errors = {};
+      this.order.view.changes = {};
+      if ($state.current.name === 'editOrder') {
+        var that = this;
+        var tempCustomer = customers.filter(function (cust) {
+          return cust.id === that.order.attributes.customer;
+        })[0];
+        this.order.view.customer = tempCustomer.attributes;
+        this.order.view.customer.id = tempCustomer.id;
+        this.order.view.eventType = eventTypes.filter(function (obj) {
+          return (obj.tId === that.order.attributes.eventType);
+        })[0];
+        this.order.view.startBidTextType = bidTextTypes.filter(function (obj) {
+          return (obj.tId === that.order.attributes.startBidTextType);
+        })[0];
+        this.order.view.endBidTextType = bidTextTypes.filter(function (obj) {
+          return (obj.tId === that.order.attributes.endBidTextType);
+        })[0];
+        this.order.view.orderStatus = this.orderStatuses.filter (function (obj) {
+          return (obj.id === that.order.attributes.orderStatus);
+        })[0];
+        this.order.view.discountCause = discountCauses.filter(function (obj) {
+          return (obj.tId === that.order.attributes.discountCause);
+        })[0];
+      } else {
+        this.order.view.customer = {};
+        this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
+        this.order.view.discountCause = this.discountCauses[0]; // set to "no"
+        this.order.view.errors.customer = true; // empty customer is error
+        this.order.view.errors.noOfParticipants = true; // empty no of participants is error
+      }
+    };
+
     this.cancel = function () {
-      this.order.attributes = utils.nonRecursiveClone(this.backupOrderAttr);
-      this.order.view = utils.nonRecursiveClone(this.backupOrderView);
-      this.isChanged = false;
+      console.log(this.order.attributes.items);
+      this.order.attributes = this.backupOrderAttr;
+      this.setupOrderView();
+      console.log(this.order.attributes.items);
     };
 
 
 
     // main block
     var i;
-    this.isNewOrder = $state.current.name === 'newOrder';
+    this.isNewOrder = $state.current.name === 'newOrder'; // used for view heading
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
     this.categories = categories;
-    this.currentCategory = this.categories[0];
+    this.currentCategory = this.categories[0]; // default to first category
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
     this.vatRate = vat[0].vatRate;
-    this.today = today;
     this.customers = customers;
     this.customerList = customers.map (function (cust) {
       var custDetail = cust.attributes;
@@ -417,34 +448,10 @@ angular.module('myApp')
     this.filterText='';
     this.activityDate = new Date();
     this.activityText = '';
-    this.errors = {};
-    this.changes = {};
-
 
     if ($state.current.name === 'editOrder') {
-      var that = this;
       this.order = currentOrder;
-      this.order.view = {};
-      var tempCustomer = customers.filter(function (cust) {
-        return cust.id === that.order.attributes.customer;
-      })[0];
-      this.order.view.customer = tempCustomer.attributes;
-      this.order.view.customer.id = tempCustomer.id;
-      this.order.view.eventType = eventTypes.filter(function (obj) {
-        return (obj.tId === that.order.attributes.eventType);
-      })[0];
-      this.order.view.startBidTextType = bidTextTypes.filter(function (obj) {
-        return (obj.tId === that.order.attributes.startBidTextType);
-      })[0];
-      this.order.view.endBidTextType = bidTextTypes.filter(function (obj) {
-        return (obj.tId === that.order.attributes.endBidTextType);
-      })[0];
-      this.order.view.orderStatus = this.orderStatuses.filter (function (obj) {
-        return (obj.id === that.order.attributes.orderStatus);
-      })[0];
-      this.order.view.discountCause = discountCauses.filter(function (obj) {
-        return (obj.tId === that.order.attributes.discountCause);
-      })[0];
+      this.setupOrderView();
 // TODO: change alert to modal, give option to accept/decline new rate and if accepted, to change prices (yes or no)
       if (this.order.attributes.vatRate != this.vatRate) {
         alert ("VAT rate changed from "+ this.order.attributes.vatRate + " to " + this.vatRate);
@@ -452,11 +459,8 @@ angular.module('myApp')
       }
     }  else { // new order
       this.order = api.initOrder();
-      this.order.view = {};
-      this.order.view.customer = {};
-     this.order.attributes.eventDate = new Date();
-     this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
-      this.order.view.discountCause = this.discountCauses[0]; // set to "no"
+      this.setupOrderView();
+      this.order.attributes.eventDate = new Date();
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.items = [];
       this.order.attributes.vatRate = this.vatRate;
@@ -467,20 +471,11 @@ angular.module('myApp')
       this.order.attributes.transportation = 0;
       this.order.attributes.transportationBonus = 0;
       this.order.attributes.activities = [];
-      this.errors.customer = true; // empty customer is error
-      this.errors.noOfParticipants = true; // empty no of participants is error
     }
     this.calcSubTotal();
 
-    // TODO: change clone to to deep cloning except for selection items which should be copied as references to same item
-    // we clone (rather than just assign) so we get a new copy and not a ref to the same object, so the backup is not updated
-    // when the order is.
-    // we use non recursive clone (just the top level of the object) so that embedded objects still reference the same thing
-    // e.g. the embedded customer object backupOrderView must point to the same object as the customer object in order.view
-    // or else the select tag on the page won't work.
-    this.backupOrderAttr = utils.nonRecursiveClone(this.order.attributes);
-    this.backupOrderView = utils.nonRecursiveClone(this.order.view);
-    this.isChanged = false;
+    this.order.view.isChanged = false;
+    this.backupOrderAttr = angular.copy(this.order.attributes);
 
 
   });
