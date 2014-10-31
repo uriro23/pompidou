@@ -6,10 +6,7 @@
           <span> לביטול הקש על </span>
           <button ng-click="orderModel.cancel()">ביטול</button>
         </div>
-        <div ng-show="!orderModel.isChanged">
-          <a ui-sref="bid({id:orderModel.order.id})">הצעת מחיר</a>
-        </div>
-        <div>
+       <div>
           <ng-include src="'partials/order/header.html'"></ng-include>
         </div>
         <tabset>

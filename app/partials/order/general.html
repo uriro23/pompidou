@@ -48,3 +48,8 @@
   </tr>
 </table>
 <button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק הזמנה</button>
+<div ng-show="!orderModel.isChanged">
+  <!--<a ui-sref="bid({id:orderModel.order.id})" target="_blank"><button>הצעת מחיר</button></a> -->
+  <a ng-href="index.html#/bid/{{orderModel.order.id}}" target="_blank"><button>הצעת מחיר</button></a>
+</div>
+

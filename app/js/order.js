@@ -50,7 +50,7 @@ angular.module('myApp')
     // order header
     this.setCustomer = function () {
       var thisOrder = this.order.attributes;
-      this.orderChanged('header');
+      this.orderChanged('customer');
       this.order.view.errors.customer = false;
     };
 

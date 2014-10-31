@@ -1,8 +1,9 @@
 <table>
   <tbody>
-  <tr ng-class="orderModel.order.view.changes.header?'myChanged':null">
+  <tr ng-class="orderModel.order.view.changes.customer?'myChanged':null">
     <td>
-      <label>לקוח</label><select ng-model="orderModel.order.view.customer" ng-change="orderModel.setCustomer()"
+      <label>לקוח</label><select ng-model="orderModel.order.view.customer"
+                                 ng-change="orderModel.setCustomer()"
                                  ng-options="customer.firstName+' '+customer.lastName for customer in orderModel.customerList" required
                                  ng-class="orderModel.order.view.errors.customer?'myError':null"></select>
     </td>
