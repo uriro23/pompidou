@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function(api, $state, $filter,
-                                    currentOrder, utils, lov, customers, eventTypes,
+                                    currentOrder, bids, utils, lov, customers, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
 
@@ -301,6 +301,27 @@ angular.module('myApp')
       this.orderChanged();
     };
 
+    // bids tab
+    // --------
+
+    this.createBid = function() {
+      if (this.isChanged) {
+        return;
+      }
+      this.bid = api.initBid();
+      this.bid.attributes.orderId = this.order.id;
+      this.bid.attributes.date = new Date();
+      this.bid.attributes.order = this.order.attributes;
+      var that = this;
+      return api.saveObj(this.bid)
+        .then (function () {
+          return api.queryBidsByOrder(that.order.id)
+            .then (function (bids) {
+              that.bids = bids;
+          })
+      })
+    };
+
     // common
     // ------
 
@@ -430,6 +451,7 @@ angular.module('myApp')
     // main block
     var i;
     this.isNewOrder = $state.current.name === 'newOrder'; // used for view heading
+    this.bids = bids;
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;

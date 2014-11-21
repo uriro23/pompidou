@@ -1,0 +1,19 @@
+<div>
+  <button ng-click="orderModel.createBid()" ng-hide="orderModel.isChanged">הצעת מחיר</button>
+</div>
+<table>
+  <thead>
+  <th><label>תאריך</label></th>
+  <th><label>סכום</label></th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="bid in orderModel.bids track by bid.id">
+    <td>
+      <a ng-href="index.html#/bid/{{bid.id}}" target="_blank">
+      {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      </a>
+    </td>
+    <td>{{bid.attributes.order.total | currency}}</td>
+  </tr>
+  </tbody>
+</table>

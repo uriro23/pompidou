@@ -94,6 +94,29 @@ angular.module('myApp').
       return query(orderNumQuery);
   }
 
+  // Bid
+  // -----
+
+  var Bid = Parse.Object.extend("Bid");
+
+  this.initBid = function () {
+    var bid = new Bid();
+    return bid;
+  }
+
+  this.queryBidsByOrder = function (orderId) {
+    var bidQuery = new Parse.Query(Bid);
+    bidQuery.equalTo("orderId",orderId);
+    bidQuery.descending("date");
+    return query(bidQuery);
+  };
+
+  this.queryBidById = function (id) {
+    var bidQuery = new Parse.Query(Bid);
+    bidQuery.equalTo("objectId",id);
+    return query(bidQuery);
+  };
+
   // Customer
   // --------
 

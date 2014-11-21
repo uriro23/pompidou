@@ -36,6 +36,9 @@ config(function($stateProvider, $urlRouterProvider) {
         currentOrder: [function () {
           return null;
         }],
+        bids: [function () {
+          return null;
+        }],
         customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
             return objs;
@@ -72,6 +75,11 @@ config(function($stateProvider, $urlRouterProvider) {
               return $stateParams.id === obj.id;
             })[0];
           });
+        }],
+        bids: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryBidsByOrder($stateParams.id).then (function (bids) {
+            return bids;
+          })
         }],
         customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
@@ -178,12 +186,10 @@ config(function($stateProvider, $urlRouterProvider) {
     templateUrl: "partials/bid.html",
     controller: "BidCtrl as bidModel",
     resolve: {
-      currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryOrders().then(function (objs) {
-          return objs.filter(function (obj) {
-            return $stateParams.id === obj.id;
-          })[0];
-        });
+      bid: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryBidById ($stateParams.id).then (function (bids) {
+          return bids[0];
+        })
       }]
     }
   })
