@@ -312,6 +312,7 @@ angular.module('myApp')
       this.bid.attributes.orderId = this.order.id;
       this.bid.attributes.date = new Date();
       this.bid.attributes.order = this.order.attributes;
+      this.bid.attributes.desc = this.bidDesc;
       var that = this;
       return api.saveObj(this.bid)
         .then (function () {

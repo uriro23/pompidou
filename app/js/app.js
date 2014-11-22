@@ -191,7 +191,7 @@ config(function($stateProvider, $urlRouterProvider) {
           return bids[0];
         })
       }]
-    }
+     }
   })
 });
 

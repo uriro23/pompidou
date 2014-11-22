@@ -1,1 +1,11 @@
-<span>{{bidModel.bid.attributes.order.number}}</span>
+<span>{{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}</span><br/>
+<span>מספרנו: </span><span>{{bidModel.bid.attributes.order.number}}</span><br/>
+    <div>
+      <span>לכ'</span><br/>
+      <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>
+    </div>
+    <h1>הצעת מחיר</h1><br/>
+<ng-include src="bidModel.startBidTextType.url"></ng-include>
+
+<ng-include src="bidModel.endBidTextType.url"></ng-include>
+

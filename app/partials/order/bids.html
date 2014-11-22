@@ -1,9 +1,11 @@
 <div>
-  <button ng-click="orderModel.createBid()" ng-hide="orderModel.isChanged">הצעת מחיר</button>
+  <input type="text" size=30 ng-model="orderModel.bidDesc">
+  <button ng-click="orderModel.createBid()" ng-hide="orderModel.order.view.isChanged">הצעת מחיר</button>
 </div>
 <table>
   <thead>
   <th><label>תאריך</label></th>
+  <th><label>הערות</label></th>
   <th><label>סכום</label></th>
   </thead>
   <tbody>
@@ -13,6 +15,7 @@
       {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
+    <td>{{bid.attributes.desc}}</td>
     <td>{{bid.attributes.order.total | currency}}</td>
   </tr>
   </tbody>

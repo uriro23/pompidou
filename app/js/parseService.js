@@ -133,6 +133,12 @@ angular.module('myApp').
     return query(customerQuery);
   };
 
+  this.queryCustomerById = function (id) {
+    var customerQuery = new Parse.Query(Customer);
+    customerQuery.equalTo('objectId',id);
+    return query(customerQuery);
+  };
+
 
   // Catalog
   // -------
@@ -180,6 +186,12 @@ angular.module('myApp').
   this.queryBidTextTypes = function () {
     var bidTextTypesQuery = new Parse.Query(BidTextType);
     bidTextTypesQuery.ascending("tId");
+    return query(bidTextTypesQuery);
+  };
+
+  this.queryBidTextTypeById = function (id) {
+    var bidTextTypesQuery = new Parse.Query(BidTextType);
+    bidTextTypesQuery.equalTo("tId",id);
     return query(bidTextTypesQuery);
   };
 
