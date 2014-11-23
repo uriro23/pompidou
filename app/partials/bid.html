@@ -5,7 +5,49 @@
       <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>
     </div>
     <h1>הצעת מחיר</h1><br/>
-<ng-include src="bidModel.startBidTextType.url"></ng-include>
-
-<ng-include src="bidModel.endBidTextType.url"></ng-include>
+    <ng-include src="bidModel.startBidTextType.url"></ng-include>
+    <div>
+      <span>סוג ארוע: </span><span>{{bidModel.eventType.label}}</span>
+      <span>תאריך ארוע: </span><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
+      <label>שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime}}</span>
+      <span>מס' משתתפים: </span><span>{{bidModel.bid.attributes.order.noOfParticipants}}</span>
+    </div>
+    <div>
+      <label>מקום משלוח: </label><span>{{bidModel.bid.attributes.order.deliveryLocation}}</span>
+    </div>
+    <div ng-show="bidModel.bid.attributes.order.includeRemarksInBid">
+      <label>הערות: </label><span>{{bidModel.bid.attributes.order.remarks}}</span>
+    </div>
+    <div>
+      <label>טלפונים: </label><span>{{bidModel.customer.homePhone+' '+bidModel.customer.mobilePhone+' '+bidModel.customer.workPhone}}</span>
+    </div>
+    <div ng-repeat="category in bidModel.filteredCategories">
+      <label>{{category.label}}</label>
+      {{bidModel.setupCategoryItems(category.tId)}}
+      <table>
+        <tbody>
+        <tr ng-repeat="item in bidModel.categoryItems">
+          <td>{{item.productDescription}}</td>
+          <td>{{item.quantity}}</td>
+          <td>{{item.measurementUnit.label}}</td>
+          <td>{{item.price | currency }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    {{bidModel.setupFreeItems()}}
+    <div ng-show="bidModel.freeItems.length">
+      <label>בונוס</label>
+      <table>
+        <tbody>
+        <tr ng-repeat="item in bidModel.freeItems">
+          <td>{{item.productDescription}}</td>
+          <td>{{item.quantity}}</td>
+          <td>{{item.measurementUnit.label}}</td>
+          <td>{{item.price | currency }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-include src="bidModel.endBidTextType.url"></ng-include>
 

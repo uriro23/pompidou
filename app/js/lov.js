@@ -8,7 +8,6 @@ angular.module('myApp')
     return api.queryEventTypes().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
-        o._noClone = true;
         return o;
       });
     });
@@ -18,7 +17,6 @@ angular.module('myApp')
     return api.queryBidTextTypes().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
-        o._noClone = true;
         return o;
       });
     });
@@ -28,7 +26,6 @@ angular.module('myApp')
     return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
       return res.map(function (obj) {
         var o = obj.attributes;
-        o._noClone = true;
         return o;
       });
     });
@@ -38,7 +35,6 @@ angular.module('myApp')
     return api.queryMeasurementUnits().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
-        o._noClone = true;
         return o;
       });
     });
@@ -48,7 +44,6 @@ angular.module('myApp')
     return api.queryDiscountCauses().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
-        o._noClone = true;
         return o;
       });
     });
@@ -58,7 +53,6 @@ angular.module('myApp')
     return api.queryVat().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
-        o._noClone = true;
         return o;
       });
     });

@@ -305,7 +305,7 @@ angular.module('myApp')
     // --------
 
     this.createBid = function() {
-      if (this.isChanged) {
+      if (this.order.view.isChanged) {
         return;
       }
       this.bid = api.initBid();
@@ -313,6 +313,7 @@ angular.module('myApp')
       this.bid.attributes.date = new Date();
       this.bid.attributes.order = this.order.attributes;
       this.bid.attributes.desc = this.bidDesc;
+      this.bidDesc = null;
       var that = this;
       return api.saveObj(this.bid)
         .then (function () {

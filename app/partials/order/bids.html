@@ -1,6 +1,6 @@
-<div>
-  <input type="text" size=30 ng-model="orderModel.bidDesc">
-  <button ng-click="orderModel.createBid()" ng-hide="orderModel.order.view.isChanged">הצעת מחיר</button>
+<div ng-hide="orderModel.order.view.isChanged">
+  <input type="text" size=50 ng-model="orderModel.bidDesc">
+  <button ng-click="orderModel.createBid()">צור</button>
 </div>
 <table>
   <thead>

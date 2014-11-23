@@ -70,10 +70,8 @@ config(function($stateProvider, $urlRouterProvider) {
       controller: 'OrderCtrl as orderModel',
       resolve: {
         currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrders().then(function (objs) {
-            return objs.filter(function (obj) {
-              return $stateParams.id === obj.id;
-            })[0];
+          return api.queryOrders($stateParams.id).then(function (objs) {
+            return objs[0];
           });
         }],
         bids: ['$stateParams', 'api', function ($stateParams, api) {
@@ -127,10 +125,8 @@ config(function($stateProvider, $urlRouterProvider) {
       controller: 'CustomerCtrl as customerModel',
       resolve: {
         currentCustomer: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCustomers().then(function (objs) {
-            return objs.filter(function (obj) {
-              return $stateParams.id === obj.id;
-            })[0];
+          return api.queryCustomers($stateParams.id).then(function (objs) {
+            return objs[0];
           });
         }]
       }
@@ -190,6 +186,12 @@ config(function($stateProvider, $urlRouterProvider) {
         return api.queryBidById ($stateParams.id).then (function (bids) {
           return bids[0];
         })
+      }],
+      measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+        return measurementUnitsPromise;
+      }],
+      categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
       }]
      }
   })

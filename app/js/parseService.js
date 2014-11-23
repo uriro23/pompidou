@@ -78,8 +78,11 @@ angular.module('myApp').
     return order;
   }
 
-   this.queryOrders = function () {
-    var orderQuery = new Parse.Query(Order);
+   this.queryOrders = function (id) {
+     var orderQuery = new Parse.Query(Order);
+     if (id) {
+       orderQuery.equalTo('objectId',id);
+     }
      return query(orderQuery);
   };
 
@@ -127,18 +130,14 @@ angular.module('myApp').
     return customer;
   }
 
-  this.queryCustomers = function () {
+  this.queryCustomers = function (id) {
     var customerQuery = new Parse.Query(Customer);
+    if (id) {
+      customerQuery.equalTo('objectId',id);
+    }
     customerQuery.ascending("firstName");
     return query(customerQuery);
   };
-
-  this.queryCustomerById = function (id) {
-    var customerQuery = new Parse.Query(Customer);
-    customerQuery.equalTo('objectId',id);
-    return query(customerQuery);
-  };
-
 
   // Catalog
   // -------
@@ -172,8 +171,11 @@ angular.module('myApp').
 
   var EventType = Parse.Object.extend("EventType");
 
-  this.queryEventTypes = function () {
+  this.queryEventTypes = function (id) {
     var eventTypesQuery = new Parse.Query(EventType);
+    if (id) {
+      eventTypesQuery.equalTo("tId",id);
+    }
     eventTypesQuery.ascending("tId");
     return query(eventTypesQuery);
   };
@@ -183,15 +185,12 @@ angular.module('myApp').
 
   var BidTextType = Parse.Object.extend("BidTextType");
 
-  this.queryBidTextTypes = function () {
+  this.queryBidTextTypes = function (id) {
     var bidTextTypesQuery = new Parse.Query(BidTextType);
+    if (id) {
+      bidTextTypesQuery.equalTo("tId",id);
+    }
     bidTextTypesQuery.ascending("tId");
-    return query(bidTextTypesQuery);
-  };
-
-  this.queryBidTextTypeById = function (id) {
-    var bidTextTypesQuery = new Parse.Query(BidTextType);
-    bidTextTypesQuery.equalTo("tId",id);
     return query(bidTextTypesQuery);
   };
 
