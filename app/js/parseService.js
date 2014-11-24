@@ -224,8 +224,11 @@ angular.module('myApp').
 
   var DiscountCause = Parse.Object.extend("DiscountCause");
 
-  this.queryDiscountCauses = function () {
+  this.queryDiscountCauses = function (id) {
     var discountCausesQuery = new Parse.Query(DiscountCause);
+    if (id) {
+      discountCausesQuery.equalTo("tId",id);
+    }
     discountCausesQuery.ascending("tId");
     return query(discountCausesQuery);
   };

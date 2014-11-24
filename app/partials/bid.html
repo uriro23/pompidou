@@ -1,5 +1,5 @@
 <span>{{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}</span><br/>
-<span>מספרנו: </span><span>{{bidModel.bid.attributes.order.number}}</span><br/>
+<label>מספרנו: </label><span>{{bidModel.bid.attributes.order.number}}</span><br/>
     <div>
       <span>לכ'</span><br/>
       <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>
@@ -7,10 +7,10 @@
     <h1>הצעת מחיר</h1><br/>
     <ng-include src="bidModel.startBidTextType.url"></ng-include>
     <div>
-      <span>סוג ארוע: </span><span>{{bidModel.eventType.label}}</span>
-      <span>תאריך ארוע: </span><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
+      <label>סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
+      <label>תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
       <label>שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime}}</span>
-      <span>מס' משתתפים: </span><span>{{bidModel.bid.attributes.order.noOfParticipants}}</span>
+      <label>מס' משתתפים: </label><span>{{bidModel.bid.attributes.order.noOfParticipants}}</span>
     </div>
     <div>
       <label>מקום משלוח: </label><span>{{bidModel.bid.attributes.order.deliveryLocation}}</span>
@@ -24,13 +24,13 @@
     <div ng-repeat="category in bidModel.filteredCategories">
       <label>{{category.label}}</label>
       {{bidModel.setupCategoryItems(category.tId)}}
-      <table>
+      <table style="width:60%">
         <tbody>
         <tr ng-repeat="item in bidModel.categoryItems">
-          <td>{{item.productDescription}}</td>
-          <td>{{item.quantity}}</td>
-          <td>{{item.measurementUnit.label}}</td>
-          <td>{{item.price | currency }}</td>
+          <td style="width:75%">{{item.productDescription}}</td>
+          <td style="width:5%">{{item.quantity}}</td>
+          <td style="width:10%">{{item.measurementUnit.label}}</td>
+          <td style="width:10%">{{item.price | currency }}</td>
         </tr>
         </tbody>
       </table>
@@ -38,16 +38,54 @@
     {{bidModel.setupFreeItems()}}
     <div ng-show="bidModel.freeItems.length">
       <label>בונוס</label>
-      <table>
+      <table style="width:60%">
         <tbody>
         <tr ng-repeat="item in bidModel.freeItems">
-          <td>{{item.productDescription}}</td>
-          <td>{{item.quantity}}</td>
-          <td>{{item.measurementUnit.label}}</td>
-          <td>{{item.price | currency }}</td>
+          <td style="width:75%">{{item.productDescription}}</td>
+          <td style="width:5%">{{item.quantity}}</td>
+          <td style="width:10%">{{item.measurementUnit.label}}</td>
+          <td style="width:10%"></td>
         </tr>
         </tbody>
       </table>
     </div>
-    <ng-include src="bidModel.endBidTextType.url"></ng-include>
+    <div>
+      <table style="width:60%">
+        <tr>
+          <td style="width:90%"><label>סה"כ הזמנה</label></td>
+          <td style="width:10%">{{bidModel.bid.attributes.order.subTotal | currency}}</td>
+        </tr>
+        <tr ng-show="bidModel.discountCause">
+          <td style="width:90%">
+            <label>הנחה בגובה %</label>
+            <label>{{bidModel.bid.attributes.order.discountRate}}</label>
+            <label> עקב </label>
+            <label>{{bidModel.discountCause.label}}</label>
+          </td>
+          <td style="width:10%">{{bidModel.bid.attributes.order.discount | currency}}</td>
+        </tr>
+        <tr ng-show="bidModel.bid.attributes.order.transportation">
+          <td style="width:90%"><label>משלוח</label></td>
+          <td style="width:10%">{{bidModel.bid.attributes.order.transportation | currency}}</td>
+        </tr>
+        <tr ng-show="bidModel.bid.attributes.order.isTransportationBonus">
+          <td style="width:90%"><label>בונוס - זיכוי משלוח</label></td>
+          <td style="width:10%">{{bidModel.bid.attributes.order.transportationBonus | currency}}</td>
+        </tr>
+        <tr ng-show="bidModel.bid.attributes.order.isBusinessEvent">
+          <td style="width:90%">
+            <label>מע"מ בשיעור %</label>
+            <label>{{bidModel.bid.attributes.order.vatRate*100}}</label>
+          </td>
+          <td style="width:10%">{{bidModel.bid.attributes.order.vat | currency}}</td>
+        </tr>
+        <tr>
+          <td style="width:90%"><label>סה"כ לתשלום</label></td>
+          <td style="width:10%">{{bidModel.bid.attributes.order.total | currency}}</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <ng-include src="bidModel.endBidTextType.url"></ng-include>
+    </div>
 

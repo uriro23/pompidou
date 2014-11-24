@@ -39,8 +39,16 @@ angular.module('myApp')
         that.eventType = res[0].attributes;
       })
     }
+
+    //fetch discount cause
+    if (currentOrder.discountCause) {
+      api.queryDiscountCauses(currentOrder.discountCause)
+        .then (function (res) {
+        that.discountCause = res[0].attributes;
+      })
+    }
+
     //filter categories - only those in order and not bonus
-    //TODO: disregard bonus items
     this.filteredCategories = this.categories.filter(function(cat) {
       var categoryItems = currentOrder.items.filter(function(item) {
         return (item.category.tId === cat.tId && !item.isFreeItem);
