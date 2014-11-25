@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderCtrl', function(api, $state, $filter,
+  .controller('OrderCtrl', function(api, $state, $filter, $modal,
                                     currentOrder, bids, utils, lov, customers, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
@@ -389,7 +389,7 @@ angular.module('myApp')
   //  IV. change state to editOrder
             .then (function (ord) {
               $state.go ('editOrder',{id:ord.id});
-            })
+            });
   // if not new order, just save it without waiting for resolve
         } else {
           api.saveObj (this.order);
@@ -401,9 +401,25 @@ angular.module('myApp')
       };
 
       this.deleteOrder = function () {
-        return api.deleteObj (this.order).then (function (obj) {
-          $state.go('orderList');
-        })
+        var that = this;
+        var ackDelModal = $modal.open({
+          templateUrl: 'partials/order/ackDelete.html',
+          controller: 'AckDelOrderCtrl as ackDelOrderModel',
+          resolve: {
+            order: function() {
+              return that.order;
+            }
+          },
+          size: 'sm'
+        });
+
+        ackDelModal.result.then(function (isDelete) {
+          if (isDelete) {
+            return api.deleteObj (that.order).then (function (obj) {
+              $state.go('orderList');
+            })
+          }
+        });
        };
 
     this.setupOrderView = function () {

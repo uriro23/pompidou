@@ -1,0 +1,11 @@
+<div class="modal-header">
+  <h3 class="modal-title">אישור מחיקת הזמנה</h3>
+</div>
+<div class="modal-body">
+  <span>האם למחוק הזמנה מס' </span>
+  <span>{{ackDelOrderModel.order.attributes.number}}</span>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="ackDelOrderModel.setYes()">כן</button>
+  <button class="btn btn-warning" ng-click="ackDelOrderModel.setNo()">לא</button>
+</div>
