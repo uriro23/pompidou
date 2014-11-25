@@ -81,7 +81,13 @@
         </tr>
         <tr>
           <td style="width:90%"><label>סה"כ לתשלום</label></td>
-          <td style="width:10%">{{bidModel.bid.attributes.order.total | currency}}</td>
+          <td style="width:10%"><b>{{bidModel.bid.attributes.order.total | currency}}</b></td>
+        </tr>
+        <tr>
+          <td style="width:90%">
+            <label>מחיר למשתתף </label>
+            <label>{{bidModel.bid.attributes.order.total / bidModel.bid.attributes.order.noOfParticipants | currency}}</label>
+          </td>
         </tr>
       </table>
     </div>
