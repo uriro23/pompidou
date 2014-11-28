@@ -17,6 +17,9 @@
     </td>
     <td>{{bid.attributes.desc}}</td>
     <td>{{bid.attributes.order.total | currency}}</td>
+    <td>
+      <button ng-click="orderModel.delBid(bid)">מחק</button>
+    </td>
   </tr>
   </tbody>
 </table>

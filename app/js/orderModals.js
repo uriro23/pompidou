@@ -1,11 +1,10 @@
 'use strict';
 
-/* Controllers */
 angular.module('myApp')
-.controller ('AckDelOrderCtrl', function($modalInstance, order) {
+.controller ('AckDelOrderCtrl', function($modalInstance, order, today) {
   this.order = order;
   this.customer = order.view.customer;
-  this.days = Math.round((order.attributes.eventDate - new Date())/(24*3600*1000));
+  this.days = parseInt((order.attributes.eventDate - today)/(24*3600*1000));  // need parseInt because of DST difference
   this.daysDirection = 'בעוד';
   if (this.days<0) {
     this.days = -this.days;
@@ -19,7 +18,4 @@ angular.module('myApp')
   this.setNo = function() {
     $modalInstance.close (false);
   };
-
-
-
 });

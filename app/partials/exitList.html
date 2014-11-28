@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h3 class="modal-title">רשימת יציאה לפריט</h3>
+</div>
+<div class="modal-body">
+  <div>
+    <span>{{exitListModel.productDescription}}</span>
+  </div>
+  <button ng-click="exitListModel.addItem()">הוסף</button>
+  <table>
+    <tbody>
+    <tr ng-repeat="listItem in exitListModel.exitList track by listItem.item">
+      <td>
+        <input type="text" size=40 ng-model="listItem.item">
+      </td>
+      <td>
+        <button ng-click="exitListModel.delItem($index)">מחק</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="exitListModel.done()">שמור</button>
+  <button class="btn btn-warning" ng-click="exitListModel.cancel()">בטל</button>
+</div>

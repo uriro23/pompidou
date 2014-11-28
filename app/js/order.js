@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function(api, $state, $filter, $modal,
-                                    currentOrder, bids, utils, lov, customers, eventTypes,
+                                    currentOrder, bids, utils, lov, today, customers, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
 
@@ -57,7 +57,7 @@ angular.module('myApp')
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
       this.orderChanged('header');
-      this.order.view.errors.eventDate = thisOrder.eventDate < new Date();  // past dates not allowed
+      this.order.view.errors.eventDate = thisOrder.eventDate < today;  // past dates not allowed
     };
 
     this.setNoOfParticipants = function () {
@@ -324,6 +324,17 @@ angular.module('myApp')
       })
     };
 
+    this.delBid = function (bid) {
+      var that = this;
+      return api.deleteObj(bid)
+        .then (function () {
+          return api.queryBidsByOrder(that.order.id)
+            .then (function (bids) {
+              that.bids = bids;
+          })
+      })
+    };
+
     // common
     // ------
 
@@ -500,7 +511,7 @@ angular.module('myApp')
     }  else { // new order
       this.order = api.initOrder();
       this.setupOrderView();
-      this.order.attributes.eventDate = new Date();
+      this.order.attributes.eventDate = today;
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.items = [];
       this.order.attributes.vatRate = this.vatRate;

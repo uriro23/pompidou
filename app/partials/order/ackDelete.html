@@ -2,23 +2,25 @@
       <h3 class="modal-title">אישור מחיקת הזמנה</h3>
     </div>
     <div class="modal-body">
-      <span>האם למחוק הזמנה מס' </span>
-      <span>{{ackDelOrderModel.order.attributes.number}}</span>
-      <span>?</span>
-    </div>
-    <div>
-      <span>לקוח: </span>
-      <span>{{ackDelOrderModel.customer.firstName+' '+ackDelOrderModel.customer.lastName}}</span>
-    </div>
-    <div>
-      <span>תאריך אירוע: </span>
-      <span>{{ackDelOrderModel.order.attributes.eventDate | date: 'dd/MM/yyyy'}}</span>
-    </div>
+      <div>
+        <span>האם למחוק הזמנה מס' </span>
+        <span>{{ackDelOrderModel.order.attributes.number}}</span>
+        <span>?</span>
+      </div>
+      <div>
+        <span>לקוח: </span>
+        <span>{{ackDelOrderModel.customer.firstName+' '+ackDelOrderModel.customer.lastName}}</span>
+      </div>
+      <div>
+        <span>תאריך אירוע: </span>
+        <span>{{ackDelOrderModel.order.attributes.eventDate | date: 'dd/MM/yyyy'}}</span>
+      </div>
         <div>
           <span>{{ackDelOrderModel.daysDirection+' '}}</span>
           <span>{{ackDelOrderModel.days}}</span>
           <span> ימים</span>
         </div>
+    </div>
     <div class="modal-footer">
       <button class="btn btn-primary" ng-click="ackDelOrderModel.setYes()">כן</button>
       <button class="btn btn-warning" ng-click="ackDelOrderModel.setNo()">לא</button>

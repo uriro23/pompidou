@@ -17,7 +17,7 @@
         <th>כמות</th>
         <th>מחיר</th>
         <th>כמות ייצור</th>
-        <th>מחק</th>
+         <th>מחק</th>
       </thead>
       <tbody>
       <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?'myChanged':null">
@@ -52,6 +52,9 @@
         </td>
         <td>
           <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">
+        </td>
+        <td ng-show="catalogModel.currentDomain.id===1">
+          <button ng-click="catalogModel.updateExitList($index)">רשימת יציאה</button>
         </td>
       </tr>
       </tbody>

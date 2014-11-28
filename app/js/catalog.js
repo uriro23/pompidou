@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CatalogCtrl', function($state, api, lov, measurementUnits) {
+  .controller('CatalogCtrl', function($state, $modal, api, lov, measurementUnits) {
 
     this.addItem = function () {
       var newItem = api.initCatalog();
@@ -14,6 +14,7 @@ angular.module('myApp')
       newItem.attributes.priceQuantity = null;
       newItem.attributes.price = null;
       newItem.attributes.productionQuantity = null;
+      newItem.attributes.exitList = [];
       newItem.isNewItem = true; // used to do validity checks on new items before storing them
       this.catalog.splice (0,0,newItem); // add new item at the front of the array
       this.isChanged = true;
@@ -58,6 +59,24 @@ angular.module('myApp')
       this.catalog[ind].isProductionQuantityError =
         this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
         Number(this.catalog[ind].attributes.productionQuantity) <= 0;
+    };
+
+    this.updateExitList = function(ind) {
+      var that = this;
+      var exitListModal = $modal.open ({
+        templateUrl: 'partials/exitList.html',
+        controller: 'ExitListCtrl as exitListModel',
+        resolve: {
+          catalogItem: function() {
+            return that.catalog[ind];
+          }
+        },
+        size: 'lg'
+      });
+
+      exitListModal.result.then (function () {
+        that.itemChanged(ind);
+      })
     };
 
      this.sortCatalog = function (catalog) {
