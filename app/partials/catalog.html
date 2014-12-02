@@ -54,7 +54,13 @@
           <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">
         </td>
         <td ng-show="catalogModel.currentDomain.id===1">
-          <button ng-click="catalogModel.updateExitList($index)">רשימת יציאה</button>
+          <button ng-click="catalogModel.updateExitList($index)">יציאה</button>
+        </td>
+        <td ng-show="catalogModel.currentDomain.id===1">
+          <button ng-click="catalogModel.updateComponents($index,2)">מרכיבים</button>
+        </td>
+        <td ng-show="catalogModel.currentDomain.id<3">
+          <button ng-click="catalogModel.updateComponents($index,3)">חומרים</button>
         </td>
       </tr>
       </tbody>

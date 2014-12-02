@@ -79,7 +79,45 @@ angular.module('myApp')
       })
     };
 
-     this.sortCatalog = function (catalog) {
+    this.updateComponents = function(ind, targetDomain) {
+      var that = this;
+      var componentsModal = $modal.open ({
+        templateUrl: 'partials/components.html',
+        controller: 'ComponentsCtrl as componentsModel',
+        resolve: {
+          catalogItem: function() {
+            return that.catalog[ind];
+          },
+          targetDomain: function() {
+            return targetDomain;
+          },
+          targetCategories: function() {
+            return api.queryCategories(targetDomain)
+              .then (function(categories) {
+                return categories.map(function(cat) {
+                  return cat.attributes;
+                });
+            })
+          },
+          targetItems: function() {
+            return api.queryCatalog(targetDomain)
+              .then (function (items) {
+                return items;
+            })
+          },
+          measurementUnits: function() {
+            return measurementUnits;
+          }
+        },
+        size: 'lg'
+      });
+
+      componentsModal.result.then (function () {
+        that.itemChanged(ind);
+      })
+    };
+
+    this.sortCatalog = function (catalog) {
       // sort results by category order and product description
       // first build a hash of category order by tId (which is the value stored in category field of catalog)
       var catOrder = [];

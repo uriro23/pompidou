@@ -1,17 +1,17 @@
 <button ng-click="orderModel.addItem()">הוסף פריט</button>
 <span ng-show="orderModel.isAddItem">
-              <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
-                      ng-options="category.label for category in orderModel.categories"></select>
-              <label>סינון:</label><input type="text" ng-model="orderModel.filterText"
-                                          ng-change="orderModel.filterProducts()">
-              <table border="1">
-                <tbody>
-                <tr ng-repeat="product in orderModel.filteredCatalog">
-                  <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
-                </tr>
-                </tbody>
-              </table>
-            </span>
+    <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
+            ng-options="category.label for category in orderModel.categories"></select>
+    <label>סינון:</label><input type="text" ng-model="orderModel.filterText"
+                                ng-change="orderModel.filterProducts()">
+    <table border="1">
+      <tbody>
+      <tr ng-repeat="product in orderModel.filteredCatalog">
+        <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
+      </tr>
+      </tbody>
+    </table>
+</span>
 <table>
   <thead>
   <th>קטגוריה</th>
