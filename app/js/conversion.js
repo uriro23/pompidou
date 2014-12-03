@@ -2,15 +2,21 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('ConversionCtrl', function($state, api, lov, measurementUnits, categories, accessCatalog) {
+  .controller('ConversionCtrl', function($state,
+                                         api,
+                                         lov,
+                                         measurementUnits,
+                                         categories,
+                                         accessCatalog,
+                                         accessCustomers) {
 
     console.log('loaded '+ accessCatalog.length + ' catalog items');
+    console.log('loaded '+ accessCustomers.length + ' customers');
 
     var idMap = []; // used to convert access catalog ids to parse ids for subitems (components)
 
     this.convertCatalog = function () {
       cvCatalog(0);
-      console.log(idMap);
     };
     
     var cvCatalog = function (i) {
@@ -68,6 +74,36 @@ angular.module('myApp')
             cvCatalog(i+1)
             });
         })
+    }
+
+    this.convertCustomers = function() {
+      cvCustomer(0);
+    }
+
+    var cvCustomer = function (i) {
+      if (i>=accessCustomers.length) {
+        return;
+      }
+
+      var customer = api.initCustomer();
+      customer.attributes.firstName = accessCustomers[i].FirstName;
+      customer.attributes.lastName = accessCustomers[i].LastName;
+      if (!accessCustomers[i].StreetAddress) {
+        customer.attributes.address = accessCustomers[i].City;
+      } else if (!accessCustomers[i].City) {
+        customer.attributes.address = accessCustomers[i].StreetAddress
+      } else {
+        customer.attributes.address = accessCustomers[i].StreetAddress + ' ' + accessCustomers[i].City;
+      }
+      customer.attributes.mobilePhone = accessCustomers[i].CellPhone;
+      customer.attributes.homePhone = accessCustomers[i].HomePhone;
+      customer.attributes.workPhone = accessCustomers[i].WorkPhone;
+      customer.attributes.email = accessCustomers[i].Email;
+
+      api.saveObj(customer)
+        .then (function() {
+          cvCustomer(i+1);
+      })
     }
   }
 );

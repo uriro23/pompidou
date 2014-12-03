@@ -174,6 +174,13 @@ config(function($stateProvider, $urlRouterProvider) {
                return obj.attributes;
              })
            })
+        }],
+        accessCustomers: ['api', function (api) {
+          return api.queryAccessCustomers().then (function (res) {
+            return res.map(function (obj) {
+              return obj.attributes;
+            })
+          })
         }]
       }
     })

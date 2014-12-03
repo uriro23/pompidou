@@ -135,6 +135,7 @@ angular.module('myApp').
     if (id) {
       customerQuery.equalTo('objectId',id);
     }
+    customerQuery.limit(1000);
     customerQuery.ascending("firstName");
     return query(customerQuery);
   };
@@ -276,5 +277,18 @@ angular.module('myApp').
     accessCatalogSubitemsQuery.equalTo('ContainerId',catId);
     return query(accessCatalogSubitemsQuery);
   };
+
+  //
+  // Access Customers
+  //
+  var AccessCustomers = Parse.Object.extend("AccessCustomers");
+
+  this.queryAccessCustomers = function () {
+    var accessCustomersQuery = new Parse.Query(AccessCustomers);
+    accessCustomersQuery.limit(1000);
+    accessCustomersQuery.ascending('CustomerId');
+    return query(accessCustomersQuery);
+  };
+
 
 });
