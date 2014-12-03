@@ -5,7 +5,7 @@
   <div>
     <span>{{exitListModel.productDescription}}</span>
   </div>
-  <button ng-click="exitListModel.addItem()">הוסף</button>
+  <button class="btn btn-success" ng-click="exitListModel.addItem()">הוסף</button>
   <table>
     <tbody>
     <tr ng-repeat="listItem in exitListModel.exitList track by listItem.item">
@@ -13,7 +13,7 @@
         <input type="text" size=40 ng-model="listItem.item">
       </td>
       <td>
-        <button ng-click="exitListModel.delItem($index)">מחק</button>
+        <button class="btn btn-warning" ng-click="exitListModel.delItem($index)">מחק</button>
       </td>
     </tr>
     </tbody>

@@ -249,7 +249,7 @@ angular.module('myApp').
   //  CONVERSION
   //  ----------
   //
-  // AccessCatalog
+  // AccessCatalog and related tables
   // -------------
 
   var AccessCatalog = Parse.Object.extend("AccessCatalog");
@@ -257,7 +257,24 @@ angular.module('myApp').
   this.queryAccessCatalog = function () {
     var accessCatalogQuery = new Parse.Query(AccessCatalog);
     accessCatalogQuery.limit(1000);
+    accessCatalogQuery.descending('Domain'); // so that when converting subitems (components) the target items will already be there
     return query(accessCatalogQuery);
+  };
+
+  var AccessComponents = Parse.Object.extend("AccessComponents");
+
+  this.queryAccessComponents = function (catId) {
+    var accessComponentsQuery = new Parse.Query(AccessComponents);
+    accessComponentsQuery.equalTo('CompItemId',catId);
+    return query(accessComponentsQuery);
+  };
+
+  var AccessCatalogSubitems = Parse.Object.extend("AccessCatalogSubitems");
+
+  this.queryAccessCatalogSubitems = function (catId) {
+    var accessCatalogSubitemsQuery = new Parse.Query(AccessCatalogSubitems);
+    accessCatalogSubitemsQuery.equalTo('ContainerId',catId);
+    return query(accessCatalogSubitemsQuery);
   };
 
 });

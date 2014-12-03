@@ -54,9 +54,8 @@ angular.module('myApp')
     return view;
   };
 
-
-
   this.productDescription = catalogItem.attributes.productDescription;
+  this.productionQuantity = catalogItem.attributes.productionQuantity;
   this.targetDomain = targetDomain;
   this.targetCategories = targetCategories;
   this.currentCategory = targetCategories[0];

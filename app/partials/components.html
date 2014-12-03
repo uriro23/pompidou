@@ -4,9 +4,14 @@
 </div>
 <div class="modal-body">
   <div>
+    <label>שם הפריט: </label>
     <span>{{componentsModel.productDescription}}</span>
   </div>
-  <button ng-click="componentsModel.addItem()">הוסף</button>
+  <div>
+    <label>כמות ייצור: </label>
+    <span>{{componentsModel.productionQuantity}}</span>
+  </div>
+  <button class="btn btn-success" ng-click="componentsModel.addItem()">הוסף</button>
   <span ng-show="componentsModel.isAddItem">
       <select ng-model="componentsModel.currentCategory" ng-change="componentsModel.setCategory()"
               ng-options="category.label for category in componentsModel.targetCategories"></select>
@@ -29,7 +34,7 @@
       </td>
       <td>{{component.view.measurementUnit.label}}</td>
       <td>
-        <button ng-click="componentsModel.delItem($index)">מחק</button>
+        <button class="btn btn-warning" ng-click="componentsModel.delItem($index)">מחק</button>
       </td>
     </tr>
     </tbody>
