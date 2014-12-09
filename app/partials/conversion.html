@@ -1,4 +1,19 @@
-<div><br/>
-<button ng-click="conversionModel.convertCatalog()">הסבת קטלוג</button>
-  <button ng-click="conversionModel.convertCustomers()">הסבת לקוחות</button>
+<h1>הסבה</h1>
+<div>
+  <button class="btn btn-success" ng-click="conversionModel.convertCatalog()">הסבת קטלוג</button>
+  <button class="btn btn-success" ng-click="conversionModel.convertCustomers()">הסבת לקוחות</button>
+  <button class="btn btn-success" ng-click="conversionModel.convertOrders()">הסבת הזמנות</button>
 </div>
+    <h3>
+      <span>{{conversionModel.counter}}</span>
+      <span> מתוך </span>
+      <span>{{conversionModel.total}}</span>
+    </h3>
+    <div>
+      <button class="btn btn-warning" ng-click="conversionModel.cancel()">הפסק</button>
+    </div>
+    <div>
+      <span>מספר הזמנה אחרון: </span>
+      <span>{{conversionModel.maxOrderNum}}</span>
+      <button class="btn btn-success" ng-click="conversionModel.updateLastOrder()">עדכן</button>
+    </div>

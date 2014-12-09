@@ -159,6 +159,7 @@ angular.module('myApp')
       this.setQuantity = function (ind) {
         var thisOrder = this.order.attributes;
         var thisItem = thisOrder.items[ind];
+        console.log(thisItem);
         
         thisItem.errors.quantity = Number(thisItem.quantity) != thisItem.quantity || Number(thisItem.quantity) < 0;
           thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
@@ -479,6 +480,7 @@ angular.module('myApp')
 
     // main block
     var i;
+    var that = this;
     this.isNewOrder = $state.current.name === 'newOrder'; // used for view heading
     this.bids = bids;
     this.eventTypes = eventTypes;
@@ -503,10 +505,53 @@ angular.module('myApp')
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       this.setupOrderView();
-// TODO: change alert to modal, give option to accept/decline new rate and if accepted, to change prices (yes or no)
+
+      // handle change of vat rate
       if (this.order.attributes.vatRate != this.vatRate) {
-        alert ("VAT rate changed from "+ this.order.attributes.vatRate + " to " + this.vatRate);
-        this.order.attributes.vatRate = this.vatRate;
+        var vatChangeModal = $modal.open({
+          templateUrl: 'partials/order/vatChange.html',
+          controller: 'VatChangeCtrl as vatChangeModel',
+          resolve: {
+            orderVat: function() {
+              return that.order.attributes.vatRate;
+            },
+            currentVat: function() {
+              return that.vatRate;
+            }
+          },
+          size: 'sm'
+        });
+
+        vatChangeModal.result.then(function (res) {
+          switch (res) {
+            case '0':   // don't change vatRate
+              break;
+            case '1':   // change vatRate, don't change prices
+              that.order.attributes.vatRate = that.vatRate;
+              for (var i=0;i<that.order.attributes.items.length;i++) {
+                var it1 = that.order.attributes.items[i];
+                it1.priceBeforeVat = it1.priceInclVat / (1 + that.vatRate);
+                if (that.order.attributes.isBusinessEvent) {
+                  it1.price = it1.priceBeforeVat;
+                }
+              }
+              that.orderChanged('isBusinessEvent');
+              that.calcSubTotal();
+              break;
+            case '2':   // change vatRate, change prices
+              that.order.attributes.vatRate = that.vatRate;
+              for (var j=0;j<that.order.attributes.items.length;j++) {
+                var it2 = that.order.attributes.items[j];
+                it2.priceInclVat = it2.priceBeforeVat * (1 + that.vatRate);
+                if (!that.order.attributes.isBusinessEvent) {
+                  it2.price = it2.priceInclVat;
+                }
+              }
+              that.orderChanged('isBusinessEvent');
+              that.calcSubTotal();
+              break;
+          }
+        });
       }
     }  else { // new order
       this.order = api.initOrder();

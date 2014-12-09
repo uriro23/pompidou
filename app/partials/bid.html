@@ -9,7 +9,7 @@
     <div>
       <label>סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
       <label>תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
-      <label>שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime}}</span>
+      <label>שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime | date: 'hh:mm'}}</span>
       <label>מס' משתתפים: </label><span>{{bidModel.bid.attributes.order.noOfParticipants}}</span>
     </div>
     <div>

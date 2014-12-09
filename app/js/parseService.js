@@ -83,6 +83,7 @@ angular.module('myApp').
      if (id) {
        orderQuery.equalTo('objectId',id);
      }
+     orderQuery.limit(1000);
      return query(orderQuery);
   };
 
@@ -290,5 +291,42 @@ angular.module('myApp').
     return query(accessCustomersQuery);
   };
 
+  //
+  // Access Orders
+  //
+  var AccessOrders = Parse.Object.extend("AccessOrders");
+
+  this.queryAccessOrders = function () {
+    var accessOrdersQuery = new Parse.Query(AccessOrders);
+    accessOrdersQuery.limit(1000);
+    accessOrdersQuery.ascending('OrderId');
+    return query(accessOrdersQuery);
+  };
+
+  //
+  // Access OrderItems
+  //
+  var AccessOrderItems = Parse.Object.extend("AccessOrderItems");
+
+  this.queryAccessOrderItems = function (orderId) {
+    var accessOrderItemsQuery = new Parse.Query(AccessOrderItems);
+    accessOrderItemsQuery.equalTo('OrderId',orderId);
+    accessOrderItemsQuery.limit(1000);
+    accessOrderItemsQuery.ascending('ItemId');
+    return query(accessOrderItemsQuery);
+  };
+
+  //
+  // Access OrderActivities
+  //
+  var AccessOrderActivities = Parse.Object.extend("AccessOrderActivities");
+
+  this.queryAccessOrderActivities = function (orderId) {
+    var accessOrderActivitiesQuery = new Parse.Query(AccessOrderActivities);
+    accessOrderActivitiesQuery.equalTo('ActivityOrder',orderId);
+    accessOrderActivitiesQuery.limit(1000);
+    accessOrderActivitiesQuery.descending('Id'); // ActivityTime is string, no good for sort
+    return query(accessOrderActivitiesQuery);
+  };
 
 });

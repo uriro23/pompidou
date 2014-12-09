@@ -26,7 +26,7 @@
         <td>
           <a ui-sref="editOrder({id:order.id})">{{order.attributes.eventDate | date: 'EEEE dd/MM/yyyy'}}</a>
         </td>
-        <td>{{order.attributes.eventTime}}</td>
+        <td>{{order.attributes.eventTime | date: 'hh:mm'}}</td>
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>

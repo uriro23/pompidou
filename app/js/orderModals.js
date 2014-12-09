@@ -18,4 +18,14 @@ angular.module('myApp')
   this.setNo = function() {
     $modalInstance.close (false);
   };
-});
+})
+
+.controller('VatChangeCtrl', function($modalInstance, orderVat, currentVat) {
+    this.orderVat = orderVat;
+    this.currentVat = currentVat;
+    this.action = 0;
+
+    this.done = function() {
+      $modalInstance.close(this.action);
+    }
+  });

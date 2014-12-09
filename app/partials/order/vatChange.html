@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h3 class="modal-title">שינוי אחוז מע"מ</h3>
+</div>
+<div class="modal-body">
+  <div>
+    <span>אחוז המע"מ השתנה מ </span>
+    <span>{{vatChangeModel.orderVat*100}}</span>
+    <span> ל </span>
+    <span>{{vatChangeModel.currentVat*100}}</span>
+    <span>.</span>
+  </div>
+  <div><br/>
+    <span>בחר בפעולה המבוקשת</span><br/>
+  </div>
+  <div>
+    <input type="radio" ng-model="vatChangeModel.action" value=0>  ללא שינוי<br/>
+    <input type="radio" ng-model="vatChangeModel.action" value=1>  שינוי האחוז, ללא שינוי מחיר<br/>
+    <input type="radio" ng-model="vatChangeModel.action" value=2>  שינוי האחוז והמחיר<br/>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="vatChangeModel.done()">סיום</button>
+</div>

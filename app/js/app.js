@@ -181,6 +181,13 @@ config(function($stateProvider, $urlRouterProvider) {
               return obj.attributes;
             })
           })
+        }],
+        accessOrders: ['api', function (api) {
+          return api.queryAccessOrders().then (function (res) {
+            return res.map(function (obj) {
+              return obj.attributes;
+            })
+          })
         }]
       }
     })

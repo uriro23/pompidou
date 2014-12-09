@@ -1,56 +1,33 @@
-<table>
-  <tbody>
-  <tr ng-class="orderModel.order.view.changes.customer?'myChanged':null">
-    <td>
+<div ng-class="orderModel.order.view.changes.customer?'myChanged':null">
       <label>לקוח</label><select ng-model="orderModel.order.view.customer"
                                  ng-change="orderModel.setCustomer()"
                                  ng-options="customer.firstName+' '+customer.lastName+' - '+customer.email+' - '+customer.mobilePhone
                                       for customer in orderModel.customerList" required
                                  ng-class="orderModel.order.view.errors.customer?'myError':null"></select>
-    </td>
-    <td>
       <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span>
       <span>{{orderModel.order.view.customer.mobilePhone}}</span>
-    </td>
-    <td>
       <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span>
       <span>{{orderModel.order.view.customer.homePhone}}</span>
-    </td>
-    <td>
       <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span>
       <span>{{orderModel.order.view.customer.workPhone}}</span>
-    </td>
-    <td>
       <span ng-show="orderModel.order.view.customer.email">דואל: </span>
       <span>{{orderModel.order.view.customer.email}}</span>
-    </td>
-    </tr>
-  <tr ng-class="orderModel.order.view.changes.header?'myChanged':null">
-    <td>
-      <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
+  </div>
+ <div ng-class="orderModel.order.view.changes.header?'myChanged':null">
+       <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
                                  ng-change="orderModel.setEventDate()" required
                                  ng-class="orderModel.order.view.errors.eventDate?'myError':null">
-    </td>
-    <td>
-      <label>שעה</label><input type="text" size="8" ng-model="orderModel.order.attributes.eventTime"
-                               ng-change="orderModel.orderChanged('header')" ng-model-options="{updateOn: 'blur'}">
-    </td>
-    <td>
+      <label>שעה</label><input type="time" ng-model="orderModel.order.attributes.eventTime"
+                               ng-change="orderModel.orderChanged('header')">
       <label>מספר משתתפים</label><input type="number" min=1 max=1000
                                         ng-model="orderModel.order.attributes.noOfParticipants"
                                         ng-change="orderModel.setNoOfParticipants()"
                                         ng-model-options="{updateOn: 'blur'}"
                                         ng-class="orderModel.order.view.errors.noOfParticipants?'myError':null">
-    </td>
-    <td>
       <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType"
                                       ng-change="orderModel.orderChanged('header')"
                                       ng-options="eventType.label for eventType in orderModel.eventTypes"></select>
-    <td>
       <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus"
                                   ng-change="orderModel.orderChanged('header')"
                                   ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"></select><br/>
-    </td>
-  </tr>
-  </tbody>
-</table>
+</div>
