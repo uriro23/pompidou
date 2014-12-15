@@ -8,8 +8,11 @@
   <tr ng-class="orderModel.order.view.changes.discountCause?'myChanged':null">
     <td><label>סיבת הנחה</label></td>
     <td>
-      <select ng-model="orderModel.order.view.discountCause" ng-change="orderModel.setDiscountCause()"
-              ng-options="discountCause.label for discountCause in orderModel.discountCauses"></select>
+      <select ng-model="orderModel.order.view.discountCause"
+              ng-change="orderModel.setDiscountCause()"
+              ng-options="discountCause.label for discountCause in orderModel.discountCauses"
+              ng-disabled="orderModel.isReadOnly"
+          ></select>
     </td>
     <td></td>
   </tr>
@@ -17,7 +20,7 @@
     <td><label>% הנחה</label></td>
     <td>
       <input type="number" ng-model="orderModel.order.attributes.discountRate"
-             ng-disabled="!orderModel.order.view.discountCause.tId>0"
+             ng-disabled="!orderModel.order.view.discountCause.tId>0 || orderModel.isReadOnly"
              ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setDiscountRate()"
              ng-class="orderModel.order.viewerrors.discountRate?'myError':null">
@@ -30,6 +33,7 @@
       <input type="text" money ng-model="orderModel.order.attributes.transportationInclVat"
              ng-change="orderModel.isTransportationChanged = true"
              ng-blur="orderModel.setTransportation(orderModel.isTransportationChanged)"
+             ng-disabled="orderModel.isReadOnly"
              ng-class="orderModel.order.view.errors.transportationInclVat?'myError':null">
     </td>
     <td>{{orderModel.order.attributes.transportation | currency}}</td>
@@ -38,7 +42,7 @@
     <td><label>זיכוי משלוח</label></td>
     <td>
       <input type="checkbox" ng-model="orderModel.order.attributes.isTransportationBonus"
-             ng-disabled="!orderModel.order.attributes.transportation > 0"
+             ng-disabled="!orderModel.order.attributes.transportation > 0 || orderModel.isReadOnly"
              ng-change="orderModel.setTransportationBonus()">
     </td>
     <td>{{orderModel.order.attributes.transportationBonus | currency}}</td>
@@ -54,10 +58,16 @@
     <td>{{orderModel.order.attributes.totalBeforeVat | currency}}</td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.isBusinessEvent?'myChanged':null">
-    <td><label>מע"מ</label></td>
+    <td>
+      <label>
+        <span>מע"מ %</span>
+        <span>{{orderModel.order.attributes.vatRate*100}}</span>
+      </label>
+    </td>
     <td>אירוע עסקי?
       <input type="checkbox" ng-model="orderModel.order.attributes.isBusinessEvent"
-             ng-change="orderModel.setBusinessEvent()">
+             ng-change="orderModel.setBusinessEvent()"
+             ng-disabled="orderModel.isReadOnly">
     </td>
     <td>{{orderModel.order.attributes.vat | currency}}</td>
   </tr>

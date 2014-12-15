@@ -1,4 +1,6 @@
-<button ng-click="orderModel.addItem()">הוסף פריט</button>
+<button ng-click="orderModel.addItem()"
+        ng-disabled="orderModel.isReadOnly"
+    >הוסף פריט</button>
 <span ng-show="orderModel.isAddItem">
     <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
             ng-options="category.label for category in orderModel.categories"></select>
@@ -29,6 +31,7 @@
       <input type="text" size="90" ng-model="item.productDescription"
              ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setProductDescription($index)"
+             ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.productDescription?'myError':null">
     </td>
     <td>{{item.measurementUnit.label}}</td>
@@ -37,19 +40,27 @@
              ng-model="item.quantity"
              ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setQuantity($index)"
+             ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.quantity?'myError':null">
     </td>
     <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
       <input type="text" size="7" money min=0 ng-model="item.price"
              ng-change="orderModel.priceChanged($index)"
              ng-blur="orderModel.setPrice($index)"
+             ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.price?'myError':null">
     </td>
     <td>
-      <input type="checkbox" ng-model="item.isFreeItem" ng-change="orderModel.setFreeItem($index)">
+      <input type="checkbox"
+             ng-model="item.isFreeItem"
+             ng-change="orderModel.setFreeItem($index)"
+             ng-disabled="orderModel.isReadOnly"
+          >
     </td>
     <td>
-      <button ng-click="orderModel.deleteItem($index)">מחק</button>
+      <button ng-click="orderModel.deleteItem($index)"
+              ng-disabled="orderModel.isReadOnly"
+          >מחק</button>
     </td>
   </tr>
   </tbody>

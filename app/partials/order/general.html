@@ -4,7 +4,9 @@
     <td>
       <input type="text" ng-model="orderModel.order.attributes.template"
              ng-model-options="{updateOn: 'blur'}"
-             ng-change="orderModel.orderChanged('template')">
+             ng-change="orderModel.orderChanged('template')"
+             ng-disabled="orderModel.isReadOnly">
+
     </td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.deliveryLocation?'myChanged':null">
@@ -12,7 +14,9 @@
     <td>
       <textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"
                 ng-model-options="{updateOn: 'blur'}"
-                ng-change="orderModel.orderChanged('deliveryLocation')"></textarea>
+                ng-change="orderModel.orderChanged('deliveryLocation')"
+                ng-disabled="orderModel.isReadOnly"
+          ></textarea>
     </td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.remarks?'myChanged':null">
@@ -20,14 +24,17 @@
     <td>
       <textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"
                 ng-model-options="{updateOn: 'blur'}"
-                ng-change="orderModel.orderChanged('remarks')"></textarea>
+                ng-change="orderModel.orderChanged('remarks')"
+                ng-disabled="orderModel.isReadOnly"
+          ></textarea>
     </td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.includeRemarksInBid?'myChanged':null">
     <td>הכלל הערות בהצעה</td>
     <td>
       <input type="checkbox" ng-model="orderModel.order.attributes.includeRemarksInBid"
-             ng-change="orderModel.orderChanged('includeRemarksInBid')">
+             ng-change="orderModel.orderChanged('includeRemarksInBid')"
+             ng-disabled="orderModel.isReadOnly">
     </td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
@@ -35,7 +42,9 @@
     <td>
       <select ng-model="orderModel.order.view.startBidTextType"
               ng-change="orderModel.orderChanged('startBidTextType')"
-              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
+              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"
+              ng-disabled="orderModel.isReadOnly"
+          ></select>
     </td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.endBidTextType?'myChanged':null">
@@ -43,11 +52,16 @@
     <td>
       <select ng-model="orderModel.order.view.endBidTextType"
               ng-change="orderModel.orderChanged('endBidTextType')"
-              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"></select>
+              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"
+              ng-disabled="orderModel.isReadOnly"
+          ></select>
     </td>
   </tr>
 </table>
-<button ng-click="orderModel.deleteOrder()" ng-show="orderModel.order.id">מחק הזמנה</button><br/>
+<button ng-click="orderModel.deleteOrder()"
+        ng-show="orderModel.order.id"
+        ng-disabled="orderModel.isReadOnly"
+    >מחק הזמנה</button><br/>
   <!--<a ui-sref="bid({id:orderModel.order.id})" target="_blank"><button>הצעת מחיר</button></a> -->
   <!--<a ng-href="index.html#/bid/{{orderModel.order.id}}" target="_blank"><button>הצעת מחיר</button></a> -->
 

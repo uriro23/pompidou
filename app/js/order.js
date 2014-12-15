@@ -6,6 +6,9 @@ angular.module('myApp')
                                     currentOrder, bids, utils, lov, today, customers, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
+    this.setReadOnly = function() {
+      this.isReadOnly = this.order.attributes.eventDate < today;
+    };
 
     this.calcTotal = function () {
       var thisOrder = this.order.attributes;
@@ -58,6 +61,7 @@ angular.module('myApp')
       var thisOrder = this.order.attributes;
       this.orderChanged('header');
       this.order.view.errors.eventDate = thisOrder.eventDate < today;  // past dates not allowed
+      this.setReadOnly();
     };
 
     this.setNoOfParticipants = function () {
@@ -505,9 +509,10 @@ angular.module('myApp')
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       this.setupOrderView();
+      this.setReadOnly();
 
       // handle change of vat rate
-      if (this.order.attributes.vatRate != this.vatRate) {
+      if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
         var vatChangeModal = $modal.open({
           templateUrl: 'partials/order/vatChange.html',
           controller: 'VatChangeCtrl as vatChangeModel',
@@ -567,6 +572,7 @@ angular.module('myApp')
       this.order.attributes.transportation = 0;
       this.order.attributes.transportationBonus = 0;
       this.order.attributes.activities = [];
+      this.setReadOnly();
     }
     this.calcSubTotal();
 

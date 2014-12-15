@@ -9,7 +9,9 @@
     <td>
       <input type="text" ng-model="orderModel.activityText"
              ng-model-options="{updateOn: 'blur'}"
-             ng-change="orderModel.addActivity()">
+             ng-change="orderModel.addActivity()"
+             ng-disabled="orderModel.isReadOnly"
+          >
     </td>
     <td></td>
   </tr>
@@ -17,7 +19,9 @@
     <td>{{activity.date | date: 'dd/MM/yyyy HH:mm'}}</td>
     <td>{{activity.text}}</td>
     <td>
-      <button ng-click="orderModel.delActivity($index)">מחק</button>
+      <button ng-click="orderModel.delActivity($index)"
+              ng-disabled="orderModel.isReadOnly"
+          >מחק</button>
     </td>
   </tr>
 </table>

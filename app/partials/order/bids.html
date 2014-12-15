@@ -1,6 +1,12 @@
 <div ng-hide="orderModel.order.view.isChanged">
-  <input type="text" size=50 ng-model="orderModel.bidDesc">
-  <button ng-click="orderModel.createBid()">צור</button>
+  <input type="text"
+         size=50
+         ng-model="orderModel.bidDesc"
+         ng-disabled="orderModel.isReadOnly"
+      >
+  <button ng-click="orderModel.createBid()"
+          ng-disabled="orderModel.isReadOnly"
+      >צור</button>
 </div>
 <table>
   <thead>
@@ -18,7 +24,9 @@
     <td>{{bid.attributes.desc}}</td>
     <td>{{bid.attributes.order.total | currency}}</td>
     <td>
-      <button ng-click="orderModel.delBid(bid)">מחק</button>
+      <button ng-click="orderModel.delBid(bid)"
+              ng-disabled="orderModel.isReadOnly"
+          >מחק</button>
     </td>
   </tr>
   </tbody>
