@@ -1,7 +1,7 @@
 <h1>
   פומפידו - רשימת יציאה
 </h1>
-<table style="width:50%">
+<table style="width:70%">
   <tbody>
   <tr>
     <td style="width:25%">
@@ -62,18 +62,20 @@
     כתובת:
   </label>
   <span>{{exitListModel.customer.address}}</span>
-</div><div>
+</div>
+<div>
   <label>
     מקום משלוח:
   </label>
   <span>{{exitListModel.order.attributes.deliveryLocation}}</span>
-</div><div>
+</div>
+<div>
   <label>
     הערות:
   </label>
   <span>{{exitListModel.order.attributes.remarks}}</span>
 </div>
-<table style="width:50%">
+<table style="width:70%">
   <tbody>
   <tr>
     <td style="width:33%">
@@ -100,22 +102,24 @@
 <div ng-repeat="category in exitListModel.filteredCategories">
   <label>{{category.label}}</label>
   {{exitListModel.setupCategoryItems(category.tId)}}
-  <table style="width:70%" border="1">
+  <table style="width:70%">
     <tbody>
     <tr ng-repeat="item in exitListModel.categoryItems">
-      <td style="width:60%">{{item.productDescription}}</td>
-      <td style="width:5%">{{item.quantity}}</td>
-      <td style="width:10%">{{item.measurementUnit.label}}</td>
-      <td style="width:25%">
+      <td style="width:85%">
+        &diams;
+        {{item.productDescription}}
         {{exitListModel.setupItemExitList(item.catalogId)}}
         <table>
           <tr ng-repeat="listItem in exitListModel.exitList">
             <td>
+              &spades;
               {{listItem.item}}
             </td>
           </tr>
         </table>
       </td>
+      <td style="vertical-align: top; width: 5%">{{item.quantity}}</td>
+      <td style="vertical-align: top; width: 10%">{{item.measurementUnit.label}}</td>
     </tr>
     </tbody>
   </table>
