@@ -207,7 +207,30 @@ config(function($stateProvider, $urlRouterProvider) {
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }]
-     }
+    }
+  })
+    .state ('exitList', {
+    url: "/exitList/:id",
+    templateUrl: "partials/exitList.html",
+    controller: "ExitListCtrl as exitListModel",
+    resolve: {
+      order: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryOrders ($stateParams.id).then (function (orders) {
+          return orders[0];
+        })
+      }],
+      catalog: ['api', function(api) {
+        return api.queryCatalog(1). then (function(catalog) {
+          return catalog;
+        })
+      }],
+      measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+        return measurementUnitsPromise;
+      }],
+      categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
+      }]
+    }
   })
 });
 

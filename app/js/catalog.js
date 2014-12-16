@@ -64,8 +64,8 @@ angular.module('myApp')
     this.updateExitList = function(ind) {
       var that = this;
       var exitListModal = $modal.open ({
-        templateUrl: 'partials/exitList.html',
-        controller: 'ExitListCtrl as exitListModel',
+        templateUrl: 'partials/catalogExitList.html',
+        controller: 'CatalogExitListCtrl as catalogExitListModel',
         resolve: {
           catalogItem: function() {
             return that.catalog[ind];

@@ -27,7 +27,10 @@ angular.module('myApp')
       }
       thisOrder.rounding = thisOrder.totalBeforeVat - t;
       thisOrder.vat = thisOrder.total - thisOrder.totalBeforeVat;
-    };
+      // the following are for displaying vat in invoice even if non business event
+      thisOrder.totalBeforeVatForInvoice = thisOrder.total / (1 + thisOrder.vatRate);
+      thisOrder.vatForInvoice = thisOrder.totalBeforeVatForInvoice * thisOrder.vatRate;
+     };
 
     this.calcSubTotal = function () {
       var thisOrder = this.order.attributes;

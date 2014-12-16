@@ -1,5 +1,5 @@
 'use strict';
-
+//TODO: calculate totals for invoice
 /* Controllers */
 angular.module('myApp')
   .controller('ConversionCtrl', function($state,

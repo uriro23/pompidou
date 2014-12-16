@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller ('ExitListCtrl', function($modalInstance, catalogItem) {
+  .controller ('CatalogExitListCtrl', function($modalInstance, catalogItem) {
 
 
   this.productDescription = catalogItem.attributes.productDescription;
