@@ -79,3 +79,7 @@ a:link, a:visited  {
 .myChanged {
     background-color: rgba(0,255,0,0.33);
 }
+
+.mySelected {
+    background-color: deepskyblue;
+}

@@ -3,7 +3,6 @@
 /* Controllers */
 angular.module('myApp')
   .controller('ExitListCtrl', function(api, $state, $filter, $rootScope, order, catalog, measurementUnits, categories) {
-    console.log(order);
     this.order = order;
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;

@@ -3,7 +3,6 @@
 /* Controllers */
 angular.module('myApp')
   .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, measurementUnits, categories) {
-    console.log(bid);
     this.bid = bid;
     this.measurementUnits = measurementUnits;
     this.categories = categories;

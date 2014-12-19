@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function(api, $state, $filter, $modal,
-                                    currentOrder, bids, utils, lov, today, customers, eventTypes,
+                                    currentOrder, bids, lov, today, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, vat) {
 
     this.setReadOnly = function() {
@@ -54,8 +54,37 @@ angular.module('myApp')
       };
 
     // order header
-    this.setCustomer = function () {
-      var thisOrder = this.order.attributes;
+    this.setCustomer = function (custType) {  // custType: 1 = primary, 2 = secondary
+      var that = this;
+
+      var selectCustomer = $modal.open({
+      templateUrl: 'partials/order/customer.html',
+      controller: 'CustomerCtrl as customerModel',
+      resolve: {
+        customers: function(api) {
+          return api.queryCustomers()
+            .then (function (custs) {
+              return custs;
+              });
+        },
+        currentCustomer: function (api) {
+          if (that.order.view.customer.id) {
+            return api.queryCustomers(that.order.view.customer.id)// don't use attributes.id. it is initialized only at save order
+              .then (function (cust) {
+                return cust[0];
+              })
+          } else {
+            return {};
+          }
+         }
+      },
+      size: 'lg'
+    });
+
+      selectCustomer.result.then(function (cust) {
+        that.order.view.customer = cust;
+     });
+
       this.orderChanged('customer');
       this.order.view.errors.customer = false;
     };
@@ -166,8 +195,7 @@ angular.module('myApp')
       this.setQuantity = function (ind) {
         var thisOrder = this.order.attributes;
         var thisItem = thisOrder.items[ind];
-        console.log(thisItem);
-        
+
         thisItem.errors.quantity = Number(thisItem.quantity) != thisItem.quantity || Number(thisItem.quantity) < 0;
           thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
           thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
@@ -447,11 +475,11 @@ angular.module('myApp')
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder') {
         var that = this;
-        var tempCustomer = customers.filter(function (cust) {
-          return cust.id === that.order.attributes.customer;
-        })[0];
-        this.order.view.customer = tempCustomer.attributes;
-        this.order.view.customer.id = tempCustomer.id;
+        api.queryCustomers(that.order.attributes.customer)
+          .then (function (custs) {
+          that.order.view.customer = custs[0].attributes;
+          that.order.view.customer.id = custs[0].id;
+          });
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -477,10 +505,8 @@ angular.module('myApp')
     };
 
     this.cancel = function () {
-      console.log(this.order.attributes.items);
       this.order.attributes = this.backupOrderAttr;
       this.setupOrderView();
-      console.log(this.order.attributes.items);
     };
 
 
@@ -498,12 +524,6 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
     this.vatRate = vat[0].vatRate;
-    this.customers = customers;
-    this.customerList = customers.map (function (cust) {
-      var custDetail = cust.attributes;
-      custDetail.id = cust.id;
-      return custDetail;
-    });
     this.isAddItem = false;
     this.filterText='';
     this.activityDate = new Date();

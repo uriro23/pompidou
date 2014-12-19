@@ -342,7 +342,6 @@ angular.module('myApp')
               newActivity.date = new Date(activities[l].attributes.ActivityTime);
               newActivity.text = activities[l].attributes.ActivityText;
               order.attributes.activities.push(newActivity);
-              console.log(newActivity);
               that.activityCount++;
             }
             api.saveObj(order)

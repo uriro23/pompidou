@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CustomerCtrl', function($state, api, currentCustomer) {
+  .controller('OldCustomerCtrl', function($state, api, currentCustomer) {
 
 // test if existing customer or new one
     if (currentCustomer) {

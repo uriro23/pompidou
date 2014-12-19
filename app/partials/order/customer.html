@@ -1,0 +1,106 @@
+<div class="modal-header">
+  <h3 class="modal-title">
+    בחירת לקוח
+  </h3>
+</div>
+<div class="modal-body">
+  <div>
+    <label>
+      סינון:
+    </label>
+    <input type="text"
+           ng-model="customerModel.filterText"
+           ng-change="customerModel.filterList()">
+  </div>
+  <table style="width:100%">
+    <thead>
+    <th>
+      <label>
+        שם פרטי
+      </label>
+    </th>
+    <th>
+    <label>
+        שם משפחה
+      </label>
+    </th>
+    <th>
+     <label>
+        טל' נייד
+      </label>
+    </th>
+    <th>
+      <label>
+        טל' בית
+      </label>
+    </th>
+    <th>
+      <label>
+        טל' עבודה
+      </label>
+    </th>
+    <th>
+      <label>
+        דוא"ל
+      </label>
+    </th>
+    <th>
+      <label>
+        כתובת
+      </label>
+    </th>
+    </thead>
+    <tbody>
+    <tr ng-class="customerModel.isCustomerChanged?'myChanged':null">
+      <td>
+        <input type="text" size=3 ng-model="customerModel.currentCustomer.attributes.firstName"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+     <td>
+        <input type="text" size=4 ng-model="customerModel.currentCustomer.attributes.lastName"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+      <td>
+        <input type="text" size=7 ng-model="customerModel.currentCustomer.attributes.mobilePhone"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+      <td>
+        <input type="text" size=7 ng-model="customerModel.currentCustomer.attributes.homePhone"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+      <td>
+        <input type="text" size=7 ng-model="customerModel.currentCustomer.attributes.workPhone"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+      <td>
+        <input type="email" size=20 ng-model="customerModel.currentCustomer.attributes.email"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+      <td>
+        <input type="text" size=20 ng-model="customerModel.currentCustomer.attributes.address"
+               ng-change="customerModel.customerChanged()"
+               ng-model-options="{updateOn: 'blur'}">
+      </td>
+    </tr>
+    <tr ng-repeat="customer in customerModel.filteredCustomers track by customer.id"
+        ng-class="customer.isSelected?'mySelected':null">
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.firstName}}</td>
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.lastName}}</td>
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.mobilePhone}}</td>
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.homePhone}}</td>
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.workPhone}}</td>
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.email}}</td>
+      <td ng-click="customerModel.selectLine($index)">{{customer.attributes.address}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="customerModel.doSelect()">כן</button>
+</div>

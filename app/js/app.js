@@ -39,12 +39,7 @@ config(function($stateProvider, $urlRouterProvider) {
         bids: [function () {
           return null;
         }],
-        customers: ['api', function (api) {
-          return api.queryCustomers().then(function (objs) {
-            return objs;
-          })
-        }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
@@ -79,11 +74,6 @@ config(function($stateProvider, $urlRouterProvider) {
             return bids;
           })
         }],
-        customers: ['api', function (api) {
-          return api.queryCustomers().then(function (objs) {
-            return objs;
-          })
-        }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
@@ -111,8 +101,8 @@ config(function($stateProvider, $urlRouterProvider) {
     })
     .state('newCustomer', {
       url: "/newCustomerView",
-      templateUrl: "partials/customer.html",
-      controller: 'CustomerCtrl as customerModel',
+      templateUrl: "../partials/oldCustomer.html",
+      controller: 'OldCustomerCtrl as oldCustomerModel',
       resolve: {
         currentCustomer: [function () {
           return null;
@@ -121,7 +111,7 @@ config(function($stateProvider, $urlRouterProvider) {
     })
     .state('editCustomer', {
       url: "/editCustomerView/:id",
-      templateUrl: "partials/customer.html",
+      templateUrl: "../partials/oldCustomer.html",
       controller: 'CustomerCtrl as customerModel',
       resolve: {
         currentCustomer: ['$stateParams', 'api', function ($stateParams, api) {
