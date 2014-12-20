@@ -67,15 +67,8 @@ angular.module('myApp')
               return custs;
               });
         },
-        currentCustomer: function (api) {
-          if (that.order.view.customer.id) {
-            return api.queryCustomers(that.order.view.customer.id)// don't use attributes.id. it is initialized only at save order
-              .then (function (cust) {
-                return cust[0];
-              })
-          } else {
-            return {};
-          }
+        currentCustomerId: function (api) {
+          return that.order.view.customer.id;
          }
       },
       size: 'lg'
@@ -83,10 +76,10 @@ angular.module('myApp')
 
       selectCustomer.result.then(function (cust) {
         that.order.view.customer = cust;
+        that.orderChanged('customer');
+        that.order.view.errors.customer = false;
      });
 
-      this.orderChanged('customer');
-      this.order.view.errors.customer = false;
     };
 
     this.setEventDate = function () {

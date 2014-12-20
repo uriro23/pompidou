@@ -31,7 +31,7 @@ angular.module('myApp')
   })
 
 
-  .controller('CustomerCtrl', function($modalInstance, customers, currentCustomer) {
+  .controller('CustomerCtrl', function($modalInstance, api, customers, currentCustomerId) {
 
     this.filterList = function () {
       var that = this;
@@ -49,12 +49,18 @@ angular.module('myApp')
     this.selectLine = function (ind) {
       var that = this;
       if (this.filteredCustomers[ind].isSelected) { // if current line is selected, just turn it off
+        if (this.isCustomerChanged) {
+          this.filteredCustomers[ind] = this.backupCustomer;   // undo changes
+        }
         this.filteredCustomers[ind].isSelected = false;
         this.currentCustomer = {};
       } else {
         if (this.currentCustomer) { // turn off previously selected item
           var temp = this.filteredCustomers.filter (function (cust,ind) {
             if (cust.id===that.currentCustomer.id) {
+              if (that.isCustomerChanged) {
+                that.filteredCustomers[ind] = that.backupCustomer;   // undo changes
+              }
               that.filteredCustomers[ind].isSelected = false;
               return true;
             }
@@ -62,11 +68,22 @@ angular.module('myApp')
         }
         this.filteredCustomers[ind].isSelected = true; // select current line
         this.currentCustomer = this.filteredCustomers[ind];
+        this.backupCustomer = angular.copy(this.currentCustomer);
       }
+      this.isCustomerChanged = false;
     };
 
     this.customerChanged = function () {
       this.isCustomerChanged = true;
+    };
+
+    this.updateCustomer = function () {
+      var that = this;
+      return api.saveObj(this.currentCustomer)
+        .then (function () {
+          that.isCustomerChanged = false;
+        })
+
     };
 
     this.doSelect = function() {
@@ -86,18 +103,15 @@ angular.module('myApp')
       c.isSelected = false;
       return c;
     });
-
-    this.currentCustomer = currentCustomer;
-    console.log(this.currentCustomer);
     // mark current customer's line as selected
     var that = this;
-    var temp = this.customers.filter (function (cust,ind) {
-      if (cust.id===currentCustomer.id) {
-        console.log('found cust '+cust.attributes.firstName);
+    this.currentCustomer = this.customers.filter (function (cust,ind) {
+      if (cust.id===currentCustomerId) {
         that.customers[ind].isSelected = true;
         return true;
       }
-    });
+    })[0];
+    this.backupCustomer = angular.copy(this.currentCustomer); // do undo changes on change focus
     this.isCustomerChanged = false;
     this.filterText = '';
     this.filterList();

@@ -11,6 +11,11 @@
     <input type="text"
            ng-model="customerModel.filterText"
            ng-change="customerModel.filterList()">
+    <button class="btn btn-success"
+            ng-click="customerModel.updateCustomer()"
+            ng-show="customerModel.isCustomerChanged">
+      עדכן
+    </button>
   </div>
   <table style="width:100%">
     <thead>
