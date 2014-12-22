@@ -87,7 +87,13 @@ angular.module('myApp')
     };
 
     this.doSelect = function() {
-      $modalInstance.close(this.currentCustomer);
+      var cust = this.currentCustomer.attributes;
+      cust.id = this.currentCustomer.id;
+      $modalInstance.close(cust);
+    };
+
+    this.doCancel = function () {
+      $modalInstance.dismiss();
     };
 
     // make customers array easy for filtering - no undefined fields

@@ -107,5 +107,11 @@
   </table>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="customerModel.doSelect()">כן</button>
+  <button class="btn btn-primary" ng-click="customerModel.doSelect()"
+          ng-enabled="customerModel.currentCustomer.id">
+    בחר
+  </button>
+  <button class="btn btn-warning" ng-click="customerModel.doCancel()">
+    בטל
+  </button>
 </div>

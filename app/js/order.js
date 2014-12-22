@@ -78,7 +78,8 @@ angular.module('myApp')
         that.order.view.customer = cust;
         that.orderChanged('customer');
         that.order.view.errors.customer = false;
-     });
+     }), function () {
+      };
 
     };
 

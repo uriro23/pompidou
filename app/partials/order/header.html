@@ -1,8 +1,14 @@
 <div ng-class="orderModel.order.view.changes.customer?'myChanged':null">
       <label>לקוח</label>
   <span ng-click="orderModel.setCustomer(1)"
-        ng-class="orderModel.order.view.errors.customer?'myError':null">
+        ng-class="orderModel.order.view.errors.customer?'myError':null"
+        ng-show="orderModel.order.view.customer.id">
     {{orderModel.order.view.customer.firstName + ' ' + orderModel.order.view.customer.lastName}}
+  </span>
+  <span ng-click="orderModel.setCustomer(1)"
+        ng-class="orderModel.order.view.errors.customer?'myError':null"
+        ng-hide="orderModel.order.view.customer.id">
+    בחר לקוח
   </span>
       <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span>
       <span>{{orderModel.order.view.customer.mobilePhone}}</span>
