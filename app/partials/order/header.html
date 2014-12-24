@@ -1,24 +1,69 @@
-<div ng-class="orderModel.order.view.changes.customer?'myChanged':null">
-      <label>לקוח</label>
-  <span ng-click="orderModel.setCustomer(1)"
-        ng-class="orderModel.order.view.errors.customer?'myError':null"
-        ng-show="orderModel.order.view.customer.id">
-    {{orderModel.order.view.customer.firstName + ' ' + orderModel.order.view.customer.lastName}}
-  </span>
-  <span ng-click="orderModel.setCustomer(1)"
-        ng-class="orderModel.order.view.errors.customer?'myError':null"
-        ng-hide="orderModel.order.view.customer.id">
-    בחר לקוח
-  </span>
-      <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span>
-      <span>{{orderModel.order.view.customer.mobilePhone}}</span>
-      <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span>
-      <span>{{orderModel.order.view.customer.homePhone}}</span>
-      <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span>
-      <span>{{orderModel.order.view.customer.workPhone}}</span>
-      <span ng-show="orderModel.order.view.customer.email">דואל: </span>
-      <span>{{orderModel.order.view.customer.email}}</span>
-  </div>
+<table>
+  <tbody>
+    <tr ng-class="orderModel.order.view.changes.customer?'myChanged':null">
+      <td><label>לקוח</label></td>
+      <td>
+        <button ng-click="orderModel.setCustomer(1,'בחירת לקוח')"
+                ng-class="orderModel.order.view.errors.customer?'myError':null"
+                ng-show="orderModel.order.view.customer.id">
+          {{orderModel.order.view.customer.firstName + ' ' + orderModel.order.view.customer.lastName}}
+        </button>
+        <button ng-click="orderModel.setCustomer(1,'בחירת לקוח')"
+                ng-class="orderModel.order.view.errors.customer?'myError':null"
+                ng-hide="orderModel.order.view.customer.id">
+          בחר
+        </button>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span>
+        <span>{{orderModel.order.view.customer.mobilePhone}}</span>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span>
+        <span>{{orderModel.order.view.customer.homePhone}}</span>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span>
+        <span>{{orderModel.order.view.customer.workPhone}}</span>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.customer.email">דואל: </span>
+        <span>{{orderModel.order.view.customer.email}}</span>
+      </td>
+    </tr>
+    <tr ng-class="orderModel.order.view.changes.contact?'myChanged':null">
+      <td><label>איש קשר</label></td>
+      <td>
+        <button ng-click="orderModel.setCustomer(2,'בחירת איש קשר')"
+                ng-class="orderModel.order.view.errors.contact?'myError':null"
+                ng-show="orderModel.order.view.contact.id">
+          {{orderModel.order.view.contact.firstName + ' ' + orderModel.order.view.contact.lastName}}
+        </button>
+        <button ng-click="orderModel.setCustomer(2,'בחירת איש קשר')"
+                ng-class="orderModel.order.view.errors.contact?'myError':null"
+                ng-hide="orderModel.order.view.contact.id">
+          בחר
+        </button>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.contact.mobilePhone">טל' נייד: </span>
+        <span>{{orderModel.order.view.contact.mobilePhone}}</span>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.contact.homePhone">טל' בית: </span>
+        <span>{{orderModel.order.view.contact.homePhone}}</span>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.contact.workPhone">טל עבודה: </span>
+        <span>{{orderModel.order.view.contact.workPhone}}</span>
+      </td>
+      <td>
+        <span ng-show="orderModel.order.view.contact.email">דואל: </span>
+        <span>{{orderModel.order.view.contact.email}}</span>
+      </td>
+      </tr>
+    </tbody>
+  </table>
  <div ng-class="orderModel.order.view.changes.header?'myChanged':null">
        <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
                                  ng-change="orderModel.setEventDate()" required

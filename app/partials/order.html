@@ -1,5 +1,5 @@
-    <h1 ng-show="orderModel.isNewOrder">הזמנה חדשה</h1>
-    <h1 ng-hide="orderModel.isNewOrder">הזמנה מס' {{orderModel.order.attributes.number}}</h1>
+    <h2 ng-show="orderModel.isNewOrder">הזמנה חדשה</h2>
+    <h2 ng-hide="orderModel.isNewOrder">הזמנה מס' {{orderModel.order.attributes.number}}</h2>
         <div ng-show="orderModel.order.view.isChanged">
           <span>לשמירת העדכונים הקש על </span>
           <button ng-click="orderModel.saveOrder()"> שמור</button>

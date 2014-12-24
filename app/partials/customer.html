@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h3 class="modal-title">
-    בחירת לקוח
+    {{customerModel.modalHeader}}
   </h3>
 </div>
 <div class="modal-body">
@@ -11,6 +11,10 @@
     <input type="text"
            ng-model="customerModel.filterText"
            ng-change="customerModel.filterList()">
+    <button class="btn btn-success"
+            ng-click="customerModel.newCustomer()">
+      חדש
+    </button>
     <button class="btn btn-success"
             ng-click="customerModel.updateCustomer()"
             ng-show="customerModel.isCustomerChanged">
@@ -60,36 +64,43 @@
       <td>
         <input type="text" size=3 ng-model="customerModel.currentCustomer.attributes.firstName"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
      <td>
         <input type="text" size=4 ng-model="customerModel.currentCustomer.attributes.lastName"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
       <td>
         <input type="text" size=7 ng-model="customerModel.currentCustomer.attributes.mobilePhone"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
       <td>
         <input type="text" size=7 ng-model="customerModel.currentCustomer.attributes.homePhone"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
       <td>
         <input type="text" size=7 ng-model="customerModel.currentCustomer.attributes.workPhone"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
       <td>
         <input type="email" size=20 ng-model="customerModel.currentCustomer.attributes.email"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
       <td>
         <input type="text" size=20 ng-model="customerModel.currentCustomer.attributes.address"
                ng-change="customerModel.customerChanged()"
+               ng-disabled="!customerModel.isInputEnabled"
                ng-model-options="{updateOn: 'blur'}">
       </td>
     </tr>

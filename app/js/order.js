@@ -54,11 +54,11 @@ angular.module('myApp')
       };
 
     // order header
-    this.setCustomer = function (custType) {  // custType: 1 = primary, 2 = secondary
+    this.setCustomer = function (custType, custHeader) {  // custType: 1 = primary, 2 = secondary
       var that = this;
 
       var selectCustomer = $modal.open({
-      templateUrl: 'partials/order/customer.html',
+      templateUrl: 'partials/customer.html',
       controller: 'CustomerCtrl as customerModel',
       resolve: {
         customers: function(api) {
@@ -68,16 +68,31 @@ angular.module('myApp')
               });
         },
         currentCustomerId: function (api) {
-          return that.order.view.customer.id;
-         }
+          if (custType===1) {
+            return that.order.view.customer.id;
+          } else {
+            return that.order.view.contact.id;
+          }
+         },
+        modalHeader: function () {
+          return custHeader;
+        }
       },
       size: 'lg'
     });
 
       selectCustomer.result.then(function (cust) {
-        that.order.view.customer = cust;
-        that.orderChanged('customer');
-        that.order.view.errors.customer = false;
+        if (custType===1) {
+          that.order.view.customer = cust;
+          that.orderChanged('customer');
+          that.order.view.errors.customer = false;
+        } else if (custType===2) {
+          that.order.view.contact = cust;
+          that.orderChanged('contact');
+          that.order.view.errors.contact = false;
+        } else {
+          alert('error - bad customer type: '+ custType);
+        }
      }), function () {
       };
 
@@ -402,6 +417,7 @@ angular.module('myApp')
           thisOrder.discountCause = this.order.view.discountCause.tId;
         }
         thisOrder.customer = this.order.view.customer.id;
+        thisOrder.contact = this.order.view.contact.id;
         thisOrder.orderStatus = this.order.view.orderStatus.id;
 
         // wipe errors and changes indication from items
@@ -474,6 +490,13 @@ angular.module('myApp')
           that.order.view.customer = custs[0].attributes;
           that.order.view.customer.id = custs[0].id;
           });
+        if (that.order.attributes.contact) {
+          api.queryCustomers(that.order.attributes.contact)
+            .then (function (custs) {
+            that.order.view.contact = custs[0].attributes;
+            that.order.view.contact.id = custs[0].id;
+          });
+        }
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -491,6 +514,7 @@ angular.module('myApp')
         })[0];
       } else {
         this.order.view.customer = {};
+        this.order.view.contact = {};
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
         this.order.view.discountCause = this.discountCauses[0]; // set to "no"
         this.order.view.errors.customer = true; // empty customer is error

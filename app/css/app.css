@@ -11,10 +11,6 @@ h1.content{
 th {
     text-align: center;
 }
-.menu {
-  list-style: none;
-  width: 960px;
-}
 
 input {
     border-radius: 0.5em;
@@ -34,43 +30,39 @@ tr {
 tr:hover {
    /* background-color: yellow; */
 }
-/**this came with the app - might have a reson??? 
-.menu:before {
-  content: "[";
-}
 
-.menu:after {
-  content: "]";
-}
-*/
 a:link, a:visited  {
   text-decoration:none;
 }
-.menu > li {
-  text-align: center;
-  display: block;
-  float: right;
-  border: 0.1em black solid;
-  padding: 0.5em;
-  margin: 0.5em;
-  border-radius: 1em;
-  background-color: yellow;
-  width: 7em;  
+.menu {
+    list-style: none;
+    border-bottom: 0.1em solid black;
+    margin-bottom: 2em;
+    padding: 0 0 0.5em;
 }
 
-.menu > li:hover{
-    background-color: wheat;
+.menu:before {
+    content: "[";
 }
-/**this came with the app - might have a reson??? 
+
+.menu:after {
+    content: "]";
+}
+
+.menu > li {
+    display: inline;
+}
+
 .menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
+    content: "|";
+    padding-right: 0.3em;
 }
+
 .menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
+    content: "";
+    padding: 0;
 }
-*/
+
 
 .myError {
     background-color: rgba(255, 32, 17, 0.33);

@@ -1,10 +1,13 @@
 <h1>רשימת הזמנות</h1>
     <label>עתידיות</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
-    <label>ללקוח</label><select ng-model="orderListModel.filterByCustomer"
-                               ng-options="customer.firstName+' '+customer.lastName for customer in orderListModel.customerList"
-                               ng-change="orderListModel.filterOrders()">
-                           <option value="">בחר לקוח</option>
-                         </select>
+    <button ng-click="orderListModel.setCustomerFilter()"
+            ng-show="orderListModel.filterByCustomer.id">
+      {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
+    </button>
+    <button ng-click="orderListModel.setCustomerFilter()"
+            ng-hide="orderListModel.filterByCustomer.id">
+      סינון לפי לקוח
+    </button>
     <label>תבניות</label><input type="checkbox" ng-model="orderListModel.isFilterTemplates" ng-change="orderListModel.filterOrders()"><br/>
 
     <table border="0">

@@ -94,33 +94,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-    .state('customerList', {
-      url: "/customerListView",
-      templateUrl: "partials/customerList.html",
-      controller: 'CustomerListCtrl as customerListModel'
-    })
-    .state('newCustomer', {
-      url: "/newCustomerView",
-      templateUrl: "../partials/oldCustomer.html",
-      controller: 'OldCustomerCtrl as oldCustomerModel',
-      resolve: {
-        currentCustomer: [function () {
-          return null;
-        }]
-      }
-    })
-    .state('editCustomer', {
-      url: "/editCustomerView/:id",
-      templateUrl: "../partials/oldCustomer.html",
-      controller: 'CustomerCtrl as customerModel',
-      resolve: {
-        currentCustomer: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCustomers($stateParams.id).then(function (objs) {
-            return objs[0];
-          });
-        }]
-      }
-    })
     .state('catalog', {
       url: "/catalog",
       templateUrl: "partials/catalog.html",
