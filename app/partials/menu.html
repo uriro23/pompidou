@@ -1,0 +1,14 @@
+<h1>
+  תפריט
+</h1>
+<div>
+  {{menuModel.order.attributes.eventDate | date: 'dd/MM/yyyy'}}
+</div>
+<div ng-repeat="category in menuModel.filteredCategories">
+  <label>{{category.label}}</label>
+  {{menuModel.setupCategoryItems(category.tId)}}
+    <ul ng-repeat="item in menuModel.categoryItems">
+      <li>{{item.productDescription}}</li>
+    </ul>
+</div>
+

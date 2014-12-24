@@ -195,5 +195,25 @@ config(function($stateProvider, $urlRouterProvider) {
       }]
     }
   })
+    .state ('menu', {
+    url: "/menu/:id",
+    templateUrl: "partials/menu.html",
+    controller: "MenuCtrl as menuModel",
+    resolve: {
+      order: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryOrders ($stateParams.id).then (function (orders) {
+          return orders[0];
+        })
+      }],
+      catalog: ['api', function(api) {
+        return api.queryCatalog(1). then (function(catalog) {
+          return catalog;
+        })
+      }],
+      categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
+      }]
+    }
+  })
 });
 

@@ -490,12 +490,14 @@ angular.module('myApp')
           that.order.view.customer = custs[0].attributes;
           that.order.view.customer.id = custs[0].id;
           });
-        if (that.order.attributes.contact) {
+        if (that.order.attributes.contact.id) {
           api.queryCustomers(that.order.attributes.contact)
             .then (function (custs) {
             that.order.view.contact = custs[0].attributes;
             that.order.view.contact.id = custs[0].id;
           });
+        } else {
+          that.order.view.contact = {};
         }
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);

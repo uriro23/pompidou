@@ -177,6 +177,7 @@ angular.module('myApp')
       that.counter = i+1;
       var order = api.initOrder();
       order.attributes.customer = that.customerIdMap[Number(accessOrders[i].Customer)];
+      order.attributes.contact = {};
       order.attributes.deliveryLocation = accessOrders[i].DeliveryLocation;
       if (accessOrders[i].DiscountCause) {
         order.attributes.discountCause = Number(accessOrders[i].DiscountCause);
