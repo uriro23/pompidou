@@ -20,6 +20,7 @@
   <th>מוצר</th>
   <th>יח' מידה</th>
   <th>כמות</th>
+  <th>קופסאות</th>
   <th>מחיר</th>
   <th>בונוס</th>
   </thead>
@@ -43,6 +44,7 @@
              ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.quantity?'myError':null">
     </td>
+    <td>{{item.boxCount | number: 2}}</td>
     <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
       <input type="text" size="7" money min=0 ng-model="item.price"
              ng-change="orderModel.priceChanged($index)"

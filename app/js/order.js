@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('OrderCtrl', function(api, $state, $filter, $modal,
                                     currentOrder, bids, lov, today, eventTypes,
-                                    bidTextTypes, categories, measurementUnits, discountCauses, vat) {
+                                    bidTextTypes, categories, measurementUnits, discountCauses, config) {
 
     this.setReadOnly = function() {
       this.isReadOnly = this.order.attributes.eventDate < today;
@@ -36,11 +36,15 @@ angular.module('myApp')
       var thisOrder = this.order.attributes;
 
       var t = 0;
+      var b = 0;
       for (i=0;i<thisOrder.items.length;i++) {
         t += thisOrder.items[i].price;
+        b += thisOrder.items[i].boxCount;
       }
       thisOrder.subTotal = t;
       thisOrder.discount = -(t * thisOrder.discountRate / 100);
+      thisOrder.boxEstimate = b;
+      console.log(b);
       this.calcTotal();
     };
 
@@ -176,6 +180,7 @@ angular.module('myApp')
         })[0];
         thisItem.catalogQuantity = catalogEntry.priceQuantity;  // for price computation
         thisItem.quantity = catalogEntry.priceQuantity; // as default quantity
+        thisItem.productionQuantity = catalogEntry.productionQuantity;  // for box count computation
         thisItem.catalogPrice = catalogEntry.price; // for price computation
         thisItem.priceInclVat = catalogEntry.price;  // prices in catalog include vat
         thisItem.priceBeforeVat = catalogEntry.price / (1 + thisOrder.vatRate);
@@ -184,6 +189,15 @@ angular.module('myApp')
         } else {
           thisItem.price = thisItem.priceInclVat;
         }
+        var boxData = catalogEntry.components.filter(function (comp) {
+          return comp.id === config[0].boxItem;
+        });
+        if (boxData.length===0) {
+          thisItem.productionBoxCount = 0;
+        } else {
+          thisItem.productionBoxCount = boxData[0].quantity;
+        }
+        thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
         thisItem.errors = {}; // initialize errors object for new item
         thisItem.isChanged = true;
         this.isAddItem = false;
@@ -213,6 +227,7 @@ angular.module('myApp')
           } else {
             thisItem.price = thisItem.priceInclVat;
           }
+        thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
         this.calcSubTotal();
         this.orderChanged();
         thisItem.isChanged = true;
@@ -490,7 +505,7 @@ angular.module('myApp')
           that.order.view.customer = custs[0].attributes;
           that.order.view.customer.id = custs[0].id;
           });
-        if (that.order.attributes.contact.id) {
+        if (that.order.attributes.contact) {
           api.queryCustomers(that.order.attributes.contact)
             .then (function (custs) {
             that.order.view.contact = custs[0].attributes;
@@ -543,7 +558,7 @@ angular.module('myApp')
     this.currentCategory = this.categories[0]; // default to first category
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
-    this.vatRate = vat[0].vatRate;
+    this.vatRate = config[0].vatRate;
     this.isAddItem = false;
     this.filterText='';
     this.activityDate = new Date();

@@ -45,8 +45,8 @@ config(function($stateProvider, $urlRouterProvider) {
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
         }],
-        vat: ['vatPromise', function (vatPromise) {
-          return vatPromise;
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }],
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
@@ -80,8 +80,8 @@ config(function($stateProvider, $urlRouterProvider) {
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
         }],
-        vat: ['vatPromise', function (vatPromise) {
-          return vatPromise;
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }],
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;

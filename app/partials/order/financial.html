@@ -78,5 +78,9 @@
     <td>למשתתף:</td>
     <td>{{orderModel.order.attributes.total / orderModel.order.attributes.noOfParticipants | currency}}</td>
   </tr>
+  <tr>
+    <td><label>אמדן קופסאות</label></td>
+    <td>{{orderModel.order.attributes.boxEstimate | number: 2}}</td>
+  </tr>
   </tbody>
 </table>

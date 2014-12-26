@@ -236,14 +236,14 @@ angular.module('myApp').
   };
 
 
-  // Vat
-  // ---
+  // config
+  // ------
 
-  var Vat = Parse.Object.extend("Vat");
+  var Config = Parse.Object.extend("Config");
 
-  this.queryVat = function () {
-    var vatQuery = new Parse.Query(Vat);
-    return query(vatQuery);
+  this.queryConfig = function () {
+    var configQuery = new Parse.Query(Config);
+    return query(configQuery);
   };
 
 

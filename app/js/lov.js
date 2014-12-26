@@ -58,8 +58,8 @@ angular.module('myApp')
     });
   })
 
-  .factory('vatPromise', function (api) {
-    return api.queryVat().then(function (res) {
+  .factory('configPromise', function (api) {
+    return api.queryConfig().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
         return o;
