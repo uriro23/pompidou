@@ -94,6 +94,33 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
+    .state('workOrder', {
+      url: "/workOrderView",
+      templateUrl: "partials/workOrder.html",
+      controller: 'WorkOrderCtrl as workOrderModel',
+      resolve: {
+        catalog: ['api', function (api) {
+          return api.queryCatalog().then(function (obj) {
+            return obj;
+          })
+        }],
+        markedOrders: ['api', function (api) {
+          return api.queryOrdersForWorkOrder(1).then(function (obj) {
+            return obj;
+          })
+        }],
+        inWorkOrders: ['api', function (api) {
+          return api.queryOrdersForWorkOrder(2).then(function (obj) {
+            return obj;
+          })
+        }],
+        workOrder: ['api', function (api) {
+          return api.queryWorkOrder().then(function (obj) {
+            return obj;
+          })
+        }]
+      }
+    })
     .state('catalog', {
       url: "/catalog",
       templateUrl: "partials/catalog.html",

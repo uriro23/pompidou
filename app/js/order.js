@@ -44,7 +44,6 @@ angular.module('myApp')
       thisOrder.subTotal = t;
       thisOrder.discount = -(t * thisOrder.discountRate / 100);
       thisOrder.boxEstimate = b;
-      console.log(b);
       this.calcTotal();
     };
 
@@ -502,12 +501,22 @@ angular.module('myApp')
         var that = this;
         api.queryCustomers(that.order.attributes.customer)
           .then (function (custs) {
+          if (!custs.length) {
+            alert('customer not found');
+            console.log('customer not found');
+            console.log(that.order.attributes.customer);
+          }
           that.order.view.customer = custs[0].attributes;
           that.order.view.customer.id = custs[0].id;
           });
         if (that.order.attributes.contact) {
           api.queryCustomers(that.order.attributes.contact)
             .then (function (custs) {
+            if (!custs.length) {
+              alert('contact not found');
+              console.log('contact not found');
+              console.log(that.order.attributes.contact);
+            }
             that.order.view.contact = custs[0].attributes;
             that.order.view.contact.id = custs[0].id;
           });

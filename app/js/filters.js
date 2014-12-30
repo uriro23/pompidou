@@ -7,4 +7,9 @@ angular.module('myApp').
     return function(text) {
       return String(text).replace(/\%VERSION\%/mg, version);
     }
-  }]);
+  }])
+.filter('checkMark', function() {
+  return function(input) {
+    return input ? '\u2713' : ' ';
+  };
+});

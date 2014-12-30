@@ -61,6 +61,9 @@ angular.module('myApp')
     };
 
 
+    this.setWorkOrder = function (order) {
+      api.saveObj(order);
+    };
 
 //  enrich order with info on customers etc.
     for (var i=0;i<allOrders.length;i++) {
@@ -74,6 +77,7 @@ angular.module('myApp')
       allOrders[i].view.orderStatus = lov.orderStatuses.filter (function (stat) {
         return stat.id === allOrders[i].attributes.orderStatus;
       })[0];
+      allOrders[i].view.isReadOnly = allOrders[i].attributes.eventDate < today;
     }
     this.filterOrders();
 

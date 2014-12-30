@@ -74,22 +74,19 @@ angular.module('myApp')
         id: 1,
         label: 'מוצרים',
         single: 'מוצר',
-        forWorkItem: 'מנות',
-        _noClone: true
+        forWorkItem: 'מנות'
       },
       {
         id: 2,
         label: 'מרכיבים',
         single: 'מרכיב',
-        forWorkItem: 'הכנות',
-        _noClone: true
+        forWorkItem: 'הכנות'
       },
       {
         id: 3,
         label: 'חומרים',
         single: 'חומר',
-        forWorkItem: 'קניות',
-        _noClone: true
+        forWorkItem: 'קניות'
       }
     ],
     orderStatuses: [

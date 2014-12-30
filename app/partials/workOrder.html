@@ -1,0 +1,92 @@
+<h1>
+  פקודת עבודה
+</h1>
+<tabset>
+  <tab heading="מנות">
+    <button class="btn btn-success"
+            ng-click="workOrderModel.createWorkOrderDomain(1)">
+      חשב מחדש
+    </button>
+    <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
+      <label>{{cat.category.label}}</label>
+      <table style="width:40%">
+        <tbody>
+        <tr ng-repeat="woItem in cat.list">
+          <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
+          <td>
+            <input type="number" size="2" max=1000 min=1
+                   ng-model="woItem.attributes.quantity"
+                   ng-model-options="{updateOn: 'blur'}"
+                   ng-change="workOrderModel.setQuantity(woItem)">
+          </td>
+          <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
+          <td>
+            <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
+                    class="btn btn-warning">
+              מחק
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      </div>
+    </tab>
+  <tab heading="הכנות">
+    <button class="btn btn-success"
+            ng-click="workOrderModel.createWorkOrderDomain(2)">
+      חשב מחדש
+    </button>
+    <div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
+      <label>{{cat.category.label}}</label>
+      <table style="width:40%">
+        <tbody>
+        <tr ng-repeat="woItem in cat.list">
+          <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
+          <td>
+            <input type="number" size="2" max=1000 min=1
+                   ng-model="woItem.attributes.quantity"
+                   ng-model-options="{updateOn: 'blur'}"
+                   ng-change="workOrderModel.setQuantity(woItem)">
+          </td>
+          <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
+          <td>
+            <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
+                    class="btn btn-warning">
+              מחק
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </tab>
+  <tab heading="קניות">
+    <button class="btn btn-success"
+            ng-click="workOrderModel.createWorkOrderDomain(3)">
+      חשב מחדש
+    </button>
+    <div ng-repeat="cat in workOrderModel.workOrderByCategory[3]">
+      <label>{{cat.category.label}}</label>
+      <table style="width:40%">
+        <tbody>
+        <tr ng-repeat="woItem in cat.list">
+          <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
+          <td>
+            <input type="number" size="2" max=1000 min=1
+                   ng-model="woItem.attributes.quantity"
+                   ng-model-options="{updateOn: 'blur'}"
+                   ng-change="workOrderModel.setQuantity(woItem)">
+          </td>
+          <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
+          <td>
+            <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
+                    class="btn btn-warning">
+              מחק
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </tab>
+  </tabset>

@@ -74,17 +74,27 @@ angular.module('myApp').
   var Order = Parse.Object.extend("Order");
 
   this.initOrder = function () {
-    var order = new Order();
-    return order;
-  }
+    return new Order();
+  };
 
-   this.queryOrders = function (id) {
-     var orderQuery = new Parse.Query(Order);
-     if (id) {
-       orderQuery.equalTo('objectId',id);
-     }
-     orderQuery.limit(1000);
-     return query(orderQuery);
+  this.queryOrders = function (id) {
+    var orderQuery = new Parse.Query(Order);
+    if (id) {
+      orderQuery.equalTo('objectId',id);
+    }
+    orderQuery.limit(1000);
+    return query(orderQuery);
+  };
+
+  this.queryOrdersForWorkOrder = function (typ) {
+    var orderQuery = new Parse.Query(Order);
+    if (typ===1) {
+      orderQuery.equalTo('isMarkedForWorkOrder', true);
+    } else {
+      orderQuery.equalTo('isInWorkOrder', true);
+    }
+    orderQuery.limit(1000);
+    return query(orderQuery);
   };
 
 
@@ -96,7 +106,7 @@ angular.module('myApp').
   this.queryOrderNum = function () {
       var orderNumQuery = new Parse.Query(OrderNum);
       return query(orderNumQuery);
-  }
+  };
 
   // Bid
   // -----
@@ -104,9 +114,8 @@ angular.module('myApp').
   var Bid = Parse.Object.extend("Bid");
 
   this.initBid = function () {
-    var bid = new Bid();
-    return bid;
-  }
+    return new Bid();
+   };
 
   this.queryBidsByOrder = function (orderId) {
     var bidQuery = new Parse.Query(Bid);
@@ -127,9 +136,8 @@ angular.module('myApp').
   var Customer = Parse.Object.extend("Customer");
 
   this.initCustomer = function () {
-    var customer = new Customer();
-    return customer;
-  }
+    return new Customer();
+  };
 
   this.queryCustomers = function (id) {
     var customerQuery = new Parse.Query(Customer);
@@ -141,15 +149,29 @@ angular.module('myApp').
     return query(customerQuery);
   };
 
+  // WorkOrder
+  // ---------
+
+  var WorkOrder = Parse.Object.extend("WorkOrder");
+
+  this.initWorkOrder = function () {
+    return new WorkOrder();
+  };
+
+  this.queryWorkOrder = function () {
+    var workOrderQuery = new Parse.Query(WorkOrder);
+    workOrderQuery.limit(1000);
+    return query(workOrderQuery);
+  };
+
   // Catalog
   // -------
 
   var Catalog = Parse.Object.extend("Catalog");
 
   this.initCatalog = function () {
-    var catalog = new Catalog();
-    return catalog;
-  }
+   return new Catalog();
+  };
 
   this.queryCatalog = function (domain) {
     var catalogQuery = new Parse.Query(Catalog);
