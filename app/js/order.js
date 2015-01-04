@@ -79,6 +79,9 @@ angular.module('myApp')
          },
         modalHeader: function () {
           return custHeader;
+        },
+        isOptionalSelect: function () {
+          return false; // user has to select in modal
         }
       },
       size: 'lg'

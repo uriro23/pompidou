@@ -47,13 +47,16 @@ angular.module('myApp')
           },
           modalHeader: function () {
             return 'בחירת לקוח לסינון';
+          },
+          isOptionalSelect: function () {
+            return true;  // if user returns without selection, filter is cleared
           }
         },
         size: 'lg'
       });
 
       selectCustomer.result.then(function (cust) {
-        that.filterByCustomer = cust;
+        that.filterByCustomer = cust; // if no customer selected, empty object is returned
         that.filterOrders();
       }), function () {
       };

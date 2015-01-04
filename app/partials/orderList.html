@@ -1,15 +1,18 @@
 <h1>רשימת הזמנות</h1>
-    <label>עתידיות</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
-    <button ng-click="orderListModel.setCustomerFilter()"
-            ng-show="orderListModel.filterByCustomer.id">
-      {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
-    </button>
-    <button ng-click="orderListModel.setCustomerFilter()"
-            ng-hide="orderListModel.filterByCustomer.id">
-      סינון לפי לקוח
-    </button>
-    <label>תבניות</label><input type="checkbox" ng-model="orderListModel.isFilterTemplates" ng-change="orderListModel.filterOrders()"><br/>
-
+    <div>
+        <label>עתידיות</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
+        <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
+                ng-show="orderListModel.filterByCustomer.id">
+          {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
+        </button>
+        <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
+                ng-hide="orderListModel.filterByCustomer.id">
+          סינון לפי לקוח
+        </button>
+        <label>תבניות</label>
+        <input type="checkbox" ng-model="orderListModel.isFilterTemplates"
+               ng-change="orderListModel.filterOrders()">
+    </div>
     <table border="0">
       <thead>
       <th>פקודת</th>

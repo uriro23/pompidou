@@ -97,6 +97,13 @@ angular.module('myApp').
     return query(orderQuery);
   };
 
+  this.queryFutureOrders = function (today) {
+    var orderQuery = new Parse.Query(Order);
+    orderQuery.greaterThanOrEqualTo('eventDate',today);
+     orderQuery.limit(1000);
+    return query(orderQuery);
+  };
+
 
   //  OrderNum
   //  --------

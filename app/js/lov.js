@@ -31,16 +31,25 @@ angular.module('myApp')
     });
   })
 
-  .factory('categoriesPromise', function (api) {
-    return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
-      return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+    .factory('categoriesPromise', function (api) {
+      return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
+        return res.map(function (obj) {
+          var o = obj.attributes;
+          return o;
+        });
       });
-    });
-  })
+    })
 
-  .factory('measurementUnitsPromise', function (api) {
+    .factory('allCategoriesPromise', function (api) {
+      return api.queryCategories().then(function (res) { // all domains for work order
+        return res.map(function (obj) {
+          var o = obj.attributes;
+          return o;
+        });
+      });
+    })
+
+    .factory('measurementUnitsPromise', function (api) {
     return api.queryMeasurementUnits().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
@@ -71,9 +80,15 @@ angular.module('myApp')
   {
     domains: [
       {
+        id: 0,
+        label: 'אירועים',
+        single: 'אירוע',
+        forWorkItem: 'אירועים'
+      },
+      {
         id: 1,
-        label: 'מוצרים',
-        single: 'מוצר',
+        label: 'מנות',
+        single: 'מנה',
         forWorkItem: 'מנות'
       },
       {

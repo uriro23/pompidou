@@ -1,9 +1,47 @@
-<h1>
+<h2>
   פקודת עבודה
-</h1>
+</h2>
 <tabset>
+  <tab heading="אירועים">
+    <h3>{{workOrderModel.domains[0].forWorkItem}}</h3>
+    <button class="btn btn-default"
+            ng-click="workOrderModel.createWorkOrderDomain(0)">
+      חשב מחדש
+    </button>
+    <table style="width:40%">
+      <thead>
+      <th>
+        תאריך
+      </th>
+      <th>
+        שעה
+      </th>
+      <th>
+        לקוח
+      </th>
+      <th>
+        משתתפים
+      </th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="woItem in workOrderModel.workOrderByCategory[0][0].list">
+        <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
+        <td>{{woItem.attributes.order.eventTime | date: 'hh:mm'}}</td>
+        <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
+        <td>{{woItem.attributes.order.noOfParticipants}}</td>
+        <td>
+          <button ng-click="workOrderModel.delItem(0,0,$index)"
+                  class="btn btn-warning btn-sm">
+            מחק
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </tab>
   <tab heading="מנות">
-    <button class="btn btn-success"
+    <h3>{{workOrderModel.domains[1].forWorkItem}}</h3>
+    <button class="btn btn-default"
             ng-click="workOrderModel.createWorkOrderDomain(1)">
       חשב מחדש
     </button>
@@ -14,7 +52,7 @@
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
           <td>
-            <input type="number" size="2" max=1000 min=1
+            <input type="text" money size="5"
                    ng-model="woItem.attributes.quantity"
                    ng-model-options="{updateOn: 'blur'}"
                    ng-change="workOrderModel.setQuantity(woItem)">
@@ -22,36 +60,37 @@
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
             <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
-                    class="btn btn-warning">
+                    class="btn btn-warning btn-sm">
               מחק
             </button>
           </td>
         </tr>
         </tbody>
       </table>
-      </div>
-    </tab>
+    </div>
+  </tab>
   <tab heading="הכנות">
-    <button class="btn btn-success"
+    <h3>{{workOrderModel.domains[2].forWorkItem}}</h3>
+    <button class="btn btn-default"
             ng-click="workOrderModel.createWorkOrderDomain(2)">
       חשב מחדש
     </button>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
       <label>{{cat.category.label}}</label>
-      <table style="width:40%">
+      <table style="width:30%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
           <td>
-            <input type="number" size="2" max=1000 min=1
-                   ng-model="woItem.attributes.quantity"
-                   ng-model-options="{updateOn: 'blur'}"
-                   ng-change="workOrderModel.setQuantity(woItem)">
+            <input type="text" money size="5"
+                     ng-model="woItem.attributes.quantity"
+                     ng-model-options="{updateOn: 'blur'}"
+                     ng-change="workOrderModel.setQuantity(woItem)">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
             <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
-                    class="btn btn-warning">
+                    class="btn btn-warning btn-sm">
               מחק
             </button>
           </td>
@@ -61,18 +100,19 @@
     </div>
   </tab>
   <tab heading="קניות">
-    <button class="btn btn-success"
+    <h3>{{workOrderModel.domains[3].forWorkItem}}</h3>
+    <button class="btn btn-default"
             ng-click="workOrderModel.createWorkOrderDomain(3)">
       חשב מחדש
     </button>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[3]">
       <label>{{cat.category.label}}</label>
-      <table style="width:40%">
+      <table style="width:30%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
           <td>
-            <input type="number" size="2" max=1000 min=1
+           <input type="text" money size="5"
                    ng-model="woItem.attributes.quantity"
                    ng-model-options="{updateOn: 'blur'}"
                    ng-change="workOrderModel.setQuantity(woItem)">
@@ -80,7 +120,7 @@
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
             <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
-                    class="btn btn-warning">
+                    class="btn btn-warning btn-sm">
               מחק
             </button>
           </td>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('CustomerCtrl', function($modalInstance, api, customers, currentCustomerId, modalHeader) {
+  .controller('CustomerCtrl', function($modalInstance, api, customers, currentCustomerId, modalHeader, isOptionalSelect) {
 
   this.filterList = function () {
     var that = this;
@@ -45,7 +45,7 @@ angular.module('myApp')
       this.currentCustomer = {};
       this.isInputEnabled = false;
     } else {
-      if (this.currentCustomer) { // turn off previously selected item
+      if (this.currentCustomer.id) { // turn off previously selected item
         var temp = this.filteredCustomers.filter (function (cust,ind) {
           if (cust.id===that.currentCustomer.id) {
             if (that.isCustomerChanged) {
@@ -86,7 +86,7 @@ angular.module('myApp')
 
   this.newCustomer = function () {
     var that = this;
-    if (this.currentCustomer) { // turn off previously selected item
+    if (this.currentCustomer.id) { // turn off previously selected item
       var temp = this.filteredCustomers.filter (function (cust,ind) {
         if (cust.id===that.currentCustomer.id) {
           if (that.isCustomerChanged) {
@@ -111,9 +111,13 @@ angular.module('myApp')
   };
 
   this.doSelect = function() {
-    var cust = this.currentCustomer.attributes;
-    cust.id = this.currentCustomer.id;
-    $modalInstance.close(cust);
+    if (this.currentCustomer.id) {
+      var cust = this.currentCustomer.attributes;
+      cust.id = this.currentCustomer.id;
+      $modalInstance.close(cust);
+    } else if (isOptionalSelect) {
+      $modalInstance.close({}); // if none selected, return empty object (if allowed)
+    }
   };
 
   this.doCancel = function () {
@@ -137,24 +141,25 @@ angular.module('myApp')
   });
   // mark current customer's line as selected
   var that = this;
-  this.currentCustomer = this.customers.filter (function (cust,ind) {
-    if (cust.id===currentCustomerId) {
-      that.customers[ind].isSelected = true;
-      return true;
-    }
-  })[0];
-  this.backupCustomer = angular.copy(this.currentCustomer); // do undo changes on change focus
+      if (currentCustomerId) {
+        this.currentCustomer = this.customers.filter(function (cust, ind) {
+          if (cust.id === currentCustomerId) {
+            that.customers[ind].isSelected = true;
+            return true;
+          }
+        })[0];
+        this.filterText = '$';
+        this.isInputEnabled = true;
+      } else {
+        this.currentCustomer = {};
+        this.filterText = '';
+        this.isInputEnabled = false;
+      }
+  this.backupCustomer = angular.copy(this.currentCustomer); // to undo changes on change focus
   this.isCustomerChanged = false;
   this.isNewCustomer = false;
   this.modalHeader = modalHeader;
 
-  if (currentCustomerId) {    // if customer already selected, show list only of this customer
-    this.filterText = '$';
-    this.isInputEnabled = true;
-  } else {
-    this.filterText = '';
-    this.isInputEnabled = false;
-  }
-  this.sortList();  // also does filter
+   this.sortList();  // also does filter
 
 });

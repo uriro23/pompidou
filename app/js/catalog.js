@@ -224,6 +224,7 @@ angular.module('myApp')
 
     this.isChanged = false;
     this.domains = lov.domains;
+    this.domains.splice(0,1);   // drop "events" domain
     this.currentDomain = lov.domains[0];
     this.measurementUnits = measurementUnits;
     this.setDomain();

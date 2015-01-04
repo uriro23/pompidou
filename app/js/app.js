@@ -104,14 +104,22 @@ config(function($stateProvider, $urlRouterProvider) {
             return obj;
           })
         }],
-        markedOrders: ['api', function (api) {
-          return api.queryOrdersForWorkOrder(1).then(function (obj) {
-            return obj;
+        allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
+          return allCategoriesPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        futureOrders: ['api', 'today', function (api,today) {
+          return api.queryFutureOrders(today)
+              .then(function (obj) {
+                return obj;
           })
         }],
-        inWorkOrders: ['api', function (api) {
-          return api.queryOrdersForWorkOrder(2).then(function (obj) {
-            return obj;
+        customers: ['api', function (api) {
+          return api.queryCustomers()
+              .then(function (objs) {
+                return objs;
           })
         }],
         workOrder: ['api', function (api) {

@@ -2,74 +2,166 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('WorkOrderCtrl', function (api, $state, $filter, $modal,
-                                         lov, catalog, markedOrders, inWorkOrders, workOrder) {
+  .controller('WorkOrderCtrl', function (api, $state, $filter, $modal, $q,
+                                         lov, catalog, allCategories, measurementUnits, today,
+                                         customers, futureOrders, workOrder) {
 
     this.destroyWorkOrder = function (domain,i) { // destroy recursively first item in array
+
+      var promise = $q.defer();
       var that = this;
       if (i>=this.workOrder.length) {
-        return;
+       this.workOrder = this.workOrder.filter(function (wo) {
+          return wo.attributes.domain < domain;
+        });
+        promise.resolve(null);
+        return promise.promise;
       }
       if (this.workOrder[i].attributes.domain<domain) {  // don't destroy items of prior domains
-        that.destroyWorkOrder(domain,i+1);
+        return that.destroyWorkOrder(domain,i+1);
       } else {
-        api.deleteObj(this.workOrder[i])
+        return api.deleteObj(this.workOrder[i])
           .then(function () {
-          that.workOrder.splice(i, 1); // remove item
-          that.destroyWorkOrder(domain,i+1);  // destroy the rest
+             return that.destroyWorkOrder(domain,i+1);  // destroy the rest
         })
       }
     };
 
+      this.createOrders = function () {
+        var that = this;
+        var oneDay = 24*3600*1000;
+        var workOrderTimeSpan = 10;
+        var maxDate = new Date(today);
+        maxDate.setDate(today.getDate()+workOrderTimeSpan);
+        var orders = futureOrders.filter(function (ord) { // include only orders of near future
+          // todo: make workOrderTimeSpan configurable
+          return ord.attributes.eventDate <= maxDate;
+        });
+
+        for (var i=0;i<orders.length;i++) {
+          var workItem = api.initWorkOrder();
+          workItem.attributes.domain = 0;
+          workItem.attributes.category = {tId:0};
+          workItem.attributes.order = orders[i].attributes;
+          workItem.attributes.order.id = orders[i].id;
+          workItem.attributes.customer = customers.filter(function (cust) {
+            return cust.id === orders[i].attributes.customer;
+          })[0].attributes;
+          that.workOrder.push(workItem);
+        }
+      };
+
     this.createOrderItems = function () {
       var workItemInd;
-      for (var i=0;i<this.markedOrders.length;i++) {
-        var items = this.markedOrders[i].attributes.items;
-        for (var j=0;j<items.length;j++) {
-          var item = items[j];
-          var temp = this.workOrder.filter (function (workItem, ind) {
-            if (workItem.attributes.catalogId===item.catalogId) {
-              workItemInd = ind;
-              return true;
+      for (var i=0;i<this.workOrder.length;i++) {
+        if (this.workOrder[i].attributes.domain === 0) {
+          var items = this.workOrder[i].attributes.order.items;
+          for (var j = 0; j < items.length; j++) {
+            var item = items[j];
+            var temp = this.workOrder.filter(function (workItem, ind) {
+              if (workItem.attributes.catalogId === item.catalogId) {
+                workItemInd = ind;
+                return true;
+              }
+            });
+            if (temp.length > 0) {  // item already in list, just add quantity
+              console.log('found existing item');
+              console.log(item);
+              console.log(temp[0]);
+              this.workOrder[workItemInd].attributes.quantity += item.quantity;
+            } else { // create new item
+              console.log('creating new item');
+              console.log(item);
+              var workItem = api.initWorkOrder();
+              workItem.attributes.catalogId = item.catalogId;
+              workItem.attributes.productDescription = catalog.filter(function (cat) {
+                return cat.id === item.catalogId;
+              })[0].attributes.productDescription;
+              workItem.attributes.quantity = item.quantity;
+              workItem.attributes.category = item.category;
+              workItem.attributes.domain = 1;
+              workItem.attributes.measurementUnit = item.measurementUnit;
+              this.workOrder.push(workItem);
             }
-          });
-          if (temp.length>0) {  // item already in list, just add quantity
-            console.log('found existing item');
-            console.log(item);
-            console.log(temp[0]);
-            this.workOrder[workItemInd].attributes.quantity += item.quantity;
-          } else { // create new item
-            console.log('creating new item');
-            console.log(item);
-            var workItem = api.initWorkOrder();
-            workItem.attributes.catalogId = item.catalogId;
-            // TODO: for cleanliness, productDescription should be taken from catalog. it might have been edited in order
-            workItem.attributes.productDescription = item.productDescription;
-            workItem.attributes.quantity = item.quantity;
-            workItem.attributes.productionQuantity = item.productionQuantity;
-            workItem.attributes.category = item.category;
-            workItem.attributes.domain = 1;
-            workItem.attributes.measurementUnit = item.measurementUnit;
-            this.workOrder.push(workItem);
           }
         }
       }
     };
 
     this.createComponents = function (targetDomain) {
+      var workItemInd;
+      var workItem;
+      for (var i=0;i<this.workOrder.length;i++) {
+        var inWorkItem = this.workOrder[i].attributes;
+        if (inWorkItem.domain > 0) {  // skip orders
+          console.log('processing ' + inWorkItem.productDescription);
+          var inCatItem = catalog.filter(function (cat) {
+            return cat.id === inWorkItem.catalogId;
+          })[0].attributes;
+          console.log('components:');
+          console.log(inCatItem.components);
+          for (var j = 0; j < inCatItem.components.length; j++) {
+            var component = inCatItem.components[j];
+            if (component.domain === targetDomain) {
+              console.log('found ingredient ' + component.id);
+              var temp = this.workOrder.filter(function (workItem, ind) {
+                if (workItem.attributes.catalogId === component.id) {
+                  workItemInd = ind;
+                  return true;
+                }
+              });
+              if (temp.length > 0) {  // item already exists, just add quantity
+                workItem = this.workOrder[workItemInd];
+                var oldQuantity = workItem.attributes.quantity;
+                workItem.attributes.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                console.log('found existing item: '
+                + workItem.attributes.productDescription
+                + ', old quantity ' + oldQuantity
+                + ', parent quantity ' + inWorkItem.quantity +
+                ', component quantity ' + component.quantity +
+                ', production quantity ' + inCatItem.productionQuantity
+                + ', quantity now ' + workItem.attributes.quantity);
+              } else {
+                var outCatItem = catalog.filter(function (cat) {
+                  return cat.id === component.id;
+                })[0].attributes;
+                workItem = api.initWorkOrder();
+                workItem.attributes.catalogId = component.id;
+                workItem.attributes.productDescription = outCatItem.productDescription;
+                workItem.attributes.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                workItem.attributes.category = allCategories.filter(function (cat) {
+                  return cat.tId === outCatItem.category;
+                })[0];
+                workItem.attributes.domain = targetDomain;
+                workItem.attributes.measurementUnit = measurementUnits.filter(function (mes) {
+                  return mes.tId === outCatItem.measurementUnit;
+                })[0];
+                this.workOrder.push(workItem);
+                console.log('new item ' + workItem.attributes.productDescription
+                + ', parent quantity ' + inWorkItem.quantity +
+                ', component quantity ' + component.quantity +
+                ', production quantity ' + inCatItem.productionQuantity +
+                ', result quantity ' + workItem.attributes.quantity);
+              }
+            }
+          }
+        }
+      }
 
     };
 
     this.saveWO = function (domain,i) {
 
       var that = this;
+      var promise = $q.defer();
       if (i>=this.workOrder.length) {
-        return;
+        promise.resolve(null);
+        return promise.promise;
       }
       if (this.workOrder[i].attributes.domain !== domain) {
-        that.saveWO(domain,i+1)
+        return that.saveWO(domain,i+1)
       } else {
-        api.saveObj(this.workOrder[i])
+        return api.saveObj(this.workOrder[i])
           .then(function () {
           that.saveWO(domain, i + 1);
         })
@@ -77,13 +169,14 @@ angular.module('myApp')
     };
 
     this.saveWorkOrder = function (domain) {
-      this.saveWO(domain,0);
+      console.log('saving domain '+domain);
+      return this.saveWO(domain,0);
     };
 
     this.splitWorkOrder = function () {
       // split wo by domains and categories
       this.workOrderByCategory = [];
-      for (var d = 1; d < 4; d++) {
+      for (var d = 0; d < 4; d++) {
         this.workOrderByCategory[d] = []; // init array of categories per domain
       }
       for (var i = 0; i < this.workOrder.length; i++) {
@@ -103,7 +196,7 @@ angular.module('myApp')
       }
 
       // sort categories of each domain and items within category
-      for (d = 1; d < 4; d++) {
+      for (d = 0; d < 4; d++) {
         this.workOrderByCategory[d].sort(function (a, b) {
           return a.category.order - b.category.order;
         });
@@ -120,31 +213,22 @@ angular.module('myApp')
     };
 
     this.createWorkOrderDomain = function (targetDomain) {
+      var that = this;
       // destroy existing work order items of target and higher domains
-      this.destroyWorkOrder(targetDomain,0);
-
-      if (targetDomain===1) {
-        this.createOrderItems();
-      } else {
-        this.createComponents(targetDomain);
-      }
-
-      this.saveWorkOrder(targetDomain);
-
-      this.splitWorkOrder();
-
-/*
-      for (var i=0;i<inWorkOrders.length;i++) {
-        inWorkOrders[i].attributes.isInWorkOrder = false;
-        api.saveObj(inWorkOrders[i]);
-      }
-
-      for (var j=0;j<markedOrders.length;j++) {
-        markedOrders[j].attributes.isMarkedForWorkOrder = false;
-        markedOrders[j].attributes.isInWorkOrder = true;
-        api.saveObj(markedOrders[j]);
-      }
-*/
+      this.destroyWorkOrder(targetDomain,0)
+        .then (function () {
+          if (targetDomain===0) {
+            that.createOrders();
+          } else if (targetDomain===1) {
+            that.createOrderItems();
+          } else {
+            that.createComponents(targetDomain);
+          }
+          that.saveWorkOrder(targetDomain)
+            .then(function () {
+                that.splitWorkOrder();
+              });
+      })
     };
 
     this.setQuantity = function (woItem) {
@@ -154,7 +238,10 @@ angular.module('myApp')
     this.delItem = function (dom,cat,item) {
       var that = this;
       api.deleteObj(this.workOrderByCategory[dom][cat].list[item])
-        .then (function () {
+        .then (function (obj) {
+          that.workOrder = that.workOrder.filter(function (wo) {
+            return wo.id !== obj.id;
+          });
          that.workOrderByCategory[dom][cat].list.splice(item,1);
         });
     };
@@ -162,9 +249,9 @@ angular.module('myApp')
     // main block
     this.catalog = catalog;
     this.domains = lov.domains;
-    this.markedOrders = markedOrders;
-    this.inWorkOrders = inWorkOrders;
     this.workOrder = workOrder;
+      console.log('futureOrders:');
+      console.log(futureOrders);
     this.splitWorkOrder();
 
   });
