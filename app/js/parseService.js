@@ -33,6 +33,7 @@ angular.module('myApp').
     return promise.promise;
   };
 
+  // saves an array of objects in parallel
   this.saveObjects = function (objs) {
     var promises = [];
     for (var i=0;i<objs.length;i++) {
@@ -63,6 +64,7 @@ angular.module('myApp').
     return promise.promise;
   };
 
+  // deletes an array of objects in parallel
   this.deleteObjects = function (objs) {
     var promises = [];
     for (var i=0;i<objs.length;i++) {
@@ -99,17 +101,6 @@ angular.module('myApp').
     var orderQuery = new Parse.Query(Order);
     if (id) {
       orderQuery.equalTo('objectId',id);
-    }
-    orderQuery.limit(1000);
-    return query(orderQuery);
-  };
-
-  this.queryOrdersForWorkOrder = function (typ) {
-    var orderQuery = new Parse.Query(Order);
-    if (typ===1) {
-      orderQuery.equalTo('isMarkedForWorkOrder', true);
-    } else {
-      orderQuery.equalTo('isInWorkOrder', true);
     }
     orderQuery.limit(1000);
     return query(orderQuery);
@@ -188,6 +179,22 @@ angular.module('myApp').
     workOrderQuery.limit(1000);
     return query(workOrderQuery);
   };
+
+
+  // WorkOrderDomains
+  // ----------------
+
+  var WorkOrderDomains = Parse.Object.extend("WorkOrderDomains");
+
+  this.initWorkOrderDomains = function () {
+    return new WorkOrderDomains();
+  };
+
+  this.queryWorkOrderDomains = function () {
+    var workOrderDomainsQuery = new Parse.Query(WorkOrderDomains);
+    return query(workOrderDomainsQuery);
+  };
+
 
   // Catalog
   // -------

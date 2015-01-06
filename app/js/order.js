@@ -443,6 +443,17 @@ angular.module('myApp')
           thisOrder.items[i].isChanged = false;
         }
 
+        // sort items by category and productDescription
+        thisOrder.items.sort(function (a,b) {
+          if (a.category.order > b.category.order) {
+            return 1;
+          } else if (a.category.order < b.category.order) {
+            return -1
+          } else if (a.productDescription > b.productDescription) {
+            return 1
+          } else return -1;
+        });
+
           //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
   //  we do this in 4 steps by chaining 'then's
         if ($state.current.name === 'newOrder') {

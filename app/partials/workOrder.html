@@ -43,10 +43,16 @@
       </tbody>
     </table>
   </tab>
+
+
   <tab heading="{{workOrderModel.domains[1].forWorkItem}}" active="workOrderModel.isActiveTab[1]">
     <h3>
       {{workOrderModel.domains[1].forWorkItem}}
+      <span ng-hide="workOrderModel.domainStatuses.attributes.status[1]">
+        --- לא מעודכן ---
+      </span>
     <button class="btn btn-default"
+            ng-show="workOrderModel.domainStatuses.attributes.status[1]"
             ng-click="workOrderModel.createWorkOrderDomain(2)">
       {{'חשב '+workOrderModel.domains[2].forWorkItem}}
     </button>
@@ -60,8 +66,7 @@
           <td>
             <input type="text" money size="5"
                    ng-model="woItem.attributes.quantity"
-                   ng-model-options="{updateOn: 'blur'}"
-                   ng-change="workOrderModel.setQuantity(woItem)">
+                   ng-change="workOrderModel.setQuantity(woItem,1)">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
@@ -75,10 +80,16 @@
       </table>
     </div>
   </tab>
+
+
   <tab heading="{{workOrderModel.domains[2].forWorkItem}}" active="workOrderModel.isActiveTab[2]">
     <h3>
       {{workOrderModel.domains[2].forWorkItem}}
+      <span ng-hide="workOrderModel.domainStatuses.attributes.status[2]">
+        --- לא מעודכן ---
+      </span>
     <button class="btn btn-default"
+            ng-show="workOrderModel.domainStatuses.attributes.status[1]"
             ng-click="workOrderModel.createWorkOrderDomain(3)">
       {{'חשב '+workOrderModel.domains[3].forWorkItem}}
     </button>
@@ -92,8 +103,7 @@
           <td>
             <input type="text" money size="5"
                      ng-model="woItem.attributes.quantity"
-                     ng-model-options="{updateOn: 'blur'}"
-                     ng-change="workOrderModel.setQuantity(woItem)">
+                     ng-change="workOrderModel.setQuantity(woItem,2)">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
@@ -107,8 +117,15 @@
       </table>
     </div>
   </tab>
+
+
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}" active="workOrderModel.isActiveTab[3]">
-    <h3>{{workOrderModel.domains[3].forWorkItem}}</h3>
+    <h3>
+      {{workOrderModel.domains[3].forWorkItem}}
+      <span ng-hide="workOrderModel.domainStatuses.attributes.status[3]">
+        --- לא מעודכן ---
+      </span>
+    </h3>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[3]">
       <label>{{cat.category.label}}</label>
       <table style="width:30%">
@@ -118,8 +135,7 @@
           <td>
            <input type="text" money size="5"
                    ng-model="woItem.attributes.quantity"
-                   ng-model-options="{updateOn: 'blur'}"
-                   ng-change="workOrderModel.setQuantity(woItem)">
+                   ng-change="workOrderModel.setQuantity(woItem,3)">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
