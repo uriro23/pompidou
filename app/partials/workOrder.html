@@ -1,13 +1,15 @@
-<h2>
+<h4>
   פקודת עבודה
-</h2>
+</h4>
 <tabset>
-  <tab heading="אירועים">
-    <h3>{{workOrderModel.domains[0].forWorkItem}}</h3>
+  <tab heading="{{workOrderModel.domains[0].forWorkItem}}" active="workOrderModel.isActiveTab[0]">
+    <h3>
+      {{workOrderModel.domains[0].forWorkItem}}
     <button class="btn btn-default"
-            ng-click="workOrderModel.createWorkOrderDomain(0)">
-      חשב מחדש
+            ng-click="workOrderModel.createWorkOrderDomain(1)">
+      {{'חשב '+workOrderModel.domains[1].forWorkItem}}
     </button>
+    </h3>
     <table style="width:40%">
       <thead>
       <th>
@@ -22,29 +24,33 @@
       <th>
         משתתפים
       </th>
+      <th>
+        פק' עבודה
+      </th>
       </thead>
       <tbody>
-      <tr ng-repeat="woItem in workOrderModel.workOrderByCategory[0][0].list">
+      <tr ng-repeat="woItem in workOrderModel.orderView">
         <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
         <td>{{woItem.attributes.order.eventTime | date: 'hh:mm'}}</td>
         <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
         <td>{{woItem.attributes.order.noOfParticipants}}</td>
         <td>
-          <button ng-click="workOrderModel.delItem(0,0,$index)"
-                  class="btn btn-warning btn-sm">
-            מחק
-          </button>
-        </td>
+          <input type="checkbox"
+                 ng-model="woItem.isInWorkOrder"
+                 ng-change="workOrderModel.setOrderInWorkOrder($index)">
+         </td>
       </tr>
       </tbody>
     </table>
   </tab>
-  <tab heading="מנות">
-    <h3>{{workOrderModel.domains[1].forWorkItem}}</h3>
+  <tab heading="{{workOrderModel.domains[1].forWorkItem}}" active="workOrderModel.isActiveTab[1]">
+    <h3>
+      {{workOrderModel.domains[1].forWorkItem}}
     <button class="btn btn-default"
-            ng-click="workOrderModel.createWorkOrderDomain(1)">
-      חשב מחדש
+            ng-click="workOrderModel.createWorkOrderDomain(2)">
+      {{'חשב '+workOrderModel.domains[2].forWorkItem}}
     </button>
+    </h3>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
       <label>{{cat.category.label}}</label>
       <table style="width:40%">
@@ -69,12 +75,14 @@
       </table>
     </div>
   </tab>
-  <tab heading="הכנות">
-    <h3>{{workOrderModel.domains[2].forWorkItem}}</h3>
+  <tab heading="{{workOrderModel.domains[2].forWorkItem}}" active="workOrderModel.isActiveTab[2]">
+    <h3>
+      {{workOrderModel.domains[2].forWorkItem}}
     <button class="btn btn-default"
-            ng-click="workOrderModel.createWorkOrderDomain(2)">
-      חשב מחדש
+            ng-click="workOrderModel.createWorkOrderDomain(3)">
+      {{'חשב '+workOrderModel.domains[3].forWorkItem}}
     </button>
+    </h3>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
       <label>{{cat.category.label}}</label>
       <table style="width:30%">
@@ -99,12 +107,8 @@
       </table>
     </div>
   </tab>
-  <tab heading="קניות">
+  <tab heading="{{workOrderModel.domains[3].forWorkItem}}" active="workOrderModel.isActiveTab[3]">
     <h3>{{workOrderModel.domains[3].forWorkItem}}</h3>
-    <button class="btn btn-default"
-            ng-click="workOrderModel.createWorkOrderDomain(3)">
-      חשב מחדש
-    </button>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[3]">
       <label>{{cat.category.label}}</label>
       <table style="width:30%">

@@ -27,31 +27,7 @@ angular.module('myApp')
       }
     };
 
-      this.createOrders = function () {
-        var that = this;
-        var oneDay = 24*3600*1000;
-        var workOrderTimeSpan = 10;
-        var maxDate = new Date(today);
-        maxDate.setDate(today.getDate()+workOrderTimeSpan);
-        var orders = futureOrders.filter(function (ord) { // include only orders of near future
-          // todo: make workOrderTimeSpan configurable
-          return ord.attributes.eventDate <= maxDate;
-        });
-
-        for (var i=0;i<orders.length;i++) {
-          var workItem = api.initWorkOrder();
-          workItem.attributes.domain = 0;
-          workItem.attributes.category = {tId:0};
-          workItem.attributes.order = orders[i].attributes;
-          workItem.attributes.order.id = orders[i].id;
-          workItem.attributes.customer = customers.filter(function (cust) {
-            return cust.id === orders[i].attributes.customer;
-          })[0].attributes;
-          that.workOrder.push(workItem);
-        }
-      };
-
-    this.createOrderItems = function () {
+     this.createOrderItems = function () {
       var workItemInd;
       for (var i=0;i<this.workOrder.length;i++) {
         if (this.workOrder[i].attributes.domain === 0) {
@@ -176,27 +152,29 @@ angular.module('myApp')
     this.splitWorkOrder = function () {
       // split wo by domains and categories
       this.workOrderByCategory = [];
-      for (var d = 0; d < 4; d++) {
+      for (var d = 1; d < 4; d++) {
         this.workOrderByCategory[d] = []; // init array of categories per domain
       }
       for (var i = 0; i < this.workOrder.length; i++) {
         var wo = this.workOrder[i].attributes;
-        var catInd;
-        var temp = this.workOrderByCategory[wo.domain].filter(function (c, ind) {
-          if (c.category.tId === wo.category.tId) {
-            catInd = ind;
-            return true;
+        if (wo.domain > 0) {
+          var catInd;
+          var temp = this.workOrderByCategory[wo.domain].filter(function (c, ind) {
+            if (c.category.tId === wo.category.tId) {
+              catInd = ind;
+              return true;
+            }
+          });
+          if (!temp.length) {  // if category appears for 1st time, create it's object
+            this.workOrderByCategory[wo.domain].splice(0, 0, {category: wo.category, list: []});
+            catInd = 0;
           }
-        });
-        if (!temp.length) {  // if category appears for 1st time, create it's object
-          this.workOrderByCategory[wo.domain].splice(0, 0, {category: wo.category, list: []});
-          catInd = 0;
+          this.workOrderByCategory[wo.domain][catInd].list.push(this.workOrder[i]); //add wo item to proper category list
         }
-        this.workOrderByCategory[wo.domain][catInd].list.push(this.workOrder[i]); //add wo item to proper category list
       }
 
       // sort categories of each domain and items within category
-      for (d = 0; d < 4; d++) {
+      for (d = 1; d < 4; d++) {
         this.workOrderByCategory[d].sort(function (a, b) {
           return a.category.order - b.category.order;
         });
@@ -217,9 +195,7 @@ angular.module('myApp')
       // destroy existing work order items of target and higher domains
       this.destroyWorkOrder(targetDomain,0)
         .then (function () {
-          if (targetDomain===0) {
-            that.createOrders();
-          } else if (targetDomain===1) {
+          if (targetDomain===1) {
             that.createOrderItems();
           } else {
             that.createComponents(targetDomain);
@@ -227,10 +203,70 @@ angular.module('myApp')
           that.saveWorkOrder(targetDomain)
             .then(function () {
                 that.splitWorkOrder();
+                for (var d=0;d<4;d++) {
+                  that.isActiveTab[d] = false;
+                  that.isActiveTab[targetDomain] = true;
+                }
               });
       })
     };
 
+      // create a view of orders in WO combined with all future orders
+      this.createOrderView = function () {
+        var that = this;
+        this.orderView = [];
+        for (var i=0;i<this.workOrder.length;i++) {
+          if (this.workOrder[i].attributes.domain === 0) {
+            this.workOrder[i].isInWorkOrder = true;
+            this.orderView.push(this.workOrder[i]);
+          }
+        }
+        for (var j=0;j<futureOrders.length;j++) {
+          var temp = this.workOrder.filter(function (woItem) {  // if order already in WO, skip it
+            return woItem.attributes.domain === 0 && woItem.attributes.order.id === futureOrders[j].id
+         });
+          if (temp.length === 0) {
+            var viewItem = api.initWorkOrder();
+               // create the object for now, but we don't store it until user decides to include it in WO
+            viewItem.attributes.domain = 0;
+            viewItem.attributes.order = futureOrders[j].attributes;
+            viewItem.attributes.order.id = futureOrders[j].id;
+            viewItem.attributes.customer = customers.filter(function (cust) {
+              return cust.id === futureOrders[j].attributes.customer;
+            })[0].attributes;
+            viewItem.isInWorkOrder = false;
+            this.orderView.push(viewItem);
+          }
+        }
+        this.orderView.sort(function (a,b) {
+          return a.attributes.order.eventDate > b.attributes.order.eventDate;
+        })
+      };
+
+      this.setOrderInWorkOrder = function (ind) {
+        var that = this;
+        var indToDelete;
+        if (this.orderView[ind].isInWorkOrder) {
+          this.workOrder.push(this.orderView[ind]);
+          api.saveObj(this.orderView[ind]);
+        } else {
+          var temp = this.workOrder.filter(function (wo, woInd) {
+            if (wo.id === that.orderView[ind].id) {
+              indToDelete = woInd;
+              return true;
+            }
+          });
+          this.workOrder.splice(indToDelete,1);
+          api.deleteObj(this.orderView[ind])
+              .then(function (obj) {
+                  // create new item with same content as deleted one so we can restore it in DB if user changes his mind
+                var newItem = api.initWorkOrder();
+                newItem.attributes = obj.attributes;
+                that.orderView[ind] = newItem;
+              })
+        }
+      };
+      
     this.setQuantity = function (woItem) {
       api.saveObj(woItem);
     };
@@ -250,8 +286,8 @@ angular.module('myApp')
     this.catalog = catalog;
     this.domains = lov.domains;
     this.workOrder = workOrder;
-      console.log('futureOrders:');
-      console.log(futureOrders);
+    this.createOrderView(); // order view is a logical OR of future orders and orders in work order. just for display
+    this.isActiveTab = [true,false,false,false];
     this.splitWorkOrder();
 
   });
