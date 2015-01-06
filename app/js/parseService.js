@@ -33,12 +33,23 @@ angular.module('myApp').
     return promise.promise;
   };
 
+  this.saveObjects = function (objs) {
+    var promises = [];
+    for (var i=0;i<objs.length;i++) {
+      for (var fieldName in objs[i].attributes) {
+        objs[i].set (fieldName, objs[i].attributes[fieldName]);
+      }
+      promises.push(objs[i].save());
+    }
+    return Parse.Promise.when(promises);
+  };
+
 
   this.deleteObj = function (obj) {
     var promise = $q.defer();
     obj.destroy({
       success: function (o) {
-        console.log('object '+ o.id+' deleted')
+        console.log('object '+ o.id+' deleted');
         promise.resolve(o);
         $rootScope.$digest();
       },
@@ -52,6 +63,13 @@ angular.module('myApp').
     return promise.promise;
   };
 
+  this.deleteObjects = function (objs) {
+    var promises = [];
+    for (var i=0;i<objs.length;i++) {
+      promises.push(objs[i].destroy());
+    }
+    return Parse.Promise.when(promises);
+  };
 
   function query(qry) {
     var promise = $q.defer();

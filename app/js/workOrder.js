@@ -6,26 +6,15 @@ angular.module('myApp')
                                          lov, catalog, allCategories, measurementUnits, today,
                                          customers, futureOrders, workOrder) {
 
-    this.destroyWorkOrder = function (domain,i) { // destroy recursively first item in array
-
-      var promise = $q.defer();
+    this.destroyWorkOrderDomains = function (domain) {
       var that = this;
-      if (i>=this.workOrder.length) {
-       this.workOrder = this.workOrder.filter(function (wo) {
-          return wo.attributes.domain < domain;
-        });
-        promise.resolve(null);
-        return promise.promise;
-      }
-      if (this.workOrder[i].attributes.domain<domain) {  // don't destroy items of prior domains
-        return that.destroyWorkOrder(domain,i+1);
-      } else {
-        return api.deleteObj(this.workOrder[i])
-          .then(function () {
-             return that.destroyWorkOrder(domain,i+1);  // destroy the rest
-        })
-      }
+      var promise = $q.defer();
+      var woItemsToDelete = this.workOrder.filter(function (wo) {
+        return wo.attributes.domain >= domain;
+      });
+      return api.deleteObjects(woItemsToDelete);
     };
+
 
      this.createOrderItems = function () {
       var workItemInd;
@@ -146,7 +135,10 @@ angular.module('myApp')
 
     this.saveWorkOrder = function (domain) {
       console.log('saving domain '+domain);
-      return this.saveWO(domain,0);
+      var woItemsToSave = this.workOrder.filter(function (wo) {
+        return wo.attributes.domain === domain;
+      });
+      return api.saveObjects(woItemsToSave);
     };
 
     this.splitWorkOrder = function () {
@@ -193,8 +185,11 @@ angular.module('myApp')
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
       // destroy existing work order items of target and higher domains
-      this.destroyWorkOrder(targetDomain,0)
+      this.destroyWorkOrderDomains(targetDomain)
         .then (function () {
+        that.workOrder = that.workOrder.filter(function (wo) {
+          return wo.attributes.domain < targetDomain;
+        });
           if (targetDomain===1) {
             that.createOrderItems();
           } else {
