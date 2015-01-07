@@ -17,10 +17,12 @@ angular.module('myApp')
 
 
      this.createOrderItems = function () {
-      var workItemInd;
-      for (var i=0;i<this.workOrder.length;i++) {
-        if (this.workOrder[i].attributes.domain === 0) {
-          var items = this.workOrder[i].attributes.order.items;
+       var workItem;
+       var workItemInd;
+       for (var i=0;i<this.workOrder.length;i++) {
+         var inWorkItem = this.workOrder[i].attributes;
+        if (inWorkItem.domain === 0) {
+          var items = inWorkItem.order.items;
           for (var j = 0; j < items.length; j++) {
             var item = items[j];
             var temp = this.workOrder.filter(function (workItem, ind) {
@@ -30,14 +32,20 @@ angular.module('myApp')
               }
             });
             if (temp.length > 0) {  // item already in list, just add quantity
+              workItem = this.workOrder[workItemInd];
               console.log('found existing item');
               console.log(item);
               console.log(temp[0]);
-              this.workOrder[workItemInd].attributes.quantity += item.quantity;
+              workItem.attributes.quantity += item.quantity;
+              workItem.attributes.backTrace.push({
+                id:       this.workOrder[i].id,
+                domain:   0,
+                quantity: item.quantity
+              });
             } else { // create new item
               console.log('creating new item');
               console.log(item);
-              var workItem = api.initWorkOrder();
+              workItem = api.initWorkOrder();
               workItem.attributes.catalogId = item.catalogId;
               workItem.attributes.productDescription = catalog.filter(function (cat) {
                 return cat.id === item.catalogId;
@@ -46,6 +54,11 @@ angular.module('myApp')
               workItem.attributes.category = item.category;
               workItem.attributes.domain = 1;
               workItem.attributes.measurementUnit = item.measurementUnit;
+              workItem.attributes.backTrace = [{
+                id:       this.workOrder[i].id,
+                domain:   0,
+                quantity: item.quantity
+              }];
               this.workOrder.push(workItem);
             }
           }
@@ -59,16 +72,12 @@ angular.module('myApp')
       for (var i=0;i<this.workOrder.length;i++) {
         var inWorkItem = this.workOrder[i].attributes;
         if (inWorkItem.domain > 0) {  // skip orders
-          console.log('processing ' + inWorkItem.productDescription);
           var inCatItem = catalog.filter(function (cat) {
             return cat.id === inWorkItem.catalogId;
           })[0].attributes;
-          console.log('components:');
-          console.log(inCatItem.components);
           for (var j = 0; j < inCatItem.components.length; j++) {
             var component = inCatItem.components[j];
             if (component.domain === targetDomain) {
-              console.log('found ingredient ' + component.id);
               var temp = this.workOrder.filter(function (workItem, ind) {
                 if (workItem.attributes.catalogId === component.id) {
                   workItemInd = ind;
@@ -79,13 +88,11 @@ angular.module('myApp')
                 workItem = this.workOrder[workItemInd];
                 var oldQuantity = workItem.attributes.quantity;
                 workItem.attributes.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                console.log('found existing item: '
-                + workItem.attributes.productDescription
-                + ', old quantity ' + oldQuantity
-                + ', parent quantity ' + inWorkItem.quantity +
-                ', component quantity ' + component.quantity +
-                ', production quantity ' + inCatItem.productionQuantity
-                + ', quantity now ' + workItem.attributes.quantity);
+                workItem.attributes.backTrace.push({
+                  id:       this.workOrder[i].id,
+                  domain:   inWorkItem.domain,
+                  quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                });
               } else {
                 var outCatItem = catalog.filter(function (cat) {
                   return cat.id === component.id;
@@ -101,12 +108,12 @@ angular.module('myApp')
                 workItem.attributes.measurementUnit = measurementUnits.filter(function (mes) {
                   return mes.tId === outCatItem.measurementUnit;
                 })[0];
+                workItem.attributes.backTrace = [{
+                  id:       this.workOrder[i].id,
+                  domain:   inWorkItem.domain,
+                  quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                }];
                 this.workOrder.push(workItem);
-                console.log('new item ' + workItem.attributes.productDescription
-                + ', parent quantity ' + inWorkItem.quantity +
-                ', component quantity ' + component.quantity +
-                ', production quantity ' + inCatItem.productionQuantity +
-                ', result quantity ' + workItem.attributes.quantity);
               }
             }
           }
@@ -278,6 +285,29 @@ angular.module('myApp')
           api.saveObj(that.domainStatuses);
           });
     };
+
+      this.backInfo = function (woItem) {
+        var backTraceModal = $modal.open ({
+          templateUrl: 'partials/workOrderBackTrace.html',
+          controller: 'WorkOrderBackTraceCtrl as workOrderBackTraceModel',
+          resolve: {
+            workOrderItem: function() {
+              return woItem;
+            },
+            workOrder: function () {
+              return that.workOrder;
+            },
+            domains: function () {
+              return lov.domains;
+            }
+          },
+          size: 'lg'
+        });
+
+        backTraceModal.result.then (function () {
+        })
+
+      };
 
     // main block
     var that = this;

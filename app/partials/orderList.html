@@ -15,8 +15,6 @@
     </div>
     <table border="0">
       <thead>
-      <th>פקודת</th>
-      <th>עבודה</th>
       <th>מס'</th>
       <th>תאריך</th>
       <th>שעה</th>
@@ -30,13 +28,6 @@
       </thead>
       <tbody>
       <tr ng-repeat="order in orderListModel.orders">
-        <td>
-          <input type="checkbox"
-                 ng-model="order.attributes.isMarkedForWorkOrder"
-                 ng-change="orderListModel.setWorkOrder(order)"
-                 ng-disabled="order.view.isReadOnly || order.attributes.isInWorkOrder">
-        </td>
-        <td>{{order.attributes.isInWorkOrder | checkMark}}</td>
         <td>{{order.attributes.number}}</td>
         <td>
           <a ui-sref="editOrder({id:order.id})">{{order.attributes.eventDate | date: 'EEEE dd/MM/yyyy'}}</a>

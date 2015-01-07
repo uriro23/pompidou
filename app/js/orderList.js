@@ -64,10 +64,6 @@ angular.module('myApp')
     };
 
 
-    this.setWorkOrder = function (order) {
-      api.saveObj(order);
-    };
-
 //  enrich order with info on customers etc.
     for (var i=0;i<allOrders.length;i++) {
       allOrders[i].view = {};
