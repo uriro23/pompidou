@@ -10,7 +10,7 @@
       {{'חשב '+workOrderModel.domains[1].forWorkItem}}
     </button>
     </h3>
-    <table style="width:40%">
+    <table style="width:50%">
       <thead>
       <th>
         מספר
@@ -33,7 +33,9 @@
       </thead>
       <tbody>
       <tr ng-repeat="woItem in workOrderModel.orderView">
-        <td>{{woItem.attributes.order.number}}</td>
+        <td>
+          <a ui-sref="editOrder({id:woItem.attributes.order.id})">{{woItem.attributes.order.number}}</a>
+        </td>
         <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
         <td>{{woItem.attributes.order.eventTime | date: 'hh:mm'}}</td>
         <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
@@ -63,24 +65,27 @@
     </h3>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
       <label>{{cat.category.label}}</label>
-      <table style="width:40%">
+      <table style="width:70%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
           <td>
             <input type="text" money size="5"
                    ng-model="woItem.attributes.quantity"
-                   ng-change="workOrderModel.setQuantity(woItem,1)">
+                   ng-change="workOrderModel.setQuantity(woItem,1)"
+                   ng-disabled= "!workOrderModel.domainStatuses.attributes.status[1]">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
             <button ng-click="workOrderModel.backInfo(woItem)"
+                    ng-disabled= "!workOrderModel.domainStatuses.attributes.status[1]"
                     class="btn btn-info btn-sm">
               פרטים
             </button>
           </td>
           <td>
             <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
+                    ng-disabled= "!workOrderModel.domainStatuses.attributes.status[1]"
                     class="btn btn-warning btn-sm">
               מחק
             </button>
@@ -99,31 +104,34 @@
         --- לא מעודכן ---
       </span>
     <button class="btn btn-default"
-            ng-show="workOrderModel.domainStatuses.attributes.status[1]"
+            ng-show="workOrderModel.domainStatuses.attributes.status[2]"
             ng-click="workOrderModel.createWorkOrderDomain(3)">
       {{'חשב '+workOrderModel.domains[3].forWorkItem}}
     </button>
     </h3>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
       <label>{{cat.category.label}}</label>
-      <table style="width:30%">
+      <table style="width:50%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
           <td>
             <input type="text" money size="5"
                      ng-model="woItem.attributes.quantity"
+                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
                      ng-change="workOrderModel.setQuantity(woItem,2)">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
             <button ng-click="workOrderModel.backInfo(woItem)"
+                    ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
                     class="btn btn-info btn-sm">
               פרטים
             </button>
           </td>
           <td>
             <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
+                    ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
                     class="btn btn-warning btn-sm">
               מחק
             </button>
@@ -144,24 +152,27 @@
     </h3>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[3]">
       <label>{{cat.category.label}}</label>
-      <table style="width:30%">
+      <table style="width:50%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
           <td>
            <input type="text" money size="5"
                    ng-model="woItem.attributes.quantity"
+                   ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
                    ng-change="workOrderModel.setQuantity(woItem,3)">
           </td>
           <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
           <td>
             <button ng-click="workOrderModel.backInfo(woItem)"
+                    ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
                     class="btn btn-info btn-sm">
               פרטים
             </button>
           </td>
           <td>
             <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
+                    ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
                     class="btn btn-warning btn-sm">
               מחק
             </button>
