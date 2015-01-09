@@ -33,9 +33,6 @@ angular.module('myApp')
             });
             if (temp.length > 0) {  // item already in list, just add quantity
               workItem = this.workOrder[workItemInd];
-              console.log('found existing item');
-              console.log(item);
-              console.log(temp[0]);
               workItem.attributes.quantity += item.quantity;
               workItem.attributes.backTrace.push({
                 id:       this.workOrder[i].id,
@@ -43,8 +40,6 @@ angular.module('myApp')
                 quantity: item.quantity
               });
             } else { // create new item
-              console.log('creating new item');
-              console.log(item);
               workItem = api.initWorkOrder();
               workItem.attributes.catalogId = item.catalogId;
               workItem.attributes.productDescription = catalog.filter(function (cat) {
@@ -123,7 +118,6 @@ angular.module('myApp')
     };
 
     this.saveWorkOrder = function (domain) {
-      console.log('saving domain '+domain);
       var woItemsToSave = this.workOrder.filter(function (wo) {
         return wo.attributes.domain === domain;
       });
@@ -261,7 +255,6 @@ angular.module('myApp')
       };
       
     this.setQuantity = function (woItem,domain) {
-      console.log('hi')
       api.saveObj(woItem)
         .then (function () {
           for (var dd=domain+1;dd<4;dd++) {                     // set all further domains as invalid

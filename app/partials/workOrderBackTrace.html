@@ -11,6 +11,7 @@
 <div class="modal-body">
     <table>
         <thead>
+        <th></th>
         <th>
             סוג
         </th>
@@ -31,8 +32,10 @@
         </th>
         </thead>
         <tbody>
-        <tr ng-repeat="item in workOrderBackTraceModel.backTrace track by item.seq">
-             <td>{{item.domain.label}}</td>
+        <tr ng-repeat="item in workOrderBackTraceModel.backTrace
+                | filter:workOrderBackTraceModel.isShowItem track by item.seq">
+            <td ng-click="workOrderBackTraceModel.setExpand(item)"><b>{{item.expand}}</b></td>
+             <td>{{item.ident+item.domain.label}}</td>
             <td>{{item.attributes.category.label}}</td>
             <td>{{item.attributes.productDescription}}</td>
             <td>{{item.quantity | number:2}}</td>
