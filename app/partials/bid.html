@@ -1,28 +1,47 @@
-<span>{{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}</span><br/>
+<div id="top" style="clear:both; width:60%;">
+    
+    <span id="logo" style="float: left">
+        <img align="left" style="width:30%" src="img/menu_logo.png"/>
+    </span>
+    
+    
+    <span id="contact" style="text-align:right ;color:purple; font: Tahoma ;font-size: 1.5em; ">
+        <span>יובל רוזנן</span><br/>
+        <span>054-75140061</span><br/>
+        <span>yuval@pompidou.co.il</span><br/>
+    </span>
+
+</div>
+
+<br/>
+
+<span style="clear: both">{{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}</span><br/>
 <label>מספרנו: </label><span>{{bidModel.bid.attributes.order.number}}</span><br/>
     <div>
       <span>לכ'</span><br/>
       <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>
     </div>
-    <h1>הצעת מחיר</h1><br/>
+    <h1 align="center" style="font-size:5em; width:60%">הצעת מחיר</h1><br/>
     <ng-include src="bidModel.startBidTextType.url"></ng-include>
-    <div>
-      <label>סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
-      <label>תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
-      <label>שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime | date: 'hh:mm'}}</span>
-      <label>מס' משתתפים: </label><span>{{bidModel.bid.attributes.order.noOfParticipants}}</span>
+    
+    <div  style="width:60%;text-align:justify;">
+      <label style="font-weight: bold">סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
+      <label style="font-weight: bold">תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
+      <label style="font-weight: bold">שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime | date: 'hh:mm'}}</span>
+      <label style="font-weight: bold">מס' משתתפים: </label><span align="left">{{bidModel.bid.attributes.order.noOfParticipants}}</span>
     </div>
+    
     <div>
-      <label>מקום משלוח: </label><span>{{bidModel.bid.attributes.order.deliveryLocation}}</span>
+      <label style="font-weight: bold">מקום משלוח: </label><span>{{bidModel.bid.attributes.order.deliveryLocation}}</span>
     </div>
     <div ng-show="bidModel.bid.attributes.order.includeRemarksInBid">
-      <label>הערות: </label><span>{{bidModel.bid.attributes.order.remarks}}</span>
+      <label style="font-weight: bold">הערות: </label><span>{{bidModel.bid.attributes.order.remarks}}</span>
     </div>
     <div>
-      <label>טלפונים: </label><span>{{bidModel.customer.homePhone+' '+bidModel.customer.mobilePhone+' '+bidModel.customer.workPhone}}</span>
+      <label style="font-weight: bold">טלפונים: </label><span>{{bidModel.customer.homePhone+' '+bidModel.customer.mobilePhone+' '+bidModel.customer.workPhone}}</span>
     </div>
     <div ng-repeat="category in bidModel.filteredCategories">
-      <label>{{category.label}}</label>
+      <label style="font-weight: bold">{{category.label}}</label>
       {{bidModel.setupCategoryItems(category.tId)}}
       <table style="width:60%">
         <tbody>
@@ -52,41 +71,41 @@
     <div>
       <table style="width:60%">
         <tr>
-          <td style="width:90%"><label>סה"כ הזמנה</label></td>
+          <td style="width:90%"><label style="font-weight: bold">סה"כ הזמנה</label></td>
           <td style="width:10%">{{bidModel.bid.attributes.order.subTotal | currency}}</td>
         </tr>
         <tr ng-show="bidModel.discountCause">
           <td style="width:90%">
-            <label>הנחה בגובה %</label>
+            <label style="font-weight: bold">הנחה בגובה %</label>
             <label>{{bidModel.bid.attributes.order.discountRate}}</label>
-            <label> עקב </label>
-            <label>{{bidModel.discountCause.label}}</label>
+            <label style="font-weight: bold"> עקב </label>
+            <label style="font-weight: bold">{{bidModel.discountCause.label}}</label>
           </td>
           <td style="width:10%">{{bidModel.bid.attributes.order.discount | currency}}</td>
         </tr>
         <tr ng-show="bidModel.bid.attributes.order.transportation">
-          <td style="width:90%"><label>משלוח</label></td>
+          <td style="width:90%"><label style="font-weight: bold">משלוח</label></td>
           <td style="width:10%">{{bidModel.bid.attributes.order.transportation | currency}}</td>
         </tr>
         <tr ng-show="bidModel.bid.attributes.order.isTransportationBonus">
-          <td style="width:90%"><label>בונוס - זיכוי משלוח</label></td>
+          <td style="width:90%"><label style="font-weight: bold">בונוס - זיכוי משלוח</label></td>
           <td style="width:10%">{{bidModel.bid.attributes.order.transportationBonus | currency}}</td>
         </tr>
         <tr ng-show="bidModel.bid.attributes.order.isBusinessEvent">
           <td style="width:90%">
-            <label>מע"מ בשיעור %</label>
-            <label>{{bidModel.bid.attributes.order.vatRate*100}}</label>
+            <label style="font-weight: bold">מע"מ בשיעור %</label>
+            <label style="font-weight: bold">{{bidModel.bid.attributes.order.vatRate*100}}</label>
           </td>
           <td style="width:10%">{{bidModel.bid.attributes.order.vat | currency}}</td>
         </tr>
         <tr>
-          <td style="width:90%"><label>סה"כ לתשלום</label></td>
+          <td style="width:90%"><label style="font-weight: bold">סה"כ לתשלום</label></td>
           <td style="width:10%"><b>{{bidModel.bid.attributes.order.total | currency}}</b></td>
         </tr>
         <tr>
           <td style="width:90%">
-            <label>מחיר למשתתף </label>
-            <label>{{bidModel.bid.attributes.order.total / bidModel.bid.attributes.order.noOfParticipants | currency}}</label>
+            <label style="font-weight: bold">מחיר למשתתף </label>
+            <label style="font-weight: bold">{{bidModel.bid.attributes.order.total / bidModel.bid.attributes.order.noOfParticipants | currency}}</label>
           </td>
         </tr>
       </table>
