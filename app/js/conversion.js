@@ -354,7 +354,7 @@ angular.module('myApp')
 
     this.cancel = function() {
       this.isCancel = true;
-    }
+    };
 
     this.updateLastOrder = function() {
       return api.queryOrderNum()
@@ -362,6 +362,27 @@ angular.module('myApp')
         res[0].attributes.lastOrder = that.maxOrderNum;
         return api.saveObj(res[0])
       })
-    }
+    };
+
+      this.newUser = function () {
+        this.user = api.initUser();
+        console.log(this.user);
+      };
+
+      this.saveUser = function () {
+        api.userSignUp(this.user);
+      };
+
+
+      this.createRole = function () {
+        if (api.getCurrentUser().attributes.username !== 'uri') {
+          alert('current user not allowed to create role');
+        } else {
+          api.queryUsers()
+              .then(function (users) {
+                api.createRole('everyone', api.getCurrentUser(), users);
+              });
+        }
+      }
   }
 );

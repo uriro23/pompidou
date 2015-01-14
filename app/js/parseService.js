@@ -1,12 +1,7 @@
 'use strict';
 
-/* Services */
+angular.module('myApp')
 
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
-angular.module('myApp').
-  value('version', '0.1')
   .service ('api', function($q, $rootScope,secrets) {
   Parse.initialize(secrets.parseKey, secrets.parseSecret);
 
@@ -298,6 +293,89 @@ angular.module('myApp').
   this.queryConfig = function () {
     var configQuery = new Parse.Query(Config);
     return query(configQuery);
+  };
+
+  // user
+  // ----
+
+  this.initUser = function () {
+    return new Parse.User();
+  };
+
+  this.userSignUp = function (obj) {
+    var promise = $q.defer();
+    for (var fieldName in obj.attributes) {
+      obj.set (fieldName, obj.attributes[fieldName]);
+    }
+    obj.signUp({}, {
+      success: function (o) {
+        console.log (o.attributes);
+        promise.resolve(o);
+        $rootScope.$digest();
+      },
+      error: function (model, error) {
+        alert('SignUp Error ' + error.code + ", " + error.message);
+        promise.reject(error);
+        $rootScope.$digest();
+      }
+    });
+    return promise.promise;
+  };
+
+  this.userLogin = function (username, pwd) {
+    var promise = $q.defer();
+      Parse.User.logIn(username, pwd, {
+        success: function (user) {
+          promise.resolve(user);
+          $rootScope.$digest()
+        },
+        error: function (model, error) {
+          alert('Login error '+error.code+", "+error.message);
+          promise.reject(error);
+          $rootScope.$digest()
+        }
+      });
+    return promise.promise;
+  };
+
+  this.userLogout = function () {
+      Parse.User.logOut();
+  };
+
+  this.getCurrentUser = function () {
+    return Parse.User.current();
+  };
+
+  this.queryUsers = function () {
+    var userQuery = new Parse.Query(Parse.User);
+    return query(userQuery);
+  };
+
+  // role
+  // ----
+
+  this.createRole = function (name,admin,users) {
+    var promise = $q.defer();
+    var roleACL = new Parse.ACL();
+    for (var i=0;i<users.length;i++) {
+      roleACL.setReadAccess(users[i],true);
+    }
+    roleACL.setWriteAccess(admin,true);
+    var role = new Parse.Role(name,roleACL);
+    role.getUsers().add(users);
+    role.save({},{
+      success: function (r) {
+        console.log('role:');
+        console.log(r);
+        promise.resolve(r);
+        $rootScope.$digest();
+      },
+      error: function (model,error) {
+        alert('Role Save Error ' + error.code + ", " + error.message);
+        promise.reject();
+        $rootScope.$digest();
+      }
+    })
   };
 
 

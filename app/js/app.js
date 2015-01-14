@@ -8,6 +8,11 @@ angular.module('myApp', [
 config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/orderListView");
   $stateProvider
+    .state('login', {
+      url: "/login",
+      templateUrl: "partials/login.html",
+      controller: "LoginCtrl as loginModel"
+    })
     .state('orderList', {
       url: "/orderListView",
       templateUrl: "partials/orderList.html",

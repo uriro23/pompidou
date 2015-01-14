@@ -2,7 +2,14 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderListCtrl', function($modal, api, orders, lov, today, customers, eventTypes) {
+  .controller('OrderListCtrl', function($rootScope, $state, $modal, api, orders, lov, today, customers, eventTypes) {
+    $rootScope.hideMenu = false;
+    var user = api.getCurrentUser();
+    if (user) {
+      $rootScope.username = user.attributes.username;
+    } else {
+      $state.go('login');
+    }
     var allOrders = orders;
     this.isListFuture = true;
     this.isFilterTemplates = false;

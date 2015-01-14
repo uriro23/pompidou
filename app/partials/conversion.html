@@ -17,3 +17,13 @@
       <span>{{conversionModel.maxOrderNum}}</span>
       <button class="btn btn-success" ng-click="conversionModel.updateLastOrder()">עדכן</button>
     </div>
+<div>
+    <button ng-click="conversionModel.newUser()">משתמש חדש</button>
+    <input type="text" ng-model="conversionModel.user.attributes.username" placeholder="username">
+    <input type="text" ng-model="conversionModel.user.attributes.password" placeholder="password">
+    <input type="text" ng-model="conversionModel.user.attributes.email" placeholder="email">
+    <button ng-click="conversionModel.saveUser()">צור</button>
+</div>
+<div>
+    <button ng-click="conversionModel.createRole()">Role</button>
+</div>
