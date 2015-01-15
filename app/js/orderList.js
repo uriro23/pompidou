@@ -10,6 +10,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
+
     var allOrders = orders;
     this.isListFuture = true;
     this.isFilterTemplates = false;
@@ -70,6 +71,21 @@ angular.module('myApp')
 
     };
 
+      this.getLastBid = function (order) {
+        api.queryBidsByOrder(order.id)
+            .then(function (bids) {
+                if (bids.length>0) {
+                  // todo: find a way to display on new tab
+ //                 var url = $state.href("bid",{id:bids[0].id},{absolute: true});
+ //                 console.log('url: ',url);
+ //                 window.open(url,"_blank");
+                  $state.go("bid",{id:bids[0].id})
+                } else {
+                  alert('אין הצעות מחיר לאירוע')
+                }
+            })
+
+      };
 
 //  enrich order with info on customers etc.
     for (var i=0;i<allOrders.length;i++) {

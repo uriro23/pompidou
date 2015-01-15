@@ -101,6 +101,15 @@ angular.module('myApp')
     return query(orderQuery);
   };
 
+  this.queryOrdersByCustomer = function (cust) {
+    var orderQuery = new Parse.Query(Order);
+    if (cust) {
+      orderQuery.equalTo('customer',cust);
+    }
+    orderQuery.limit(1000);
+    return query(orderQuery);
+  };
+
   this.queryFutureOrders = function (today) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.greaterThanOrEqualTo('eventDate',today);

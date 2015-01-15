@@ -5,11 +5,13 @@
       <td>
         <button ng-click="orderModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="orderModel.order.view.errors.customer?'myError':null"
+                class="btn btn-default"
                 ng-show="orderModel.order.view.customer.id">
           {{orderModel.order.view.customer.firstName + ' ' + orderModel.order.view.customer.lastName}}
         </button>
         <button ng-click="orderModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="orderModel.order.view.errors.customer?'myError':null"
+                class="btn btn-default"
                 ng-hide="orderModel.order.view.customer.id">
           בחר
         </button>
@@ -36,11 +38,13 @@
       <td>
         <button ng-click="orderModel.setCustomer(2,'בחירת איש קשר')"
                 ng-class="orderModel.order.view.errors.contact?'myError':null"
+                class="btn btn-default"
                 ng-show="orderModel.order.view.contact.id">
           {{orderModel.order.view.contact.firstName + ' ' + orderModel.order.view.contact.lastName}}
         </button>
         <button ng-click="orderModel.setCustomer(2,'בחירת איש קשר')"
                 ng-class="orderModel.order.view.errors.contact?'myError':null"
+                class="btn btn-default"
                 ng-hide="orderModel.order.view.contact.id">
           בחר
         </button>
@@ -69,6 +73,7 @@
                                  ng-change="orderModel.setEventDate()" required
                                  ng-class="orderModel.order.view.errors.eventDate?'myError':null">
       <label>שעה</label><input type="time" ng-model="orderModel.order.attributes.eventTime"
+                               ng-model-options="{updateOn: 'blur'}"
                                ng-disabled="orderModel.isReadOnly"
                                ng-change="orderModel.orderChanged('header')">
       <label>מספר משתתפים</label><input type="number" min=1 max=1000

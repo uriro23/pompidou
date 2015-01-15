@@ -3,10 +3,18 @@
 /* Controllers */
 angular.module('myApp')
   .controller('MenuCtrl', function(api, $state, $filter, $rootScope, order, catalog, categories) {
+      $rootScope.hideMenu = true;
+      var user = api.getCurrentUser();
+      if (user) {
+        $rootScope.username = user.attributes.username;
+      } else {
+        $state.go('login');
+      }
+
+
     this.order = order;
     this.catalog = catalog;
     this.categories = categories;
-    $rootScope.hideMenu = true;
 
     // fetch customer
     var that = this;

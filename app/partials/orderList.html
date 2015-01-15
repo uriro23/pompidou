@@ -1,6 +1,8 @@
-<h1>רשימת הזמנות</h1>
+<h2>
+    רשימת אירועים
+</h2>
     <div>
-        <label>עתידיות</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
+        <label>עתידיים</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
         <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
                 ng-show="orderListModel.filterByCustomer.id">
           {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
@@ -13,33 +15,43 @@
         <input type="checkbox" ng-model="orderListModel.isFilterTemplates"
                ng-change="orderListModel.filterOrders()">
     </div>
-    <table border="0">
+    <table style="width: 99%">
       <thead>
-      <th>מס'</th>
-      <th>תאריך</th>
-      <th>שעה</th>
-      <th>לקוח</th>
-      <th>משתתפים</th>
-      <th>סוג אירוע</th>
-      <th>סטטוס הזמנה</th>
-      <th>תבנית</th>
-      <th>תאריך פעילות</th>
-      <th>פעילות</th>
+      <th style="width: 3%">מס'</th>
+      <th style="width: 12%">תאריך</th>
+      <th style="width: 4%">שעה</th>
+      <th style="width: 8%">לקוח</th>
+      <th style="width: 5%">משתתפים</th>
+      <th style="width: 7%">סוג אירוע</th>
+      <th style="width: 7%">סטטוס</th>
+      <th style="width: 6%">סכום</th>
+      <th style="width: 6%">משלוח</th>
+      <th style="width: 3%">הנחה</th>
+      <th style="width: 10%">תבנית</th>
+      <th style="width: 5%">ת' פעילות</th>
+      <th style="width: 18%">פעילות</th>
+      <th style="width: 6%">הצעת מחיר</th>
       </thead>
       <tbody>
       <tr ng-repeat="order in orderListModel.orders">
         <td>
             <a ui-sref="editOrder({id:order.id})">{{order.attributes.number}}</a>
         </td>
-        <td>{{order.attributes.eventDate | date: 'EEEE dd/MM/yyyy'}}</td>
+        <td>{{order.attributes.eventDate | date: 'EEEE dd/MM/yy'}}</td>
         <td>{{order.attributes.eventTime | date: 'hh:mm'}}</td>
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>
         <td>{{order.view.orderStatus.name}}</td>
+          <td>{{order.attributes.total | currency}}</td>
+          <td>{{order.attributes.transportationInclVat | currency}}</td>
+          <td>{{order.attributes.discountRate | number:0}}</td>
         <td>{{order.attributes.template}}</td>
-        <td>{{order.attributes.activities[0].date | date: 'HH:mm dd/MM/yyyy'}}</td>
+        <td>{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>
         <td>{{order.attributes.activities[0].text}}</td>
+          <td>
+              <button class="btn btn-default btn-sm" ng-click="orderListModel.getLastBid(order)">הצג</button>
+          </td>
       </tr>
       </tbody>
     </table>

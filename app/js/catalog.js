@@ -2,7 +2,16 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CatalogCtrl', function($state, $modal, api, lov, measurementUnits) {
+  .controller('CatalogCtrl', function($state, $modal, $rootScope, api, lov, measurementUnits) {
+
+      $rootScope.hideMenu = false;
+      var user = api.getCurrentUser();
+      if (user) {
+        $rootScope.username = user.attributes.username;
+      } else {
+        $state.go('login');
+      }
+
 
     this.addItem = function () {
       var newItem = api.initCatalog();

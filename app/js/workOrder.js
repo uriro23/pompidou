@@ -2,9 +2,18 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('WorkOrderCtrl', function (api, $state, $filter, $modal, $q,
+  .controller('WorkOrderCtrl', function (api, $state, $filter, $modal, $q, $rootScope,
                                          lov, catalog, allCategories, measurementUnits, today,
                                          customers, futureOrders, workOrder) {
+
+      $rootScope.hideMenu = false;
+      var user = api.getCurrentUser();
+      if (user) {
+        $rootScope.username = user.attributes.username;
+      } else {
+        $state.go('login');
+      }
+
 
     this.destroyWorkOrderDomains = function (domain) {
       var that = this;

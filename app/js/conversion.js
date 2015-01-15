@@ -3,6 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('ConversionCtrl', function($state,
+                                         $rootScope,
                                          api,
                                          lov,
                                          measurementUnits,
@@ -10,6 +11,14 @@ angular.module('myApp')
                                          accessCatalog,
                                          accessCustomers,
                                          accessOrders) {
+
+      $rootScope.hideMenu = false;
+      var user = api.getCurrentUser();
+      if (user) {
+        $rootScope.username = user.attributes.username;
+      } else {
+        $state.go('login');
+      }
 
     console.log('loaded '+ accessCatalog.length + ' catalog items');
     console.log('loaded '+ accessCustomers.length + ' customers');

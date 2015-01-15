@@ -3,10 +3,17 @@
 /* Controllers */
 angular.module('myApp')
   .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, measurementUnits, categories) {
+      $rootScope.hideMenu = true;
+      var user = api.getCurrentUser();
+      if (user) {
+        $rootScope.username = user.attributes.username;
+      } else {
+        $state.go('login');
+      }
+
     this.bid = bid;
     this.measurementUnits = measurementUnits;
     this.categories = categories;
-    $rootScope.hideMenu = true;
     var currentOrder = this.bid.attributes.order;
 
     // fetch customer
@@ -25,6 +32,7 @@ angular.module('myApp')
     }
 
     // fetch end bid text type
+      console.log(currentOrder.endBidTextType);
     if (currentOrder.endBidTextType) {
       api.queryBidTextTypes(currentOrder.endBidTextType)
         .then (function (bidTexts) {

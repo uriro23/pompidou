@@ -2,9 +2,18 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderCtrl', function(api, $state, $filter, $modal,
+  .controller('OrderCtrl', function(api, $state, $filter, $modal, $rootScope,
                                     currentOrder, bids, lov, today, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, config) {
+
+      $rootScope.hideMenu = false;
+      var user = api.getCurrentUser();
+      if (user) {
+        $rootScope.username = user.attributes.username;
+      } else {
+        $state.go('login');
+      }
+
 
     this.setReadOnly = function() {
       this.isReadOnly = this.order.attributes.eventDate < today;
@@ -92,6 +101,7 @@ angular.module('myApp')
           that.order.view.customer = cust;
           that.orderChanged('customer');
           that.order.view.errors.customer = false;
+          that.getPrevOrders();
         } else if (custType===2) {
           that.order.view.contact = cust;
           that.orderChanged('contact');
@@ -354,6 +364,7 @@ angular.module('myApp')
     this.addActivity = function () {
       if (this.activityText.length > 0) {
         this.order.attributes.activities.splice(0, 0, {date: new Date(), text: this.activityText});
+        this.activityText = '';
         this.orderChanged();
       }
     };
@@ -397,7 +408,39 @@ angular.module('myApp')
       })
     };
 
-    // common
+      // prev orders tab
+      // ---------------
+
+      this.getPrevOrders = function () {
+        var that = this;
+        if (this.order.view.customer.id) {
+          api.queryOrdersByCustomer(this.order.view.customer.id)
+            .then(function (orders) {
+              that.prevOrders = orders.filter(function (ord) {
+                return ord.id !== that.order.id;    // exclude current order
+              })
+          })
+        }
+    };
+
+      this.getLastBid = function (order) {
+        console.log(order);
+        api.queryBidsByOrder(order.id)
+            .then(function (bids) {
+              if (bids.length>0) {
+                // todo: find a way to display on new tab
+                //                 var url = $state.href("bid",{id:bids[0].id},{absolute: true});
+                //                 console.log('url: ',url);
+                //                 window.open(url,"_blank");
+                $state.go("bid",{id:bids[0].id})
+              } else {
+                alert('אין הצעות מחיר לאירוע')
+              }
+            })
+
+      };
+
+      // common
     // ------
 
       this.saveOrder = function () {
@@ -522,6 +565,7 @@ angular.module('myApp')
           }
           that.order.view.customer = custs[0].attributes;
           that.order.view.customer.id = custs[0].id;
+          that.getPrevOrders();
           });
         if (that.order.attributes.contact) {
           api.queryCustomers(that.order.attributes.contact)
