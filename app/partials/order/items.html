@@ -1,7 +1,14 @@
-<button ng-click="orderModel.addItem()"
+<button ng-click="orderModel.addItem(true)"
+        ng-show="!orderModel.isAddTemplate && !orderModel.isAddItem"
         ng-disabled="orderModel.isReadOnly"
         class="btn btn-default"
-    >הוסף פריט</button>
+        >הוסף פריט</button>
+<button ng-click="orderModel.addItem(false)"
+        ng-show="orderModel.isAddItem"
+        ng-disabled="orderModel.isReadOnly"
+        class="btn btn-warning">
+    בטל
+</button>
 <span ng-show="orderModel.isAddItem">
     <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
             ng-options="category.label for category in orderModel.categories"></select>
@@ -15,13 +22,36 @@
       </tbody>
     </table>
 </span>
+<button ng-click="orderModel.addTemplate(true)"
+        ng-show="!orderModel.isAddTemplate && !orderModel.isAddItem"
+        ng-disabled="orderModel.isReadOnly"
+        class="btn btn-default">
+    הוסף תבנית
+</button>
+<button ng-click="orderModel.addTemplate(false)"
+        ng-show="orderModel.isAddTemplate"
+        ng-disabled="orderModel.isReadOnly"
+        class="btn btn-warning">
+    בטל
+</button>
+<span ng-show="orderModel.isAddTemplate">
+    <table border="1">
+        <tbody>
+        <tr ng-repeat="template in orderModel.templates">
+            <td ng-click="orderModel.setTemplate(template)">
+                {{template.attributes.template}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </span>
 <table style="width: 80%">
   <thead>
-  <th style="width: 5%">קטגוריה</th>
-  <th style="width: 70%">מוצר</th>
-  <th style="width: 5%">יח' מידה</th>
+  <th style="width: 6%">קטגוריה</th>
+  <th style="width: 69%">מוצר</th>
+  <th style="width: 5%">יח'</th>
   <th style="width: 5%">כמות</th>
-  <th style="width: 5%">קופסאות</th>
+  <th style="width: 5%">קופ'</th>
   <th style="width: 5%">מחיר</th>
   <th style="width: 5%">בונוס</th>
   </thead>

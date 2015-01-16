@@ -337,7 +337,7 @@ angular.module('myApp')
             var catPrice = newItem.catalogPrice * newItem.quantity / newItem.catalogQuantity;
             if (Math.abs(catPrice - newItem.price)> 0.1) {  // if price changed, catalog price is not relevant for conversion
               newItem.catalogPrice = 0;
-              newItem.catalogQuantity = 0;
+              newItem.catalogQuantity = 1;
               that.itemschangedPrice++;
             }
 

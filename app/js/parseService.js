@@ -110,6 +110,13 @@ angular.module('myApp')
     return query(orderQuery);
   };
 
+  this.queryTemplateOrders = function () {
+    var orderQuery = new Parse.Query(Order);
+    orderQuery.exists('template');
+    orderQuery.limit(1000);
+    return query(orderQuery);
+  };
+
   this.queryFutureOrders = function (today) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.greaterThanOrEqualTo('eventDate',today);

@@ -158,9 +158,13 @@ angular.module('myApp')
            })
       };
 
-      this.addItem = function () {
-        this.isAddItem = true;
-        this.setCategory();
+      this.addItem = function (set) {
+        if (set) {
+          this.isAddItem = true;
+          this.setCategory();
+        } else {
+          this.isAddItem = false;
+        }
       };
 
       this.deleteItem = function (ind) {
@@ -286,8 +290,62 @@ angular.module('myApp')
         thisItem.isChanged = true;
       };
 
+      this.getTemplates = function () {
+        var that = this;
+        api.queryTemplateOrders()
+            .then(function (temps) {
+              that.templates = temps;
+              that.templates.sort(function (a,b) {
+                  if (a.attributes.template < b.attributes.template) {
+                    return -1
+                  } else {
+                    return 1
+                  }
+              })
+            })
+      };
 
-    // financial tab
+      this.addTemplate = function (set) {
+        if (set) {
+          this.isAddTemplate = true;
+          this.getTemplates();
+        } else {
+          this.isAddTemplate = false;
+        }
+      };
+
+      this.setTemplate = function (template) {
+        var thisOrder = this.order.attributes;
+        for (var j=0;j<template.attributes.items.length;j++) {
+          var templateItem = template.attributes.items[j];
+          var thisItem = thisOrder.items.filter(function (itm) {    // check if product exists in order
+            return itm.catalogId === templateItem.catalogId;
+          })[0];
+          if (thisItem) {
+            thisItem.quantity += templateItem.quantity;   // exists, just update quantity
+          } else {
+            this.order.attributes.items.splice(0, 0, templateItem); // initialize new item as copied one
+            thisItem = this.order.attributes.items[0];
+          }
+          thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
+          thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
+          if (thisOrder.isBusinessEvent) {
+            thisItem.price = thisItem.priceBeforeVat;
+          } else {
+            thisItem.price = thisItem.priceInclVat;
+          }
+          thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
+          thisItem.isChanged = true;
+          console.log(thisItem);
+        }
+        this.calcSubTotal();
+        this.orderChanged();
+        this.isAddTemplate = false;
+      };
+
+
+
+      // financial tab
 // TODO: in converting from access remember in access discount is positive
     this.setDiscountRate = function () {
       var thisOrder = this.order.attributes;
