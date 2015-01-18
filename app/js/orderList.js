@@ -10,6 +10,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
+    $rootScope.title = lov.company + ' - רשימת אירועים';
 
     var allOrders = orders;
     this.isListFuture = true;

@@ -78,6 +78,8 @@ angular.module('myApp')
 
  .value ('lov',
   {
+    company: 'פומפידו',
+
     domains: [
       {
         id: 0,

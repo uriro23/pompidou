@@ -2,19 +2,19 @@
 <html lang="en" ng-app="myApp">
 <head>
   <meta charset="utf-8">
-  <title>פומפידו - מטבח שף בקופסה</title>
+  <title>{{title}}</title>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body dir="rtl">
   <ul class="menu" ng-hide="hideMenu">
-    <li><a ui-sref="orderList">רשימת אירועים</a></li>
-    <li><a ui-sref="newOrder">אירוע חדש</a></li>
-    <li><a ui-sref="workOrder">פקודת עבודה</a> </li>
-    <li><a ui-sref="catalog">קטלוג</a></li>
-    <li><a ui-sref="conversion">הסבה</a> </li>
+    <li><a ng-href="#/orderListView">רשימת אירועים</a></li>
+    <li><a ng-href="#/newOrderView">אירוע חדש</a></li>
+    <li><a ng-href="#/workOrderView">פקודת עבודה</a> </li>
+    <li><a ng-href="#/catalog">קטלוג</a></li>
+    <li><a ng-href="#/conversion">הסבה</a> </li>
     <li>{{'שלום '+username}}</li>
-    <li><a ui-sref="login">התנתק</a> </li>
+    <li><a ng-href="#/login">התנתק</a> </li>
    </ul>
 
   <div ui-view></div>

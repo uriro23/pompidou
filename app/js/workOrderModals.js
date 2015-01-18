@@ -18,10 +18,7 @@ angular.module('myApp')
             root.attributes.productDescription = 'מס ' +
                 root.attributes.order.number + ' תאריך ' +
                 $filter('date')(root.attributes.order.eventDate,'dd/MM/yyyy') + ' שעה ' +
-                $filter('date')(root.attributes.order.eventTime,'hh:mm') + ' לקוח ' +
-                root.attributes.customer.firstName + ' ' +
-            (   root.attributes.customer.lastName?root.attributes.customer.lastName:'') + ' ' +
-                 root.attributes.order.noOfParticipants + ' משתתפים'
+                $filter('date')(root.attributes.order.eventTime,'hh:mm')
         }
         backTrace.push(root);
         if (root.attributes.domain > 0) {
@@ -36,26 +33,6 @@ angular.module('myApp')
         }
    }
 
- /*   this.setExpand = function (item) {
-        var i;
-        var temp = this.backTrace.filter(function (bt,ind) {
-            if (bt.seq===item.seq) {
-                i=ind+1;
-                return true;
-            }
-        });
-      item.expand = item.expand==='-'?'+':item.expand==='+'?'-':'';  // reverse expansion
-        while (i<this.backTrace.length && this.backTrace[i].generation > item.generation) {
-            if (item.expand==='-') {
-                this.backTrace[i].isShow = true;
-            } else if (item.expand==='+') {
-                this.backTrace[i].isShow = true;
-           }
-            i++;
-        }
-    };
-
-*/
     this.setExpand = function (item) {
         item.expand = item.expand==='-'?'+':item.expand==='+'?'-':'';  // reverse expansion
         var sons = this.backTrace.filter(function (itm) {      // get all sons of expanded / collapsed item

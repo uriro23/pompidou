@@ -169,6 +169,7 @@ angular.module('myApp')
 
       this.deleteItem = function (ind) {
         this.order.attributes.items.splice(ind,1);
+        this.calcSubTotal();
         this.orderChanged();
       };
 
@@ -486,11 +487,7 @@ angular.module('myApp')
         api.queryBidsByOrder(order.id)
             .then(function (bids) {
               if (bids.length>0) {
-                // todo: find a way to display on new tab
-                //                 var url = $state.href("bid",{id:bids[0].id},{absolute: true});
-                //                 console.log('url: ',url);
-                //                 window.open(url,"_blank");
-                $state.go("bid",{id:bids[0].id})
+                  window.open("#/bid/"+bids[0].id,"_blank");
               } else {
                 alert('אין הצעות מחיר לאירוע')
               }
@@ -691,6 +688,8 @@ angular.module('myApp')
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
+      $rootScope.title = lov.company + ' - אירוע ' + this.order.attributes.number;
+
       this.setupOrderView();
       this.setReadOnly();
 
@@ -742,6 +741,7 @@ angular.module('myApp')
         });
       }
     }  else { // new order
+      $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();
       this.setupOrderView();
       this.order.attributes.eventDate = today;

@@ -13,6 +13,7 @@ angular.module('myApp')
       } else {
         $state.go('login');
       }
+      $rootScope.title = lov.company + ' - פקודת עבודה';
 
 
     this.destroyWorkOrderDomains = function (domain) {

@@ -2,12 +2,14 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('ExitListCtrl', function(api, $state, $filter, $rootScope, order, catalog, measurementUnits, categories) {
+  .controller('ExitListCtrl', function(api, $state, $filter, $rootScope,
+                                       order, catalog, lov, measurementUnits, categories) {
     this.order = order;
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;
     this.categories = categories;
     $rootScope.hideMenu = true;
+    $rootScope.title = lov.company + ' - רשימת יציאה';
 
     // fetch customer
     var that = this;

@@ -11,6 +11,7 @@ angular.module('myApp')
       } else {
         $state.go('login');
       }
+      $rootScope.title = lov.company + ' - קטלוג';
 
 
     this.addItem = function () {

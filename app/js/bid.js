@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, measurementUnits, categories) {
+  .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, lov, measurementUnits, categories) {
       $rootScope.hideMenu = true;
       var user = api.getCurrentUser();
       if (user) {
@@ -12,7 +12,8 @@ angular.module('myApp')
       }
 
     this.bid = bid;
-    this.measurementUnits = measurementUnits;
+
+      this.measurementUnits = measurementUnits;
     this.categories = categories;
     var currentOrder = this.bid.attributes.order;
 
@@ -21,7 +22,12 @@ angular.module('myApp')
     api.queryCustomers(currentOrder.customer)
       .then (function (customers) {
         that.customer = customers[0].attributes;
-    })
+        $rootScope.title = lov.company    // set title so PDF file will be named correctly
+        + ' - הצעת מחיר '
+        + (that.customer.firstName?that.customer.firstName:'')
+        + ' ' + (that.customer.lastName?that.customer.lastName:'')
+        + ' ' + that.bid.attributes.desc;
+    });
 
     //fetch start bid text type
     if (currentOrder.startBidTextType) {
@@ -78,4 +84,6 @@ angular.module('myApp')
       })
     }
 
-  });
+
+
+    });

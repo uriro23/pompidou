@@ -19,6 +19,7 @@ angular.module('myApp')
       } else {
         $state.go('login');
       }
+      $rootScope.title = lov.company + ' - הסבה';
 
     console.log('loaded '+ accessCatalog.length + ' catalog items');
     console.log('loaded '+ accessCustomers.length + ' customers');

@@ -2,9 +2,11 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('MenuCtrl', function(api, $state, $filter, $rootScope, order, catalog, categories) {
+  .controller('MenuCtrl', function(api, $state, $filter, $rootScope, lov, order, catalog, categories) {
       $rootScope.hideMenu = true;
-      var user = api.getCurrentUser();
+      $rootScope.title = lov.company + ' - תפריט';
+
+        var user = api.getCurrentUser();
       if (user) {
         $rootScope.username = user.attributes.username;
       } else {

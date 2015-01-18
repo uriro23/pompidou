@@ -91,5 +91,6 @@
                                   ng-change="orderModel.orderChanged('header')"
                                   ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"
                                   ng-disabled="orderModel.isReadOnly"
-     ></select><br/>
+     ></select>
+     <label>סכום: </label><span>{{orderModel.order.attributes.total | currency}}</span><br/>
 </div>
