@@ -1,0 +1,78 @@
+<table>
+    <thead>
+    <th>
+        הצעת מחיר
+    </th>
+    </thead>
+    <tbody>
+    <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
+        <td>טקסט מבוא</td>
+        <td>
+            <select ng-model="orderModel.order.view.startBidTextType"
+                    ng-change="orderModel.orderChanged('startBidTextType')"
+                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {docType: 1}"
+                    ng-disabled="orderModel.isReadOnly"
+                    ></select>
+        </td>
+    </tr>
+    <tr ng-class="orderModel.order.view.changes.endBidTextType?'myChanged':null">
+        <td>טקסט סיום</td>
+        <td>
+            <select ng-model="orderModel.order.view.endBidTextType"
+                    ng-change="orderModel.orderChanged('endBidTextType')"
+                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {docType: 1}"
+                    ng-disabled="orderModel.isReadOnly"
+                    ></select>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    <th>
+        הזמנה
+    </th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="textType in orderModel.bidTextTypes | filter: {docType: 2}">
+        <td>
+            <input type="checkbox" ng-model="textType.isInclude">
+        </td>
+        <td>{{textType.label}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<div ng-hide="orderModel.order.view.isChanged">
+  <input type="text" placeholder="תיאור מסמך"
+         size=50
+         ng-model="orderModel.bidDesc"
+         ng-disabled="orderModel.isReadOnly">
+  <button ng-click="orderModel.createBid()"
+          ng-disabled="orderModel.isReadOnly"
+      >צור</button>
+</div>
+<table>
+  <thead>
+  <th><label>תאריך</label></th>
+  <th><label>הערות</label></th>
+  <th><label>סכום</label></th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="bid in orderModel.bids track by bid.id">
+    <td>
+      <a ng-href="index.html#/bid/{{bid.id}}" target="_blank">
+      {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      </a>
+    </td>
+    <td>{{bid.attributes.desc}}</td>
+    <td>{{bid.attributes.order.total | currency}}</td>
+    <td>
+      <button ng-click="orderModel.delBid(bid)"
+              ng-disabled="orderModel.isReadOnly"
+              class="btn btn-default"
+          >מחק</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
