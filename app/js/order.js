@@ -35,8 +35,10 @@ angular.module('myApp')
       }
       thisOrder.rounding = thisOrder.totalBeforeVat - t;
       thisOrder.vat = thisOrder.total - thisOrder.totalBeforeVat;
+
       // the following are for displaying vat in invoice even if non business event
-      thisOrder.totalBeforeVatForInvoice = thisOrder.total / (1 + thisOrder.vatRate);
+      t = thisOrder.isFixedPrice?thisOrder.fixedPrice:thisOrder.total;
+      thisOrder.totalBeforeVatForInvoice = t / (1 + thisOrder.vatRate);
       thisOrder.vatForInvoice = thisOrder.totalBeforeVatForInvoice * thisOrder.vatRate;
      };
 
@@ -421,7 +423,20 @@ angular.module('myApp')
         this.orderChanged('isBusinessEvent');
       };
 
-    // activities tab
+      this.setFixedPrice = function () {
+        var thisOrder = this.order.attributes;
+        if (!this.isFixedPriceChanged) {
+          return;
+        }
+        this.order.view.errors.fixedPrice = Number(thisOrder.fixedPrice) != thisOrder.fixedPrice ||
+                                            Number(thisOrder.fixedPrice) < 0;
+        this.calcTotal();
+        this.orderChanged('fixedPrice');
+        thisOrder.isFixedPriceChanged = false;
+      };
+
+
+      // activities tab
     // --------------
 
     this.addActivity = function () {

@@ -55,7 +55,7 @@
           <td style="width:75%">{{item.productDescription}}</td>
           <td style="width:5%">{{item.quantity}}</td>
           <td style="width:10%">{{item.measurementUnit.label}}</td>
-          <td style="width:10%">{{item.price | currency }}</td>
+          <td ng-hide="bidModel.bid.attributes.order.isFixedPrice" style="width:10%">{{item.price | currency }}</td>
         </tr>
         </tbody>
       </table>
@@ -76,11 +76,11 @@
     </div>
     <div>
       <table style="width:60%">
-        <tr>
+        <tr ng-hide="bidModel.bid.attributes.order.isFixedPrice">
           <td style="width:90%"><label style="font-weight: bold">סה"כ הזמנה</label></td>
           <td style="width:10%">{{bidModel.bid.attributes.order.subTotal | currency}}</td>
         </tr>
-        <tr ng-show="bidModel.discountCause">
+        <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
           <td style="width:90%">
             <label style="font-weight: bold">הנחה בגובה %</label>
             <label>{{bidModel.bid.attributes.order.discountRate}}</label>
@@ -89,15 +89,15 @@
           </td>
           <td style="width:10%">{{bidModel.bid.attributes.order.discount | currency}}</td>
         </tr>
-        <tr ng-show="bidModel.bid.attributes.order.transportation">
+        <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.transportation">
           <td style="width:90%"><label style="font-weight: bold">משלוח</label></td>
           <td style="width:10%">{{bidModel.bid.attributes.order.transportation | currency}}</td>
         </tr>
-        <tr ng-show="bidModel.bid.attributes.order.isTransportationBonus">
+        <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isTransportationBonus">
           <td style="width:90%"><label style="font-weight: bold">בונוס - זיכוי משלוח</label></td>
           <td style="width:10%">{{bidModel.bid.attributes.order.transportationBonus | currency}}</td>
         </tr>
-        <tr ng-show="bidModel.bid.attributes.order.isBusinessEvent">
+        <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isBusinessEvent">
           <td style="width:90%">
             <label style="font-weight: bold">מע"מ בשיעור %</label>
             <label style="font-weight: bold">{{bidModel.bid.attributes.order.vatRate*100}}</label>
@@ -106,9 +106,12 @@
         </tr>
         <tr>
           <td style="width:90%"><label style="font-weight: bold">סה"כ לתשלום</label></td>
-          <td style="width:10%"><b>{{bidModel.bid.attributes.order.total | currency}}</b></td>
+            <td ng-hide="bidModel.bid.attributes.order.isFixedPrice"
+                style="width:10%"><b>{{bidModel.bid.attributes.order.total | currency}}</b></td>
+            <td ng-show="bidModel.bid.attributes.order.isFixedPrice"
+                style="width:10%"><b>{{bidModel.bid.attributes.order.fixedPrice | currency}}</b></td>
         </tr>
-        <tr>
+        <tr ng-hide="bidModel.bid.attributes.order.isFixedPrice">
           <td style="width:90%">
             <label style="font-weight: bold">מחיר למשתתף </label>
             <label style="font-weight: bold">{{bidModel.bid.attributes.order.total / bidModel.bid.attributes.order.noOfParticipants | currency}}</label>

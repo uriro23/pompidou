@@ -94,7 +94,10 @@
       <label>
         לתשלום:
       </label>
-      <span>{{exitListModel.order.attributes.total | currency}}</span>
+      <span>
+        {{exitListModel.order.attributes.isFixedPrice?
+            exitListModel.order.attributes.fixedPrice:exitListModel.order.attributes.total | currency}}
+      </span>
     </td>
   </tr>
   </tbody>
