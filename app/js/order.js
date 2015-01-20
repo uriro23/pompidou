@@ -440,6 +440,13 @@ angular.module('myApp')
     // bids tab
     // --------
 
+      this.setOrderDocTextType = function (textType) {
+        this.order.attributes.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
+          return t.isInclude;
+        }));
+        this.orderChanged('orderTextType');
+      };
+
     this.createBid = function(docType) {
       if (this.order.view.isChanged) {
         return;

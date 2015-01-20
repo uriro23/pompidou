@@ -204,6 +204,9 @@ config(function($stateProvider, $urlRouterProvider) {
           return bids[0];
         })
       }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
+      }],
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
         return measurementUnitsPromise;
       }],

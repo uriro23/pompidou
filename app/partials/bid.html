@@ -21,9 +21,15 @@
       <span>לכ'</span><br/>
       <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>
     </div>
-    <h1 align="center" style="font-size:5em; width:60%">הצעת מחיר</h1><br/>
+    <h1 ng-show="bidModel.bid.attributes.documentType===1" align="center" style="font-size:5em; width:60%">הצעת מחיר</h1>
+    <h1 ng-show="bidModel.bid.attributes.documentType===2" align="center" style="font-size:5em; width:60%">הזמנה</h1>
+<br/>
+<div ng-show="bidModel.bid.attributes.documentType===1">
     <ng-include src="bidModel.startBidTextType.url"></ng-include>
-    
+</div>
+<div ng-show="bidModel.bid.attributes.documentType===2">
+    <ng-include src="bidModel.config.orderStartTextUrl"></ng-include>
+</div>
     <div  style="width:60%;text-align:justify;">
       <label style="font-weight: bold">סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
       <label style="font-weight: bold">תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
@@ -110,7 +116,12 @@
         </tr>
       </table>
     </div>
-    <div>
-      <ng-include src="bidModel.endBidTextType.url"></ng-include>
+<div ng-show="bidModel.bid.attributes.documentType===1">
+    <ng-include src="bidModel.endBidTextType.url"></ng-include>
+</div>
+<div ng-show="bidModel.bid.attributes.documentType===2">
+    <div ng-repeat="textType in bidModel.bid.attributes.order.orderDocTextTypes">
+        <ng-include src="textType.url"></ng-include>
     </div>
+</div>
 
