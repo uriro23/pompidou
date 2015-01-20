@@ -14,7 +14,6 @@ angular.module('myApp')
         $state.go('login');
       }
 
-
     this.setReadOnly = function() {
       this.isReadOnly = this.order.attributes.eventDate < today;
     };
@@ -126,6 +125,11 @@ angular.module('myApp')
       this.orderChanged('header');
       this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
     };
+
+      // general tab
+      this.isShowTextType = function (textType) {
+          return textType.documentType;
+      };
 
     // items tab
      this.setCategory = function () {
@@ -436,11 +440,12 @@ angular.module('myApp')
     // bids tab
     // --------
 
-    this.createBid = function() {
+    this.createBid = function(docType) {
       if (this.order.view.isChanged) {
         return;
       }
       this.bid = api.initBid();
+      this.bid.attributes.documentType = docType;
       this.bid.attributes.orderId = this.order.id;
       this.bid.attributes.date = new Date();
       this.bid.attributes.order = this.order.attributes;
@@ -455,6 +460,24 @@ angular.module('myApp')
           })
       })
     };
+
+      this.restoreBid = function (bid) {
+        var that = this;
+        if (this.order.view.isChanged) {
+          return;
+        }
+        this.bidDesc = 'גיבוי לפני שחזור לתאריך ' + $filter('date')(bid.attributes.date,'dd/MM/yyyy HH:mm');
+        this.createBid(0)
+            .then(function () {
+                that.order.attributes = bid.attributes.order;
+                that.setupOrderView();
+                api.saveObj(that.order)
+                    .then(function (o) {
+                        alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך '  +
+                        $filter('date')(bid.attributes.date,'dd/MM/yyyy HH:mm'))
+                    })
+            })
+      };
 
     this.delBid = function (bid) {
       var that = this;
@@ -676,6 +699,7 @@ angular.module('myApp')
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
+    this.documentTypes = lov.documentTypes;
     this.categories = categories;
     this.currentCategory = this.categories[0]; // default to first category
     this.measurementUnits = measurementUnits;

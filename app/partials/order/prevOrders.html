@@ -21,7 +21,7 @@
             <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
         </td>
         <td>{{order.attributes.eventDate | date: 'EEEE dd/MM/yy'}}</td>
-        <td>{{order.attributes.eventTime | date: 'hh:mm'}}</td>
+        <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>

@@ -27,7 +27,7 @@
     <div  style="width:60%;text-align:justify;">
       <label style="font-weight: bold">סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
       <label style="font-weight: bold">תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
-      <label style="font-weight: bold">שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime | date: 'hh:mm'}}</span>
+      <label style="font-weight: bold">שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime | date: 'HH:mm'}}</span>
       <label style="font-weight: bold">מס' משתתפים: </label><span align="left">{{bidModel.bid.attributes.order.noOfParticipants}}</span>
     </div>
     

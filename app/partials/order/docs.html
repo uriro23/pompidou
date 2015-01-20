@@ -10,7 +10,7 @@
         <td>
             <select ng-model="orderModel.order.view.startBidTextType"
                     ng-change="orderModel.orderChanged('startBidTextType')"
-                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {docType: 1}"
+                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
                     ng-disabled="orderModel.isReadOnly"
                     ></select>
         </td>
@@ -20,7 +20,7 @@
         <td>
             <select ng-model="orderModel.order.view.endBidTextType"
                     ng-change="orderModel.orderChanged('endBidTextType')"
-                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {docType: 1}"
+                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
                     ng-disabled="orderModel.isReadOnly"
                     ></select>
         </td>
@@ -34,9 +34,11 @@
     </th>
     </thead>
     <tbody>
-    <tr ng-repeat="textType in orderModel.bidTextTypes | filter: {docType: 2}">
+    <tr ng-repeat="textType in orderModel.bidTextTypes | filter: {documentType: 2}"
+        ng-class="orderModel.order.view.changes.orderTextType?'myChanged':null">
         <td>
-            <input type="checkbox" ng-model="textType.isInclude">
+            <input type="checkbox" ng-model="textType.isInclude"
+                   ng-change="orderModel.orderChanged('orderTextType')">
         </td>
         <td>{{textType.label}}</td>
     </tr>
@@ -48,18 +50,24 @@
          size=50
          ng-model="orderModel.bidDesc"
          ng-disabled="orderModel.isReadOnly">
-  <button ng-click="orderModel.createBid()"
-          ng-disabled="orderModel.isReadOnly"
-      >צור</button>
+    <span ng-repeat="documentType in orderModel.documentTypes">
+        <button ng-click="orderModel.createBid(documentType.id)"
+                ng-disabled="orderModel.isReadOnly"
+                class="btn btn-default">
+            {{documentType.label}}
+        </button>
+   </span>
 </div>
 <table>
   <thead>
-  <th><label>תאריך</label></th>
-  <th><label>הערות</label></th>
-  <th><label>סכום</label></th>
+  <th>סוג מסמך</th>
+  <th>תאריך</th>
+  <th>הערות</th>
+  <th>סכום</th>
   </thead>
   <tbody>
   <tr ng-repeat="bid in orderModel.bids track by bid.id">
+      <td>{{orderModel.documentTypes[bid.attributes.documentType].label}}</td>
     <td>
       <a ng-href="index.html#/bid/{{bid.id}}" target="_blank">
       {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
@@ -67,12 +75,21 @@
     </td>
     <td>{{bid.attributes.desc}}</td>
     <td>{{bid.attributes.order.total | currency}}</td>
-    <td>
-      <button ng-click="orderModel.delBid(bid)"
-              ng-disabled="orderModel.isReadOnly"
-              class="btn btn-default"
-          >מחק</button>
-    </td>
+      <td>
+          <button ng-click="orderModel.restoreBid(bid)"
+                  ng-hide="orderModel.order.view.isChanged"
+                  ng-disabled="orderModel.isReadOnly"
+                  class="btn btn-default btn-sm">
+                  שחזר
+          </button>
+      </td>
+      <td>
+          <button ng-click="orderModel.delBid(bid)"
+                  ng-disabled="orderModel.isReadOnly"
+                  class="btn btn-default btn-sm">
+              מחק
+          </button>
+      </td>
   </tr>
   </tbody>
 </table>

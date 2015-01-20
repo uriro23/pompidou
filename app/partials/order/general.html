@@ -37,26 +37,6 @@
              ng-disabled="orderModel.isReadOnly">
     </td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
-    <td>טקסט מבוא</td>
-    <td>
-      <select ng-model="orderModel.order.view.startBidTextType"
-              ng-change="orderModel.orderChanged('startBidTextType')"
-              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"
-              ng-disabled="orderModel.isReadOnly"
-          ></select>
-    </td>
-  </tr>
-  <tr ng-class="orderModel.order.view.changes.endBidTextType?'myChanged':null">
-    <td>טקסט סיום</td>
-    <td>
-      <select ng-model="orderModel.order.view.endBidTextType"
-              ng-change="orderModel.orderChanged('endBidTextType')"
-              ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes"
-              ng-disabled="orderModel.isReadOnly"
-          ></select>
-    </td>
-  </tr>
 </table>
 <button ng-click="orderModel.deleteOrder()"
         ng-show="orderModel.order.id"

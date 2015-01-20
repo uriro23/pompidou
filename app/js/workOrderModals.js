@@ -18,7 +18,7 @@ angular.module('myApp')
             root.attributes.productDescription = 'מס ' +
                 root.attributes.order.number + ' תאריך ' +
                 $filter('date')(root.attributes.order.eventDate,'dd/MM/yyyy') + ' שעה ' +
-                $filter('date')(root.attributes.order.eventTime,'hh:mm')
+                $filter('date')(root.attributes.order.eventTime,'HH:mm')
         }
         backTrace.push(root);
         if (root.attributes.domain > 0) {

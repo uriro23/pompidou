@@ -137,6 +137,21 @@ angular.module('myApp')
         name: 'אלטרנטיבה',
         _noClone: true
       }
+    ],
+
+    documentTypes: [
+      {
+        id: 0,
+        label: 'גיבוי'
+      },
+      {
+        id: 1,
+        label: 'הצעת מחיר'
+      },
+      {
+        id: 2,
+        label: 'הזמנה'
+      }
     ]
   }
 );
