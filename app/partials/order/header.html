@@ -92,5 +92,9 @@
                                   ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"
                                   ng-disabled="orderModel.isReadOnly"
      ></select>
-     <label>סכום: </label><span>{{orderModel.order.attributes.total | currency}}</span><br/>
+     <label>סכום: </label><span>{{orderModel.order.attributes.total | currency}}</span>
+     <button class="btn btn-warning btn-sm"
+             ng-click="orderModel.deleteOrder()"
+             ng-show="orderModel.order.id"
+             >מחק הזמנה</button>
 </div>

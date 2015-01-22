@@ -2,18 +2,21 @@
     רשימת אירועים
 </h2>
     <div>
-        <label>עתידיים</label><input type="checkbox" ng-model="orderListModel.isListFuture" ng-change="orderListModel.filterOrders()">
-        <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
-                ng-show="orderListModel.filterByCustomer.id">
-          {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
-        </button>
-        <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
-                ng-hide="orderListModel.filterByCustomer.id">
-          סינון לפי לקוח
-        </button>
-        <label>תבניות</label>
-        <input type="checkbox" ng-model="orderListModel.isFilterTemplates"
-               ng-change="orderListModel.filterOrders()">
+        <label>עתידיים</label><input type="checkbox" ng-model="orderListModel.isListFuture"
+                                     ng-change="orderListModel.filterOrders()">
+        <span ng-hide="orderListModel.isListFuture">
+            <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
+                    ng-show="orderListModel.filterByCustomer.id">
+              {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
+            </button>
+            <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
+                    ng-hide="orderListModel.filterByCustomer.id">
+              סינון לפי לקוח
+            </button>
+            <label>תבניות</label>
+            <input type="checkbox" ng-model="orderListModel.isFilterTemplates"
+                   ng-change="orderListModel.filterOrders()">
+        </span>
     </div>
     <table style="width: 99%">
       <thead>
@@ -33,7 +36,12 @@
       <th style="width: 6%">הצעת מחיר</th>
       </thead>
       <tbody>
-      <tr ng-repeat="order in orderListModel.orders">
+      <tr ng-repeat="order in orderListModel.orders"
+              ng-class="!orderListModel.isListFuture?null:
+                        order.view.orderStatus.id===1?'myNewEvent':
+                        order.view.orderStatus.id===2?'myActiveEvent':
+                        order.view.orderStatus.id===3?'myFinalEvent':
+                        order.view.orderStatus.id===6?'myCancelledEvent':null">
         <td>
             <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
         </td>
@@ -42,7 +50,15 @@
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>
-        <td>{{order.view.orderStatus.name}}</td>
+        <td ng-show="orderListModel.isListFuture">
+          <select ng-model="order.view.orderStatus"
+                  ng-change="orderListModel.setStatus(order)"
+                  ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
+              ></select>
+          </td>
+          <td ng-hide="orderListModel.isListFuture">
+              {{order.view.orderStatus.name}}
+          </td>
           <td>{{order.attributes.total | currency}}</td>
           <td>{{order.attributes.transportationInclVat | currency}}</td>
           <td>{{order.attributes.discountRate | number:0}}</td>

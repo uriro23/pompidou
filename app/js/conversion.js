@@ -217,7 +217,8 @@ angular.module('myApp')
         order.attributes.noOfParticipants = Number(accessOrders[i].NoOfParticipants);
       }
       order.attributes.number = Number(accessOrders[i].OrderId);
-      order.attributes.orderStatus = Number(accessOrders[i].OrderStatus);
+      order.attributes.orderStatus = Number(accessOrders[i].OrderStatus)>1?  // make room for new value 2
+          Number(accessOrders[i].OrderStatus)+1 : Number(accessOrders[i].OrderStatus);
       order.attributes.remarks = accessOrders[i].Remarks;
       if (accessOrders[i].BidText) {
         order.attributes.startBidTextType = Number(accessOrders[i].BidText);
@@ -254,10 +255,10 @@ angular.module('myApp')
       } else {
         order.attributes.subTotal = 0;
       }
-      if (accessOrders[i].total) {
-        order.attributes.total = Number(accessOrders[i].total);
+      if (accessOrders[i].Total) {
+        order.attributes.total = Number(accessOrders[i].Total);
       } else {
-        order.attributes.total = 0;
+        order.attributes.Total = 0;
       }
       if (accessOrders[i].TotalBeforeVAT) {
         order.attributes.totalBeforeVat = Number(accessOrders[i].TotalBeforeVAT);

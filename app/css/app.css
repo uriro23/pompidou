@@ -75,3 +75,16 @@ a:link, a:visited  {
 .mySelected {
     background-color: deepskyblue;
 }
+
+.myNewEvent {
+    background-color: blanchedalmond;
+}
+.myActiveEvent {
+    background-color: gold;
+}
+.myFinalEvent {
+    background-color: chartreuse;
+}
+.myCancelledEvent {
+    text-decoration: line-through;
+}

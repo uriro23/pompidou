@@ -109,32 +109,32 @@ angular.module('myApp')
     orderStatuses: [
       {
         id: 1,
-        name: 'חדשה',
+        name: 'חדש',
         _noClone: true
       },
       {
         id: 2,
-        name: 'סוכמה',
+        name: 'בדיון',
         _noClone: true
       },
       {
         id: 3,
+        name: 'סוכם',
+        _noClone: true
+      }, /*
+      {
+        id: 4,
         name: 'בביצוע',
         _noClone: true
       },
       {
-        id: 4,
-        name: 'בוצעה',
-        _noClone: true
-      },
-      {
         id: 5,
-        name: 'בוטלה',
+        name: 'בוצע',
         _noClone: true
-      },
+      }, */
       {
         id: 6,
-        name: 'אלטרנטיבה',
+        name: 'בוטל',
         _noClone: true
       }
     ],

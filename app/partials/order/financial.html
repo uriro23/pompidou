@@ -19,7 +19,7 @@
   <tr ng-class="orderModel.order.view.changes.discountRate?'myChanged':null">
     <td><label>% הנחה</label></td>
     <td>
-      <input type="number" ng-model="orderModel.order.attributes.discountRate"
+      <input type="number" max=100 min = 0 ng-model="orderModel.order.attributes.discountRate"
              ng-disabled="!orderModel.order.view.discountCause.tId>0 || orderModel.isReadOnly"
              ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setDiscountRate()"
@@ -30,7 +30,7 @@
   <tr ng-class="orderModel.order.view.changes.transportationInclVat?'myChanged':null">
     <td><label>משלוח</label></td>
     <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
-      <input type="text" money ng-model="orderModel.order.attributes.transportationInclVat"
+      <input type="text" money size=5 ng-model="orderModel.order.attributes.transportationInclVat"
              ng-change="orderModel.isTransportationChanged = true"
              ng-blur="orderModel.setTransportation(orderModel.isTransportationChanged)"
              ng-disabled="orderModel.isReadOnly"
@@ -86,7 +86,7 @@
              ng-change="orderModel.orderChanged('fixedPrice')">
     </td>
     <td>
-      <input type="text" money ng-model="orderModel.order.attributes.fixedPrice"
+      <input type="text" money size=5 ng-model="orderModel.order.attributes.fixedPrice"
              ng-disabled="orderModel.isReadOnly || !orderModel.order.attributes.isFixedPrice"
              ng-change="orderModel.isFixedPriceChanged = true"
              ng-blur="orderModel.setFixedPrice()"

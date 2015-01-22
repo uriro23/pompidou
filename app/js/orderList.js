@@ -16,6 +16,7 @@ angular.module('myApp')
     this.isListFuture = true;
     this.isFilterTemplates = false;
     this.filterByCustomer = {};
+    this.orderStatuses = lov.orderStatuses;
 
 //  filters allOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
 //  function is called from ng-change of criteria controls, as well as from initialization code below
@@ -71,6 +72,11 @@ angular.module('myApp')
       };
 
     };
+
+      this.setStatus = function (order) {
+        order.attributes.orderStatus = order.view.orderStatus.id;
+        api.saveObj(order);
+      };
 
       this.getLastBid = function (order) {
         api.queryBidsByOrder(order.id)

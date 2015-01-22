@@ -3,6 +3,10 @@
     <th>
         הצעת מחיר
     </th>
+    <th></th>
+    <th>
+        מסמכים נוספים
+    </th>
     </thead>
     <tbody>
     <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
@@ -14,6 +18,11 @@
                     ng-disabled="orderModel.isReadOnly"
                     ></select>
         </td>
+        <td>
+            <a ng-href="#/menu/{{orderModel.order.id}}"target="_blank">
+                תפריט
+            </a>
+        </td>
     </tr>
     <tr ng-class="orderModel.order.view.changes.endBidTextType?'myChanged':null">
         <td>טקסט סיום</td>
@@ -23,6 +32,9 @@
                     ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
                     ng-disabled="orderModel.isReadOnly"
                     ></select>
+        </td>
+        <td>
+            <a ng-href="#/exitList/{{orderModel.order.id}}"target="_blank">רשימת יציאה  </a>
         </td>
     </tr>
     </tbody>
@@ -68,11 +80,14 @@
   <tbody>
   <tr ng-repeat="bid in orderModel.bids track by bid.id">
       <td>{{orderModel.documentTypes[bid.attributes.documentType].label}}</td>
-    <td>
-      <a ng-href="index.html#/bid/{{bid.id}}" target="_blank">
-      {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
-      </a>
-    </td>
+      <td ng-hide="bid.attributes.documentType===0">
+          <a ng-href="index.html#/bid/{{bid.id}}" target="_blank">
+              {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+          </a>
+      </td>
+      <td ng-show="bid.attributes.documentType===0">
+              {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      </td>
     <td>{{bid.attributes.desc}}</td>
     <td>{{bid.attributes.order.total | currency}}</td>
       <td>
