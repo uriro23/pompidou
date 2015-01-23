@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service ('api', function($q, $rootScope,secrets) {
+  .service ('api', function($q, $rootScope,secrets, today) {
   Parse.initialize(secrets.parseKey, secrets.parseSecret);
 
 // Generic functions
@@ -117,10 +117,17 @@ angular.module('myApp')
     return query(orderQuery);
   };
 
-  this.queryFutureOrders = function (today) {
+  this.queryFutureOrders = function () {
     var orderQuery = new Parse.Query(Order);
     orderQuery.greaterThanOrEqualTo('eventDate',today);
-     orderQuery.limit(1000);
+    orderQuery.limit(1000);
+    return query(orderQuery);
+  };
+
+  this.queryPastOrders = function () {
+    var orderQuery = new Parse.Query(Order);
+    orderQuery.lessThan('eventDate',today);
+    orderQuery.limit(1000);
     return query(orderQuery);
   };
 

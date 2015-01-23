@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderListCtrl', function($rootScope, $state, $modal, api, orders, lov, today, customers, eventTypes) {
+  .controller('OrderListCtrl', function($rootScope, $state, $modal, api, fetchedOrders, lov, today, customers, eventTypes) {
     $rootScope.hideMenu = false;
     var user = api.getCurrentUser();
     if (user) {
@@ -12,34 +12,76 @@ angular.module('myApp')
     }
     $rootScope.title = lov.company + ' - רשימת אירועים';
 
-    var allOrders = orders;
-    this.isListFuture = true;
-    this.isFilterTemplates = false;
-    this.filterByCustomer = {};
-    this.orderStatuses = lov.orderStatuses;
-
-//  filters allOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
+//  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
 //  function is called from ng-change of criteria controls, as well as from initialization code below
     this.filterOrders = function () {
       var that = this;
-      this.orders = [];
-      for (var i=0;i<allOrders.length;i++){
-        if ((!this.isListFuture || allOrders[i].attributes.eventDate >= today) &&
-            (!this.filterByCustomer.id ||
-            allOrders[i].attributes.customer === this.filterByCustomer.id ||
-            allOrders[i].attributes.contact === this.filterByCustomer.id) &&
-            (!this.isFilterTemplates || allOrders[i].attributes.template)
-           )  {
-          this.orders.push(allOrders[i])
-        }
+      if (this.queryType==='future' || this.queryType==='templates') {
+        this.orders = fetchedOrders;   // no filter in these states
+      } else {
+        this.orders = fetchedOrders.filter (function (ord) {
+          return !that.filterByCustomer.id ||
+              ord.attributes.customer === that.filterByCustomer.id ||
+              ord.attributes.contact === that.filterByCustomer.id
+        })
       }
+      
       this.orders.sort (function (a,b) {
-        if (that.isListFuture) {
+        if (that.queryType==='future') {
           return a.attributes.eventDate - b.attributes.eventDate;
         } else {
           return b.attributes.eventDate - a.attributes.eventDate;
         }
       })
+    };
+
+//  enrich order with info on customers etc.
+      this.enrichOrders = function() {
+        for (var i = 0; i < fetchedOrders.length; i++) {
+          fetchedOrders[i].view = {};
+          fetchedOrders[i].view.customer = customers.filter(function (cust) {
+            return cust.id === fetchedOrders[i].attributes.customer;
+          })[0];
+          fetchedOrders[i].view.eventType = eventTypes.filter(function (typ) {
+            return typ.tId === fetchedOrders[i].attributes.eventType;
+          })[0];
+          fetchedOrders[i].view.orderStatus = lov.orderStatuses.filter(function (stat) {
+            return stat.id === fetchedOrders[i].attributes.orderStatus;
+          })[0];
+          fetchedOrders[i].view.isReadOnly = fetchedOrders[i].attributes.eventDate < today;
+        }
+        this.filterOrders();
+      };
+
+      this.setQuery = function () {
+      var that = this;
+      switch (this.queryType) {
+        case 'future':
+          api.queryFutureOrders().then(function (orders) {
+            fetchedOrders = orders;
+            that.enrichOrders();
+          });
+          break;
+        case 'templates':
+          api.queryTemplateOrders().then(function (orders) {
+            fetchedOrders = orders;
+            that.enrichOrders();
+          });
+          break;
+        case 'past':
+          api.queryPastOrders().then(function (orders) {
+            fetchedOrders = orders;
+            that.enrichOrders();
+          });
+          break;
+        case 'all':
+          api.queryOrders().then(function (orders) {
+            fetchedOrders = orders;
+            that.enrichOrders();
+          });
+          break;
+
+      }
     };
 
     this.setCustomerFilter = function () {
@@ -94,21 +136,13 @@ angular.module('myApp')
 
       };
 
-//  enrich order with info on customers etc.
-    for (var i=0;i<allOrders.length;i++) {
-      allOrders[i].view = {};
-      allOrders[i].view.customer = customers.filter (function (cust) {
-        return cust.id === allOrders[i].attributes.customer;
-      })[0];
-      allOrders[i].view.eventType = eventTypes.filter (function (typ) {
-        return typ.tId === allOrders[i].attributes.eventType;
-      })[0];
-      allOrders[i].view.orderStatus = lov.orderStatuses.filter (function (stat) {
-        return stat.id === allOrders[i].attributes.orderStatus;
-      })[0];
-      allOrders[i].view.isReadOnly = allOrders[i].attributes.eventDate < today;
-    }
-    this.filterOrders();
 
-  });
+      this.filterByCustomer = {};
+      this.orderStatuses = lov.orderStatuses;
+      this.queryType = 'future';
+      this.enrichOrders();
+
+
+
+    });
 

@@ -18,8 +18,8 @@ config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "partials/orderList.html",
       controller: 'OrderListCtrl as orderListModel',
       resolve: {
-        orders: ['api', function (api) {
-          return api.queryOrders().then(function (objs) {
+        fetchedOrders: ['api', function (api) {
+          return api.queryFutureOrders().then(function (objs) {
             return objs;
           })
         }],
@@ -115,8 +115,8 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
-        futureOrders: ['api', 'today', function (api,today) {
-          return api.queryFutureOrders(today)
+        futureOrders: ['api', function (api) {
+          return api.queryFutureOrders()
               .then(function (obj) {
                 return obj;
           })
