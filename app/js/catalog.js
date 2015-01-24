@@ -200,8 +200,11 @@ angular.module('myApp')
       return true;
     };
 
-    this.setDomain = function () {
+    this.setDomain = function (isSave) {
       var that = this;
+      if (!isSave) {
+        this.isChanged = false;
+      }
       // if there have been changes in previous domain, save them
       if (that.isChanged) {
         if (!that.updateItems()) {

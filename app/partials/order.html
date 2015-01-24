@@ -5,9 +5,9 @@
     </h2>
         <div ng-show="orderModel.order.view.isChanged" class="myChanged">
           <span>לשמירת העדכונים הקש על </span>
-          <button ng-click="orderModel.saveOrder()"> שמור</button>
+          <button ng-click="orderModel.saveOrder()" class="btn btn-success"> שמור</button>
           <span> לביטול הקש על </span>
-          <button ng-click="orderModel.cancel()">ביטול</button>
+          <button ng-click="orderModel.cancel()" class="btn btn-warning">ביטול</button>
         </div>
        <div>
           <ng-include src="'partials/order/header.html'"></ng-include>

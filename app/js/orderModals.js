@@ -75,6 +75,10 @@ angular.module('myApp')
         }
       }
       $modalInstance.close(isChanged);
+    };
+
+    this.cancel = function () {
+      $modalInstance.dismiss();
     }
   });
 
