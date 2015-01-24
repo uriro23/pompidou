@@ -15,7 +15,7 @@ angular.module('myApp')
       }
 
     this.setReadOnly = function() {
-      this.isReadOnly = this.order.attributes.eventDate < today;
+      this.isReadOnly = this.order.attributes.eventDate < today && !this.order.attributes.template;
     };
 
     this.calcTotal = function () {
@@ -353,7 +353,35 @@ angular.module('myApp')
 
 
       // financial tab
-// TODO: in converting from access remember in access discount is positive
+
+    this.updatePrices = function () {
+      var that = this;
+      var updatePricesModal = $modal.open({
+        templateUrl: 'partials/order/updatePrices.html',
+        controller: 'UpdatePricesCtrl as updatePricesModel',
+        resolve: {
+          order: function () {
+              return that.order;
+          },
+          catalog: function () {
+              return api.queryCatalog(1)
+                .then(function (cat) {
+                  return cat;
+                })
+          }
+        },
+        size: 'lg'
+      });
+
+      updatePricesModal.result.then(function (isChanged) {
+        if (isChanged) {
+          that.calcSubTotal();
+          that.orderChanged();
+        }
+      })
+
+      };
+
     this.setDiscountRate = function () {
       var thisOrder = this.order.attributes;
 

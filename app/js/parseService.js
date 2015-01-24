@@ -13,7 +13,8 @@ angular.module('myApp')
     for (var fieldName in obj.attributes) {
       obj.set (fieldName, obj.attributes[fieldName]);
     }
-    obj.save({}, {
+    var newObj = angular.copy(obj);  // to avoid parse error 121
+    newObj.save({}, {
       success: function (o) {
         console.log (o.attributes);
         promise.resolve(o);

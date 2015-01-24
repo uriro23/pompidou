@@ -4,6 +4,12 @@
     <td><label>ס"ה ביניים</label></td>
     <td></td>
     <td>{{orderModel.order.attributes.subTotal | currency}}</td>
+    <td>
+      <button ng-click="orderModel.updatePrices()"
+              class="btn btn-default">
+              עדכן מחירים
+      </button>
+    </td>
   </tr>
   <tr ng-class="orderModel.order.view.changes.discountCause?'myChanged':null">
     <td><label>סיבת הנחה</label></td>
