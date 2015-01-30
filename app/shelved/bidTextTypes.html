@@ -1,0 +1,115 @@
+<!-- shelved feature. put this under partials/admin directory -->
+<div>
+  <button ng-click="adminModel.newBidTextType()"
+          ng-hide="adminModel.isAddBidTextType"
+          class="btn btn-default">
+    חדש
+  </button>
+  <span class="myChanged" ng-show="adminModel.isBidTextTypeChanged">
+    <span>
+      לשמירת השינויים הקש על
+    </span>
+    <button class="btn btn-success"
+            ng-click="adminModel.saveBidTextTypes()">
+      שמור
+    </button>
+    <span>
+       לביטול הקש על
+    </span>
+    <button class="btn btn-warning"
+            ng-click="adminModel.cancelBidtextTypes()">
+      בטל
+    </button>
+  </span>
+</div>
+<table>
+  <thead>
+  <th>
+    מס'
+  </th>
+  <th>
+    שם
+  </th>
+  <th>
+    סוג מסמך
+  </th>
+  <th>
+    סדר פסקאות
+  </th>
+  <th>
+    קובץ
+  </th>
+  </thead>
+  <tbody>
+  <tr ng-class="adminModel.newBidTextType.view.isChanged?'myChanged':null" ng-show="adminModel.isAddBidTextType">
+    <td>{{adminModel.newBidTextType.attributes.tId}}</td>
+    <td>
+      <input type="text" size="10"
+             ng-model="adminModel.newBidTextType.attributes.label">
+    </td>
+    <td>
+      <select ng-model="adminModel.newBidTextType.view.documentType"
+              ng-options="documentType.label for documentType in adminModel.documentTypes">
+      </select>
+    </td>
+    <td>
+      <input type="number" min="0" max="99"
+             ng-model="adminModel.newBidTextType.attributes.order"
+             ng-model-options="{updateOn: 'blur'}"
+             ng-change="adminModel.setBidTextTypeOrder(-1)"
+             ng-class="adminModel.newBidTextType.view.orderError?'myError':null">
+    </td>
+    <td>
+      <input type="text" size="30"
+             ng-model="adminModel.newBidTextType.attributes.url">
+    </td>
+    <td>
+      <button ng-click="adminModel.addBidTextType()"
+              ng-disabled="adminModel.newBidTextType.view.orderError ||
+                            !adminModel.newBidTextType.attributes.label ||
+                            !adminModel.newBidTextType.attributes.url"
+              class="btn btn-default btn-sm">
+        הוסף
+      </button>
+    </td>
+  </tr>
+  <tr ng-repeat="bidTextType in adminModel.bidTextTypes"
+      ng-class="bidTextType.view.isDeleted?'myDeleted':bidTextType.view.isChanged?'myChanged':null">
+    <td>{{bidTextType.attributes.tId}}</td>
+     <td>
+      <input type="text" size="10"
+             ng-model="bidTextType.attributes.label"
+             ng-model-options="{updateOn: 'blur'}"
+             ng-change="adminModel.setBidTextTypeChanged($index)">
+    </td>
+    <td>
+      <select ng-model="bidTextType.view.documentType"
+              ng-options="documentType.label for documentType in adminModel.documentTypes"
+              ng-change="adminModel.setBidTextTypeChanged($index)">
+      </select>
+    </td>
+    <td>
+      <input type="number" min="0" max="99"
+             ng-model="bidTextType.attributes.order"
+             ng-model-options="{updateOn: 'blur'}"
+             ng-change="adminModel.setBidTextTypeOrder($index)"
+             ng-class="bidTextType.view.orderError?'myError':null">
+    </td>
+    <td>
+      <a ng-href="#/../{{bidTextType.attributes.url}}" target="_blank">
+      <input type="text" size="30"
+             ng-model="bidTextType.attributes.url"
+             ng-model-options="{updateOn: 'blur'}"
+             ng-change="adminModel.setBidTextTypeChanged($index)">
+        </a>
+    </td>
+    <td>
+      <span>
+        מחק
+      </span>
+      <input type="checkbox" ng-model="bidTextType.view.isDeleted"
+             ng-change="adminModel.setBidTextTypeChanged($index)">
+    </td>
+  </tr>
+  </tbody>
+</table>

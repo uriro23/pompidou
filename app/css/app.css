@@ -72,6 +72,11 @@ a:link, a:visited  {
     background-color: rgba(0,255,0,0.33);
 }
 
+.myDeleted {
+    background-color: rgba(0,255,0,0.33);
+    text-decoration: line-through;
+}
+
 .mySelected {
     background-color: deepskyblue;
 }

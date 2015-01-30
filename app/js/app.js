@@ -134,6 +134,7 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
+
     .state('catalog', {
       url: "/catalog",
       templateUrl: "partials/catalog.html",
@@ -156,6 +157,50 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
      })
+
+    .state ('admin', {
+    url: "/admin",
+    templateUrl: "partials/admin.html",
+    controller: "AdminCtrl as adminModel",
+    resolve: {
+      config: ['api', function (api) {
+        return api.queryConfig().then(function (res) {
+          return res[0];
+        })
+      }],
+      bidTextTypes: ['api', function (api) {
+        return api.queryBidTextTypes().then(function (res) {
+          return res;
+        })
+      }],
+      categories: ['api', function (api) {
+        return api.queryCategories().then (function (res) {
+          return res;
+        });
+      }],
+      eventTypes: ['api', function (api) {
+        return api.queryEventTypes().then(function (res) {
+          return res;
+        })
+      }],
+      measurementUnits: ['api', function (api) {
+        return api.queryMeasurementUnits().then(function (res) {
+          return res;
+        })
+      }],
+      discountCauses: ['api', function (api) {
+        return api.queryDiscountCauses().then(function (res) {
+          return res;
+        })
+      }],
+      users: ['api', function (api) {
+        return api.queryUsers().then(function (res) {
+          return res;
+        })
+      }]
+    }
+  })
+
     .state('conversion', {
       url: "/conversion",
       templateUrl: "partials/conversion.html",

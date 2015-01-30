@@ -260,6 +260,10 @@ angular.module('myApp')
 
   var BidTextType = Parse.Object.extend("BidTextType");
 
+  this.initBidTextType = function () {
+    return new BidTextType();
+  };
+
   this.queryBidTextTypes = function (id) {
     var bidTextTypesQuery = new Parse.Query(BidTextType);
     if (id) {
@@ -366,12 +370,31 @@ angular.module('myApp')
       Parse.User.logOut();
   };
 
+  this.userPasswordReset = function (email) {
+    var promise = $q.defer();
+    Parse.User.requestPasswordReset (email, {
+      success: function () {
+        promise.resolve();
+        $rootScope.$digest()
+      },
+      error: function (error) {
+        alert('Password reset error '+error.code+", "+error.message);
+        promise.reject(error);
+        $rootScope.$digest()
+      }
+    });
+    return promise.promise;
+  };
+
   this.getCurrentUser = function () {
     return Parse.User.current();
   };
 
-  this.queryUsers = function () {
+  this.queryUsers = function (username) {
     var userQuery = new Parse.Query(Parse.User);
+    if (username) {
+      userQuery.equalTo('username', username);
+    }
     return query(userQuery);
   };
 

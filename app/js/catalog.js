@@ -236,9 +236,9 @@ angular.module('myApp')
     };
 
     this.isChanged = false;
-    this.domains = lov.domains;
+    this.domains = angular.copy(lov.domains);  // clone so that the splice won't affect the original lov
     this.domains.splice(0,1);   // drop "events" domain
-    this.currentDomain = lov.domains[0];
+    this.currentDomain = this.domains[0];
     this.measurementUnits = measurementUnits;
     this.setDomain();
   });

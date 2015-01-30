@@ -29,7 +29,7 @@
              ng-disabled="!orderModel.order.view.discountCause.tId>0 || orderModel.isReadOnly"
              ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setDiscountRate()"
-             ng-class="orderModel.order.viewerrors.discountRate?'myError':null">
+             ng-class="orderModel.order.view.errors.discountRate?'myError':null">
     </td>
     <td>{{orderModel.order.attributes.discount | currency}}</td>
   </tr>

@@ -1,0 +1,58 @@
+<h2>ניהול</h2>
+<tabset>
+  <tab heading='מע"מ'>
+    <label>שיעור מע"מ: </label>
+    <input type="number" min="0" max="50" ng-change="adminModel.setVat()"
+           ng-model-options="{updateOn: 'blur'}"
+           ng-model="adminModel.vatRate"
+           ng-class="adminModel.vatError?'myError':null">
+    <button class="btn btn-default" ng-click="adminModel.updateVat()">עדכן</button>
+  </tab>
+  <!--<tab heading="טקסטים">
+    <ng-include src="'partials/admin/bidTextTypes.html'"></ng-include>
+  </tab> -->
+  <tab heading="שינוי סיסמה">
+    <table>
+      <tbody>
+      <tr>
+        <td><label>סיסמה חדשה: </label></td>
+        <td><input type="password" size="8" ng-model="adminModel.pwd1"></td>
+      </tr>
+      <tr>
+        <td><label>חזור על הסיסמה: </label></td>
+        <td><input type="password" size="8" ng-model="adminModel.pwd2"></td>
+      </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-default" ng-click="adminModel.setPwd()">עדכן</button>
+  </tab>
+  <tab heading="משתמשים">
+    <table>
+      <thead>
+      <th style="text-align: left">username</th>
+      <th style="text-align: left">email</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="user in adminModel.users">
+        <td style="text-align: left">{{user.attributes.username}}</td>
+        <td style="text-align: left">{{user.attributes.email}}</td>
+        <td>
+          <button class="btn btn-default btn-sm" ng-click="adminModel.resetPwd(user)">
+            אפס סיסמה
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div>
+      <button class="btn btn-default" ng-click="adminModel.newUser()">משתמש חדש</button>
+      <input type="text" ng-model="conversionModel.user.attributes.username" placeholder="username">
+      <input type="text" ng-model="conversionModel.user.attributes.password" placeholder="password">
+      <input type="text" ng-model="conversionModel.user.attributes.email" placeholder="email">
+      <button class="btn btn-default btn-sm" ng-click="conversionModel.saveUser()">צור</button>
+    </div>
+    <div>
+      <button class="btn btn-default" ng-click="adminModel.createRole()">Role</button>
+    </div>
+  </tab>
+</tabset>
