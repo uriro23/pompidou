@@ -64,6 +64,13 @@ angular.module('myApp')
         if (field) {
           this.order.view.changes[field] = true;
         }
+        window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
+          return "יש שינויים שלא נשמרו"
+        };
+        window.onblur = function () {
+          alert('יש שינויים שלא נשמרו')
+        };
+        $rootScope.hideMenu = true;
       };
 
     // order header
@@ -652,6 +659,9 @@ angular.module('myApp')
         }
   //  backup order for future cancel
         this.order.view.isChanged = false;
+        window.onbeforeunload = function () {};
+        window.onblur = function () {};
+        $rootScope.hideMenu = false;
         this.order.view.changes = {};
         this.backupOrderAttr = angular.copy(this.order.attributes);
       };
@@ -834,6 +844,9 @@ angular.module('myApp')
     this.calcSubTotal();
 
     this.order.view.isChanged = false;
+    window.onbeforeunload = function () {};
+    window.onblur = function () {};
+    $rootScope.hideMenu = false;
     this.backupOrderAttr = angular.copy(this.order.attributes);
 
 

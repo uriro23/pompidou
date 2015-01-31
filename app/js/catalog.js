@@ -13,6 +13,23 @@ angular.module('myApp')
       }
       $rootScope.title = lov.company + ' - קטלוג';
 
+    this.setChanged = function (bool) {
+        if (bool) {
+          this.isChanged = true;
+          window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
+            return "יש שינויים שלא נשמרו"
+          };
+          window.onblur = function () {
+            alert('יש שינויים שלא נשמרו')
+          };
+          $rootScope.hideMenu = true;
+        } else {
+          this.isChanged = false;
+          window.onbeforeunload = function () {};
+          window.onblur = function () {};
+          $rootScope.hideMenu = false;
+        }
+    };
 
     this.addItem = function () {
       var newItem = api.initCatalog();
@@ -27,12 +44,12 @@ angular.module('myApp')
       newItem.attributes.exitList = [];
       newItem.isNewItem = true; // used to do validity checks on new items before storing them
       this.catalog.splice (0,0,newItem); // add new item at the front of the array
-      this.isChanged = true;
+      this.setChanged(true);
     };
 
     this.itemChanged = function (ind) {
       this.catalog[ind].isChanged = true;
-      this.isChanged = true;
+      this.setChanged(true);
     };
 
     this.setProductDescription = function (ind) {
@@ -196,14 +213,14 @@ angular.module('myApp')
         }
       }
       this.catalog = this.sortCatalog(this.catalog);
-      this.isChanged = false;
+      this.setChanged(false);
       return true;
     };
 
     this.setDomain = function (isSave) {
       var that = this;
       if (!isSave) {
-        this.isChanged = false;
+        this.setChanged(false);
       }
       // if there have been changes in previous domain, save them
       if (that.isChanged) {
@@ -230,12 +247,12 @@ angular.module('myApp')
               }) [0];
               that.catalog[i].isChanged = false;
             }
-            that.isChanged = false;
+            that.setChanged(false);
           })
         })
     };
 
-    this.isChanged = false;
+    this.setChanged(false);
     this.domains = angular.copy(lov.domains);  // clone so that the splice won't affect the original lov
     this.domains.splice(0,1);   // drop "events" domain
     this.currentDomain = this.domains[0];
