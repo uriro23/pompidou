@@ -1,0 +1,17 @@
+#menu_items
+{
+    width: 50%;
+    padding-right: 2%;
+    padding-left: 2%;
+    float: right;
+}
+
+@page
+{
+    margin: 0;
+}
+
+#menu_container h1, #menu_date
+{
+    padding-right:2%;
+}
