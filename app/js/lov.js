@@ -142,15 +142,23 @@ angular.module('myApp')
     documentTypes: [
       {
         id: 0,
-        label: 'גיבוי'
+        label: 'גיבוי',
+        isRealDocumentType: false
       },
       {
         id: 1,
-        label: 'הצעת מחיר'
+        label: 'הצעת מחיר',
+        isRealDocumentType: true
       },
       {
         id: 2,
-        label: 'הזמנה'
+        label: 'הזמנה',
+        isRealDocumentType: true
+      },
+      {
+        id: 3,
+        label: 'דוא"ל',
+        isRealDocumentType: false
       }
     ]
   }

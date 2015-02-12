@@ -80,6 +80,40 @@ angular.module('myApp')
     this.cancel = function () {
       $modalInstance.dismiss();
     }
-  });
+  })
 
+.controller('SendMailCtrl', function ($modalInstance, api, lov, order, bids, bidTextTypes) {
+    var that = this;
+    this.order = order;
+    this.bids = bids;
+    this.bidTextTypes = bidTextTypes;
+    this.documentTypes = lov.documentTypes;
+    api.queryCustomers(order.attributes.customer)
+      .then(function (custs) {
+        that.customer = custs[0].attributes;
+        if (order.attributes.contact) {
+          api.queryCustomers(order.attributes.contact)
+            .then(function (conts) {
+              that.contact = conts[0].attributes
+            })
+        }
+      });
+
+    this.setText = function () {
+      this.mailText = this.mailTextType.mailText;
+    };
+
+    this.isShowDocument = function (doc) {
+      return lov.documentTypes[doc.attributes.documentType].isRealDocumentType
+    };
+
+    this.doSend = function () {
+      // real stuff here
+      $modalInstance.close();
+    };
+
+    this.cancel = function () {
+      $modalInstance.dismiss();
+    }
+});
 

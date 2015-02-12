@@ -140,6 +140,28 @@ angular.module('myApp')
           return textType.documentType;
       };
 
+    this.deleteOrder = function () {
+      var that = this;
+      var ackDelModal = $modal.open({
+        templateUrl: 'partials/order/ackDelete.html',
+        controller: 'AckDelOrderCtrl as ackDelOrderModel',
+        resolve: {
+          order: function() {
+            return that.order;
+          }
+        },
+        size: 'sm'
+      });
+
+      ackDelModal.result.then(function (isDelete) {
+        if (isDelete) {
+          return api.deleteObj (that.order).then (function (obj) {
+            $state.go('orderList');
+          })
+        }
+      });
+    };
+
     // items tab
      this.setCategory = function () {
         var that = this;
@@ -487,8 +509,8 @@ angular.module('myApp')
       this.orderChanged();
     };
 
-    // bids tab
-    // --------
+    // Documents tab
+    // -------------
 
       this.setOrderDocTextType = function (textType) {
         this.order.attributes.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
@@ -496,6 +518,8 @@ angular.module('myApp')
         }));
         this.orderChanged('orderTextType');
       };
+
+
 
     this.createBid = function(docType) {
       if (this.order.view.isChanged) {
@@ -507,6 +531,10 @@ angular.module('myApp')
       this.bid.attributes.date = new Date();
       this.bid.attributes.order = this.order.attributes;
       this.bid.attributes.desc = this.bidDesc;
+      this.bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
       this.bidDesc = null;
       var that = this;
       return api.saveObj(this.bid)
@@ -545,6 +573,30 @@ angular.module('myApp')
               that.bids = bids;
           })
       })
+    };
+
+    this.sendMail = function () {
+      var that = this;
+      var sendMailModal = $modal.open({
+        templateUrl: 'partials/order/sendMail.html',
+        controller: 'SendMailCtrl as sendMailModel',
+        resolve: {
+          order: function() {
+            return that.order;
+          },
+          bids: function () {
+            return that.bids;
+          },
+          bidTextTypes: function() {
+            return bidTextTypes;
+          }
+        },
+        size: 'lg'
+      });
+
+      sendMailModal.result.then(function () {
+      });
+
     };
 
       // prev orders tab
@@ -666,27 +718,6 @@ angular.module('myApp')
         this.backupOrderAttr = angular.copy(this.order.attributes);
       };
 
-      this.deleteOrder = function () {
-        var that = this;
-        var ackDelModal = $modal.open({
-          templateUrl: 'partials/order/ackDelete.html',
-          controller: 'AckDelOrderCtrl as ackDelOrderModel',
-          resolve: {
-            order: function() {
-              return that.order;
-            }
-          },
-          size: 'sm'
-        });
-
-        ackDelModal.result.then(function (isDelete) {
-          if (isDelete) {
-            return api.deleteObj (that.order).then (function (obj) {
-              $state.go('orderList');
-            })
-          }
-        });
-       };
 
     this.setupOrderView = function () {
       this.order.view = {};

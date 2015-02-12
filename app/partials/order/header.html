@@ -68,33 +68,43 @@
       </tr>
     </tbody>
   </table>
- <div ng-class="orderModel.order.view.changes.header?'myChanged':null">
-       <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
+<table style="width: 80%">
+  <tr ng-class="orderModel.order.view.changes.header?'myChanged':null">
+    <td style="width: 21%">
+      <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
                                  ng-change="orderModel.setEventDate()" required
                                  ng-class="orderModel.order.view.errors.eventDate?'myError':null">
+    </td>
+    <td style="width: 14%">
       <label>שעה</label><input type="time" ng-model="orderModel.order.attributes.eventTime"
                                ng-model-options="{updateOn: 'blur'}"
                                ng-disabled="orderModel.isReadOnly"
                                ng-change="orderModel.orderChanged('header')">
+    </td>
+    <td style="width: 18%">
       <label>מספר משתתפים</label><input type="number" min=1 max=1000
                                         ng-model="orderModel.order.attributes.noOfParticipants"
                                         ng-change="orderModel.setNoOfParticipants()"
                                         ng-model-options="{updateOn: 'blur'}"
                                         ng-disabled="orderModel.isReadOnly"
                                         ng-class="orderModel.order.view.errors.noOfParticipants?'myError':null">
+    </td>
+    <td style="width: 19%">
       <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType"
                                       ng-change="orderModel.orderChanged('header')"
                                       ng-options="eventType.label for eventType in orderModel.eventTypes"
                                       ng-disabled="orderModel.isReadOnly"
-     ></select>
+            ></select>
+    </td>
+    <td style="width: 14%">
       <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus"
                                   ng-change="orderModel.orderChanged('header')"
                                   ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"
                                   ng-disabled="orderModel.isReadOnly"
-     ></select>
-     <label>סכום: </label><span>{{orderModel.order.attributes.total | currency}}</span>
-     <button class="btn btn-warning btn-sm"
-             ng-click="orderModel.deleteOrder()"
-             ng-show="orderModel.order.id"
-             >מחק הזמנה</button>
-</div>
+            ></select>
+    </td>
+    <td style="width: 14%">
+      <label>סכום: </label><span>{{orderModel.order.attributes.total | currency}}</span>
+    </td>
+  </tr>
+</table>

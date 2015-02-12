@@ -37,6 +37,16 @@
              ng-disabled="orderModel.isReadOnly">
     </td>
   </tr>
+  <tr></tr>
+  <tr>
+    <td>
+      <button class="btn btn-warning btn-sm"
+              ng-click="orderModel.deleteOrder()"
+              ng-show="orderModel.order.id"
+              >מחק הזמנה</button>
+
+    </td>
+  </tr>
 </table>
 
 
