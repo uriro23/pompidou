@@ -240,12 +240,12 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
     .state ('bid', {
-    url: "/bid/:id",
+    url: "/bid/:uuid",
     templateUrl: "partials/bid.html",
     controller: "BidCtrl as bidModel",
     resolve: {
       bid: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryBidById ($stateParams.id).then (function (bids) {
+        return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
           return bids[0];
         })
       }],

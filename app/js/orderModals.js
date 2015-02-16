@@ -88,6 +88,7 @@ angular.module('myApp')
     this.bids = bids;
     this.bidTextTypes = bidTextTypes;
     this.documentTypes = lov.documentTypes;
+    this.subject = 'אירוע פומפידו'
     api.queryCustomers(order.attributes.customer)
       .then(function (custs) {
         that.customer = custs[0].attributes;

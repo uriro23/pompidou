@@ -530,6 +530,7 @@ angular.module('myApp')
       this.bid.attributes.orderId = this.order.id;
       this.bid.attributes.date = new Date();
       this.bid.attributes.order = this.order.attributes;
+      this.bid.attributes.customer = this.order.view.customer;
       this.bid.attributes.desc = this.bidDesc;
       this.bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -595,6 +596,7 @@ angular.module('myApp')
       });
 
       sendMailModal.result.then(function () {
+        // todo; create activity "mail sent"
       });
 
     };
@@ -615,11 +617,10 @@ angular.module('myApp')
     };
 
       this.getLastBid = function (order) {
-        console.log(order);
         api.queryBidsByOrder(order.id)
             .then(function (bids) {
               if (bids.length>0) {
-                  window.open("#/bid/"+bids[0].id,"_blank");
+                  window.open("#/bid/"+bids[0].attributes.uuid,"_blank");
               } else {
                 alert('אין הצעות מחיר לאירוע')
               }

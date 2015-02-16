@@ -17,18 +17,17 @@ angular.module('myApp')
     this.categories = categories;
     this.config = config[0];
     var currentOrder = this.bid.attributes.order;
+    
+    this.customer = bid.attributes.customer;
 
-    // fetch customer
+    $rootScope.title = lov.company    // set title so PDF file will be named correctly
+    + this.bid.attributes.documentType===1?' - הצעת מחיר ':' - הזמנה '
+    + (this.customer.firstName?this.customer.firstName:'')
+    + ' ' + (this.customer.lastName?this.customer.lastName:'')
+    + ' ' + this.bid.attributes.desc;
+
     var that = this;
-    api.queryCustomers(currentOrder.customer)
-      .then (function (customers) {
-        that.customer = customers[0].attributes;
-        $rootScope.title = lov.company    // set title so PDF file will be named correctly
-        + ' - הצעת מחיר '
-        + (that.customer.firstName?that.customer.firstName:'')
-        + ' ' + (that.customer.lastName?that.customer.lastName:'')
-        + ' ' + that.bid.attributes.desc;
-    });
+
 
     //fetch start bid text type
     if (currentOrder.startBidTextType) {

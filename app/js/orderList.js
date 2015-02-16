@@ -124,11 +124,8 @@ angular.module('myApp')
         api.queryBidsByOrder(order.id)
             .then(function (bids) {
                 if (bids.length>0) {
-                  // todo: find a way to display on new tab
- //                 var url = $state.href("bid",{id:bids[0].id},{absolute: true});
- //                 console.log('url: ',url);
- //                 window.open(url,"_blank");
-                  $state.go("bid",{id:bids[0].id})
+ //                 $state.go("bid",{id:bids[0].attributes.uuid})
+                  window.open("#/bid/"+bids[0].attributes.uuid,"_blank");
                 } else {
                   alert('אין הצעות מחיר לאירוע')
                 }

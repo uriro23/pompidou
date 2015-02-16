@@ -159,9 +159,9 @@ angular.module('myApp')
     return query(bidQuery);
   };
 
-  this.queryBidById = function (id) {
+  this.queryBidByUuid = function (uuid) {
     var bidQuery = new Parse.Query(Bid);
-    bidQuery.equalTo("objectId",id);
+    bidQuery.equalTo("uuid",uuid);
     return query(bidQuery);
   };
 

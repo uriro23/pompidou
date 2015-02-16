@@ -91,7 +91,7 @@
   <tr ng-repeat="bid in orderModel.bids track by bid.id">
       <td>{{orderModel.documentTypes[bid.attributes.documentType].label}}</td>
       <td ng-hide="bid.attributes.documentType===0">
-          <a ng-href="index.html#/bid/{{bid.id}}" target="_blank">
+          <a ng-href="#/bid/{{bid.attributes.uuid}}" target="_blank">
               {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
           </a>
       </td>

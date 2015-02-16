@@ -6,11 +6,21 @@
     <label>
       אל:
     </label>
-    <span>{{sendMailModel.customer.email}}</span><br/>
+    <span>{{sendMailModel.customer. firstName+' '+
+            sendMailModel.customer.lastName}}</span>
+    <input type="text" size="30" ng-model="sendMailModel.customer.email"><br/>
     <label>
       דע:
     </label>
-    <span>{{sendMailModel.contact.email}}</span><br/>
+    <span>{{sendMailModel.contact. firstName+' '+
+            sendMailModel.contact.lastName}}</span>
+    <input type="text" size="30" ng-model="sendMailModel.contact.email"><br/>
+  </div>
+  <div>
+    <label>
+      הנדון:
+    </label>
+    <input type="text" size="60" ng-model="sendMailModel.subject">
   </div>
   <div>
     <label>
