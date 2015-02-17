@@ -25,6 +25,58 @@ angular.module('myApp')
     console.log('loaded '+ accessCustomers.length + ' customers');
     console.log('loaded '+ accessOrders.length + ' orders');
 
+
+//  find customers without orders
+    var customersWithoutOrders = 0;
+    console.log('customers without orders:');
+    for (var i=0;i<accessCustomers.length;i++) {
+      accessCustomers[i].view = {};
+      accessCustomers[i].view.orderCount = 0;
+      for (var j=0;j<accessOrders.length;j++) {
+        if (accessOrders[j].Customer === accessCustomers[i].CustomerId) {
+          accessCustomers[i].view.orderCount++;
+        }
+      }
+      if (accessCustomers[i].view.orderCount===0) {
+        console.log(accessCustomers[i]);
+        customersWithoutOrders++;
+      }
+    }
+    console.log(customersWithoutOrders + ' customers without orders');
+
+    // find duplicate customers by exact email
+    var dupEmails = 0;
+    for (i=0;i<accessCustomers.length;i++) {
+      for (j=0;j<i;j++) {
+        if (accessCustomers[i].Email && accessCustomers[i].Email !== 'test' &&
+          accessCustomers[j].Email && accessCustomers[j].Email !== 'test' &&
+          accessCustomers[i].view.orderCount && accessCustomers[j].view.orderCount &&
+          accessCustomers[i].Email=== accessCustomers[j].Email) {
+          console.log('dup email:');
+          console.log(accessCustomers[i]);
+          console.log(accessCustomers[j]);
+          dupEmails++;
+        }
+      }
+    }
+    console.log('total ' + dupEmails + ' dup emails');
+
+    // find duplicate customers by exact mobile
+    var dupMobiles = 0;
+    for (i=0;i<accessCustomers.length;i++) {
+      for (j=0;j<i;j++) {
+        if (accessCustomers[i].CellPhone && accessCustomers[j].CellPhone &&
+          accessCustomers[i].view.orderCount && accessCustomers[j].view.orderCount &&
+          accessCustomers[i].CellPhone=== accessCustomers[j].CellPhone) {
+          console.log('dup mobile:');
+          console.log(accessCustomers[i]);
+          console.log(accessCustomers[j]);
+          dupMobiles++;
+        }
+      }
+    }
+    console.log('total ' + dupMobiles + ' dup mobiles');
+
     var idMap = []; // used to convert access catalog ids to parse ids for subitems (components)
 
     var that = this;
