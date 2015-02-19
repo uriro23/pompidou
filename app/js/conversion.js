@@ -164,11 +164,16 @@ angular.module('myApp')
     this.convertCustomers = function() {
       this.isCancel = false;
       that.total = accessCustomers.length;
-      cvCustomer(0);
+      cvCustomer(0,this.isSkipEmptyCustomers);
     };
 
-    var cvCustomer = function (i) {
+    var cvCustomer = function (i,isSkipEmptyCustomers) {
       if (i>=accessCustomers.length || that.isCancel) {
+        return;
+      }
+
+      if (isSkipEmptyCustomers && !accessCustomers[i].view.orderCount) { // skip customer without orders
+        cvCustomer(i+1,isSkipEmptyCustomers);
         return;
       }
 
@@ -191,7 +196,7 @@ angular.module('myApp')
 
       api.saveObj(customer)
         .then (function() {
-          cvCustomer(i+1);
+          cvCustomer(i+1,isSkipEmptyCustomers);
       })
     };
 

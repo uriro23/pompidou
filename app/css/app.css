@@ -3,6 +3,8 @@ body {
     text-align: right;
     direction: rtl;
     background-color: lightyellow;
+    padding-right: 1%;
+    padding-left: 1%;
 }
 h1.content{
     text-align: center; 
