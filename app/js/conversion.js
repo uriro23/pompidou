@@ -114,8 +114,7 @@ angular.module('myApp')
       catalogItem.attributes.category = Number(accessCatalog[i].Category);
       if (catalogItem.attributes.category === 2 ||
           catalogItem.attributes.category === 3 ||
-          catalogItem.attributes.category === 11 ||
-          catalogItem.attributes.category === 35) {
+          catalogItem.attributes.category === 11 ) {
         catalogItem.attributes.category = 1;
       }
       catalogItem.attributes.productDescription = accessCatalog[i].ProductName;
@@ -348,66 +347,68 @@ angular.module('myApp')
       api.queryAccessOrderItems(accessOrders[i].OrderId)
         .then (function (accessItems) {
           for (var k=0;k<accessItems.length;k++) {
-            var newItem = {};
-            newItem.catalogId = that.catalogIdMap[accessItems[k].attributes.ItemId].id;
-            if (that.catalogIdMap[accessItems[k].attributes.ItemId].quantity) {
-              newItem.catalogQuantity = that.catalogIdMap[accessItems[k].attributes.ItemId].quantity;
+            if (!that.catalogIdMap[accessItems[k].attributes.ItemId]) {
+              console.log('missing catalog entry for item '+accessItems[k].attributes.ItemId);
             } else {
-              newItem.catalogQuantity = 0;
-            }
-            if (that.catalogIdMap[accessItems[k].attributes.ItemId].price) {
-              newItem.catalogPrice = that.catalogIdMap[accessItems[k].attributes.ItemId].price;
-            } else {
-              newItem.catalogPrice = 0;
-            }
-            newItem.productDescription = accessItems[k].attributes.ItemDescription;
-            if (accessItems[k].attributes.Quantity) {
-              newItem.quantity = Number(accessItems[k].attributes.Quantity);
-            } else {
-              newItem.quantity = 0;
-            }
-            if(accessItems[k].attributes.Price) {
-              newItem.price = Number(accessItems[k].attributes.Price);
-            } else {
-              newItem.price = 0 ;
-            }
-            if (order.attributes.isBusinessEvent) {
-              newItem.priceInclVat = newItem.price * (1+order.attributes.vatRate);
-              newItem.priceBeforeVat = newItem.price;
-            } else {
-              newItem.priceInclVat = newItem.price;
-              newItem.priceBeforeVat = newItem.price / (1+order.attributes.vatRate);
-            }
-            newItem.isFreeItem = Boolean(Number(accessItems[k].attributes.IsFreeItem));
-            var ct = Number(accessItems[k].attributes.Category); // combine categories same as in catalog conversion
-            if (ct === 2 ||
-              ct === 3 ||
-              ct === 11 ||
-              ct === 35) {
-              ct = 1;
-            }
-            newItem.category = categories.filter(function (cat) {
-              return cat.tId === ct;
-            })[0];
-            newItem.measurementUnit = measurementUnits.filter(function (mes) {
-              return mes.tId === that.catalogIdMap[accessItems[k].attributes.ItemId].measurementUnit;
-            })[0];
+              var newItem = {};
+              newItem.catalogId = that.catalogIdMap[accessItems[k].attributes.ItemId].id;
+              if (that.catalogIdMap[accessItems[k].attributes.ItemId].quantity) {
+                newItem.catalogQuantity = that.catalogIdMap[accessItems[k].attributes.ItemId].quantity;
+              } else {
+                newItem.catalogQuantity = 0;
+              }
+              if (that.catalogIdMap[accessItems[k].attributes.ItemId].price) {
+                newItem.catalogPrice = that.catalogIdMap[accessItems[k].attributes.ItemId].price;
+              } else {
+                newItem.catalogPrice = 0;
+              }
+              newItem.productDescription = accessItems[k].attributes.ItemDescription;
+              if (accessItems[k].attributes.Quantity) {
+                newItem.quantity = Number(accessItems[k].attributes.Quantity);
+              } else {
+                newItem.quantity = 0;
+              }
+              if (accessItems[k].attributes.Price) {
+                newItem.price = Number(accessItems[k].attributes.Price);
+              } else {
+                newItem.price = 0;
+              }
+              if (order.attributes.isBusinessEvent) {
+                newItem.priceInclVat = newItem.price * (1 + order.attributes.vatRate);
+                newItem.priceBeforeVat = newItem.price;
+              } else {
+                newItem.priceInclVat = newItem.price;
+                newItem.priceBeforeVat = newItem.price / (1 + order.attributes.vatRate);
+              }
+              newItem.isFreeItem = Boolean(Number(accessItems[k].attributes.IsFreeItem));
+              var ct = Number(accessItems[k].attributes.Category); // combine categories same as in catalog conversion
+              if (ct === 2 || ct === 3 || ct === 11 ) {
+                ct = 1;
+              }
+              newItem.category = categories.filter(function (cat) {
+                return cat.tId === ct;
+              })[0];
+              newItem.measurementUnit = measurementUnits.filter(function (mes) {
+                return mes.tId === that.catalogIdMap[accessItems[k].attributes.ItemId].measurementUnit;
+              })[0];
 
-            var catPrice = newItem.catalogPrice * newItem.quantity / newItem.catalogQuantity;
-            if (Math.abs(catPrice - newItem.price)> 0.1) {  // if price changed, catalog price is not relevant for conversion
-              newItem.catalogPrice = 0;
-              newItem.catalogQuantity = 1;
-              that.itemschangedPrice++;
-            }
+              var catPrice = newItem.catalogPrice * newItem.quantity / newItem.catalogQuantity;
+              if (Math.abs(catPrice - newItem.price) > 0.1) {  // if price changed, catalog price is not relevant for conversion
+                newItem.catalogPrice = 0;
+                newItem.catalogQuantity = 1;
+                that.itemschangedPrice++;
+              }
 
               that.itemCount++;
               order.attributes.items.push(newItem);
+            }
           }
         api.queryAccessOrderActivities(accessOrders[i].OrderId)
           .then (function (activities) {
             for (var l=0;l<activities.length;l++) {
               var newActivity = {};
               newActivity.date = new Date(activities[l].attributes.ActivityTime);
+              newActivity.date.setSeconds(l); // make date unique in order
               newActivity.text = activities[l].attributes.ActivityText;
               order.attributes.activities.push(newActivity);
               that.activityCount++;

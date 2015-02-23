@@ -4,12 +4,6 @@
 angular.module('myApp')
   .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, lov, config, measurementUnits, categories) {
       $rootScope.hideMenu = true;
-      var user = api.getCurrentUser();
-      if (user) {
-        $rootScope.username = user.attributes.username;
-      } else {
-        $state.go('login');
-      }
 
     this.bid = bid;
 
@@ -34,7 +28,7 @@ angular.module('myApp')
       api.queryBidTextTypes(currentOrder.startBidTextType)
         .then (function (bidTexts) {
         that.startBidTextType = bidTexts[0].attributes;
-      })
+       })
     }
 
     // fetch end bid text type

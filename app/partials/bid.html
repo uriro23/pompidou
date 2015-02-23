@@ -7,7 +7,7 @@
     
     <span id="contact" style="text-align:right ;color:purple; font: Tahoma ;font-size: 1.5em; ">
         <span>יובל רוזנן</span><br/>
-        <span>054-75140061</span><br/>
+        <span>054-7514061</span><br/>
         <span>yuval@pompidou.co.il</span><br/>
     </span>
 
@@ -24,12 +24,12 @@
     <h1 ng-show="bidModel.bid.attributes.documentType===1" align="center" style="font-size:5em; width:60%">הצעת מחיר</h1>
     <h1 ng-show="bidModel.bid.attributes.documentType===2" align="center" style="font-size:5em; width:60%">הזמנה</h1>
 <br/>
-<div ng-show="bidModel.bid.attributes.documentType===1">
+<div ng-show="bidModel.bid.attributes.documentType===1" style="width: 60%">
     <ng-include src="bidModel.startBidTextType.url"></ng-include>
 </div>
-<div ng-show="bidModel.bid.attributes.documentType===2">
+<div ng-show="bidModel.bid.attributes.documentType===2" style="width: 60%">
     <ng-include src="bidModel.config.orderStartTextUrl"></ng-include>
-</div>
+</div><br/>
     <div  style="width:60%;text-align:justify;">
       <label style="font-weight: bold">סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
       <label style="font-weight: bold">תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
@@ -119,10 +119,10 @@
         </tr>
       </table>
     </div>
-<div ng-show="bidModel.bid.attributes.documentType===1">
+<div ng-show="bidModel.bid.attributes.documentType===1" style="width: 60%">
     <ng-include src="bidModel.endBidTextType.url"></ng-include>
 </div>
-<div ng-show="bidModel.bid.attributes.documentType===2">
+<div ng-show="bidModel.bid.attributes.documentType===2" style="width: 60%">
     <div ng-repeat="textType in bidModel.bid.attributes.order.orderDocTextTypes">
         <ng-include src="textType.url"></ng-include>
     </div>
