@@ -8,19 +8,19 @@
     </label>
     <span>{{sendMailModel.customer. firstName+' '+
             sendMailModel.customer.lastName}}</span>
-    <input type="text" size="30" ng-model="sendMailModel.customer.email"><br/>
+    <input type="text" size="30" ng-model="sendMailModel.mail.to"><br/>
     <label>
       דע:
     </label>
     <span>{{sendMailModel.contact. firstName+' '+
             sendMailModel.contact.lastName}}</span>
-    <input type="text" size="30" ng-model="sendMailModel.contact.email"><br/>
+    <input type="text" size="30" ng-model="sendMailModel.mail.cc"><br/>
   </div>
   <div>
     <label>
       הנדון:
     </label>
-    <input type="text" size="60" ng-model="sendMailModel.subject">
+    <input type="text" size="60" ng-model="sendMailModel.mail.subject">
   </div>
   <div>
     <label>
@@ -30,7 +30,7 @@
             ng-change="sendMailModel.setText()"
             ng-options="bidTextType.label for bidTextType in sendMailModel.bidTextTypes | filter: {documentType: 3}"
             ></select><br/>
-     <textarea rows="5" cols="70" ng-model="sendMailModel.mailText"
+     <textarea rows="5" cols="70" ng-model="sendMailModel.mail.text"
                   ></textarea>
   </div>
   <table>
