@@ -84,7 +84,7 @@
         content = params.text;
       var emailHeaders = 'From: \'me\'\r\n' +
         'To:  ' + to + '\r\n' +
-        'Subject: =?iso-8859-1?Q?' + encodeQuotedPrintable(subject) + '?=\r\n' +
+        'Subject: =?utf-8?B?' + btoa(unescape(encodeURIComponent(subject))) + '?=\r\n' +
         'Content-Type: text/html; charset=utf-8\r\n' +
         'Content-Transfer-Encoding: quoted-printable\r\n';
       return isInitialized.promise.then(function () {
