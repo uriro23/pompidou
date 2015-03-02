@@ -31,7 +31,7 @@
             ng-change="sendMailModel.setText()"
             ng-options="bidTextType.label for bidTextType in sendMailModel.bidTextTypes | filter: {documentType: 3}"
             ></select><br/>
-     <textarea rows="5" cols="70" ng-model="sendMailModel.mail.text"
+     <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendMailModel.mail.text"
                   ></textarea>
   </div>
   <table>

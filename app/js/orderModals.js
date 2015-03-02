@@ -82,7 +82,7 @@ angular.module('myApp')
     }
   })
 
-.controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel) {
+.controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel, $scope) {
     var that = this;
     this.order = order;
     this.bids = bids;
@@ -115,6 +115,11 @@ angular.module('myApp')
 
     this.isShowDocument = function (doc) {
       return lov.documentTypes[doc.attributes.documentType].isRealDocumentType
+    };
+
+    $scope.editorOptions = {
+      height: '150',
+      removePlugins: 'elementspath'
     };
 
     this.doSend = function () {

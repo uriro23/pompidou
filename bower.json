@@ -17,7 +17,8 @@
   "dependencies": {
     "angular": "~1.2.0",
     "parse-js-sdk": "~1.2.19",
-    "angular-ui-router": null
+    "angular-ui-router": null,
+    "ng-ckeditor": "~0.2.1"
   },
   "devDependencies": {}
 }
