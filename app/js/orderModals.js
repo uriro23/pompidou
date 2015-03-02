@@ -126,9 +126,11 @@ angular.module('myApp')
       for (var i=0;i<this.bids.length;i++) {
         if (bids[i].isInclude) {
           this.mail.attachments.push(baseUrl+bids[i].attributes.uuid);
+          this.mail.text = this.mail.text+'\n'
+                            +bids[i].attributes.desc+' '
+                            +baseUrl+bids[i].attributes.uuid;
         }
       }
-      // todo: append urls to msg text
       console.log(this.mail);
       // todo: real stuff here
 
