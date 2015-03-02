@@ -82,34 +82,64 @@ angular.module('myApp')
     }
   })
 
-.controller('SendMailCtrl', function ($modalInstance, api, lov, order, bids, bidTextTypes) {
+.controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel, $scope) {
     var that = this;
     this.order = order;
     this.bids = bids;
+    // reset isInclude checkbox from previous sends
+    for (var i=0;i<this.bids.length;i++) {
+      bids[i].isInclude = false;
+    }
     this.bidTextTypes = bidTextTypes;
     this.documentTypes = lov.documentTypes;
-    this.subject = 'אירוע פומפידו'
     api.queryCustomers(order.attributes.customer)
       .then(function (custs) {
         that.customer = custs[0].attributes;
+        that.mail.to = that.customer.email;
         if (order.attributes.contact) {
           api.queryCustomers(order.attributes.contact)
             .then(function (conts) {
-              that.contact = conts[0].attributes
+              that.contact = conts[0].attributes;
+              that.mail.cc = that.contact.email;
             })
         }
       });
 
+    this.mail = {
+      subject:  'אירוע פומפידו'
+     };
+
     this.setText = function () {
-      this.mailText = this.mailTextType.mailText;
+      this.mail.text = this.mailTextType.mailText;
     };
 
     this.isShowDocument = function (doc) {
       return lov.documentTypes[doc.attributes.documentType].isRealDocumentType
     };
 
+    $scope.editorOptions = {
+      height: '150',
+      removePlugins: 'elementspath'
+    };
+
     this.doSend = function () {
-      // real stuff here
+      this.mail.attachments = [];
+      var baseUrl = $location.absUrl();
+      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/'));
+      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/'));
+      baseUrl = baseUrl+'/bid/';
+      for (var i=0;i<this.bids.length;i++) {
+        if (bids[i].isInclude) {
+          this.mail.attachments.push(baseUrl+bids[i].attributes.uuid);
+          this.mail.text = this.mail.text+'\n'
+                            +bids[i].attributes.desc+' '
+                            +baseUrl+bids[i].attributes.uuid;
+        }
+      }
+      console.log(this.mail);
+      gmailClientLowLevel.sendEmail(this.mail);
+      // todo: real stuff here
+
       $modalInstance.close();
     };
 
