@@ -66,16 +66,19 @@
       return p.promise;
     }
 
-    function sendMessage(email, threadId) {
+    function sendMessage(email) {
       // Web-safe base64
-      var base64EncodedEmail = btoa(unescape(encodeURIComponent(email))).replace(/\//g, '_').replace(/\+/g, '-');
+      var base64EncodedEmail = encodeUtf8(email).replace(/\//g, '_').replace(/\+/g, '-');
       return promiseTranslator(gapi.client.gmail.users.messages.send({
         userId: 'me',
         resource: {
-          raw: base64EncodedEmail,
-          threadId: threadId
+          raw: base64EncodedEmail
         }
       }));
+    }
+
+    function encodeUtf8(toBeEncoded) {
+      return btoa(unescape(encodeURIComponent(toBeEncoded)));
     }
 
     this.sendEmail = function (params) {
@@ -84,7 +87,7 @@
         content = params.text;
       var emailHeaders = 'From: \'me\'\r\n' +
         'To:  ' + to + '\r\n' +
-        'Subject: =?utf-8?B?' + btoa(unescape(encodeURIComponent(subject))) + '?=\r\n' +
+        'Subject: =?utf-8?B?' + encodeUtf8(subject) + '?=\r\n' +
         'Content-Type: text/html; charset=utf-8\r\n' +
         'Content-Transfer-Encoding: quoted-printable\r\n';
       return isInitialized.promise.then(function () {
