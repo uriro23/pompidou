@@ -82,7 +82,7 @@ angular.module('myApp')
     }
   })
 
-.controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes) {
+.controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel) {
     var that = this;
     this.order = order;
     this.bids = bids;
@@ -132,6 +132,7 @@ angular.module('myApp')
         }
       }
       console.log(this.mail);
+      gmailClientLowLevel.sendEmail(this.mail);
       // todo: real stuff here
 
       $modalInstance.close();
