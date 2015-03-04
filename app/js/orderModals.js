@@ -95,12 +95,16 @@ angular.module('myApp')
     api.queryCustomers(order.attributes.customer)
       .then(function (custs) {
         that.customer = custs[0].attributes;
-        that.mail.to = that.customer.email;
+        if (that.customer.email) {
+          that.mail.to = 'test.' + that.customer.email; //todo: for production drop the 'test'
+        }
         if (order.attributes.contact) {
           api.queryCustomers(order.attributes.contact)
             .then(function (conts) {
               that.contact = conts[0].attributes;
-              that.mail.cc = that.contact.email;
+              if (that.contact.email) {
+                that.mail.cc = 'test.' + that.contact.email; //todo: for production drop the 'test'
+              }
             })
         }
       });
@@ -131,14 +135,10 @@ angular.module('myApp')
       for (var i=0;i<this.bids.length;i++) {
         if (bids[i].isInclude) {
           this.mail.attachments.push(baseUrl+bids[i].attributes.uuid);
-          this.mail.text = this.mail.text+'\n'
-                            +bids[i].attributes.desc+' '
-                            +baseUrl+bids[i].attributes.uuid;
+          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">'+bids[i].attributes.desc+'</a><br/>')
         }
       }
-      console.log(this.mail);
       gmailClientLowLevel.sendEmail(this.mail);
-      // todo: real stuff here
 
       $modalInstance.close();
     };
