@@ -1,30 +1,35 @@
 /* app css stylesheet */
-body {
+body 
+{
     text-align: right;
     direction: rtl;
     background-color: lightyellow;
-    padding-right: 1%;
-    padding-left: 1%;
 }
-h1.content{
+
+h1.content
+{
     text-align: center; 
 }
 
-th {
+th 
+{
     text-align: right;
 }
 
-input {
+input
+ {
     border-radius: 0.5em;
 }
 
-td {
+td 
+{
     border-radius: 0.5em;
     margin:0.5em;
     padding: 0.3em;
 }
 
-tr {
+tr
+{
     /* background-color: wheat; */
     /*display:block; */   
 }
