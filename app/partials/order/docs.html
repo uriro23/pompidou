@@ -74,18 +74,20 @@
          ng-disabled="orderModel.isReadOnly">
     <span ng-repeat="documentType in orderModel.documentTypes | filter: {isRealDocumentType: true}">
         <button ng-click="orderModel.createBid(documentType.id)"
-                ng-disabled="orderModel.isReadOnly"
+                ng-disabled="orderModel.isReadOnly || !orderModel.bidDesc"
                 class="btn btn-default">
             {{documentType.label}}
         </button>
    </span>
 </div>
-<table>
+<table style="width: 50%">
   <thead>
-  <th>סוג מסמך</th>
-  <th>תאריך</th>
-  <th>הערות</th>
-  <th>סכום</th>
+  <th style="width: 10%">סוג מסמך</th>
+  <th style="width: 25%">תאריך</th>
+  <th style="width: 35%">תיאור</th>
+  <th style="width: 10%">סכום</th>
+  <th style="width: 10%"></th>
+  <th style="width: 10%"></th>
   </thead>
   <tbody>
   <tr ng-repeat="bid in orderModel.bids track by bid.id">
