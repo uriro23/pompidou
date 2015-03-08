@@ -127,18 +127,46 @@ angular.module('myApp')
     };
 
     this.doSend = function () {
+      var that = this;
       this.mail.attachments = [];
       var baseUrl = $location.absUrl();
-      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/'));
-      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/'));
+      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim orderId
+      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
       baseUrl = baseUrl+'/bid/';
+      this.mail.text += '<br/><br/><span>מסמכים מצורפים:</span><br/>';
       for (var i=0;i<this.bids.length;i++) {
         if (bids[i].isInclude) {
-          this.mail.attachments.push(baseUrl+bids[i].attributes.uuid);
+          this.mail.attachments.push({    // this is the original bid object without the content of the order
+            uuid: bids[i].attributes.uuid,
+            desc: bids[i].attributes.desc,
+            documentType: bids[i].attributes.documentType,
+            orderId: bids[i].attributes.orderId,
+            date: bids[i].attributes.date,
+            customer: bids[i].attributes.customer
+          });
+          if (bids[i].attributes.documentType===1) {
+            this.mail.text += '<span>הצעת מחיר: </span>'
+          } else {
+            this.mail.text += '<span>הזמנה: </span>'
+          }
           this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">'+bids[i].attributes.desc+'</a><br/>')
         }
       }
-      gmailClientLowLevel.sendEmail(this.mail);
+      gmailClientLowLevel.sendEmail(this.mail)
+        .then(function () {
+          var newMail = api.initMail();
+          newMail.attributes.orderId = order.id;
+          newMail.attributes.date = new Date();
+          newMail.attributes.customer = that.customer;
+          newMail.attributes.contact = that.contact;
+          newMail.attributes.to = that.mail.to;
+          newMail.attributes.cc = that.mail.cc;
+          newMail.attributes.subject = that.mail.subject;
+          newMail.attributes.text = that.mail.text;
+          newMail.attributes.attachments = that.mail.attachments;
+          api.saveObj(newMail);
+          // todo: now create activity record pointing to mail
+        });
 
       $modalInstance.close();
     };
