@@ -150,7 +150,7 @@ angular.module('myApp')
 
   this.initBid = function () {
     return new Bid();
-   };
+  };
 
   this.queryBidsByOrder = function (orderId) {
     var bidQuery = new Parse.Query(Bid);
@@ -163,6 +163,30 @@ angular.module('myApp')
     var bidQuery = new Parse.Query(Bid);
     bidQuery.equalTo("uuid",uuid);
     return query(bidQuery);
+  };
+
+  // Mail
+  // -----
+
+  var Mail = Parse.Object.extend("Mail");
+
+  this.initMail = function () {
+    return new Mail();
+  };
+
+  this.queryMails = function (id) {
+    var mailQuery = new Parse.Query(Mail);
+    if (id) {
+      mailQuery.equalTo("objectId", id);
+    }
+    return query(mailQuery);
+  };
+
+  this.queryMailsByOrder = function (orderId) {
+    var mailQuery = new Parse.Query(Mail);
+    mailQuery.equalTo("orderId",orderId);
+    mailQuery.descending("date");
+    return query(mailQuery);
   };
 
   // Customer

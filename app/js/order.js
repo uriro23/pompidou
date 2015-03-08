@@ -98,7 +98,7 @@ angular.module('myApp')
           return custHeader;
         },
         isOptionalSelect: function () {
-          return false; // user has to select in modal
+          return custType===2; // for contact selection in modal is optional
         }
       },
       size: 'lg'

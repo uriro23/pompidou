@@ -83,13 +83,15 @@
 
     this.sendEmail = function (params) {
       var to = params.to,
+        cc = params.cc,
         subject = params.subject,
         content = params.text;
       var emailHeaders = 'From: \'me\'\r\n' +
         'To:  ' + to + '\r\n' +
+        'Cc:  ' + cc + '\r\n' +
         'Subject: =?utf-8?B?' + encodeUtf8(subject) + '?=\r\n' +
         'Content-Type: text/html; charset=utf-8\r\n' +
-        'Content-Transfer-Encoding: quoted-printable\r\n';
+        'Content-Transfer-Encoding: 7BIT\r\n';
       return isInitialized.promise.then(function () {
         return sendMessage(emailHeaders + '\r\n' + content);
       });
