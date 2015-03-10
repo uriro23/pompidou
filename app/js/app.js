@@ -3,7 +3,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-  'ui.router','ui.bootstrap', 'ngCkeditor'
+  'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/orderListView");

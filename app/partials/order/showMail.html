@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <h3 class="modal-title">
+    <span>דוא"ל ל</span>
+    <span>{{showMailModel.mail.contact.firstName+' '+showMailModel.mail.contact.lastName}}</span>
+  </h3>
+</div>
+<div class="modal-body">
+  <table>
+    <tbody>
+    <tr>
+      <td><label>תאריך:</label></td>
+      <td>{{showMailModel.mail.date | date: 'dd/MM/yyyy HH:mm'}}</td>
+    </tr>
+    <tr>
+      <td><label>אל:</label></td>
+      <td>{{showMailModel.mail.to}}</td>
+    </tr>
+    <tr>
+      <td><label>דע:</label></td>
+      <td>{{showMailModel.mail.cc}}</td>
+    </tr>
+    <tr>
+      <td><label>נושא:</label></td>
+      <td>{{showMailModel.mail.subject}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div ng-bind-html="showMailModel.mail.text"></div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="showMailModel.close()"
+            >סגור</button>
+</div>

@@ -10,8 +10,17 @@ angular.module('myApp')
 
   this.saveObj = function (obj) {
     var promise = $q.defer();
-    for (var fieldName in obj.attributes) {
-      obj.set (fieldName, obj.attributes[fieldName]);
+    if (obj.delAttributes) {  // unset attributes
+      for (var delAttr in obj.delAttributes) {
+        if (obj.delAttributes.hasOwnProperty(delAttr)) {
+          obj.unset(delAttr)
+        }
+      }
+    }
+    for (var attr in obj.attributes) {
+      if (obj.attributes.hasOwnProperty(attr)) {
+        obj.set(attr, obj.attributes[attr])
+      }
     }
     var newObj = angular.copy(obj);  // to avoid parse error 121
     newObj.save({}, {

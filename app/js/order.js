@@ -509,6 +509,25 @@ angular.module('myApp')
       this.orderChanged();
     };
 
+    this.showMail = function (mailId) {
+      var showMailModal = $modal.open({
+        templateUrl: 'partials/order/showMail.html',
+        controller: 'ShowMailCtrl as showMailModel',
+        resolve: {
+          mail: function() {
+            return api.queryMails(mailId)
+              .then(function (mails) {
+                return mails[0].attributes
+              })
+          }
+        },
+        size: 'lg'
+      });
+
+      showMailModal.result.then(function () {
+      });
+    };
+
     // Documents tab
     // -------------
 
@@ -596,7 +615,6 @@ angular.module('myApp')
       });
 
       sendMailModal.result.then(function () {
-        // todo; create activity "mail sent"
       });
 
     };
@@ -666,6 +684,13 @@ angular.module('myApp')
         }
         thisOrder.customer = this.order.view.customer.id;
         thisOrder.contact = this.order.view.contact.id;
+        if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
+          if (this.order.delAttributes) {
+            this.order.delAttributes.contact = true
+          } else {
+            this.order.delAttributes = {contact: true}
+          }
+        }
         thisOrder.orderStatus = this.order.view.orderStatus.id;
 
         // wipe errors and changes indication from items

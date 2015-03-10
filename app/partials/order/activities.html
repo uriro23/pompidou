@@ -3,6 +3,7 @@
   <th><label>תאריך</label></th>
   <th><label>פעילות</label></th>
   <th></th>
+  <th></th>
   </thead>
   <tr>
     <td>{{orderModel.activityDate | date: 'dd/MM/yyyy HH:mm'}}</td>
@@ -22,9 +23,15 @@
     <td>{{activity.text}}</td>
     <td>
       <button ng-click="orderModel.delActivity($index)"
-              class="btn btn-sm btn-warning"
+              class="btn btn-sm btn-default"
               ng-disabled="orderModel.isReadOnly"
-          >מחק</button>
+              >מחק</button>
+    </td>
+    <td>
+      <button ng-click="orderModel.showMail(activity.mail)"
+              class="btn btn-sm btn-default"
+              ng-show="activity.mail"
+              >הצג דואל</button>
     </td>
   </tr>
 </table>

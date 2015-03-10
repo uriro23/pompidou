@@ -78,7 +78,8 @@ angular.module('myApp')
     this.filterText = '$';
     this.sortList();
     return api.saveObj(this.currentCustomer)
-      .then (function () {
+      .then (function (obj) {
+      that.currentCustomer = obj;
       that.isCustomerChanged = false;
     })
 

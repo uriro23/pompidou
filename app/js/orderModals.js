@@ -134,6 +134,8 @@ angular.module('myApp')
       baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
       baseUrl = baseUrl+'/bid/';
       this.mail.text += '<br/><br/><span>מסמכים מצורפים:</span><br/>';
+      var bidCnt = 0;
+      var orderCnt = 0;
       for (var i=0;i<this.bids.length;i++) {
         if (bids[i].isInclude) {
           this.mail.attachments.push({    // this is the original bid object without the content of the order
@@ -144,12 +146,15 @@ angular.module('myApp')
             date: bids[i].attributes.date,
             customer: bids[i].attributes.customer
           });
+          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">');
           if (bids[i].attributes.documentType===1) {
-            this.mail.text += '<span>הצעת מחיר: </span>'
+            this.mail.text += 'הצעת מחיר: ';
+            bidCnt++;
           } else {
-            this.mail.text += '<span>הזמנה: </span>'
+            this.mail.text += 'הזמנה: ';
+            orderCnt++;
           }
-          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">'+bids[i].attributes.desc+'</a><br/>')
+          this.mail.text += (bids[i].attributes.desc+'</a><br/>');
         }
       }
       gmailClientLowLevel.sendEmail(this.mail)
@@ -164,9 +169,28 @@ angular.module('myApp')
           newMail.attributes.subject = that.mail.subject;
           newMail.attributes.text = that.mail.text;
           newMail.attributes.attachments = that.mail.attachments;
-          api.saveObj(newMail);
-          // todo: now create activity record pointing to mail
-        });
+          api.saveObj(newMail)
+            .then(function (mail) {
+              var activity = {
+                date: new Date(),
+                text: 'נשלח דואל עם ',
+                mail: mail.id
+              };
+              if (bidCnt) {
+                activity.text += (bidCnt+' הצעות מחיר ')
+              }
+              if (orderCnt) {
+                activity.text += (orderCnt+' הזמנות')
+              }
+              order.attributes.activities.splice(0,0,activity);
+              api.saveObj(order);
+            });
+         },
+        function (error) {
+          console.log(error);
+          alert ('send email error');
+        }
+      );
 
       $modalInstance.close();
     };
@@ -174,5 +198,14 @@ angular.module('myApp')
     this.cancel = function () {
       $modalInstance.dismiss();
     }
-});
+})
+.controller('ShowMailCtrl', function ($modalInstance, mail) {
+    console.log(mail);
+    this.mail = mail;
+
+    this.close = function () {
+      $modalInstance.close();
+    }
+
+  });
 
