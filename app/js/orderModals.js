@@ -92,6 +92,12 @@ angular.module('myApp')
     }
     this.bidTextTypes = bidTextTypes;
     this.documentTypes = lov.documentTypes;
+    this.mail = {
+      to: '',
+      cc: '',
+      subject:  'אירוע פומפידו',
+      text: ''
+    };
     api.queryCustomers(order.attributes.customer)
       .then(function (custs) {
         that.customer = custs[0].attributes;
@@ -109,9 +115,6 @@ angular.module('myApp')
         }
       });
 
-    this.mail = {
-      subject:  'אירוע פומפידו'
-     };
 
     this.setText = function () {
       this.mail.text = this.mailTextType.mailText;
@@ -188,7 +191,13 @@ angular.module('myApp')
          },
         function (error) {
           console.log(error);
-          alert ('send email error');
+          var errText = 'send email error:\r\n';
+          if (error.result) {
+            if (error.result.error) {
+              errText += error.result.error.message
+            }
+          }
+          alert (errText);
         }
       );
 

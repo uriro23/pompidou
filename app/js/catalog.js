@@ -16,7 +16,7 @@ angular.module('myApp')
     this.setChanged = function (bool) {
         if (bool) {
           this.isChanged = true;
-          window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
+          window.onbeforeunload = function () {   // force the user to commit or abort changes before moving
             return "יש שינויים שלא נשמרו"
           };
           window.onblur = function () {
@@ -217,22 +217,16 @@ angular.module('myApp')
       return true;
     };
 
-    this.setDomain = function (isSave) {
+    this.setDomain = function () {
       var that = this;
-      if (!isSave) {
-        this.setChanged(false);
-      }
+      this.setChanged(false);
       // if there have been changes in previous domain, save them
-      if (that.isChanged) {
-        if (!that.updateItems()) {
-          return;
-        }
-      }
       return api.queryCategories(that.currentDomain.id)
         .then(function (results) {
           that.categories = results.map (function (cat) {
             return cat.attributes;
           });
+          that.catalog = [];
           return api.queryCatalog (that.currentDomain.id)
             .then (function (results) {
             that.catalog = that.sortCatalog(results);

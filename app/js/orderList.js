@@ -55,6 +55,7 @@ angular.module('myApp')
 
       this.setQuery = function () {
       var that = this;
+      this.orders = [];
       switch (this.queryType) {
         case 'future':
           api.queryFutureOrders().then(function (orders) {

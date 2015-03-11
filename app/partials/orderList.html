@@ -2,24 +2,28 @@
     רשימת אירועים
 </h2>
     <div>
-        <span>  עתידיים </span><input type="radio" ng-model="orderListModel.queryType" value="future"
+      <input type="radio" ng-model="orderListModel.queryType" value="future"
                                      ng-change="orderListModel.setQuery()">
-        <span>תבניות </span><input type="radio" ng-model="orderListModel.queryType" value="templates"
+      <span>  עתידיים </span>
+      <input type="radio" ng-model="orderListModel.queryType" value="templates"
                                      ng-change="orderListModel.setQuery()">
-        <span>הסטוריה </span><input type="radio" ng-model="orderListModel.queryType" value="past"
+      <span>תבניות </span>
+      <input type="radio" ng-model="orderListModel.queryType" value="past"
                                      ng-change="orderListModel.setQuery()">
-        <span>כולם </span><input type="radio" ng-model="orderListModel.queryType" value="all"
+      <span>הסטוריה </span>
+      <input type="radio" ng-model="orderListModel.queryType" value="all"
                                   ng-change="orderListModel.setQuery()">
-         <span ng-show="orderListModel.queryType==='past' || orderListModel.queryType==='all'">
-            <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
-                    ng-show="orderListModel.filterByCustomer.id">
-              {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
-            </button>
-            <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
-                    ng-hide="orderListModel.filterByCustomer.id">
-              סינון לפי לקוח
-            </button>
-         </span>
+      <span>כולם </span>
+      <span ng-show="orderListModel.queryType==='past' || orderListModel.queryType==='all'">
+        <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
+                ng-show="orderListModel.filterByCustomer.id">
+          {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
+        </button>
+        <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
+                ng-hide="orderListModel.filterByCustomer.id">
+          סינון לפי לקוח
+        </button>
+      </span>
     </div>
     <table style="width: 99%">
       <thead>

@@ -48,7 +48,7 @@
 <div class="modal-footer">
     <email-first-time-experience>
         <button class="btn btn-primary" ng-click="sendMailModel.doSend()"
-                ng-disabled = "!sendMailModel.mail.text"
+                ng-disabled = "!sendMailModel.mail.text || !sendMailModel.mail.to"
                 >שלח</button>
     </email-first-time-experience>
   <button class="btn btn-warning" ng-click="sendMailModel.cancel()">ביטול</button>

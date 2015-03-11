@@ -1,15 +1,17 @@
-<h1>קטלוג</h1>
-<label>בחר תחום</label><select ng-model="catalogModel.currentDomain" ng-change="catalogModel.setDomain(true)"
-                                ng-options="domain.label for domain in catalogModel.domains"></select>
-    <button ng-click="catalogModel.addItem()" class="btn btn-default">הוסף</button>
-    <span ng-show="catalogModel.isChanged" class="myChanged">
-      <span>     הקש על</span>
-      <button ng-click="catalogModel.updateItems()" class="btn btn-success">שמור</button>
-      <span> לשמירת העדכונים שבוצעו, או על </span>
-      <button ng-click="catalogModel.setDomain(false)" class="btn btn-warning">ביטול</button>
-      <span> כדי לבטלם</span>
-    </span>
- <table border="0">
+  <h1>קטלוג</h1>
+  <label>בחר תחום</label>
+  <select ng-model="catalogModel.currentDomain" ng-change="catalogModel.setDomain()"
+          ng-disabled="catalogModel.isChanged"
+          ng-options="domain.label for domain in catalogModel.domains"></select>
+  <button ng-click="catalogModel.addItem()" class="btn btn-default">הוסף</button>
+  <span ng-show="catalogModel.isChanged" class="myChanged">
+    <span>     הקש על</span>
+    <button ng-click="catalogModel.updateItems()" class="btn btn-success">שמור</button>
+    <span> לשמירת העדכונים שבוצעו, או על </span>
+    <button ng-click="catalogModel.setDomain()" class="btn btn-warning">ביטול</button>
+    <span> כדי לבטלם</span>
+  </span>
+  <table border="0">
       <thead>
         <th>קטגוריה</th>
         <th>תיאור</th>
