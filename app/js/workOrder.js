@@ -52,10 +52,13 @@ angular.module('myApp')
             } else { // create new item
               workItem = api.initWorkOrder();
               workItem.attributes.catalogId = item.catalogId;
-              workItem.attributes.productDescription = catalog.filter(function (cat) {
+              var catItem = catalog.filter(function (cat) {
                 return cat.id === item.catalogId;
-              })[0].attributes.productDescription;
-              workItem.attributes.quantity = item.quantity;
+              })[0];
+              // if catalog item was deleted, use product description from first occurrence of menu item
+              workItem.attributes.productDescription =
+                catItem?catItem.attributes.productDescription:item.productDescription;
+                workItem.attributes.quantity = item.quantity;
               workItem.attributes.category = item.category;
               workItem.attributes.domain = 1;
               workItem.attributes.measurementUnit = item.measurementUnit;
@@ -77,50 +80,60 @@ angular.module('myApp')
       for (var i=0;i<this.workOrder.length;i++) {
         var inWorkItem = this.workOrder[i].attributes;
         if (inWorkItem.domain > 0) {  // skip orders
-          var inCatItem = catalog.filter(function (cat) {
+          var inCatObj = catalog.filter(function (cat) {
             return cat.id === inWorkItem.catalogId;
-          })[0].attributes;
-          for (var j = 0; j < inCatItem.components.length; j++) {
-            var component = inCatItem.components[j];
-            if (component.domain === targetDomain) {
-              var temp = this.workOrder.filter(function (workItem, ind) {
-                if (workItem.attributes.catalogId === component.id) {
-                  workItemInd = ind;
-                  return true;
-                }
-              });
-              if (temp.length > 0) {  // item already exists, just add quantity
-                workItem = this.workOrder[workItemInd];
-                var oldQuantity = workItem.attributes.quantity;
-                workItem.attributes.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                workItem.attributes.backTrace.push({
-                  id:       this.workOrder[i].id,
-                  domain:   inWorkItem.domain,
-                  quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+          })[0];
+          if (inCatObj) {
+            var inCatItem = inCatObj.attributes;
+            for (var j = 0; j < inCatItem.components.length; j++) {
+              var component = inCatItem.components[j];
+              if (component.domain === targetDomain) {
+                var temp = this.workOrder.filter(function (workItem, ind) {
+                  if (workItem.attributes.catalogId === component.id) {
+                    workItemInd = ind;
+                    return true;
+                  }
                 });
-              } else {
-                var outCatItem = catalog.filter(function (cat) {
-                  return cat.id === component.id;
-                })[0].attributes;
-                workItem = api.initWorkOrder();
-                workItem.attributes.catalogId = component.id;
-                workItem.attributes.productDescription = outCatItem.productDescription;
-                workItem.attributes.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                workItem.attributes.category = allCategories.filter(function (cat) {
-                  return cat.tId === outCatItem.category;
-                })[0];
-                workItem.attributes.domain = targetDomain;
-                workItem.attributes.measurementUnit = measurementUnits.filter(function (mes) {
-                  return mes.tId === outCatItem.measurementUnit;
-                })[0];
-                workItem.attributes.backTrace = [{
-                  id:       this.workOrder[i].id,
-                  domain:   inWorkItem.domain,
-                  quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
-                }];
-                this.workOrder.push(workItem);
+                if (temp.length > 0) {  // item already exists, just add quantity
+                  workItem = this.workOrder[workItemInd];
+                  var oldQuantity = workItem.attributes.quantity;
+                  workItem.attributes.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                  workItem.attributes.backTrace.push({
+                    id: this.workOrder[i].id,
+                    domain: inWorkItem.domain,
+                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                  });
+                } else {
+                  var outCatObj = catalog.filter(function (cat) {
+                    return cat.id === component.id;
+                  })[0];
+                  if (outCatObj) {    // if component has been deleted from catalog, skip it
+                    var outCatItem = outCatObj.attributes;
+                    workItem = api.initWorkOrder();
+                    workItem.attributes.catalogId = component.id;
+                    workItem.attributes.productDescription = outCatItem.productDescription;
+                    workItem.attributes.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                    workItem.attributes.category = allCategories.filter(function (cat) {
+                      return cat.tId === outCatItem.category;
+                    })[0];
+                    workItem.attributes.domain = targetDomain;
+                    workItem.attributes.measurementUnit = measurementUnits.filter(function (mes) {
+                      return mes.tId === outCatItem.measurementUnit;
+                    })[0];
+                    workItem.attributes.backTrace = [{
+                      id: this.workOrder[i].id,
+                      domain: inWorkItem.domain,
+                      quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                    }];
+                    this.workOrder.push(workItem);
+                  } else {
+                    alert('output catalog item ' + component.id + ' has been deleted')
+                  }
+                }
               }
             }
+          } else {
+            alert ('input catalog item '+inWorkItem.catalogId+' has been deleted')
           }
         }
       }
@@ -190,16 +203,20 @@ angular.module('myApp')
           }
           that.saveWorkOrder(targetDomain)
             .then(function () {
-                that.splitWorkOrder();
-                for (var d=0;d<4;d++) {
-                  that.isActiveTab[d] = false;
+              api.queryWorkOrder()    // requery work order to get ids for newly created items
+                .then(function (wo) {
+                  that.workOrder = wo;
+                  that.splitWorkOrder();
+                  for (var d=0;d<4;d++) {
+                    that.isActiveTab[d] = false;
+                  }
                   that.isActiveTab[targetDomain] = true;
-                }
-                that.domainStatuses.attributes.status[targetDomain] = true; // the domain just created is valid
-                for (var dd=targetDomain+1;dd<4;dd++) {                     // all further domains - invalid
-                  that.domainStatuses.attributes.status[dd] = false;
-                }
-                api.saveObj(that.domainStatuses);
+                  that.domainStatuses.attributes.status[targetDomain] = true; // the domain just created is valid
+                  for (var dd=targetDomain+1;dd<4;dd++) {                     // all further domains - invalid
+                    that.domainStatuses.attributes.status[dd] = false;
+                  }
+                  api.saveObj(that.domainStatuses);
+                });
               });
       })
     };

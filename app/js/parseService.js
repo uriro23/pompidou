@@ -42,10 +42,20 @@ angular.module('myApp')
   this.saveObjects = function (objs) {
     var promises = [];
     for (var i=0;i<objs.length;i++) {
-      for (var fieldName in objs[i].attributes) {
-        objs[i].set (fieldName, objs[i].attributes[fieldName]);
+      if (objs[i].delAttributes) {  // unset attributes
+        for (var delAttr in objs[i].delAttributes) {
+          if (objs[i].delAttributes.hasOwnProperty(delAttr)) {
+            objs[i].unset(delAttr)
+          }
+        }
       }
-      promises.push(objs[i].save());
+      for (var attr in objs[i].attributes) {
+        if (objs[i].attributes.hasOwnProperty(attr)) {
+          objs[i].set(attr, objs[i].attributes[attr]);
+        }
+      }
+
+      promises.push(angular.copy(objs[i]).save()); // clone to avoid parse error 121
     }
     return Parse.Promise.when(promises);
   };
@@ -226,8 +236,11 @@ angular.module('myApp')
     return new WorkOrder();
   };
 
-  this.queryWorkOrder = function () {
+  this.queryWorkOrder = function (domain) {
     var workOrderQuery = new Parse.Query(WorkOrder);
+    if (domain) {
+      workOrderQuery.equalTo('domain',domain)
+    }
     workOrderQuery.limit(1000);
     return query(workOrderQuery);
   };

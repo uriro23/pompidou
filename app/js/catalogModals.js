@@ -5,6 +5,8 @@ angular.module('myApp')
 
 
   this.productDescription = catalogItem.attributes.productDescription;
+  this.shortDescription = catalogItem.attributes.shortDescription;
+  this.isInMenu = catalogItem.attributes.isInMenu;
 
   // create local copy of exitList so updates can be undone on cancel
   if (catalogItem.attributes.exitList) {
@@ -24,6 +26,8 @@ angular.module('myApp')
 
   this.done = function () {
     catalogItem.attributes.exitList = this.exitList.slice();
+    catalogItem.attributes.shortDescription = this.shortDescription;
+    catalogItem.attributes.isInMenu = this.isInMenu;
     $modalInstance.close();
   };
 
@@ -31,6 +35,9 @@ angular.module('myApp')
     $modalInstance.dismiss();
   }
 })
+
+
+
   .controller ('ComponentsCtrl', function($modalInstance,
                                           catalogItem,
                                           targetDomain,

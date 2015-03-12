@@ -3,7 +3,7 @@
   <select ng-model="catalogModel.currentDomain" ng-change="catalogModel.setDomain()"
           ng-disabled="catalogModel.isChanged"
           ng-options="domain.label for domain in catalogModel.domains"></select>
-  <button ng-click="catalogModel.addItem()" class="btn btn-default">הוסף</button>
+  <button ng-click="catalogModel.addItem()" class="btn btn-default">הוסף פריט</button>
   <span ng-show="catalogModel.isChanged" class="myChanged">
     <span>     הקש על</span>
     <button ng-click="catalogModel.updateItems()" class="btn btn-success">שמור</button>
@@ -11,15 +11,18 @@
     <button ng-click="catalogModel.setDomain()" class="btn btn-warning">ביטול</button>
     <span> כדי לבטלם</span>
   </span>
-  <table border="0">
+  <table style="width:100%">
       <thead>
-        <th>קטגוריה</th>
-        <th>תיאור</th>
-        <th>יח' מידה</th>
-        <th>כמות</th>
-        <th>מחיר</th>
-        <th>כמות ייצור</th>
-         <th>מחק</th>
+        <th style="width:8%">קטגוריה</th>
+        <th style="width:54%">תיאור</th>
+        <th style="width:5%">יח' מידה</th>
+        <th style="width:3%">כמות</th>
+        <th style="width:5%">מחיר</th>
+        <th style="width:5%">כמות ייצור</th>
+        <th style="width:2%">מחק</th>
+        <th style="width:6%"></th>
+        <th style="width:6%"></th>
+        <th style="width:6%"></th>
       </thead>
       <tbody>
       <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?'myChanged':null">
@@ -56,7 +59,7 @@
           <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">
         </td>
         <td ng-show="catalogModel.currentDomain.id===1">
-          <button ng-click="catalogModel.updateExitList($index)" class="btn btn-default btn-sm">יציאה</button>
+          <button ng-click="catalogModel.updateExitList($index)" class="btn btn-default btn-sm">עוד</button>
         </td>
         <td ng-show="catalogModel.currentDomain.id===1">
           <button ng-click="catalogModel.updateComponents($index,2)" class="btn btn-default btn-sm">מרכיבים</button>

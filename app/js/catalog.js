@@ -41,6 +41,9 @@ angular.module('myApp')
       newItem.attributes.priceQuantity = null;
       newItem.attributes.price = null;
       newItem.attributes.productionQuantity = null;
+      if (this.currentDomain.id===1) {
+        newItem.attributes.isInMenu = true;
+      }
       newItem.attributes.exitList = [];
       newItem.isNewItem = true; // used to do validity checks on new items before storing them
       this.catalog.splice (0,0,newItem); // add new item at the front of the array
@@ -56,6 +59,9 @@ angular.module('myApp')
       this.itemChanged(ind);
       this.catalog[ind].isProductDescriptionError =
         !this.catalog[ind].attributes.productDescription || this.catalog[ind].attributes.productDescription.length === 0;
+      if (this.currentDomain.id===1) {
+        this.catalog[ind].attributes.shortDescription = this.catalog[ind].attributes.productDescription
+      }
     };
 
    this.setPriceQuantity = function (ind) {

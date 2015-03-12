@@ -1,17 +1,17 @@
-<h4>
+<h3>
   פקודת עבודה
-</h4>
+</h3>
 <tabset>
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}" active="workOrderModel.isActiveTab[3]">
-    <h3>
+    <h4>
       {{workOrderModel.domains[3].forWorkItem}}
       <span ng-hide="workOrderModel.domainStatuses.attributes.status[3]">
         --- לא מעודכן ---
       </span>
-    </h3>
+    </h4>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[3]">
       <label>{{cat.category.label}}</label>
-      <table style="width:50%">
+      <table style="width:30%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
@@ -25,14 +25,14 @@
           <td>
             <button ng-click="workOrderModel.backInfo(woItem)"
                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
-                    class="btn btn-info btn-sm">
+                    class="btn btn-default btn-sm">
               פרטים
             </button>
           </td>
           <td>
             <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
-                    class="btn btn-warning btn-sm">
+                    class="btn btn-default btn-sm">
               מחק
             </button>
           </td>
@@ -43,7 +43,7 @@
   </tab>
 
   <tab heading="{{workOrderModel.domains[2].forWorkItem}}" active="workOrderModel.isActiveTab[2]">
-    <h3>
+    <h4>
       {{workOrderModel.domains[2].forWorkItem}}
       <span ng-hide="workOrderModel.domainStatuses.attributes.status[2]">
         --- לא מעודכן ---
@@ -53,10 +53,10 @@
               ng-click="workOrderModel.createWorkOrderDomain(3)">
         {{'חשב '+workOrderModel.domains[3].forWorkItem}}
       </button>
-    </h3>
+    </h4>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
       <label>{{cat.category.label}}</label>
-      <table style="width:50%">
+      <table style="width:30%">
         <tbody>
         <tr ng-repeat="woItem in cat.list">
           <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
@@ -70,14 +70,14 @@
           <td>
             <button ng-click="workOrderModel.backInfo(woItem)"
                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
-                    class="btn btn-info btn-sm">
+                    class="btn btn-default btn-sm">
               פרטים
             </button>
           </td>
           <td>
             <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
-                    class="btn btn-warning btn-sm">
+                    class="btn btn-default btn-sm">
               מחק
             </button>
           </td>
@@ -88,7 +88,7 @@
   </tab>
 
   <tab heading="{{workOrderModel.domains[1].forWorkItem}}" active="workOrderModel.isActiveTab[1]">
-    <h3>
+    <h4>
       {{workOrderModel.domains[1].forWorkItem}}
       <span ng-hide="workOrderModel.domainStatuses.attributes.status[1]">
         --- לא מעודכן ---
@@ -98,7 +98,7 @@
               ng-click="workOrderModel.createWorkOrderDomain(2)">
         {{'חשב '+workOrderModel.domains[2].forWorkItem}}
       </button>
-    </h3>
+    </h4>
     <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
       <label>{{cat.category.label}}</label>
       <table style="width:70%">
@@ -115,14 +115,14 @@
           <td>
             <button ng-click="workOrderModel.backInfo(woItem)"
                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[1]"
-                    class="btn btn-info btn-sm">
+                    class="btn btn-default btn-sm">
               פרטים
             </button>
           </td>
           <td>
             <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
                     ng-disabled= "!workOrderModel.domainStatuses.attributes.status[1]"
-                    class="btn btn-warning btn-sm">
+                    class="btn btn-default btn-sm">
               מחק
             </button>
           </td>
@@ -133,13 +133,13 @@
   </tab>
 
   <tab heading="{{workOrderModel.domains[0].forWorkItem}}" active="workOrderModel.isActiveTab[0]">
-    <h3>
+    <h4>
       {{workOrderModel.domains[0].forWorkItem}}
     <button class="btn btn-default"
             ng-click="workOrderModel.createWorkOrderDomain(1)">
       {{'חשב '+workOrderModel.domains[1].forWorkItem}}
     </button>
-    </h3>
+    </h4>
     <table style="width:50%">
       <thead>
       <th>

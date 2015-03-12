@@ -128,6 +128,10 @@ angular.module('myApp')
       if (accessCatalog[i].ProductionQuantity) {
         catalogItem.attributes.productionQuantity = Number(accessCatalog[i].ProductionQuantity);
       }
+      if (catalogItem.attributes.domain===1) {
+        catalogItem.attributes.shortDescription = catalogItem.attributes.productDescription; // for printed menu
+        catalogItem.attributes.isInMenu = true;
+      }
         api.queryAccessComponents(accessCatalog[i].ItemId)
           .then (function(comps) {
           catalogItem.attributes.exitList = comps.map(function (comp) {
