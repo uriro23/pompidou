@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderListCtrl', function($rootScope, $state, $modal, api, fetchedOrders, lov, today, customers, eventTypes) {
-    $rootScope.hideMenu = false;
+    $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
       $rootScope.username = user.attributes.username;

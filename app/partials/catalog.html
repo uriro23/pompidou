@@ -32,7 +32,7 @@
         </td>
         <td>
           <input type="text" size = 90 ng-model="catalogItem.attributes.productDescription"
-                 ng-change="catalogModel.setProductDescription($index)" ng-model-options="{updateOn: 'blur'}"
+                 ng-change="catalogModel.setProductDescription($index, true)" ng-model-options="{updateOn: 'blur'}"
                  ng-class="catalogItem.isProductDescriptionError?'myError':null">
         </td>
         <td>
@@ -56,7 +56,7 @@
                  ng-class="catalogItem.isProductionQuantityError?'myError':null">
         </td>
         <td>
-          <input type="checkbox" ng-model="catalogItem.isDelete" ng-change="catalogModel.itemChanged($index)">
+          <input type="checkbox" ng-model="catalogItem.view.isDeleted" ng-change="catalogModel.itemChanged($index)">
         </td>
         <td ng-show="catalogModel.currentDomain.id===1">
           <button ng-click="catalogModel.updateExitList($index)" class="btn btn-default btn-sm">עוד</button>

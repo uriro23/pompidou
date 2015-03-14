@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('CatalogCtrl', function($state, $modal, $rootScope, api, lov, measurementUnits) {
 
-      $rootScope.hideMenu = false;
+      $rootScope.menuStatus = 'show';
       var user = api.getCurrentUser();
       if (user) {
         $rootScope.username = user.attributes.username;
@@ -22,12 +22,12 @@ angular.module('myApp')
           window.onblur = function () {
             alert('יש שינויים שלא נשמרו')
           };
-          $rootScope.hideMenu = true;
+          $rootScope.menuStatus = 'empty';
         } else {
           this.isChanged = false;
           window.onbeforeunload = function () {};
           window.onblur = function () {};
-          $rootScope.hideMenu = false;
+          $rootScope.menuStatus = 'show';
         }
     };
 
@@ -45,6 +45,7 @@ angular.module('myApp')
         newItem.attributes.isInMenu = true;
       }
       newItem.attributes.exitList = [];
+      newItem.attributes.components = [];
       newItem.isNewItem = true; // used to do validity checks on new items before storing them
       this.catalog.splice (0,0,newItem); // add new item at the front of the array
       this.setChanged(true);
@@ -55,11 +56,11 @@ angular.module('myApp')
       this.setChanged(true);
     };
 
-    this.setProductDescription = function (ind) {
+    this.setProductDescription = function (ind, updateShortDesc) {
       this.itemChanged(ind);
       this.catalog[ind].isProductDescriptionError =
         !this.catalog[ind].attributes.productDescription || this.catalog[ind].attributes.productDescription.length === 0;
-      if (this.currentDomain.id===1) {
+      if (this.currentDomain.id===1 && updateShortDesc) {
         this.catalog[ind].attributes.shortDescription = this.catalog[ind].attributes.productDescription
       }
     };
@@ -135,7 +136,9 @@ angular.module('myApp')
           targetItems: function() {
             return api.queryCatalog(targetDomain)
               .then (function (items) {
-                return items;
+                return items.filter(function (item) {
+                  return !item.attributes.isDeleted
+                });
             })
           },
           measurementUnits: function() {
@@ -172,58 +175,7 @@ angular.module('myApp')
 
 
 
-    // update / delete all changed / marked catalog items
-    this.updateItems = function () {
-      // first check if any errors exist
-      for (var j=0;j<this.catalog.length; j++) {
-        if (this.catalog[j].isNewItem) { // check that all invalid default values have been updated
-          this.setProductDescription(j);
-          this.setPriceQuantity(j);
-          this.setPrice(j);
-          this.setProductionQuantity(j);
-        }
-        if (this.catalog[j].isProductDescriptionError ||
-            this.catalog[j].isPriceQuantityError ||
-            this.catalog[j].isPriceError ||
-            this.catalog[j].isProductionQuantityError) {
-         alert ('לא ניתן לעדכן. תקן קודם את השגיאות המסומנות');
-          return false;
-        }
-      }
-      for (var i=0; i<this.catalog.length; i++) {
-        if (this.catalog[i].isDelete) {
-          api.deleteObj (this.catalog[i]);
-        } else if (this.catalog[i].isChanged) {
-          if (!this.catalog[i].view.category.tId) {
-            alert ('Missing category in line ' + i+1);
-            return false;
-          } else {
-            this.catalog[i].attributes.category = this.catalog[i].view.category.tId;
-          }
-          if (!this.catalog[i].view.measurementUnit.tId) {
-            alert ('Missing measurement unit in line ' + i+1);
-            return false;
-          }
-          this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
-          this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
-          this.catalog[i].attributes.price = Number(this.catalog[i].attributes.price);
-          this.catalog[i].attributes.productionQuantity = Number(this.catalog[i].attributes.productionQuantity);
-          api.saveObj (this.catalog[i]);
-          this.catalog[i].isChanged = false;
-        }
-      }
-      // now remove deleted items from array
-      for (i=this.catalog.length-1;i>=0;i--) {
-        if (this.catalog[i].isDelete) {
-          this.catalog.splice(i,1);
-        }
-      }
-      this.catalog = this.sortCatalog(this.catalog);
-      this.setChanged(false);
-      return true;
-    };
-
-    this.setDomain = function () {
+     this.setDomain = function () {
       var that = this;
       this.setChanged(false);
       // if there have been changes in previous domain, save them
@@ -235,7 +187,10 @@ angular.module('myApp')
           that.catalog = [];
           return api.queryCatalog (that.currentDomain.id)
             .then (function (results) {
-            that.catalog = that.sortCatalog(results);
+            var tempCatalog = results.filter(function (cat) {
+              return !cat.attributes.isDeleted
+            });
+            that.catalog = that.sortCatalog(tempCatalog);
             // enrich catalog data
             for (var i=0; i<that.catalog.length; i++) {
               that.catalog[i].view = {};
@@ -252,6 +207,57 @@ angular.module('myApp')
         })
     };
 
+    // insert / update / logical delete all changed / marked catalog items
+    this.updateItems = function () {
+      var that = this;
+      // first check if any errors exist
+      for (var j=0;j<this.catalog.length; j++) {
+        if (this.catalog[j].isNewItem) { // check that all invalid default values have been updated
+          this.setProductDescription(j,false);
+          this.setPriceQuantity(j);
+          this.setPrice(j);
+          this.setProductionQuantity(j);
+        }
+        if (this.catalog[j].isProductDescriptionError ||
+          this.catalog[j].isPriceQuantityError ||
+          this.catalog[j].isPriceError ||
+          this.catalog[j].isProductionQuantityError) {
+          alert ('לא ניתן לעדכן. תקן קודם את השגיאות המסומנות');
+          return false;
+        }
+      }
+      var itemsToUpdate = [];
+      for (var i=0; i<this.catalog.length; i++) {
+        if (this.catalog[i].isChanged) {
+          if (!this.catalog[i].view.category.tId) {
+            alert ('Missing category in line ' + i+1);
+            return false;
+          } else {
+            this.catalog[i].attributes.category = this.catalog[i].view.category.tId;
+          }
+          if (!this.catalog[i].view.measurementUnit.tId) {
+            alert ('Missing measurement unit in line ' + i+1);
+            return false;
+          }
+          this.catalog[i].attributes.isDeleted = this.catalog[i].view.isDeleted;
+          this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
+          this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
+          this.catalog[i].attributes.price = Number(this.catalog[i].attributes.price);
+          this.catalog[i].attributes.productionQuantity = Number(this.catalog[i].attributes.productionQuantity);
+          itemsToUpdate.push(this.catalog[i]);
+          this.catalog[i].isChanged = false;
+        }
+      }
+
+      this.catalog = [];
+      api.saveObjects(itemsToUpdate)
+        .then(function () {
+          that.setDomain()
+        });
+      return true;
+    };
+
+    // main block
     this.setChanged(false);
     this.domains = angular.copy(lov.domains);  // clone so that the splice won't affect the original lov
     this.domains.splice(0,1);   // drop "events" domain

@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, lov, config, measurementUnits, categories) {
-      $rootScope.hideMenu = true;
+      $rootScope.menuStatus = 'hide';
 
     this.bid = bid;
 

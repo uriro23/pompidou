@@ -6,7 +6,7 @@ angular.module('myApp')
                                     currentOrder, bids, lov, today, eventTypes,
                                     bidTextTypes, categories, measurementUnits, discountCauses, config) {
 
-      $rootScope.hideMenu = false;
+      $rootScope.menuStatus = 'show';
       var user = api.getCurrentUser();
       if (user) {
         $rootScope.username = user.attributes.username;
@@ -70,7 +70,7 @@ angular.module('myApp')
         window.onblur = function () {
           alert('יש שינויים שלא נשמרו')
         };
-        $rootScope.hideMenu = true;
+        $rootScope.menuStatus = 'empty';
       };
 
     // order header
@@ -168,7 +168,10 @@ angular.module('myApp')
         var thisOrder = this.order.attributes;
         return api.queryCatalogByCategory (this.currentCategory.tId)
           .then (function (cat) {
-            that.catalogData = cat.map (function (c) {
+            var tempCat = cat.filter(function (c) {
+              return !c.attributes.isDeleted
+            });
+            that.catalogData = tempCat.map (function (c) {
               var cc = c.attributes;
               cc.id = c.id;
               return cc;
@@ -395,7 +398,7 @@ angular.module('myApp')
           catalog: function () {
               return api.queryCatalog(1)
                 .then(function (cat) {
-                  return cat;
+                  return cat; // deleted items are also returned
                 })
           }
         },
@@ -739,7 +742,7 @@ angular.module('myApp')
         this.order.view.isChanged = false;
         window.onbeforeunload = function () {};
         window.onblur = function () {};
-        $rootScope.hideMenu = false;
+        $rootScope.menuStatus = 'show';
         this.order.view.changes = {};
         this.backupOrderAttr = angular.copy(this.order.attributes);
       };
@@ -802,6 +805,9 @@ angular.module('myApp')
     };
 
     this.cancel = function () {
+      window.onbeforeunload = function () {};
+      window.onblur = function () {};
+      $rootScope.menuStatus = 'show';
       this.order.attributes = this.backupOrderAttr;
       this.setupOrderView();
     };
@@ -903,7 +909,7 @@ angular.module('myApp')
     this.order.view.isChanged = false;
     window.onbeforeunload = function () {};
     window.onblur = function () {};
-    $rootScope.hideMenu = false;
+    $rootScope.menuStatus = 'show';
     this.backupOrderAttr = angular.copy(this.order.attributes);
 
 

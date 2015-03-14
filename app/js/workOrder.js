@@ -6,7 +6,7 @@ angular.module('myApp')
                                          lov, catalog, allCategories, measurementUnits, today,
                                          customers, futureOrders, workOrder) {
 
-      $rootScope.hideMenu = false;
+      $rootScope.menuStatus = 'show';
       var user = api.getCurrentUser();
       if (user) {
         $rootScope.username = user.attributes.username;

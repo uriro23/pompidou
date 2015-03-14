@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/menu.css"/>
 </head>
 <body dir="rtl">
-  <ul class="menu" ng-hide="hideMenu">
+  <ul class="menu" ng-show="menuStatus==='show'">
     <li><a ng-href="#/orderListView">רשימת אירועים</a></li>
     <li><a ng-href="#/newOrderView">אירוע חדש</a></li>
     <li><a ng-href="#/workOrderView">פקודת עבודה</a> </li>
@@ -18,6 +18,9 @@
     <li>{{'שלום '+username}}</li>
     <li><a ng-href="#/login">התנתק</a> </li>
    </ul>
+  <ul class="menu" ng-show="menuStatus==='empty'">
+    <li>נא לסיים את ביצוע העדכונים</li>
+  </ul>
 
   <div ui-view></div>
 

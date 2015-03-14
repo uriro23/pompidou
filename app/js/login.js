@@ -4,7 +4,7 @@
 angular.module('myApp')
     .controller('LoginCtrl', function(api, $state, $rootScope) {
 
-    $rootScope.hideMenu = true;
+    $rootScope.menuStatus = 'hide';
     if (api.getCurrentUser()) {  // if we come here from logout menu, we logout first
         api.userLogout();
         console.log(api.getCurrentUser());

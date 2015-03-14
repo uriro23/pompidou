@@ -106,7 +106,7 @@ config(function($stateProvider, $urlRouterProvider) {
       resolve: {
         catalog: ['api', function (api) {
           return api.queryCatalog().then(function (obj) {
-            return obj;
+            return obj; // here we return the complete catalog, including deleted items
           })
         }],
         allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
@@ -149,11 +149,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
-        }],
-        catalog: ['api', function (api) {
-            return api.queryCatalog(1).then (function (obj) { // load by default products domain
-                return obj;
-            })
         }]
       }
      })
@@ -272,7 +267,9 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       catalog: ['api', function(api) {
         return api.queryCatalog(1). then (function(catalog) {
-          return catalog;
+          return catalog.filter(function (cat) {
+            return !cat.attributes.isDeleted;
+          })
         })
       }],
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {

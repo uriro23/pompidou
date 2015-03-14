@@ -12,7 +12,7 @@ angular.module('myApp')
                                          accessCustomers,
                                          accessOrders) {
 
-      $rootScope.hideMenu = false;
+      $rootScope.menuStatus = 'show';
       var user = api.getCurrentUser();
       if (user) {
         $rootScope.username = user.attributes.username;

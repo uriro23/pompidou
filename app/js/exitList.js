@@ -8,7 +8,7 @@ angular.module('myApp')
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;
     this.categories = categories;
-    $rootScope.hideMenu = true;
+    $rootScope.menuStatus = 'hide';
     $rootScope.title = lov.company + ' - רשימת יציאה';
 
     // fetch customer
