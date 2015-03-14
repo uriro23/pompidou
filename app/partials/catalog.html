@@ -32,7 +32,7 @@
         </td>
         <td>
           <input type="text" size = 90 ng-model="catalogItem.attributes.productDescription"
-                 ng-change="catalogModel.setProductDescription($index, true)" ng-model-options="{updateOn: 'blur'}"
+                 ng-change="catalogModel.setProductDescription($index, true)"
                  ng-class="catalogItem.isProductDescriptionError?'myError':null">
         </td>
         <td>
@@ -41,18 +41,17 @@
         </td>
         <td>
           <input type="text" size = 4 ng-model="catalogItem.attributes.priceQuantity"
-                 ng-change="catalogModel.setPriceQuantity($index)" ng-model-options="{updateOn: 'blur'}"
+                 ng-change="catalogModel.setPriceQuantity($index)"
                  ng-class="catalogItem.isPriceQuantityError?'myError':null">
         </td>
-        <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
+        <td>
           <input type="text" money min=0 size = 5 ng-model="catalogItem.attributes.price"
-                 ng-blur="catalogModel.setPrice($index)"
-                 ng-change="catalogModel.priceChanged($index)"
+                 ng-change="catalogModel.setPrice($index)"
                  ng-class="catalogItem.isPriceError?'myError':null">
         </td>
         <td>
           <input type="text" size = 4 ng-model="catalogItem.attributes.productionQuantity"
-                 ng-change="catalogModel.setProductionQuantity($index)" ng-model-options="{updateOn: 'blur'}"
+                 ng-change="catalogModel.setProductionQuantity($index)"
                  ng-class="catalogItem.isProductionQuantityError?'myError':null">
         </td>
         <td>

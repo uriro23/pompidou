@@ -61,7 +61,6 @@
     <td>{{item.category.label}}</td>
     <td>
       <input type="text" size="90" ng-model="item.productDescription"
-             ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setProductDescription($index)"
              ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.productDescription?'myError':null">
@@ -70,16 +69,14 @@
     <td>
       <input type="number" size="3" max=1000 min=1
              ng-model="item.quantity"
-             ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.setQuantity($index)"
              ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.quantity?'myError':null">
     </td>
     <td>{{item.boxCount | number: 2}}</td>
-    <td> <!-- ng-model-options with updateOn:blur does not work with money directive -->
+    <td>
       <input type="text" size="7" money min=0 ng-model="item.price"
-             ng-change="orderModel.priceChanged($index)"
-             ng-blur="orderModel.setPrice($index)"
+             ng-change="orderModel.setPrice($index)"
              ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.price?'myError':null">
     </td>

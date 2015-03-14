@@ -288,17 +288,10 @@ angular.module('myApp')
         thisItem.isChanged = true;
       };
 
-      this.priceChanged = function(ind) {
-        this.order.attributes.items[ind].isPriceChanged = true;
-      };
-
       this.setPrice = function (ind) {
         var thisOrder = this.order.attributes;
         var thisItem = thisOrder.items[ind];
 
-        if (!thisItem.isPriceChanged) {
-          return;
-        }
         thisItem.errors.price = Number(thisItem.price) != thisItem.price || Number(thisItem.price) < 0;
         if (thisOrder.isBusinessEvent) {
           thisItem.priceInclVat = thisItem.price * (1 + thisOrder.vatRate);
@@ -310,7 +303,6 @@ angular.module('myApp')
         this.calcSubTotal();
         this.orderChanged();
         thisItem.isChanged = true;
-        thisItem.isPriceChanged = false;
       };
 
       this.setFreeItem = function (ind) {
@@ -447,12 +439,8 @@ angular.module('myApp')
       this.orderChanged('isTransportationBonus');
     };
 
-    this.setTransportation = function (doIt) {
+    this.setTransportation = function () {
       var thisOrder = this.order.attributes;
-
-      if (!doIt) {
-        return;
-      }
       this.order.view.errors.transportationInclVat = Number(thisOrder.transportationInclVat) != thisOrder.transportationInclVat ||
         Number(thisOrder.transportationInclVat) < 0;
         if (thisOrder.isBusinessEvent) {
@@ -478,21 +466,17 @@ angular.module('myApp')
             thisOrder.items[i].price = thisOrder.items[i].priceInclVat;
           }
         }
-        this.setTransportation(true); // recalc considering vat reduced or not
+        this.setTransportation(); // recalc considering vat reduced or not
         this.calcSubTotal();
         this.orderChanged('isBusinessEvent');
       };
 
       this.setFixedPrice = function () {
         var thisOrder = this.order.attributes;
-        if (!this.isFixedPriceChanged) {
-          return;
-        }
-        this.order.view.errors.fixedPrice = Number(thisOrder.fixedPrice) != thisOrder.fixedPrice ||
+         this.order.view.errors.fixedPrice = Number(thisOrder.fixedPrice) != thisOrder.fixedPrice ||
                                             Number(thisOrder.fixedPrice) < 0;
         this.calcTotal();
         this.orderChanged('fixedPrice');
-        thisOrder.isFixedPriceChanged = false;
       };
 
 

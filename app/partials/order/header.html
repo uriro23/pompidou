@@ -77,7 +77,6 @@
     </td>
     <td style="width: 14%">
       <label>שעה</label><input type="time" ng-model="orderModel.order.attributes.eventTime"
-                               ng-model-options="{updateOn: 'blur'}"
                                ng-disabled="orderModel.isReadOnly"
                                ng-change="orderModel.orderChanged('header')">
     </td>
@@ -85,7 +84,6 @@
       <label>מספר משתתפים</label><input type="number" min=1 max=1000
                                         ng-model="orderModel.order.attributes.noOfParticipants"
                                         ng-change="orderModel.setNoOfParticipants()"
-                                        ng-model-options="{updateOn: 'blur'}"
                                         ng-disabled="orderModel.isReadOnly"
                                         ng-class="orderModel.order.view.errors.noOfParticipants?'myError':null">
     </td>

@@ -3,7 +3,6 @@
     <td>תבנית</td>
     <td>
       <input type="text" ng-model="orderModel.order.attributes.template"
-             ng-model-options="{updateOn: 'blur'}"
              ng-change="orderModel.orderChanged('template')"
              ng-disabled="orderModel.isReadOnly">
 
@@ -13,7 +12,6 @@
     <td>מקום משלוח</td>
     <td>
       <textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"
-                ng-model-options="{updateOn: 'blur'}"
                 ng-change="orderModel.orderChanged('deliveryLocation')"
                 ng-disabled="orderModel.isReadOnly"
           ></textarea>
@@ -23,7 +21,6 @@
     <td>הערות</td>
     <td>
       <textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"
-                ng-model-options="{updateOn: 'blur'}"
                 ng-change="orderModel.orderChanged('remarks')"
                 ng-disabled="orderModel.isReadOnly"
           ></textarea>

@@ -73,19 +73,12 @@ angular.module('myApp')
           Number(this.catalog[ind].attributes.priceQuantity) <= 0));
     };
 
-    this.priceChanged = function (ind) {
-      this.catalog[ind].isPriceChanged = true;
-    };
     this.setPrice = function (ind) {
-      if (!this.catalog[ind].isPriceChanged) {
-        return;
-      }
       this.itemChanged(ind);
       this.catalog[ind].isPriceError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
         ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
            Number(this.catalog[ind].attributes.price) <= 0));
-      this.catalog[ind].isPriceChanged = false;
     };
 
     this.setProductionQuantity = function (ind) {
