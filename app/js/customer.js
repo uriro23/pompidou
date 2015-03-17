@@ -39,7 +39,7 @@ angular.module('myApp')
     var that = this;
     if (this.filteredCustomers[ind].isSelected) { // if current line is selected, just turn it off
       if (this.isCustomerChanged) {
-        this.filteredCustomers[ind] = this.backupCustomer;   // undo changes
+        this.filteredCustomers[ind] = angular.copy(this.backupCustomer);   // undo changes
       }
       this.filteredCustomers[ind].isSelected = false;
       this.currentCustomer = {};
@@ -49,7 +49,7 @@ angular.module('myApp')
         var temp = this.filteredCustomers.filter (function (cust,ind) {
           if (cust.id===that.currentCustomer.id) {
             if (that.isCustomerChanged) {
-              that.filteredCustomers[ind] = that.backupCustomer;   // undo changes
+              that.filteredCustomers[ind] = angular.copy(that.backupCustomer);   // undo changes
             }
             that.filteredCustomers[ind].isSelected = false;
             return true;
@@ -91,7 +91,7 @@ angular.module('myApp')
       var temp = this.filteredCustomers.filter (function (cust,ind) {
         if (cust.id===that.currentCustomer.id) {
           if (that.isCustomerChanged) {
-            that.filteredCustomers[ind] = that.backupCustomer;   // undo changes
+            that.filteredCustomers[ind] = angular.copy(that.backupCustomer);   // undo changes
           }
           that.filteredCustomers[ind].isSelected = false;
           return true;

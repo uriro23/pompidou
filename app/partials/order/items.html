@@ -18,6 +18,7 @@
       <tbody>
       <tr ng-repeat="product in orderModel.filteredCatalog">
         <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
+        <td>{{product.isInOrder | checkMark}}</td>
       </tr>
       </tbody>
     </table>
@@ -47,6 +48,7 @@
     </span>
 <table style="width: 80%">
   <thead>
+  <th></th>
   <th style="width: 6%">קטגוריה</th>
   <th style="width: 69%">מוצר</th>
   <th style="width: 5%">יח'</th>
@@ -56,8 +58,9 @@
   <th style="width: 5%">בונוס</th>
   </thead>
   <tbody>
-  <tr ng-repeat="item in orderModel.order.attributes.items track by item.catalogId"
+  <tr ng-repeat="item in orderModel.order.attributes.items track by item.index"
       ng-class="item.isChanged?'myChanged':null">
+    <td>{{item.index}}</td>
     <td>{{item.category.label}}</td>
     <td>
       <input type="text" size="90" ng-model="item.productDescription"

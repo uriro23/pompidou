@@ -290,12 +290,7 @@ config(function($stateProvider, $urlRouterProvider) {
           return orders[0];
         })
       }],
-      catalog: ['api', function(api) {
-        return api.queryCatalog(1). then (function(catalog) {
-          return catalog;
-        })
-      }],
-      categories: ['categoriesPromise', function (categoriesPromise) {
+       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }]
     }

@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('MenuCtrl', function(api, $state, $filter, $rootScope, lov, order, catalog, categories) {
+  .controller('MenuCtrl', function(api, $state, $filter, $rootScope, lov, order, categories) {
       $rootScope.menuStatus = 'hide';
       $rootScope.title = lov.company + ' - תפריט';
 
@@ -15,7 +15,6 @@ angular.module('myApp')
 
 
     this.order = order;
-    this.catalog = catalog;
     this.categories = categories;
 
     // fetch customer
@@ -33,7 +32,7 @@ angular.module('myApp')
     // filter items for current category
     this.setupCategoryItems = function(catId) {
       this.categoryItems = that.order.attributes.items.filter(function(item) {
-        return (item.category.tId===catId);
+        return (item.category.tId===catId && item.isInMenu);
       })
     };
 

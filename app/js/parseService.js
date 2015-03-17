@@ -25,7 +25,6 @@ angular.module('myApp')
     var newObj = angular.copy(obj);  // to avoid parse error 121
     newObj.save({}, {
       success: function (o) {
-        console.log (o.attributes);
         promise.resolve(o);
         $rootScope.$digest();
       },

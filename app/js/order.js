@@ -171,19 +171,16 @@ angular.module('myApp')
             var tempCat = cat.filter(function (c) {
               return !c.attributes.isDeleted
             });
-            that.catalogData = tempCat.map (function (c) {
+            that.filteredCatalog = tempCat.map (function (c) {
               var cc = c.attributes;
               cc.id = c.id;
-              return cc;
-            });
-            // exclude items already in order
-            that.filteredCatalog = that.catalogData.filter(function (cat) {
+              cc.isInOrder = false; // check items already in order, just for attention
               for (i=0;i<thisOrder.items.length;i++) {
-                if (thisOrder.items[i].catalogId === cat.id) {
-                  return false;
+                if (thisOrder.items[i].catalogId === c.id) {
+                  cc.isInOrder = true;
                 }
               }
-              return true;
+              return cc;
             });
             that.filteredCatalog.sort (function (a,b) {
               if (a.productDescription > b.productDescription) {
@@ -213,7 +210,7 @@ angular.module('myApp')
 
       this.filterProducts = function () {
         var that = this;
-        this.filteredCatalog = this.catalogData.filter(function (cat) {
+        this.filteredCatalog = this.filteredCatalog.filter(function (cat) {
           return cat.productDescription.indexOf (that.filterText)> -1;
         })
       };
@@ -221,15 +218,20 @@ angular.module('myApp')
       this.setProduct = function (catalogEntry) {
         var thisOrder = this.order.attributes;
 
+        var maxIndex =  thisOrder.items.length===0?0:Math.max.apply(null,thisOrder.items.map(function (itm) {
+            return itm.index
+          }))+1;
+
         thisOrder.items.splice(0,0,{});
- 
         var thisItem = thisOrder.items[0];
- 
+        thisItem.index = maxIndex;
         thisItem.category = this.categories.filter(function (cat) {
             return cat.tId === catalogEntry.category;
         })[0];
         thisItem.catalogId = catalogEntry.id;
         thisItem.productDescription = catalogEntry.productDescription;
+        thisItem.shortDescription = catalogEntry.shortDescription;
+        thisItem.isInMenu= catalogEntry.isInMenu;
         thisItem.measurementUnit = this.measurementUnits.filter(function (mes) {
           return mes.tId === catalogEntry.measurementUnit;
         })[0];
@@ -327,11 +329,7 @@ angular.module('myApp')
             .then(function (temps) {
               that.templates = temps;
               that.templates.sort(function (a,b) {
-                  if (a.attributes.template < b.attributes.template) {
-                    return -1
-                  } else {
-                    return 1
-                  }
+                  return a.attributes.template < b.attributes.template?-1:1
               })
             })
       };
@@ -355,9 +353,14 @@ angular.module('myApp')
           if (thisItem) {
             thisItem.quantity += templateItem.quantity;   // exists, just update quantity
           } else {
+            var maxIndex =  thisOrder.items.length===0?0:Math.max.apply(null,thisOrder.items.map(function (itm) {
+              return itm.index
+            }))+1;
             this.order.attributes.items.splice(0, 0, templateItem); // initialize new item as copied one
             thisItem = this.order.attributes.items[0];
+            thisItem.index = maxIndex;  // override original index
           }
+          // now adjust price
           thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
           thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
           if (thisOrder.isBusinessEvent) {
@@ -367,8 +370,7 @@ angular.module('myApp')
           }
           thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
           thisItem.isChanged = true;
-          console.log(thisItem);
-        }
+       }
         this.calcSubTotal();
         this.orderChanged();
         this.isAddTemplate = false;
@@ -792,7 +794,7 @@ angular.module('myApp')
       window.onbeforeunload = function () {};
       window.onblur = function () {};
       $rootScope.menuStatus = 'show';
-      this.order.attributes = this.backupOrderAttr;
+      this.order.attributes = angular.copy(this.backupOrderAttr);
       this.setupOrderView();
     };
 
@@ -895,6 +897,7 @@ angular.module('myApp')
     window.onblur = function () {};
     $rootScope.menuStatus = 'show';
     this.backupOrderAttr = angular.copy(this.order.attributes);
+
 
 
   });
