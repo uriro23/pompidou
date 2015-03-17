@@ -355,6 +355,7 @@ angular.module('myApp')
               console.log('missing catalog entry for item '+accessItems[k].attributes.ItemId);
             } else {
               var newItem = {};
+              newItem.index = order.attributes.items.length; // make unique key for item - catalogId is not unique
               newItem.catalogId = that.catalogIdMap[accessItems[k].attributes.ItemId].id;
               if (that.catalogIdMap[accessItems[k].attributes.ItemId].quantity) {
                 newItem.catalogQuantity = that.catalogIdMap[accessItems[k].attributes.ItemId].quantity;
@@ -386,7 +387,7 @@ angular.module('myApp')
               }
               newItem.isFreeItem = Boolean(Number(accessItems[k].attributes.IsFreeItem));
               var ct = Number(accessItems[k].attributes.Category); // combine categories same as in catalog conversion
-              if (ct === 2 || ct === 3 || ct === 11 ) {
+              if (ct === 2 || ct === 3 || ct === 11) {
                 ct = 1;
               }
               newItem.category = categories.filter(function (cat) {
