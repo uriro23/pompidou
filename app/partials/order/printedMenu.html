@@ -1,0 +1,44 @@
+<table>
+  <tbody>
+  <tr style="width:40%">
+    <td style="width: 30%">
+      <a ng-href="#/menu/{{orderModel.order.id}}"target="_blank">
+        הדפס תפריט
+      </a>
+    </td>
+    <td style="width: 30%">
+      <a ng-href="#/exitList/{{orderModel.order.id}}"target="_blank">
+        הדפס רשימת יציאה
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<table style="width: 80%">
+  <thead>
+  <th style="width: 6%">קטגוריה</th>
+  <th style="width: 40%">מוצר</th>
+  <th style="width: 50%">תיאור לתפריט</th>
+  <th style="width: 4%">בתפריט?</th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="item in orderModel.order.attributes.items track by item.index"
+      ng-class="item.isChanged?'myChanged':null">
+    <td>{{item.category.label}}</td>
+    <td>{{item.productDescription}}</td>
+    <td>
+      <input type="text" size="80" ng-model="item.shortDescription"
+             ng-change="orderModel.itemChanged($index)"
+             ng-disabled="orderModel.isReadOnly">
+     </td>
+    <td>
+      <input type="checkbox"
+             ng-model="item.isInMenu"
+             ng-change="orderModel.itemChanged($index)"
+             ng-disabled="orderModel.isReadOnly"
+              >
+    </td>
+   </tr>
+  </tbody>
+</table>

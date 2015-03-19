@@ -208,7 +208,14 @@ angular.module('myApp')
         this.orderChanged();
       };
 
-      this.filterProducts = function () {
+    this.itemChanged = function (ind) {
+      var thisOrder = this.order.attributes;
+      var thisItem = thisOrder.items[ind];
+      this.orderChanged();
+      thisItem.isChanged = true;
+    };
+
+    this.filterProducts = function () {
         var that = this;
         this.filteredCatalog = this.filteredCatalog.filter(function (cat) {
           return cat.productDescription.indexOf (that.filterText)> -1;
@@ -263,16 +270,16 @@ angular.module('myApp')
         this.orderChanged();
       };
 
-      this.setProductDescription = function (ind) {
-        var thisOrder = this.order.attributes;
-        var thisItem = thisOrder.items[ind];
+    this.setProductDescription = function (ind) {
+      var thisOrder = this.order.attributes;
+      var thisItem = thisOrder.items[ind];
 
-        thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
-        this.orderChanged();
-        thisItem.isChanged = true;
-      };
+      thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
+      this.orderChanged();
+      thisItem.isChanged = true;
+    };
 
-      this.setQuantity = function (ind) {
+     this.setQuantity = function (ind) {
         var thisOrder = this.order.attributes;
         var thisItem = thisOrder.items[ind];
 

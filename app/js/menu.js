@@ -23,7 +23,7 @@ angular.module('myApp')
     //filter categories - only those in order
     this.filteredCategories = this.categories.filter(function(cat) {
       var categoryItems = that.order.attributes.items.filter(function(item) {
-        return (item.category.tId === cat.tId);
+        return (item.category.tId === cat.tId && item.isInMenu);
       });
       return categoryItems.length;
     });

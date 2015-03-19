@@ -1,13 +1,10 @@
-<table style="width: 50%">
+<table style="width: 30%">
     <thead>
-    <th style="width: 18%">
+    <th style="width: 30%">
         הצעת מחיר
     </th>
-    <th style="width: 45%"></th>
-    <th style="width: 27%">
-        מסמכים נוספים
-    </th>
-    <th style="width: 10%"></th>
+    <th style="width: 40%"></th>
+    <th style="width: 30%"></th>
     </thead>
     <tbody>
     <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
@@ -18,11 +15,6 @@
                     ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
                     ng-disabled="orderModel.isReadOnly"
                     ></select>
-        </td>
-        <td>
-            <a ng-href="#/menu/{{orderModel.order.id}}"target="_blank">
-                תפריט
-            </a>
         </td>
       <td>
         <button class="btn btn-default" ng-click="orderModel.sendMail()"
@@ -39,9 +31,6 @@
                     ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
                     ng-disabled="orderModel.isReadOnly"
                     ></select>
-        </td>
-        <td>
-            <a ng-href="#/exitList/{{orderModel.order.id}}"target="_blank">רשימת יציאה  </a>
         </td>
     </tr>
     </tbody>
