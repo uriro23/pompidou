@@ -1,18 +1,25 @@
-<span id="background_element">
-        <img  src="img/empty_menu-page-001.jpg"/>
-</span>
+<div id="menu_container">
 
-<div id="menu_container">  
-    <div id="menu_items" ng-repeat="category in menuModel.filteredCategories">
-      <label>
-          {{category.label}}
-      </label>
-          {{menuModel.setupCategoryItems(category.tId)}}
-      <ul ng-repeat="item in menuModel.categoryItems">
-          <li>{{item.shortDescription}}</li>
-      </ul>
-    </div>    
-</div>
+    <span id="background_element">
+        <img id="background_img" src="img/empty_menu-page-001.jpg"/>
+    </span>
+    
+    <div id="menu_list">  
+        <div id="menu_items" ng-repeat="category in menuModel.filteredCategories">
+           <label>
+              {{category.label}}
+           </label>
+              {{menuModel.setupCategoryItems(category.tId)}}
+           <ul ng-repeat="item in menuModel.categoryItems">
+              <li>
+                  {{item.shortDescription}}
+              </li>
+           </ul>
+        </div>    
+    </div>
+</div>   
+
+
 
 
 
