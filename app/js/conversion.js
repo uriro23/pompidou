@@ -368,6 +368,8 @@ angular.module('myApp')
                 newItem.catalogPrice = 0;
               }
               newItem.productDescription = accessItems[k].attributes.ItemDescription;
+              newItem.shortDescription = newItem.productDescription;
+              newItem.isInMenu = true;
               if (accessItems[k].attributes.Quantity) {
                 newItem.quantity = Number(accessItems[k].attributes.Quantity);
               } else {
@@ -403,6 +405,7 @@ angular.module('myApp')
                 newItem.catalogQuantity = 1;
                 that.itemschangedPrice++;
               }
+              newItem.errors = {}; // initialize errors object
 
               that.itemCount++;
               order.attributes.items.push(newItem);

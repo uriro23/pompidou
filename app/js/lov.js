@@ -3,7 +3,18 @@
 /* list of values */
 angular.module('myApp')
 
-  .factory('today',function() {
+
+.factory('$exceptionHandler', function() {
+  return function(exception, cause) {
+    exception.message += ' (caused by "' + cause + '")';
+    alert('תקלת תוכנה'+'\r\n'+exception.message);
+    throw exception;
+  };
+})
+
+
+
+.factory('today',function() {
     var today = new Date();
     today.setHours(0);
     today.setMinutes(0);

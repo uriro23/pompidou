@@ -650,18 +650,22 @@ angular.module('myApp')
 
         // check for errors
         for (var fieldName in this.order.view.errors) {
-          if (this.order.view.errors[fieldName]) {
-            alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
-            return;
+          if(this.order.view.errors.hasOwnProperty(fieldName)) {
+            if (this.order.view.errors[fieldName]) {
+              alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
+              return;
+            }
           }
         }
         // check for errors in items
         for (i=0;i<thisOrder.items.length;i++) {
           var thisItem = thisOrder.items[i];
           for ( fieldName in thisItem.errors) {
-            if (thisItem.errors[fieldName]) {
-              alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
-              return;
+            if(thisItem.errors.hasOwnProperty(fieldName)) {
+              if (thisItem.errors[fieldName]) {
+                alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
+                return;
+              }
             }
           }
         }
