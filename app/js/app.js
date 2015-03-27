@@ -6,7 +6,7 @@ angular.module('myApp', [
   'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
-  $urlRouterProvider.otherwise("/orderListView");
+  $urlRouterProvider.otherwise("/login");
   $stateProvider
     .state('login', {
       url: "/login",
