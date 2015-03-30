@@ -160,6 +160,7 @@ angular.module('myApp')
           this.mail.text += (bids[i].attributes.desc+'</a><br/>');
         }
       }
+      this.mail.text = '<div dir="rtl">'+this.mail.text+'</div>'
       gmailClientLowLevel.sendEmail(this.mail)
         .then(function () {
           var newMail = api.initMail();

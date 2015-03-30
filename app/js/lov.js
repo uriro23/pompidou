@@ -3,7 +3,7 @@
 /* list of values */
 angular.module('myApp')
 
-
+/*
 .factory('$exceptionHandler', function() {
   return function(exception, cause) {
     exception.message += ' (caused by "' + cause + '")';
@@ -12,7 +12,7 @@ angular.module('myApp')
   };
 })
 
-
+*/
 
 .factory('today',function() {
     var today = new Date();
