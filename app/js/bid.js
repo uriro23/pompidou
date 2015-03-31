@@ -2,12 +2,13 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('BidCtrl', function(api, $state, $filter, $rootScope, bid, lov, config, measurementUnits, categories) {
+  .controller('BidCtrl', function(api, $state, $filter, $rootScope,
+                                  bid, lov, config, categories,
+                                  bidTextTypes, eventTypes, discountCauses) {
       $rootScope.menuStatus = 'hide';
 
     this.bid = bid;
 
-    this.measurementUnits = measurementUnits;
     this.categories = categories;
     this.config = config[0];
     var currentOrder = this.bid.attributes.order;
@@ -25,33 +26,29 @@ angular.module('myApp')
 
     //fetch start bid text type
     if (currentOrder.startBidTextType) {
-      api.queryBidTextTypes(currentOrder.startBidTextType)
-        .then (function (bidTexts) {
-        that.startBidTextType = bidTexts[0].attributes;
-       })
+      this.startBidTextType = bidTextTypes.filter(function (btt) {
+        return btt.tId===currentOrder.startBidTextType
+      })[0];
     }
 
     // fetch end bid text type
     if (currentOrder.endBidTextType) {
-      api.queryBidTextTypes(currentOrder.endBidTextType)
-        .then (function (bidTexts) {
-        that.endBidTextType = bidTexts[0].attributes;
-      })
+      this.endBidTextType = bidTextTypes.filter(function (btt) {
+        return btt.tId===currentOrder.endBidTextType
+      })[0];
     }
     //fetch event type
     if (currentOrder.eventType) {
-      api.queryEventTypes(currentOrder.eventType)
-        .then (function (res) {
-        that.eventType = res[0].attributes;
-      })
+      this.eventType = eventTypes.filter(function (evt) {
+        return evt.tId===currentOrder.eventType
+      })[0];
     }
 
     //fetch discount cause
     if (currentOrder.discountCause) {
-      api.queryDiscountCauses(currentOrder.discountCause)
-        .then (function (res) {
-        that.discountCause = res[0].attributes;
-      })
+      this.discountCause = discountCauses.filter(function (dsc) {
+        return dsc.tId===currentOrder.discountCause
+      })[0];
     }
 
     //filter categories - only those in order and not bonus
@@ -60,7 +57,7 @@ angular.module('myApp')
         return (item.category.tId === cat.tId && !item.isFreeItem);
       });
       return categoryItems.length;
-    })
+    });
 
 
     // filter items for current category
@@ -68,15 +65,17 @@ angular.module('myApp')
       this.categoryItems = currentOrder.items.filter(function(item) {
         return (item.category.tId===catId && !item.isFreeItem);
       })
-    }
+    };
 
     // filter bonus items
     this.setupFreeItems = function() {
       this.freeItems = currentOrder.items.filter(function(item) {
         return (item.isFreeItem);
       })
+    };
+
+    if ($state.current.name==='bidPrint') {
+      window.print()
     }
-
-
 
     });

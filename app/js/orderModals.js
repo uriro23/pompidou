@@ -135,7 +135,7 @@ angular.module('myApp')
       var baseUrl = $location.absUrl();
       baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim orderId
       baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
-      baseUrl = baseUrl+'/bid/';
+ //     baseUrl = baseUrl+'/bid/';
       this.mail.text += '<br/><br/><span>מסמכים מצורפים:</span><br/>';
       var bidCnt = 0;
       var orderCnt = 0;
@@ -149,7 +149,8 @@ angular.module('myApp')
             date: bids[i].attributes.date,
             customer: bids[i].attributes.customer
           });
-          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">');
+//          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">');
+          this.mail.text += '<span>';
           if (bids[i].attributes.documentType===1) {
             this.mail.text += 'הצעת מחיר: ';
             bidCnt++;
@@ -157,7 +158,10 @@ angular.module('myApp')
             this.mail.text += 'הזמנה: ';
             orderCnt++;
           }
-          this.mail.text += (bids[i].attributes.desc+'</a><br/>');
+          this.mail.text += (bids[i].attributes.desc+' </span>');
+          this.mail.text += '<a href="'+baseUrl+'/bid/'+bids[i].attributes.uuid+'">הצגה</a><span>  <span>';
+          this.mail.text += '<a href="'+baseUrl+'/bidPrint/'+bids[i].attributes.uuid+'">הדפסה</a>'
+          this.mail.text += '<br/>';
         }
       }
       this.mail.text = '<div dir="rtl">'+this.mail.text+'</div>'

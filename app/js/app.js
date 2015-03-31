@@ -247,8 +247,41 @@ config(function($stateProvider, $urlRouterProvider) {
       config: ['configPromise', function (configPromise) {
         return configPromise;
       }],
-      measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-        return measurementUnitsPromise;
+      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+        return bidTextTypesPromise;
+      }],
+      eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+        return eventTypesPromise;
+      }],
+      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+        return discountCausesPromise;
+      }],
+       categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
+      }]
+    }
+  })
+    .state ('bidPrint', {
+    url: "/bidPrint/:uuid",
+    templateUrl: "partials/bid.html",
+    controller: "BidCtrl as bidModel",
+    resolve: {
+      bid: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+          return bids[0];
+        })
+      }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
+      }],
+      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+        return bidTextTypesPromise;
+      }],
+      eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+        return eventTypesPromise;
+      }],
+      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+        return discountCausesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
