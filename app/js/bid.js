@@ -2,9 +2,9 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('BidCtrl', function(api, $state, $filter, $rootScope,
+  .controller('BidCtrl', function(api, $state, $filter, $rootScope, $timeout,
                                   bid, lov, config, categories,
-                                  bidTextTypes, eventTypes, discountCauses) {
+                                  bidTextTypes, eventTypes, discountCauses, isPrintBid) {
       $rootScope.menuStatus = 'hide';
 
     this.bid = bid;
@@ -74,8 +74,11 @@ angular.module('myApp')
       })
     };
 
-    if ($state.current.name==='bidPrint') {
-      window.print()
+   if (isPrintBid) {
+     $timeout(function () {
+       window.print()
+     },100)
     }
+
 
     });

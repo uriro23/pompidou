@@ -258,7 +258,11 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
        categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
+      }],
+      isPrintBid: [function () {
+        return false
       }]
+
     }
   })
     .state ('bidPrint', {
@@ -285,6 +289,9 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
+      }],
+      isPrintBid: [function () {
+          return true
       }]
     }
   })
