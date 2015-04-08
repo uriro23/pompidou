@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CatalogCtrl', function($state, $modal, $rootScope, api, lov, measurementUnits) {
+  .controller('CatalogCtrl', function($state, $modal, $rootScope, api, lov, measurementUnits, config) {
 
       $rootScope.menuStatus = 'show';
       var user = api.getCurrentUser();
@@ -134,6 +134,11 @@ angular.module('myApp')
                 });
             })
           },
+          config: ['api', function (api) {
+            return api.queryConfig().then(function (res) {
+              return res[0].attributes;
+            })
+          }],
           measurementUnits: function() {
             return measurementUnits;
           }
@@ -237,6 +242,19 @@ angular.module('myApp')
           this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
           this.catalog[i].attributes.price = Number(this.catalog[i].attributes.price);
           this.catalog[i].attributes.productionQuantity = Number(this.catalog[i].attributes.productionQuantity);
+          // if no components/materials were specified insert dummy
+          if (this.currentDomain.id===1 && this.catalog[i].attributes.components.length===0) {
+            this.catalog[i].attributes.components.push({
+              id: config.unhandledItemComponent,
+              domain: 2,
+              quantity: 1
+            });
+            this.catalog[i].attributes.components.push({
+              id: config.unhandledItemMaterial,
+              domain: 3,
+              quantity: 1
+            });
+          }
           itemsToUpdate.push(this.catalog[i]);
           this.catalog[i].isChanged = false;
         }

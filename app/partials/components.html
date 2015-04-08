@@ -10,6 +10,7 @@
   <div>
     <label>כמות ייצור: </label>
     <span>{{componentsModel.productionQuantity}}</span>
+    <span>{{componentsModel.measurementUnit.label}}</span>
   </div>
   <button class="btn btn-success" ng-click="componentsModel.addItem()">הוסף</button>
   <span ng-show="componentsModel.isAddItem">

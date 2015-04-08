@@ -6,6 +6,7 @@ angular.module('myApp')
                                          lov, catalog, allCategories, measurementUnits, today,
                                          customers, futureOrders, workOrder) {
 
+
       $rootScope.menuStatus = 'show';
       var user = api.getCurrentUser();
       if (user) {
@@ -249,9 +250,13 @@ angular.module('myApp')
           }
         }
         this.orderView.sort(function (a,b) {
-          return a.attributes.order.eventDate > b.attributes.order.eventDate;
-        })
-      };
+          if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
+            return 1
+          } else {
+            return -1
+          }
+        });
+     };
 
       this.setOrderInWorkOrder = function (ind) {
         var that = this;

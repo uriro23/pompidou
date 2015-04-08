@@ -6,6 +6,7 @@ angular.module('myApp')
                                          $rootScope,
                                          api,
                                          lov,
+                                         config,
                                          measurementUnits,
                                          categories,
                                          accessCatalog,
@@ -99,7 +100,10 @@ angular.module('myApp')
     this.convertCatalog = function () {
       this.isCancel = false;
       that.total = accessCatalog.length;
-      cvCatalog(0);
+      cvCatalog(0)
+        .then(function () {
+          api.saveObj(config);   // save with updated item ids for boxItem etc.
+        })
     };
     
     var cvCatalog = function (i) {
@@ -131,6 +135,15 @@ angular.module('myApp')
       if (catalogItem.attributes.domain===1) {
         catalogItem.attributes.shortDescription = catalogItem.attributes.productDescription; // for printed menu
         catalogItem.attributes.isInMenu = true;
+      }
+      if (catalogItem.attributes.accessKey===lov.accessBoxItemId) {
+        config.attributes.boxItem = catalogItem.id;
+      }
+      if (catalogItem.attributes.accessKey===lov.accessUnhandledItemComponent) {
+        config.attributes.unhandledItemComponent = catalogItem.id;
+      }
+      if (catalogItem.attributes.accessKey===lov.accessUnhandledItemMaterial) {
+        config.attributes.unhandledItemMaterial = catalogItem.id;
       }
         api.queryAccessComponents(accessCatalog[i].ItemId)
           .then (function(comps) {

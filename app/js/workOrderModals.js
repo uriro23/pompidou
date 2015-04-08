@@ -27,8 +27,16 @@ angular.module('myApp')
                 var son = angular.copy(workOrder.filter(function (wo) {
                     return wo.id === bt[i].id;
                 })[0]);
-                son.father = root.seq;
-                generateTrace(son, gen+1, bt[i].quantity, workOrder, backTrace);
+                if(!son) {
+                  console.log('cant find son in backtrace');
+                  console.log('father:');
+                  console.log(root);
+                  console.log('bt:');
+                  console.log(bt);
+                } else {
+                  son.father = root.seq;
+                  generateTrace(son, gen + 1, bt[i].quantity, workOrder, backTrace);
+                }
             }
         }
    }

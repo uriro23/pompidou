@@ -43,6 +43,7 @@ angular.module('myApp')
                                           targetDomain,
                                           targetCategories,
                                           targetItems,
+                                          config,
                                           measurementUnits) {
 
 
@@ -51,6 +52,10 @@ angular.module('myApp')
     var catItem = targetItems.filter (function(cat) {
       return cat.id === compId;
     })[0];
+    if(!catItem) {
+      alert('missing component catalog entry for '+compId);
+      return view;
+    }
     view.category = targetCategories.filter (function(cat) {
       return cat.tId === catItem.attributes.category;
     })[0];
@@ -60,29 +65,6 @@ angular.module('myApp')
     })[0];
     return view;
   };
-
-  this.productDescription = catalogItem.attributes.productDescription;
-  this.productionQuantity = catalogItem.attributes.productionQuantity;
-  this.targetDomain = targetDomain;
-  this.targetCategories = targetCategories;
-  this.currentCategory = targetCategories[0];
-  this.targetItems = targetItems;
-  this.measurementUnits = measurementUnits;
-
-  var tempComponents = [];
-  if (catalogItem.attributes.components) {
-    tempComponents = catalogItem.attributes.components.filter (function (comp) {
-      return (comp.domain === targetDomain);
-    })
-  }
-
-  var that = this;
-  this.components = tempComponents.map(function(comp) {
-    var c = {};
-    c.attr = comp;
-    c.view = that.setComponentView(comp.id);
-    return c;
-  });
 
   this.setCategory = function () {
     var that = this;
@@ -144,7 +126,37 @@ angular.module('myApp')
   this.cancel = function () {
     $modalInstance.dismiss();
   };
-  
+
+  // main block
+
+  var that = this;
+  this.productDescription = catalogItem.attributes.productDescription;
+  this.productionQuantity = catalogItem.attributes.productionQuantity;
+  this.measurementUnit = measurementUnits.filter(function (mes) {
+    return mes.tId === catalogItem.attributes.measurementUnit
+  })[0];
+  this.targetDomain = targetDomain;
+  this.targetCategories = targetCategories;
+  this.currentCategory = targetCategories[0];
+  this.targetItems = targetItems;
+  this.measurementUnits = measurementUnits;
+
+  var tempComponents = [];
+  if (catalogItem.attributes.components) {
+    tempComponents = catalogItem.attributes.components.filter (function (comp) {
+      return (comp.domain === targetDomain &&
+              comp.id !== config.unhandledItemComponent &&  // don't show unhandled item entries
+              comp.id !== config.unhandledItemMaterial);    // they will be stored for modified item only if no other comps exist
+    })
+  }
+  this.components = tempComponents.map(function(comp) {
+    var c = {};
+    c.attr = comp;
+    c.view = that.setComponentView(comp.id);
+    return c;
+  });
+
+
 
 });
 

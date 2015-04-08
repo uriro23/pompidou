@@ -171,6 +171,9 @@ angular.module('myApp')
         label: 'דוא"ל',
         isRealDocumentType: false
       }
-    ]
+    ],
+    accessBoxItemId: 332,
+    accessUnhandledItemComponent: 417,
+    accessUnhandledItemMaterial: 418
   }
 );
