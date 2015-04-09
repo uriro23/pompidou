@@ -64,7 +64,7 @@ angular.module('myApp')
     var promise = $q.defer();
     obj.destroy({
       success: function (o) {
-        console.log('object '+ o.id+' deleted');
+        //console.log('object '+ o.id+' deleted');
         promise.resolve(o);
         $rootScope.$digest();
       },

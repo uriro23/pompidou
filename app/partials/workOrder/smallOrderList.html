@@ -1,0 +1,39 @@
+<h4>
+  <span>רשימת אירועים</span>
+  <button ng-click="workOrderModel.isShowSmallOrders=!workOrderModel.isShowSmallOrders"
+          class="btn btn-default btn-sm">
+    <span ng-show="workOrderModel.isShowSmallOrders">הסתר</span>
+    <span ng-hide="workOrderModel.isShowSmallOrders">הצג</span>
+  </button>
+</h4>
+<table ng-show="workOrderModel.isShowSmallOrders" style="width:50%">
+  <thead>
+  <th>
+    מספר
+  </th>
+  <th>
+    תאריך
+  </th>
+  <th>
+    שעה
+  </th>
+  <th>
+    לקוח
+  </th>
+  <th>
+    משתתפים
+  </th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="woItem in workOrderModel.woOrders">
+    <td>
+      <a ng-href="#/editOrderView/{{woItem.attributes.order.id}}">{{woItem.attributes.order.number}}</a>
+    </td>
+    <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
+    <td>{{woItem.attributes.order.eventTime | date: 'HH:mm'}}</td>
+    <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
+    <td>{{woItem.attributes.order.noOfParticipants}}</td>
+  </tr>
+  </tbody>
+</table>
+<hr>

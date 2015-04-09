@@ -1,0 +1,42 @@
+<h4>
+  {{workOrderModel.domains[2].forWorkItem}}
+      <span ng-hide="workOrderModel.domainStatuses.attributes.status[2]">
+        --- לא מעודכן ---
+      </span>
+  <button class="btn btn-default"
+          ng-show="workOrderModel.domainStatuses.attributes.status[2]"
+          ng-click="workOrderModel.createWorkOrderDomain(3)">
+    {{'חשב '+workOrderModel.domains[3].forWorkItem}}
+  </button>
+</h4>
+<div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
+  <label>{{cat.category.label}}</label>
+  <table style="width:30%">
+    <tbody>
+    <tr ng-repeat="woItem in cat.list">
+      <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
+      <td>
+        <input type="text" money size="5"
+               ng-model="woItem.attributes.quantity"
+               ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
+               ng-change="workOrderModel.setQuantity(woItem,2)">
+      </td>
+      <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
+      <td>
+        <button ng-click="workOrderModel.backInfo(woItem)"
+                ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
+                class="btn btn-default btn-sm">
+          פרטים
+        </button>
+      </td>
+      <td>
+        <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
+                ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
+                class="btn btn-default btn-sm">
+          מחק
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

@@ -115,12 +115,6 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
-        futureOrders: ['api', function (api) {
-          return api.queryFutureOrders()
-              .then(function (obj) {
-                return obj;
-          })
-        }],
         customers: ['api', function (api) {
           return api.queryCustomers()
               .then(function (objs) {

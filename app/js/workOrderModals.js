@@ -1,7 +1,18 @@
 'use strict';
 
 angular.module('myApp')
-    .controller ('WorkOrderBackTraceCtrl', function($modalInstance, $filter, workOrderItem, workOrder, domains) {
+  .controller ('AckDelWorkOrderCtrl', function($modalInstance) {
+
+  this.setYes = function() {
+    $modalInstance.close (true);
+  };
+
+  this.setNo = function() {
+    $modalInstance.close (false);
+  };
+})
+
+  .controller ('WorkOrderBackTraceCtrl', function($modalInstance, $filter, workOrderItem, workOrder, domains) {
 
     var seq = 0;
     var ident = ['', '-', '--', '---', '----'];
