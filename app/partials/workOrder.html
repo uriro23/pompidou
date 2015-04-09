@@ -1,6 +1,9 @@
 <h3>
   פקודת עבודה
 </h3>
+<h4 ng-show="workOrderModel.isProcessing">
+  המתן...
+</h4>
 <tabset>
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
        active="workOrderModel.isActiveTab[3]"

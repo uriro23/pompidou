@@ -23,7 +23,14 @@ angular.module('myApp')
       var woItemsToDelete = this.workOrder.filter(function (wo) {
         return wo.attributes.domain >= domain;
       });
-      return api.deleteObjects(woItemsToDelete);
+      this.isProcessing = true;
+      return api.deleteObjects(woItemsToDelete)
+        .then(function () {
+          that.isProcessing = false
+        },function () {
+          alert('workOrder multiple delete failed');
+          that.isProcessing = false;
+        })
     };
 
 
@@ -221,6 +228,7 @@ angular.module('myApp')
 
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
+          that.orderView = [];
           that.destroyWorkOrderDomains(0)
             .then(function () {
               that.workOrder = [];
@@ -238,7 +246,14 @@ angular.module('myApp')
       var woItemsToSave = this.workOrder.filter(function (wo) {
         return wo.attributes.domain === domain;
       });
-      return api.saveObjects(woItemsToSave);
+      this.isProcessing = true;
+      return api.saveObjects(woItemsToSave)
+        .then(function () {
+          that.isProcessing = false;
+        },function () {
+          alert('workOrder multiple save failed');
+          that.isProcessing = false;
+        })
     };
 
     this.splitWorkOrder = function () {
