@@ -244,6 +244,13 @@ angular.module('myApp')
     return query(workOrderQuery);
   };
 
+  this.queryWorkOrderByKey = function (key,val) {
+    var workOrderQuery = new Parse.Query(WorkOrder);
+    workOrderQuery.equalTo(key,val);
+    workOrderQuery.limit(1000);
+    return query(workOrderQuery);
+  };
+
 
   // WorkOrderDomains
   // ----------------

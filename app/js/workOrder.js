@@ -165,13 +165,35 @@ angular.module('myApp')
             viewItem.isInWorkOrder = false;
             that.orderView.push(viewItem);
           }
-          that.orderView.sort(function (a,b) {
-            if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
-              return 1
-            } else {
-              return -1
-            }
-          });
+          var ordersToSave = [];  // now include all orders from prev order view in wo
+          for(var i=0;i<that.orderView.length;i++) {
+            if(that.prevOrdersInWo.filter(function (po) {
+              return po.attributes.order.number===that.orderView[i].attributes.order.number
+            }).length>0) { // order was in prev wo
+              that.orderView[i].attributes.isRequery = true;
+              ordersToSave.push(that.orderView[i]);
+              that.orderView.splice(i,1); // temporarily delete it from view
+           }
+          }
+          api.saveObjects(ordersToSave)
+            .then(function () {
+              api.queryWorkOrderByKey('isRequery',true) // requery all orders just reinserted - to get their ids
+                .then(function (ov) {
+                  for (var k=0;k<ov.length;k++) {
+                    that.workOrder.push(ov[k]);
+                    ov[k].isInWorkOrder = true;
+                    that.orderView.push(ov[k])
+                  }
+                  that.orderView.sort(function (a,b) {
+                    if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
+                      return 1
+                    } else {
+                      return -1
+                    }
+                  });
+                  that.createSmallOrderView();
+                })
+            })
         });
     };
 
@@ -228,13 +250,17 @@ angular.module('myApp')
 
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
+          // first keep orders in existing work order so they will be inserted in the new wo
+          that.prevOrdersInWo = that.orderView.filter(function (o) {
+            return o.isInWorkOrder
+          });
           that.orderView = [];
           that.destroyWorkOrderDomains(0)
             .then(function () {
               that.workOrder = [];
               that.workOrderByCategory = [];
+              that.woOrders = [];
               that.createOrderView();
-              that.createSmallOrderView()
             })
         } else {
           that.isActiveTab = that.savedActiveTab;
@@ -385,6 +411,7 @@ angular.module('myApp')
     this.domains = lov.domains;
     this.workOrder = workOrder;
     this.createSmallOrderView();
+    this.orderView = [];
     this.isActiveTab = [false,true,false,false]; // show menu items by default
     this.splitWorkOrder();
     api.queryWorkOrderDomains()
