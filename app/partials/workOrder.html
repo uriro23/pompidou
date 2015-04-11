@@ -1,31 +1,31 @@
 <h3>
   פקודת עבודה
+&nbsp;&nbsp;&nbsp;
+<button ng-click="workOrderModel.selectOrders()" class="btn btn-default">
+  חדשה
+</button>
 </h3>
 <h4 ng-show="workOrderModel.isProcessing">
   המתן...
 </h4>
 <tabset>
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
-       active="workOrderModel.isActiveTab[3]"
-       select="workOrderModel.selectTab()">
-    <ng-include src="'partials/workOrder/smallOrderList.html'"></ng-include>
+       active="workOrderModel.isActiveTab[3]">
     <ng-include src="'partials/workOrder/shoppingList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[2].forWorkItem}}"
-       active="workOrderModel.isActiveTab[2]"
-       select="workOrderModel.selectTab()">
-    <ng-include src="'partials/workOrder/smallOrderList.html'"></ng-include>
+       active="workOrderModel.isActiveTab[2]">
     <ng-include src="'partials/workOrder/preparationList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[1].forWorkItem}}"
-       active="workOrderModel.isActiveTab[1]"
-       select="workOrderModel.selectTab()">
-    <ng-include src="'partials/workOrder/smallOrderList.html'"></ng-include>
+       active="workOrderModel.isActiveTab[1]">
     <ng-include src="'partials/workOrder/menuItemList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[0].forWorkItem}}"
-       active="workOrderModel.isActiveTab[0]"
-       select="workOrderModel.selectOrders()">
-    <ng-include src="'partials/workOrder/orderList.html'"></ng-include>
+       active="workOrderModel.isActiveTab[0]">
+    <ng-include ng-hide="workOrderModel.isSelectOrders"
+                src="'partials/workOrder/smallOrderList.html'"></ng-include>
+    <ng-include ng-show="workOrderModel.isSelectOrders"
+                src="'partials/workOrder/orderList.html'"></ng-include>
   </tab>
   </tabset>

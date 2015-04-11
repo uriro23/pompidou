@@ -236,10 +236,6 @@ angular.module('myApp')
       api.saveObj(this.domainStatuses);
     };
 
-    this.selectTab = function () {
-      this.savedActiveTab = angular.copy(this.isActiveTab); // save prev tab so when we escape from orders we know where to return
-    };
-
     this.selectOrders = function () {
       var that = this;
       var ackDelModal = $modal.open({
@@ -250,6 +246,7 @@ angular.module('myApp')
 
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
+          that.isActiveTab = [true,false,false,false]; // show orders tab
           // first keep orders in existing work order so they will be inserted in the new wo
           that.prevOrdersInWo = that.orderView.filter(function (o) {
             return o.isInWorkOrder
@@ -261,9 +258,10 @@ angular.module('myApp')
               that.workOrderByCategory = [];
               that.woOrders = [];
               that.createOrderView();
+              that.isSelectOrders = true;
             })
         } else {
-          that.isActiveTab = that.savedActiveTab;
+          that.isSelectOrders = false;
         }
       });
     };
@@ -325,6 +323,8 @@ angular.module('myApp')
 
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
+      this.isSelectOrders = false;
+      console.log(this.woOrders);
       // destroy existing work order items of target and higher domains
       this.destroyWorkOrderDomains(targetDomain)
         .then (function () {
