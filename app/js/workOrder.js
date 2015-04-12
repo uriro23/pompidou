@@ -170,15 +170,18 @@ angular.module('myApp')
             if(that.prevOrdersInWo.filter(function (po) {
               return po.attributes.order.number===that.orderView[i].attributes.order.number
             }).length>0) { // order was in prev wo
-              that.orderView[i].attributes.isRequery = true;
+              //that.orderView[i].attributes.isRequery = true;
               ordersToSave.push(that.orderView[i]);
-              that.orderView.splice(i,1); // temporarily delete it from view
+              that.orderView[i].isToBeTemporarilyDeleted = true;
            }
           }
+          that.orderView = that.orderView.filter(function (ov) {
+            return !ov.isToBeTemporarilyDeleted
+          });
           api.saveObjects(ordersToSave)
             .then(function () {
-              api.queryWorkOrderByKey('isRequery',true) // requery all orders just reinserted - to get their ids
-                .then(function (ov) {
+              api.queryWorkOrder() // we assume that the only records in wo are those just stored
+                .then(function (ov) { // requery them to get their ids
                   for (var k=0;k<ov.length;k++) {
                     that.workOrder.push(ov[k]);
                     ov[k].isInWorkOrder = true;
@@ -248,8 +251,8 @@ angular.module('myApp')
         if (isDelete) {
           that.isActiveTab = [true,false,false,false]; // show orders tab
           // first keep orders in existing work order so they will be inserted in the new wo
-          that.prevOrdersInWo = that.orderView.filter(function (o) {
-            return o.isInWorkOrder
+          that.prevOrdersInWo = that.workOrder.filter(function (o) {
+            return o.attributes.domain===0
           });
           that.orderView = [];
           that.destroyWorkOrderDomains(0)
@@ -324,7 +327,6 @@ angular.module('myApp')
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
       this.isSelectOrders = false;
-      console.log(this.woOrders);
       // destroy existing work order items of target and higher domains
       this.destroyWorkOrderDomains(targetDomain)
         .then (function () {
