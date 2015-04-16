@@ -291,6 +291,12 @@ angular.module('myApp')
     return query(catalogQuery);
   };
 
+  this.queryCatalogByIds = function (ids) { // returns catalog items with id matching member of param array
+    var catalogQuery = new Parse.Query(Catalog);
+    catalogQuery.containedIn('objectId',ids);
+    return query(catalogQuery);
+  };
+
 
 
   // EventType

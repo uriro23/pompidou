@@ -15,6 +15,10 @@
     <label>סינון:</label><input type="text" ng-model="orderModel.filterText"
                                 ng-change="orderModel.filterProducts()">
     <table border="1">
+      <thead>
+      <th>שם מנה</th>
+      <th>כבר מופיע?</th>
+      </thead>
       <tbody>
       <tr ng-repeat="product in orderModel.filteredCatalog">
         <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
@@ -29,23 +33,34 @@
         class="btn btn-default">
     הוסף תבנית
 </button>
-<button ng-click="orderModel.addTemplate(false)"
-        ng-show="orderModel.isAddTemplate"
-        ng-disabled="orderModel.isReadOnly"
-        class="btn btn-warning">
-    בטל
-</button>
 <span ng-show="orderModel.isAddTemplate">
-    <table border="1">
-        <tbody>
-        <tr ng-repeat="template in orderModel.templates">
-            <td ng-click="orderModel.setTemplate(template)">
-                {{template.attributes.template}}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    </span>
+  <button ng-click="orderModel.addTemplate(false)"
+          ng-disabled="orderModel.isReadOnly"
+          class="btn btn-warning">
+      בטל
+  </button>
+  &nbsp;
+  <span>
+    התאמת כמויות
+  </span>
+  <input type="checkbox" ng-model="orderModel.isAdjustQuantity">
+  <table border="1">
+    <thead>
+    <th>שם תבנית</th>
+    <th>משתתפים</th>
+    </thead>
+      <tbody>
+      <tr ng-repeat="template in orderModel.templates">
+        <td ng-click="orderModel.setTemplate(template)">
+          {{template.attributes.template}}
+        </td>
+        <td ng-click="orderModel.setTemplate(template)">
+          {{template.attributes.noOfParticipants}}
+        </td>
+      </tr>
+      </tbody>
+  </table>
+</span>
 <table style="width: 80%">
   <thead>
   <th style="width: 6%">קטגוריה</th>

@@ -352,35 +352,68 @@ angular.module('myApp')
 
       this.setTemplate = function (template) {
         var thisOrder = this.order.attributes;
-        for (var j=0;j<template.attributes.items.length;j++) {
-          var templateItem = template.attributes.items[j];
-          var thisItem = thisOrder.items.filter(function (itm) {    // check if product exists in order
-            return itm.catalogId === templateItem.catalogId;
-          })[0];
-          if (thisItem) {
-            thisItem.quantity += templateItem.quantity;   // exists, just update quantity
-          } else {
-            var maxIndex =  thisOrder.items.length===0?0:Math.max.apply(null,thisOrder.items.map(function (itm) {
-              return itm.index
-            }))+1;
-            this.order.attributes.items.splice(0, 0, templateItem); // initialize new item as copied one
-            thisItem = this.order.attributes.items[0];
-            thisItem.index = maxIndex;  // override original index
-          }
-          // now adjust price
-          thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
-          thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
-          if (thisOrder.isBusinessEvent) {
-            thisItem.price = thisItem.priceBeforeVat;
-          } else {
-            thisItem.price = thisItem.priceInclVat;
-          }
-          thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
-          thisItem.isChanged = true;
-       }
-        this.calcSubTotal();
-        this.orderChanged();
-        this.isAddTemplate = false;
+        var templateCatalogIds = template.attributes.items.map(function (itm) {
+          return itm.catalogId
+        });
+        api.queryCatalogByIds(templateCatalogIds)
+          .then(function (cat) {
+            var templateCatalogItems = cat.filter(function (c) {
+              return !c.attributes.isDeleted
+            });
+            templateCatalogItems = templateCatalogItems.map(function (c) {
+              var ct = c.attributes;
+              ct.id = c.id;
+              return ct
+            });
+            for (var j=0;j<template.attributes.items.length;j++) {
+              var templateItem = template.attributes.items[j];
+              var templateCatalogItem = templateCatalogItems.filter(function (cat) {
+                return cat.id === templateItem.catalogId
+              })[0];
+              if(!templateCatalogItem) {
+                alert('מנה '+templateItem.productDescription+' לא נמצאת בקטלוג. מדלג עליה')
+              } else {   // fetch up to date price from catalog
+                templateItem.catalogPrice = templateCatalogItem.price;
+                templateItem.catalogQuantity = templateCatalogItem.priceQuantity;
+                if (that.isAdjustQuantity) {
+                  templateItem.quantity = templateItem.quantity /
+                                          template.attributes.noOfParticipants *
+                                          thisOrder.noOfParticipants;
+                  var r = templateItem.measurementUnit.rounding;
+                  if (!r) {
+                    r=1
+                  }
+                  templateItem.quantity = Math.ceil(templateItem.quantity/r)*r  // round up
+                }
+                var thisItem = thisOrder.items.filter(function (itm) {    // check if product exists in order
+                  return itm.catalogId === templateItem.catalogId;
+                })[0];
+                if (thisItem) {
+                  thisItem.quantity += templateItem.quantity;   // exists, just update quantity
+                } else {
+                  var maxIndex = thisOrder.items.length === 0 ? 0 : Math.max.apply(null, thisOrder.items.map(function (itm) {
+                    return itm.index
+                  })) + 1;
+                  that.order.attributes.items.splice(0, 0, templateItem); // initialize new item as copied one
+                  thisItem = that.order.attributes.items[0];
+                  thisItem.index = maxIndex;  // override original index
+                }
+                // now adjust price
+                thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
+                thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
+                if (thisOrder.isBusinessEvent) {
+                  thisItem.price = thisItem.priceBeforeVat;
+                } else {
+                  thisItem.price = thisItem.priceInclVat;
+                }
+                thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
+                thisItem.isChanged = true;
+              }
+            }
+            that.calcSubTotal();
+            that.orderChanged();
+            that.isAddTemplate = false;
+          });
       };
 
 
