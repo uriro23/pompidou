@@ -155,8 +155,21 @@ angular.module('myApp')
 
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
-          return api.deleteObj (that.order).then (function (obj) {
-            $state.go('orderList');
+          api.deleteObj (that.order)
+            .then (function (obj) { // cascade delete to bids and mails
+            api.queryBidsByOrder(that.order.id)
+              .then(function (bids) {
+                api.deleteObjects(bids)
+                  .then(function () {
+                    api.queryMailsByOrder(that.order.id)
+                      .then(function (mails) {
+                        api.deleteObjects(mails)
+                          .then(function () {
+                            $state.go('orderList');
+                          })
+                      })
+                  })
+              });
           })
         }
       });
