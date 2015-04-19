@@ -1,5 +1,9 @@
-
-<div id="bid_container" style="padding: 2% 20%; width: 100%; background-color: #ffffff; direction:rtl;">
+<div ng-show="bidModel.docNotAvailable">
+  <h1>
+    המסמך לא קיים
+  </h1>
+</div>
+<div id="bid_container" ng-hide="bidModel.docNotAvailable"style="padding: 2% 20%; width: 100%; background-color: #ffffff; direction:rtl;">
     <header >
         
         <div id="contact" style="color:purple; font: 14pt Tahoma; float:right">
@@ -168,6 +172,5 @@
         </div>
         
     </div><!--End of bid_content -->
-
-</div> <!--End of bid_container -->
+ </div> <!--End of bid_container -->
 
