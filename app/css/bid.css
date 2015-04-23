@@ -1,0 +1,98 @@
+/* styling for the bid and work-order pages */
+
+/* the entire container for the bid*/
+#bid_container
+{ 
+    margin:0;
+    padding: 2% 15%;
+    width: 100%;
+    background-color: #ffffff; 
+    font: 15px Tahoma;    
+}
+
+@media print {
+    #bid_container {
+        font: 10pt Tahoma;
+        padding: 2% 5%;
+    }
+    
+    #contact
+    {
+        font: 15pt Tahoma; 
+    }
+    
+    #bid_container h1
+    {
+        font: 30pt Tahoma;
+    }
+}
+
+/* Yuval' s details in the top of the page */
+#contact
+{
+    color:#892f78; 
+    font: 20pt Tahoma; 
+    float:right;
+    margin-top: 10%; /* drops the cotact a bit below the logo */
+}
+
+#bid_container #logo
+{
+    width:35%;
+    float:left;
+}
+
+#bid_container #logo img
+{
+    width:100%;
+}
+
+/* starting the actual contant of the bid */
+#bid_content
+{
+    clear:both;
+}
+
+/* "הצעת מחיר/הזמנה" header */
+#bid_container h1
+{
+    font: 50px Tahoma;
+    text-align: center;
+}
+
+
+#bid_container li
+{
+    list-style-type:none;
+    display:inline-block;    
+}
+
+.event_details
+{
+    margin-left:5%;
+    display:inline-block;
+}
+
+#bid_content ul
+{
+    clear:both; 
+    width:100%;
+    list-style-type:none;
+    padding:0;
+}
+
+#items_list, #bonus_list
+{
+    border:1px solid black;
+    padding: 3%;
+    background-color: #DCDCDC;
+    margin:0;
+}
+
+#sum_up
+{
+    border:3px solid black;
+    padding: 3%;
+    background-color: #EE82EE;
+    margin:0;
+}

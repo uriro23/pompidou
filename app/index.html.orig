@@ -6,8 +6,11 @@
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css"/>
   <link rel="stylesheet" href="css/menu.css"/>
-  <link rel="stylesheet" href="css/bid.css"/>  
+<<<<<<< HEAD
   <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
+=======
+  <link rel="stylesheet" href="css/bid.css"/>  
+>>>>>>> 031515c1b3097ff65f7053272407382b453d6786
 </head>
 <body dir="rtl">
   <ul class="menu" ng-show="menuStatus==='show'">
