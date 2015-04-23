@@ -7,78 +7,83 @@ angular.module('myApp')
                                   bidTextTypes, eventTypes, discountCauses, isPrintBid) {
       $rootScope.menuStatus = 'hide';
 
-    this.bid = bid;
+    if (bid) {
+      this.docNotAvailable = false;
 
-    this.categories = categories;
-    this.config = config[0];
-    var currentOrder = this.bid.attributes.order;
-    
-    this.customer = bid.attributes.customer;
+      this.bid = bid;
 
-    $rootScope.title = lov.company    // set title so PDF file will be named correctly
-    + this.bid.attributes.documentType===1?' - הצעת מחיר ':' - הזמנה '
-    + (this.customer.firstName?this.customer.firstName:'')
-    + ' ' + (this.customer.lastName?this.customer.lastName:'')
-    + ' ' + this.bid.attributes.desc;
+      this.categories = categories;
+      this.config = config[0];
+      var currentOrder = this.bid.attributes.order;
 
-    var that = this;
+      this.customer = bid.attributes.customer;
+
+      $rootScope.title = lov.company    // set title so PDF file will be named correctly
+      + this.bid.attributes.documentType === 1 ? ' - הצעת מחיר ' : ' - הזמנה '
+      + (this.customer.firstName ? this.customer.firstName : '')
+      + ' ' + (this.customer.lastName ? this.customer.lastName : '')
+      + ' ' + this.bid.attributes.desc;
+
+      var that = this;
 
 
-    //fetch start bid text type
-    if (currentOrder.startBidTextType) {
-      this.startBidTextType = bidTextTypes.filter(function (btt) {
-        return btt.tId===currentOrder.startBidTextType
-      })[0];
-    }
+      //fetch start bid text type
+      if (currentOrder.startBidTextType) {
+        this.startBidTextType = bidTextTypes.filter(function (btt) {
+          return btt.tId === currentOrder.startBidTextType
+        })[0];
+      }
 
-    // fetch end bid text type
-    if (currentOrder.endBidTextType) {
-      this.endBidTextType = bidTextTypes.filter(function (btt) {
-        return btt.tId===currentOrder.endBidTextType
-      })[0];
-    }
-    //fetch event type
-    if (currentOrder.eventType) {
-      this.eventType = eventTypes.filter(function (evt) {
-        return evt.tId===currentOrder.eventType
-      })[0];
-    }
+      // fetch end bid text type
+      if (currentOrder.endBidTextType) {
+        this.endBidTextType = bidTextTypes.filter(function (btt) {
+          return btt.tId === currentOrder.endBidTextType
+        })[0];
+      }
+      //fetch event type
+      if (currentOrder.eventType) {
+        this.eventType = eventTypes.filter(function (evt) {
+          return evt.tId === currentOrder.eventType
+        })[0];
+      }
 
-    //fetch discount cause
-    if (currentOrder.discountCause) {
-      this.discountCause = discountCauses.filter(function (dsc) {
-        return dsc.tId===currentOrder.discountCause
-      })[0];
-    }
+      //fetch discount cause
+      if (currentOrder.discountCause) {
+        this.discountCause = discountCauses.filter(function (dsc) {
+          return dsc.tId === currentOrder.discountCause
+        })[0];
+      }
 
-    //filter categories - only those in order and not bonus
-    this.filteredCategories = this.categories.filter(function(cat) {
-      var categoryItems = currentOrder.items.filter(function(item) {
-        return (item.category.tId === cat.tId && !item.isFreeItem);
+      //filter categories - only those in order and not bonus
+      this.filteredCategories = this.categories.filter(function (cat) {
+        var categoryItems = currentOrder.items.filter(function (item) {
+          return (item.category.tId === cat.tId && !item.isFreeItem);
+        });
+        return categoryItems.length;
       });
-      return categoryItems.length;
-    });
 
 
-    // filter items for current category
-    this.setupCategoryItems = function(catId) {
-      this.categoryItems = currentOrder.items.filter(function(item) {
-        return (item.category.tId===catId && !item.isFreeItem);
-      })
-    };
+      // filter items for current category
+      this.setupCategoryItems = function (catId) {
+        this.categoryItems = currentOrder.items.filter(function (item) {
+          return (item.category.tId === catId && !item.isFreeItem);
+        })
+      };
 
-    // filter bonus items
-    this.setupFreeItems = function() {
-      this.freeItems = currentOrder.items.filter(function(item) {
-        return (item.isFreeItem);
-      })
-    };
+      // filter bonus items
+      this.setupFreeItems = function () {
+        this.freeItems = currentOrder.items.filter(function (item) {
+          return (item.isFreeItem);
+        })
+      };
 
-   if (isPrintBid) {
-     $timeout(function () {
-       window.print()
-     },100)
+      if (isPrintBid) {
+        $timeout(function () {
+          window.print()
+        }, 100)
+      }
+    } else {  // bid not there - show error msg on page
+      this.docNotAvailable = true
     }
-
 
     });

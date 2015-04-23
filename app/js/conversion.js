@@ -100,14 +100,14 @@ angular.module('myApp')
     this.convertCatalog = function () {
       this.isCancel = false;
       that.total = accessCatalog.length;
-      cvCatalog(0)
-        .then(function () {
-          api.saveObj(config);   // save with updated item ids for boxItem etc.
-        })
+      cvCatalog(0);
     };
     
     var cvCatalog = function (i) {
       if (i >= accessCatalog.length || that.isCancel) {
+        api.saveObj(config);   // save with updated item ids for boxItem etc.
+        console.log('saving config');
+        console.log(config.attributes);
         return;
       }
 
@@ -136,44 +136,43 @@ angular.module('myApp')
         catalogItem.attributes.shortDescription = catalogItem.attributes.productDescription; // for printed menu
         catalogItem.attributes.isInMenu = true;
       }
-      if (catalogItem.attributes.accessKey===lov.accessBoxItemId) {
-        config.attributes.boxItem = catalogItem.id;
-      }
-      if (catalogItem.attributes.accessKey===lov.accessUnhandledItemComponent) {
-        config.attributes.unhandledItemComponent = catalogItem.id;
-      }
-      if (catalogItem.attributes.accessKey===lov.accessUnhandledItemMaterial) {
-        config.attributes.unhandledItemMaterial = catalogItem.id;
-      }
-        api.queryAccessComponents(accessCatalog[i].ItemId)
+         api.queryAccessComponents(accessCatalog[i].ItemId)
           .then (function(comps) {
           catalogItem.attributes.exitList = comps.map(function (comp) {
             return {item: comp.attributes.CompName};
           })
-        })
-          .then (function() {
-            return api.queryAccessCatalogSubitems(accessCatalog[i].ItemId)
-              .then (function (subs) {
-                catalogItem.attributes.components = subs.map (function(sub) {
-                  var c = {};
-                  c.domain = Number(sub.attributes.ContainedDomain);
-                  c.id = idMap[Number(sub.attributes.ContainedId)];
-                  if (!c.id) {
-                    console.log('--- No parse id for access key '+ sub.attributes.ContainedId + '. container is '+catalogItem.attributes.accessKey);
-                  }
-                  c.quantity = Number(sub.attributes.ContainedQuantity);
-                  return c;
-                }).filter (function(sub) {  // filter out some illegal items who have a bad contained id in access
-                  return sub.id;
-                })
+          api.queryAccessCatalogSubitems(accessCatalog[i].ItemId)
+            .then (function (subs) {
+            catalogItem.attributes.components = subs.map (function(sub) {
+              var c = {};
+              c.domain = Number(sub.attributes.ContainedDomain);
+              c.id = idMap[Number(sub.attributes.ContainedId)];
+              if (!c.id) {
+                console.log('--- No parse id for access key '+ sub.attributes.ContainedId + '. container is '+catalogItem.attributes.accessKey);
+              }
+              c.quantity = Number(sub.attributes.ContainedQuantity);
+              return c;
+            }).filter (function(sub) {  // filter out some illegal items who have a bad contained id in access
+              return sub.id;
             })
-        })
-          .then (function() {
-            return api.saveObj(catalogItem)
-          . then (function (obj) {
-            idMap[obj.attributes.accessKey] = obj.id;
-            cvCatalog(i+1)
+            api.saveObj(catalogItem)
+              . then (function (obj) {
+              idMap[obj.attributes.accessKey] = obj.id;
+              if (obj.attributes.accessKey===lov.accessBoxItemId) {
+                console.log('found boxItem id '+ obj.id)
+                config.attributes.boxItem = obj.id;
+              }
+              if (obj.attributes.accessKey===lov.accessUnhandledItemComponent) {
+                console.log('found unhandledItemComponent id '+ obj.id)
+                config.attributes.unhandledItemComponent = obj.id;
+              }
+              if (obj.attributes.accessKey===lov.accessUnhandledItemMaterial) {
+                console.log('found unhandledItemMaterial id '+ obj.id)
+                config.attributes.unhandledItemMaterial = obj.id;
+              }
+              cvCatalog(i+1)
             });
+          })
         })
     };
 
@@ -365,7 +364,10 @@ angular.module('myApp')
         .then (function (accessItems) {
           for (var k=0;k<accessItems.length;k++) {
             if (!that.catalogIdMap[accessItems[k].attributes.ItemId]) {
-              console.log('missing catalog entry for item '+accessItems[k].attributes.ItemId);
+              console.log('missing catalog entry for item '+
+                          accessItems[k].attributes.ItemId+
+                          ' in order '+
+                          order.attributes.number);
             } else {
               var newItem = {};
               newItem.index = order.attributes.items.length; // make unique key for item - catalogId is not unique
@@ -424,6 +426,15 @@ angular.module('myApp')
               order.attributes.items.push(newItem);
             }
           }
+        order.attributes.items.sort(function (a,b) {
+          if (a.category.order > b.category.order) {
+            return 1;
+          } else if (a.category.order < b.category.order) {
+            return -1
+          } else if (a.productDescription > b.productDescription) {
+            return 1
+          } else return -1;
+        });
         api.queryAccessOrderActivities(accessOrders[i].OrderId)
           .then (function (activities) {
             for (var l=0;l<activities.length;l++) {
@@ -434,6 +445,9 @@ angular.module('myApp')
               order.attributes.activities.push(newActivity);
               that.activityCount++;
             }
+            order.attributes.activities.sort(function (a,b) {
+              return a.date> b.date?-1:1
+            });
             api.saveObj(order)
               .then (function() {
               cvOrder(i+1);
