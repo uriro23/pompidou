@@ -3,7 +3,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
-  'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize'
+  'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize', 'ui.select'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/login");

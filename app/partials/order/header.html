@@ -93,6 +93,18 @@
                                       ng-options="eventType.label for eventType in orderModel.eventTypes"
                                       ng-disabled="orderModel.isReadOnly"
             ></select>
+      <!--
+      <ui-select tagging="orderModel.transformNewEventType" tagging-label="true"
+                 ng-model="orderModel.order.view.eventType.selected"
+                 theme="bootstrap" >
+        <ui-select-match placeholder="סוג אירוע">
+          {{$select.selected.label}}
+        </ui-select-match>
+        <ui-select-choices repeat="eventType in orderModel.eventTypes | filter: $select.search">
+          {{eventType.label}}
+        </ui-select-choices>
+      </ui-select>
+      -->
     </td>
     <td style="width: 14%">
       <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus"
