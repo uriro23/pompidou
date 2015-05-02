@@ -3,7 +3,18 @@
 angular.module('myApp')
 
   .service ('api', function($q, $rootScope,secrets, today) {
-  Parse.initialize(secrets.parseKey, secrets.parseSecret);
+  if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod
+    this.environment = 'prod';
+    Parse.initialize(secrets.prod.parseKey, secrets.prod.parseSecret)
+  } else {
+    this.environment = 'test';
+    Parse.initialize(secrets.test.parseKey, secrets.test.parseSecret)
+  }
+  $rootScope.environment = this.environment;
+
+  this.getEnvironment = function () {
+    return this.environment
+  };
 
 // Generic functions
 // -----------------
