@@ -102,14 +102,20 @@ angular.module('myApp')
       .then(function (custs) {
         that.customer = custs[0].attributes;
         if (that.customer.email) {
-          that.mail.to = 'test.' + that.customer.email; //todo: for production drop the 'test'
+          that.mail.to = that.customer.email;
+          if (api.getEnvironment()==='test') {
+            that.mail.to = 'test.' + that.mail.to
+          }
         }
         if (order.attributes.contact) {
           api.queryCustomers(order.attributes.contact)
             .then(function (conts) {
               that.contact = conts[0].attributes;
               if (that.contact.email) {
-                that.mail.cc = 'test.' + that.contact.email; //todo: for production drop the 'test'
+                that.mail.cc = that.contact.email;
+                if (api.getEnvironment()==='test') {
+                  that.mail.cc = 'test.' + that.mail.cc
+                }
               }
             })
         }

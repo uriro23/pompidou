@@ -6,10 +6,11 @@
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css"/>
   <link rel="stylesheet" href="css/menu.css"/>
-  <link rel="stylesheet" href="css/bid.css"/> 
+<<<<<<< HEAD
   <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
-  <script src="js/bid_and_menu.js"></script>
+=======
+  <link rel="stylesheet" href="css/bid.css"/>  
+>>>>>>> 031515c1b3097ff65f7053272407382b453d6786
 </head>
 <body dir="rtl">
   <ul class="menu" ng-show="menuStatus==='show'">
@@ -21,7 +22,6 @@
     <li><a ng-href="#/conversion">הסבה</a> </li>
     <li>{{'שלום '+username}}</li>
     <li><a ng-href="#/login">התנתק</a> </li>
-    <li>{{environment}}</li>
    </ul>
   <ul class="menu" ng-show="menuStatus==='empty'">
     <li>נא לסיים את ביצוע העדכונים</li>
@@ -42,11 +42,9 @@
   <script src="bower_components/ng-ckeditor/ng-ckeditor.js"></script>
   <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
   <script src="bower_components/angular-ui-select/dist/select.js"></script>
-
   <script src="https://apis.google.com/js/client:plusone.js"></script>
- 
   <script src="js/app.js"></script>
-  
+  <script src="js/bid_and_menu.js"></script>
   <script src="js/login.js"></script>
   <script src="js/lov.js"></script>
   <script src="js/secrets.js"></script>
@@ -68,6 +66,5 @@
   <script src="js/directives.js"></script>
   <script src="js/gmail-client-low-level.js"></script>
   <script src="js/email-first-time.js"></script>
-  
 </body>
 </html>

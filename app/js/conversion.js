@@ -274,6 +274,7 @@ angular.module('myApp')
       order.attributes.eventDate = new Date(accessOrders[i].EventDate);
       if (accessOrders[i].DeliveryTime){
         order.attributes.eventTime = new Date(accessOrders[i].DeliveryTime);
+        order.attributes.eventTime.setHours(order.attributes.eventTime.getHours()-2); // adjust timezone
       }
       order.attributes.eventType = Number(accessOrders[i].EventType);
       if (accessOrders[i].IncludeRemarksInBid) {

@@ -135,6 +135,15 @@ angular.module('myApp')
       this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
     };
 
+    this.transformNewEventType = function (str) {
+      var newEventType =  {
+        tId: 123,   // todo: max tId + 1
+        label: str
+      };
+      console.log(newEventType);
+      return newEventType
+    };
+
       // general tab
       this.isShowTextType = function (textType) {
           return textType.documentType;
