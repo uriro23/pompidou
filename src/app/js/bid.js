@@ -2,10 +2,10 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('BidCtrl', function(api, $state, $filter, $rootScope, $timeout,
-                                  bid, lov, config, categories,
-                                  bidTextTypes, eventTypes, discountCauses, isPrintBid) {
-      $rootScope.menuStatus = 'hide';
+  .controller('BidCtrl', function (api, $state, $filter, $rootScope, $timeout,
+                                   bid, lov, config, categories,
+                                   bidTextTypes, eventTypes, discountCauses, isPrintBid) {
+    $rootScope.menuStatus = 'hide';
 
     if (bid) {
       this.docNotAvailable = false;
@@ -86,4 +86,4 @@ angular.module('myApp')
       this.docNotAvailable = true
     }
 
-    });
+  });

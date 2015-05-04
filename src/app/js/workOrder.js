@@ -7,14 +7,14 @@ angular.module('myApp')
                                          customers, workOrder) {
 
 
-      $rootScope.menuStatus = 'show';
-      var user = api.getCurrentUser();
-      if (user) {
-        $rootScope.username = user.attributes.username;
-      } else {
-        $state.go('login');
-      }
-      $rootScope.title = lov.company + ' - פקודת עבודה';
+    $rootScope.menuStatus = 'show';
+    var user = api.getCurrentUser();
+    if (user) {
+      $rootScope.username = user.attributes.username;
+    } else {
+      $state.go('login');
+    }
+    $rootScope.title = lov.company + ' - פקודת עבודה';
 
 
     this.destroyWorkOrderDomains = function (domain) {
@@ -27,18 +27,18 @@ angular.module('myApp')
       return api.deleteObjects(woItemsToDelete)
         .then(function () {
           that.isProcessing = false
-        },function () {
+        }, function () {
           alert('workOrder multiple delete failed');
           that.isProcessing = false;
         })
     };
 
 
-     this.createOrderItems = function () {
-       var workItem;
-       var workItemInd;
-       for (var i=0;i<this.workOrder.length;i++) {
-         var inWorkItem = this.workOrder[i].attributes;
+    this.createOrderItems = function () {
+      var workItem;
+      var workItemInd;
+      for (var i = 0; i < this.workOrder.length; i++) {
+        var inWorkItem = this.workOrder[i].attributes;
         if (inWorkItem.domain === 0) {
           var items = inWorkItem.order.items;
           for (var j = 0; j < items.length; j++) {
@@ -53,8 +53,8 @@ angular.module('myApp')
               workItem = this.workOrder[workItemInd];
               workItem.attributes.quantity += item.quantity;
               workItem.attributes.backTrace.push({
-                id:       this.workOrder[i].id,
-                domain:   0,
+                id: this.workOrder[i].id,
+                domain: 0,
                 quantity: item.quantity
               });
             } else { // create new item
@@ -65,14 +65,14 @@ angular.module('myApp')
               })[0];
               // if catalog item was deleted, use product description from first occurrence of menu item
               workItem.attributes.productDescription =
-                catItem?catItem.attributes.productDescription:item.productDescription;
-                workItem.attributes.quantity = item.quantity;
+                catItem ? catItem.attributes.productDescription : item.productDescription;
+              workItem.attributes.quantity = item.quantity;
               workItem.attributes.category = item.category;
               workItem.attributes.domain = 1;
               workItem.attributes.measurementUnit = item.measurementUnit;
               workItem.attributes.backTrace = [{
-                id:       this.workOrder[i].id,
-                domain:   0,
+                id: this.workOrder[i].id,
+                domain: 0,
                 quantity: item.quantity
               }];
               this.workOrder.push(workItem);
@@ -85,7 +85,7 @@ angular.module('myApp')
     this.createComponents = function (targetDomain) {
       var workItemInd;
       var workItem;
-      for (var i=0;i<this.workOrder.length;i++) {
+      for (var i = 0; i < this.workOrder.length; i++) {
         var inWorkItem = this.workOrder[i].attributes;
         if (inWorkItem.domain > 0) {  // skip orders
           var inCatObj = catalog.filter(function (cat) {
@@ -141,7 +141,7 @@ angular.module('myApp')
               }
             }
           } else {
-            alert ('input catalog item '+inWorkItem.catalogId+' has been deleted')
+            alert('input catalog item ' + inWorkItem.catalogId + ' has been deleted')
           }
         }
       }
@@ -153,7 +153,7 @@ angular.module('myApp')
       this.orderView = [];
       api.queryFutureOrders()
         .then(function (futureOrders) {
-          for (var j=0;j<futureOrders.length;j++) {
+          for (var j = 0; j < futureOrders.length; j++) {
             var viewItem = api.initWorkOrder();
             // create the object for now, but we don't store it until user decides to include it in WO
             viewItem.attributes.domain = 0;
@@ -166,14 +166,14 @@ angular.module('myApp')
             that.orderView.push(viewItem);
           }
           var ordersToSave = [];  // now include all orders from prev order view in wo
-          for(var i=0;i<that.orderView.length;i++) {
-            if(that.prevOrdersInWo.filter(function (po) {
-              return po.attributes.order.number===that.orderView[i].attributes.order.number
-            }).length>0) { // order was in prev wo
+          for (var i = 0; i < that.orderView.length; i++) {
+            if (that.prevOrdersInWo.filter(function (po) {
+                return po.attributes.order.number === that.orderView[i].attributes.order.number
+              }).length > 0) { // order was in prev wo
               //that.orderView[i].attributes.isRequery = true;
               ordersToSave.push(that.orderView[i]);
               that.orderView[i].isToBeTemporarilyDeleted = true;
-           }
+            }
           }
           that.orderView = that.orderView.filter(function (ov) {
             return !ov.isToBeTemporarilyDeleted
@@ -182,12 +182,12 @@ angular.module('myApp')
             .then(function () {
               api.queryWorkOrder() // we assume that the only records in wo are those just stored
                 .then(function (ov) { // requery them to get their ids
-                  for (var k=0;k<ov.length;k++) {
+                  for (var k = 0; k < ov.length; k++) {
                     that.workOrder.push(ov[k]);
                     ov[k].isInWorkOrder = true;
                     that.orderView.push(ov[k])
                   }
-                  that.orderView.sort(function (a,b) {
+                  that.orderView.sort(function (a, b) {
                     if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
                       return 1
                     } else {
@@ -202,7 +202,7 @@ angular.module('myApp')
 
     this.createSmallOrderView = function () {
       this.woOrders = this.workOrder.filter(function (wo) {
-        return wo.attributes.domain===0
+        return wo.attributes.domain === 0
       });
     };
 
@@ -223,7 +223,7 @@ angular.module('myApp')
             return true;
           }
         });
-        that.workOrder.splice(indToDelete,1);
+        that.workOrder.splice(indToDelete, 1);
         api.deleteObj(that.orderView[ind])
           .then(function (obj) {
             // create new item with same content as deleted one so we can restore it in DB if user changes his mind
@@ -233,7 +233,7 @@ angular.module('myApp')
             that.createSmallOrderView()
           })
       }
-      for (var dd=1;dd<4;dd++) {                     // set all further domains as invalid
+      for (var dd = 1; dd < 4; dd++) {                     // set all further domains as invalid
         this.domainStatuses.attributes.status[dd] = false;
       }
       api.saveObj(this.domainStatuses);
@@ -249,10 +249,10 @@ angular.module('myApp')
 
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
-          that.isActiveTab = [true,false,false,false]; // show orders tab
+          that.isActiveTab = [true, false, false, false]; // show orders tab
           // first keep orders in existing work order so they will be inserted in the new wo
           that.prevOrdersInWo = that.workOrder.filter(function (o) {
-            return o.attributes.domain===0
+            return o.attributes.domain === 0
           });
           that.orderView = [];
           that.destroyWorkOrderDomains(0)
@@ -277,7 +277,7 @@ angular.module('myApp')
       return api.saveObjects(woItemsToSave)
         .then(function () {
           that.isProcessing = false;
-        },function () {
+        }, function () {
           alert('workOrder multiple save failed');
           that.isProcessing = false;
         })
@@ -329,82 +329,82 @@ angular.module('myApp')
       this.isSelectOrders = false;
       // destroy existing work order items of target and higher domains
       this.destroyWorkOrderDomains(targetDomain)
-        .then (function () {
+        .then(function () {
         that.workOrder = that.workOrder.filter(function (wo) {
           return wo.attributes.domain < targetDomain;
         });
-          if (targetDomain===1) {
-            that.createOrderItems();
-          } else {
-            that.createComponents(targetDomain);
-          }
-          that.saveWorkOrder(targetDomain)
-            .then(function () {
-              api.queryWorkOrder()    // requery work order to get ids for newly created items
-                .then(function (wo) {
-                  that.workOrder = wo;
-                  that.splitWorkOrder();
-                  for (var d=0;d<4;d++) {
-                    that.isActiveTab[d] = false;
-                  }
-                  that.isActiveTab[targetDomain] = true;
-                  that.domainStatuses.attributes.status[targetDomain] = true; // the domain just created is valid
-                  for (var dd=targetDomain+1;dd<4;dd++) {                     // all further domains - invalid
-                    that.domainStatuses.attributes.status[dd] = false;
-                  }
-                  api.saveObj(that.domainStatuses);
-                });
+        if (targetDomain === 1) {
+          that.createOrderItems();
+        } else {
+          that.createComponents(targetDomain);
+        }
+        that.saveWorkOrder(targetDomain)
+          .then(function () {
+            api.queryWorkOrder()    // requery work order to get ids for newly created items
+              .then(function (wo) {
+                that.workOrder = wo;
+                that.splitWorkOrder();
+                for (var d = 0; d < 4; d++) {
+                  that.isActiveTab[d] = false;
+                }
+                that.isActiveTab[targetDomain] = true;
+                that.domainStatuses.attributes.status[targetDomain] = true; // the domain just created is valid
+                for (var dd = targetDomain + 1; dd < 4; dd++) {                     // all further domains - invalid
+                  that.domainStatuses.attributes.status[dd] = false;
+                }
+                api.saveObj(that.domainStatuses);
               });
+          });
       })
     };
 
-    this.setQuantity = function (woItem,domain) {
+    this.setQuantity = function (woItem, domain) {
       api.saveObj(woItem)
-        .then (function () {
-          for (var dd=domain+1;dd<4;dd++) {                     // set all further domains as invalid
-            that.domainStatuses.attributes.status[dd] = false;
-          }
-          api.saveObj(that.domainStatuses);
+        .then(function () {
+        for (var dd = domain + 1; dd < 4; dd++) {                     // set all further domains as invalid
+          that.domainStatuses.attributes.status[dd] = false;
+        }
+        api.saveObj(that.domainStatuses);
       })
     };
 
-    this.delItem = function (dom,cat,item) {
+    this.delItem = function (dom, cat, item) {
       var that = this;
       api.deleteObj(this.workOrderByCategory[dom][cat].list[item])
-        .then (function (obj) {
-          that.workOrder = that.workOrder.filter(function (wo) {
-            return wo.id !== obj.id;
-          });
-          that.workOrderByCategory[dom][cat].list.splice(item,1);
-          for (var dd=dom+1;dd<4;dd++) {                     // set all further domains as invalid
-            that.domainStatuses.attributes.status[dd] = false;
-          }
-          api.saveObj(that.domainStatuses);
-          });
+        .then(function (obj) {
+        that.workOrder = that.workOrder.filter(function (wo) {
+          return wo.id !== obj.id;
+        });
+        that.workOrderByCategory[dom][cat].list.splice(item, 1);
+        for (var dd = dom + 1; dd < 4; dd++) {                     // set all further domains as invalid
+          that.domainStatuses.attributes.status[dd] = false;
+        }
+        api.saveObj(that.domainStatuses);
+      });
     };
 
-      this.backInfo = function (woItem) {
-        var backTraceModal = $modal.open ({
-          templateUrl: 'partials/workOrder/backTrace.html',
-          controller: 'WorkOrderBackTraceCtrl as workOrderBackTraceModel',
-          resolve: {
-            workOrderItem: function() {
-              return woItem;
-            },
-            workOrder: function () {
-              return that.workOrder;
-            },
-            domains: function () {
-              return lov.domains;
-            }
+    this.backInfo = function (woItem) {
+      var backTraceModal = $modal.open({
+        templateUrl: 'partials/workOrder/backTrace.html',
+        controller: 'WorkOrderBackTraceCtrl as workOrderBackTraceModel',
+        resolve: {
+          workOrderItem: function () {
+            return woItem;
           },
-          size: 'lg'
-        });
+          workOrder: function () {
+            return that.workOrder;
+          },
+          domains: function () {
+            return lov.domains;
+          }
+        },
+        size: 'lg'
+      });
 
-        backTraceModal.result.then (function () {
-        })
+      backTraceModal.result.then(function () {
+      })
 
-      };
+    };
 
     // main block
 
@@ -414,19 +414,19 @@ angular.module('myApp')
     this.workOrder = workOrder;
     this.createSmallOrderView();
     this.orderView = [];
-    this.isActiveTab = [false,true,false,false]; // show menu items by default
+    this.isActiveTab = [false, true, false, false]; // show menu items by default
     this.splitWorkOrder();
     api.queryWorkOrderDomains()
-      .then (function (doms) {
-        if (doms.length === 0) {  // first time - initialize object
-          that.domainStatuses = api.initWorkOrderDomains();
-          that.domainStatuses.attributes.status = [true,false,false,false];
-          api.saveObj(that.domainStatuses)
-            .then(function (doms2) {
-              that.domainStatuses = doms2[0];
-            })
-         } else {
-          that.domainStatuses = doms[0];
-        }
-      });
+      .then(function (doms) {
+      if (doms.length === 0) {  // first time - initialize object
+        that.domainStatuses = api.initWorkOrderDomains();
+        that.domainStatuses.attributes.status = [true, false, false, false];
+        api.saveObj(that.domainStatuses)
+          .then(function (doms2) {
+            that.domainStatuses = doms2[0];
+          })
+      } else {
+        that.domainStatuses = doms[0];
+      }
+    });
   });

@@ -1,31 +1,31 @@
 'use strict';
 
 angular.module('myApp')
-.controller ('AckDelOrderCtrl', function($modalInstance, order, today) {
+  .controller('AckDelOrderCtrl', function ($modalInstance, order, today) {
   this.order = order;
   this.currentCustomer = order.view.currentCustomer;
-  this.days = parseInt((order.attributes.eventDate - today)/(24*3600*1000));  // need parseInt because of DST difference
+  this.days = parseInt((order.attributes.eventDate - today) / (24 * 3600 * 1000));  // need parseInt because of DST difference
   this.daysDirection = 'בעוד';
-  if (this.days<0) {
+  if (this.days < 0) {
     this.days = -this.days;
     this.daysDirection = 'לפני';
   }
 
-  this.setYes = function() {
-    $modalInstance.close (true);
+  this.setYes = function () {
+    $modalInstance.close(true);
   };
 
-  this.setNo = function() {
-    $modalInstance.close (false);
+  this.setNo = function () {
+    $modalInstance.close(false);
   };
 })
 
-  .controller('VatChangeCtrl', function($modalInstance, orderVat, currentVat) {
+  .controller('VatChangeCtrl', function ($modalInstance, orderVat, currentVat) {
     this.orderVat = orderVat;
     this.currentVat = currentVat;
     this.action = 0;
 
-    this.done = function() {
+    this.done = function () {
       $modalInstance.close(this.action);
     }
   })
@@ -34,17 +34,17 @@ angular.module('myApp')
     var that = this;
     this.changedItems = order.attributes.items.filter(function (item) {
       var catEntry = catalog.filter(function (cat) {
-          return cat.id === item.catalogId;
+        return cat.id === item.catalogId;
       })[0];
       return (item.catalogPrice !== catEntry.attributes.price ||
-             item.catalogQuantity !== catEntry.attributes.priceQuantity) && !item.isFreeItem;
+        item.catalogQuantity !== catEntry.attributes.priceQuantity) && !item.isFreeItem;
     });
-    for (var i=0;i<this.changedItems.length;i++) {
+    for (var i = 0; i < this.changedItems.length; i++) {
       var item = this.changedItems[i];
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
-      var priceInclVat =  item.quantity * catEntry.attributes.price / catEntry.attributes.priceQuantity;
+      var priceInclVat = item.quantity * catEntry.attributes.price / catEntry.attributes.priceQuantity;
       if (order.attributes.isBusinessEvent) {
         item.newPrice = priceInclVat / (1 + order.attributes.vatRate);
       } else {
@@ -54,7 +54,7 @@ angular.module('myApp')
 
     this.done = function () {
       var isChanged = false;
-      for (var i=0;i<this.changedItems.length;i++) {
+      for (var i = 0; i < this.changedItems.length; i++) {
         var item = this.changedItems[i];
         if (item.isChangePrice) {
           var catEntry = catalog.filter(function (cat) {
@@ -82,12 +82,12 @@ angular.module('myApp')
     }
   })
 
-.controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel, $scope) {
+  .controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel, $scope) {
     var that = this;
     this.order = order;
     this.bids = bids;
     // reset isInclude checkbox from previous sends
-    for (var i=0;i<this.bids.length;i++) {
+    for (var i = 0; i < this.bids.length; i++) {
       bids[i].isInclude = false;
     }
     this.bidTextTypes = bidTextTypes;
@@ -95,7 +95,7 @@ angular.module('myApp')
     this.mail = {
       to: '',
       cc: '',
-      subject:  'אירוע פומפידו',
+      subject: 'אירוע פומפידו',
       text: ''
     };
     api.queryCustomers(order.attributes.customer)
@@ -103,7 +103,7 @@ angular.module('myApp')
         that.customer = custs[0].attributes;
         if (that.customer.email) {
           that.mail.to = that.customer.email;
-          if (api.getEnvironment()==='test') {
+          if (api.getEnvironment() === 'test') {
             that.mail.to = 'test.' + that.mail.to
           }
         }
@@ -113,7 +113,7 @@ angular.module('myApp')
               that.contact = conts[0].attributes;
               if (that.contact.email) {
                 that.mail.cc = that.contact.email;
-                if (api.getEnvironment()==='test') {
+                if (api.getEnvironment() === 'test') {
                   that.mail.cc = 'test.' + that.mail.cc
                 }
               }
@@ -139,13 +139,13 @@ angular.module('myApp')
       var that = this;
       this.mail.attachments = [];
       var baseUrl = $location.absUrl();
-      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim orderId
-      baseUrl = baseUrl.slice(0,baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
- //     baseUrl = baseUrl+'/bid/';
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
+      //     baseUrl = baseUrl+'/bid/';
       this.mail.text += '<br/><br/><span>מסמכים מצורפים:</span><br/>';
       var bidCnt = 0;
       var orderCnt = 0;
-      for (var i=0;i<this.bids.length;i++) {
+      for (var i = 0; i < this.bids.length; i++) {
         if (bids[i].isInclude) {
           this.mail.attachments.push({    // this is the original bid object without the content of the order
             uuid: bids[i].attributes.uuid,
@@ -157,20 +157,20 @@ angular.module('myApp')
           });
 //          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">');
           this.mail.text += '<span>';
-          if (bids[i].attributes.documentType===1) {
+          if (bids[i].attributes.documentType === 1) {
             this.mail.text += 'הצעת מחיר: ';
             bidCnt++;
           } else {
             this.mail.text += 'הזמנה: ';
             orderCnt++;
           }
-          this.mail.text += (bids[i].attributes.desc+' </span>');
-          this.mail.text += '<a href="'+baseUrl+'/bid/'+bids[i].attributes.uuid+'">הצגה</a><span>  <span>';
-          this.mail.text += '<a href="'+baseUrl+'/bidPrint/'+bids[i].attributes.uuid+'">הדפסה</a>'
+          this.mail.text += (bids[i].attributes.desc + ' </span>');
+          this.mail.text += '<a href="' + baseUrl + '/bid/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
+          this.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bids[i].attributes.uuid + '">הדפסה</a>'
           this.mail.text += '<br/>';
         }
       }
-      this.mail.text = '<div dir="rtl">'+this.mail.text+'</div>'
+      this.mail.text = '<div dir="rtl">' + this.mail.text + '</div>'
       gmailClientLowLevel.sendEmail(this.mail)
         .then(function () {
           var newMail = api.initMail();
@@ -191,15 +191,15 @@ angular.module('myApp')
                 mail: mail.id
               };
               if (bidCnt) {
-                activity.text += (bidCnt+' הצעות מחיר ')
+                activity.text += (bidCnt + ' הצעות מחיר ')
               }
               if (orderCnt) {
-                activity.text += (orderCnt+' הזמנות')
+                activity.text += (orderCnt + ' הזמנות')
               }
-              order.attributes.activities.splice(0,0,activity);
+              order.attributes.activities.splice(0, 0, activity);
               api.saveObj(order);
             });
-         },
+        },
         function (error) {
           console.log(error);
           var errText = 'send email error:\r\n';
@@ -208,7 +208,7 @@ angular.module('myApp')
               errText += error.result.error.message
             }
           }
-          alert (errText);
+          alert(errText);
         }
       );
 
@@ -218,8 +218,8 @@ angular.module('myApp')
     this.cancel = function () {
       $modalInstance.dismiss();
     }
-})
-.controller('ShowMailCtrl', function ($modalInstance, mail) {
+  })
+  .controller('ShowMailCtrl', function ($modalInstance, mail) {
     console.log(mail);
     this.mail = mail;
 

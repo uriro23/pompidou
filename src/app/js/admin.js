@@ -3,8 +3,8 @@
 /* Controllers */
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope,
-                                         lov, config, bidTextTypes, categories,
-                                         eventTypes, measurementUnits, discountCauses, users) {
+                                     lov, config, bidTextTypes, categories,
+                                     eventTypes, measurementUnits, discountCauses, users) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -39,7 +39,7 @@ angular.module('myApp')
     // ---
 
     this.setPwd = function () {
-      if(!this.pwd1) {
+      if (!this.pwd1) {
         alert('נא להקיש סיסמה');
         this.pwd2 = null;
         return;
@@ -49,7 +49,7 @@ angular.module('myApp')
         this.pwd1 = this.pwd2 = null;
         return;
       }
-      if(this.pwd1 !== this.pwd2) {
+      if (this.pwd1 !== this.pwd2) {
         alert('הסיסמאות אינן זהות');
         this.pwd1 = this.pwd2 = null;
         return;

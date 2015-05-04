@@ -3,13 +3,13 @@
 /* Filters */
 
 angular.module('myApp').
-  filter('interpolate', ['version', function(version) {
-    return function(text) {
+  filter('interpolate', ['version', function (version) {
+    return function (text) {
       return String(text).replace(/\%VERSION\%/mg, version);
     }
   }])
-.filter('checkMark', function() {
-  return function(input) {
-    return input ? '\u2713' : ' ';
-  };
-});
+  .filter('checkMark', function () {
+    return function (input) {
+      return input ? '\u2713' : ' ';
+    };
+  });

@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderListCtrl', function($rootScope, $state, $modal, api, fetchedOrders, lov, today, customers, eventTypes) {
+  .controller('OrderListCtrl', function ($rootScope, $state, $modal, api, fetchedOrders, lov, today, customers, eventTypes) {
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
@@ -16,18 +16,18 @@ angular.module('myApp')
 //  function is called from ng-change of criteria controls, as well as from initialization code below
     this.filterOrders = function () {
       var that = this;
-      if (this.queryType==='future' || this.queryType==='templates') {
+      if (this.queryType === 'future' || this.queryType === 'templates') {
         this.orders = fetchedOrders;   // no filter in these states
       } else {
-        this.orders = fetchedOrders.filter (function (ord) {
+        this.orders = fetchedOrders.filter(function (ord) {
           return !that.filterByCustomer.id ||
-              ord.attributes.customer === that.filterByCustomer.id ||
-              ord.attributes.contact === that.filterByCustomer.id
+            ord.attributes.customer === that.filterByCustomer.id ||
+            ord.attributes.contact === that.filterByCustomer.id
         })
       }
-      
-      this.orders.sort (function (a,b) {
-        if (that.queryType==='future') {
+
+      this.orders.sort(function (a, b) {
+        if (that.queryType === 'future') {
           return a.attributes.eventDate - b.attributes.eventDate;
         } else {
           return b.attributes.eventDate - a.attributes.eventDate;
@@ -36,24 +36,24 @@ angular.module('myApp')
     };
 
 //  enrich order with info on customers etc.
-      this.enrichOrders = function() {
-        for (var i = 0; i < fetchedOrders.length; i++) {
-          fetchedOrders[i].view = {};
-          fetchedOrders[i].view.customer = customers.filter(function (cust) {
-            return cust.id === fetchedOrders[i].attributes.customer;
-          })[0];
-          fetchedOrders[i].view.eventType = eventTypes.filter(function (typ) {
-            return typ.tId === fetchedOrders[i].attributes.eventType;
-          })[0];
-          fetchedOrders[i].view.orderStatus = lov.orderStatuses.filter(function (stat) {
-            return stat.id === fetchedOrders[i].attributes.orderStatus;
-          })[0];
-          fetchedOrders[i].view.isReadOnly = fetchedOrders[i].attributes.eventDate < today;
-        }
-        this.filterOrders();
-      };
+    this.enrichOrders = function () {
+      for (var i = 0; i < fetchedOrders.length; i++) {
+        fetchedOrders[i].view = {};
+        fetchedOrders[i].view.customer = customers.filter(function (cust) {
+          return cust.id === fetchedOrders[i].attributes.customer;
+        })[0];
+        fetchedOrders[i].view.eventType = eventTypes.filter(function (typ) {
+          return typ.tId === fetchedOrders[i].attributes.eventType;
+        })[0];
+        fetchedOrders[i].view.orderStatus = lov.orderStatuses.filter(function (stat) {
+          return stat.id === fetchedOrders[i].attributes.orderStatus;
+        })[0];
+        fetchedOrders[i].view.isReadOnly = fetchedOrders[i].attributes.eventDate < today;
+      }
+      this.filterOrders();
+    };
 
-      this.setQuery = function () {
+    this.setQuery = function () {
       var that = this;
       this.orders = [];
       switch (this.queryType) {
@@ -92,9 +92,9 @@ angular.module('myApp')
         templateUrl: 'partials/customer.html',
         controller: 'CustomerCtrl as customerModel',
         resolve: {
-          customers: function() {
+          customers: function () {
             return customers;
-         },
+          },
           currentCustomerId: function () {
             return that.filterByCustomer.id;
           },
@@ -116,31 +116,30 @@ angular.module('myApp')
 
     };
 
-      this.setStatus = function (order) {
-        order.attributes.orderStatus = order.view.orderStatus.id;
-        api.saveObj(order);
-      };
+    this.setStatus = function (order) {
+      order.attributes.orderStatus = order.view.orderStatus.id;
+      api.saveObj(order);
+    };
 
-      this.getLastBid = function (order) {
-        api.queryBidsByOrder(order.id)
-            .then(function (bids) {
-                if (bids.length>0) {
- //                 $state.go("bid",{id:bids[0].attributes.uuid})
-                  window.open("#/bid/"+bids[0].attributes.uuid,"_blank");
-                } else {
-                  alert('אין הצעות מחיר לאירוע')
-                }
-            })
+    this.getLastBid = function (order) {
+      api.queryBidsByOrder(order.id)
+        .then(function (bids) {
+          if (bids.length > 0) {
+            //                 $state.go("bid",{id:bids[0].attributes.uuid})
+            window.open("#/bid/" + bids[0].attributes.uuid, "_blank");
+          } else {
+            alert('אין הצעות מחיר לאירוע')
+          }
+        })
 
-      };
-
-
-      this.filterByCustomer = {};
-      this.orderStatuses = lov.orderStatuses;
-      this.queryType = 'future';
-      this.enrichOrders();
+    };
 
 
+    this.filterByCustomer = {};
+    this.orderStatuses = lov.orderStatuses;
+    this.queryType = 'future';
+    this.enrichOrders();
 
-    });
+
+  });
 

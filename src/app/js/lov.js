@@ -3,18 +3,18 @@
 /* list of values */
 angular.module('myApp')
 
-/*
-.factory('$exceptionHandler', function() {
-  return function(exception, cause) {
-    exception.message += ' (caused by "' + cause + '")';
-    alert('תקלת תוכנה'+'\r\n'+exception.message);
-    throw exception;
-  };
-})
+  /*
+   .factory('$exceptionHandler', function() {
+   return function(exception, cause) {
+   exception.message += ' (caused by "' + cause + '")';
+   alert('תקלת תוכנה'+'\r\n'+exception.message);
+   throw exception;
+   };
+   })
 
-*/
+   */
 
-.factory('today',function() {
+  .factory('today', function () {
     var today = new Date();
     today.setHours(0);
     today.setMinutes(0);
@@ -42,25 +42,25 @@ angular.module('myApp')
     });
   })
 
-    .factory('categoriesPromise', function (api) {
-      return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
-        return res.map(function (obj) {
-          var o = obj.attributes;
-          return o;
-        });
+  .factory('categoriesPromise', function (api) {
+    return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
+      return res.map(function (obj) {
+        var o = obj.attributes;
+        return o;
       });
-    })
+    });
+  })
 
-    .factory('allCategoriesPromise', function (api) {
-      return api.queryCategories().then(function (res) { // all domains for work order
-        return res.map(function (obj) {
-          var o = obj.attributes;
-          return o;
-        });
+  .factory('allCategoriesPromise', function (api) {
+    return api.queryCategories().then(function (res) { // all domains for work order
+      return res.map(function (obj) {
+        var o = obj.attributes;
+        return o;
       });
-    })
+    });
+  })
 
-    .factory('measurementUnitsPromise', function (api) {
+  .factory('measurementUnitsPromise', function (api) {
     return api.queryMeasurementUnits().then(function (res) {
       return res.map(function (obj) {
         var o = obj.attributes;
@@ -87,7 +87,7 @@ angular.module('myApp')
     });
   })
 
- .value ('lov',
+  .value('lov',
   {
     company: 'פומפידו',
 
@@ -133,16 +133,16 @@ angular.module('myApp')
         name: 'סוכם',
         _noClone: true
       }, /*
-      {
-        id: 4,
-        name: 'בביצוע',
-        _noClone: true
-      },
-      {
-        id: 5,
-        name: 'בוצע',
-        _noClone: true
-      }, */
+       {
+       id: 4,
+       name: 'בביצוע',
+       _noClone: true
+       },
+       {
+       id: 5,
+       name: 'בוצע',
+       _noClone: true
+       }, */
       {
         id: 6,
         name: 'בוטל',

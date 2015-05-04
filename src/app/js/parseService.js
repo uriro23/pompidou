@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service ('api', function($q, $rootScope,secrets, today) {
+  .service('api', function ($q, $rootScope, secrets, today) {
   if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod
     this.environment = 'prod';
     Parse.initialize(secrets.prod.parseKey, secrets.prod.parseSecret)
@@ -51,7 +51,7 @@ angular.module('myApp')
   // saves an array of objects in parallel
   this.saveObjects = function (objs) {
     var promises = [];
-    for (var i=0;i<objs.length;i++) {
+    for (var i = 0; i < objs.length; i++) {
       if (objs[i].delAttributes) {  // unset attributes
         for (var delAttr in objs[i].delAttributes) {
           if (objs[i].delAttributes.hasOwnProperty(delAttr)) {
@@ -80,7 +80,7 @@ angular.module('myApp')
         $rootScope.$digest();
       },
       error: function (model, error) {
-        console.log (error);
+        console.log(error);
         alert('delete Error ' + error.code + ", " + error.message);
         promise.reject(error);
         $rootScope.$digest();
@@ -92,7 +92,7 @@ angular.module('myApp')
   // deletes an array of objects in parallel
   this.deleteObjects = function (objs) {
     var promises = [];
-    for (var i=0;i<objs.length;i++) {
+    for (var i = 0; i < objs.length; i++) {
       promises.push(objs[i].destroy());
     }
     return Parse.Promise.when(promises);
@@ -125,7 +125,7 @@ angular.module('myApp')
   this.queryOrders = function (id) {
     var orderQuery = new Parse.Query(Order);
     if (id) {
-      orderQuery.equalTo('objectId',id);
+      orderQuery.equalTo('objectId', id);
     }
     orderQuery.limit(1000);
     return query(orderQuery);
@@ -134,7 +134,7 @@ angular.module('myApp')
   this.queryOrdersByCustomer = function (cust) {
     var orderQuery = new Parse.Query(Order);
     if (cust) {
-      orderQuery.equalTo('customer',cust);
+      orderQuery.equalTo('customer', cust);
     }
     orderQuery.limit(1000);
     return query(orderQuery);
@@ -149,14 +149,14 @@ angular.module('myApp')
 
   this.queryFutureOrders = function () {
     var orderQuery = new Parse.Query(Order);
-    orderQuery.greaterThanOrEqualTo('eventDate',today);
+    orderQuery.greaterThanOrEqualTo('eventDate', today);
     orderQuery.limit(1000);
     return query(orderQuery);
   };
 
   this.queryPastOrders = function () {
     var orderQuery = new Parse.Query(Order);
-    orderQuery.lessThan('eventDate',today);
+    orderQuery.lessThan('eventDate', today);
     orderQuery.limit(1000);
     return query(orderQuery);
   };
@@ -168,8 +168,8 @@ angular.module('myApp')
   var OrderNum = Parse.Object.extend("OrderNum");
 
   this.queryOrderNum = function () {
-      var orderNumQuery = new Parse.Query(OrderNum);
-      return query(orderNumQuery);
+    var orderNumQuery = new Parse.Query(OrderNum);
+    return query(orderNumQuery);
   };
 
   // Bid
@@ -183,14 +183,14 @@ angular.module('myApp')
 
   this.queryBidsByOrder = function (orderId) {
     var bidQuery = new Parse.Query(Bid);
-    bidQuery.equalTo("orderId",orderId);
+    bidQuery.equalTo("orderId", orderId);
     bidQuery.descending("date");
     return query(bidQuery);
   };
 
   this.queryBidByUuid = function (uuid) {
     var bidQuery = new Parse.Query(Bid);
-    bidQuery.equalTo("uuid",uuid);
+    bidQuery.equalTo("uuid", uuid);
     return query(bidQuery);
   };
 
@@ -213,7 +213,7 @@ angular.module('myApp')
 
   this.queryMailsByOrder = function (orderId) {
     var mailQuery = new Parse.Query(Mail);
-    mailQuery.equalTo("orderId",orderId);
+    mailQuery.equalTo("orderId", orderId);
     mailQuery.descending("date");
     return query(mailQuery);
   };
@@ -230,7 +230,7 @@ angular.module('myApp')
   this.queryCustomers = function (id) {
     var customerQuery = new Parse.Query(Customer);
     if (id) {
-      customerQuery.equalTo('objectId',id);
+      customerQuery.equalTo('objectId', id);
     }
     customerQuery.limit(1000);
     customerQuery.ascending("firstName");
@@ -249,15 +249,15 @@ angular.module('myApp')
   this.queryWorkOrder = function (domain) {
     var workOrderQuery = new Parse.Query(WorkOrder);
     if (domain) {
-      workOrderQuery.equalTo('domain',domain)
+      workOrderQuery.equalTo('domain', domain)
     }
     workOrderQuery.limit(1000);
     return query(workOrderQuery);
   };
 
-  this.queryWorkOrderByKey = function (key,val) {
+  this.queryWorkOrderByKey = function (key, val) {
     var workOrderQuery = new Parse.Query(WorkOrder);
-    workOrderQuery.equalTo(key,val);
+    workOrderQuery.equalTo(key, val);
     workOrderQuery.limit(1000);
     return query(workOrderQuery);
   };
@@ -284,7 +284,7 @@ angular.module('myApp')
   var Catalog = Parse.Object.extend("Catalog");
 
   this.initCatalog = function () {
-   return new Catalog();
+    return new Catalog();
   };
 
   this.queryCatalog = function (domain) {
@@ -298,16 +298,15 @@ angular.module('myApp')
 
   this.queryCatalogByCategory = function (category) {
     var catalogQuery = new Parse.Query(Catalog);
-    catalogQuery.equalTo('category',category);
+    catalogQuery.equalTo('category', category);
     return query(catalogQuery);
   };
 
   this.queryCatalogByIds = function (ids) { // returns catalog items with id matching member of param array
     var catalogQuery = new Parse.Query(Catalog);
-    catalogQuery.containedIn('objectId',ids);
+    catalogQuery.containedIn('objectId', ids);
     return query(catalogQuery);
   };
-
 
 
   // EventType
@@ -318,7 +317,7 @@ angular.module('myApp')
   this.queryEventTypes = function (id) {
     var eventTypesQuery = new Parse.Query(EventType);
     if (id) {
-      eventTypesQuery.equalTo("tId",id);
+      eventTypesQuery.equalTo("tId", id);
     }
     eventTypesQuery.ascending("tId");
     return query(eventTypesQuery);
@@ -336,7 +335,7 @@ angular.module('myApp')
   this.queryBidTextTypes = function (id) {
     var bidTextTypesQuery = new Parse.Query(BidTextType);
     if (id) {
-      bidTextTypesQuery.equalTo("tId",id);
+      bidTextTypesQuery.equalTo("tId", id);
     }
     bidTextTypesQuery.ascending("tId");
     return query(bidTextTypesQuery);
@@ -375,7 +374,7 @@ angular.module('myApp')
   this.queryDiscountCauses = function (id) {
     var discountCausesQuery = new Parse.Query(DiscountCause);
     if (id) {
-      discountCausesQuery.equalTo("tId",id);
+      discountCausesQuery.equalTo("tId", id);
     }
     discountCausesQuery.ascending("tId");
     return query(discountCausesQuery);
@@ -402,11 +401,11 @@ angular.module('myApp')
   this.userSignUp = function (obj) {
     var promise = $q.defer();
     for (var fieldName in obj.attributes) {
-      obj.set (fieldName, obj.attributes[fieldName]);
+      obj.set(fieldName, obj.attributes[fieldName]);
     }
     obj.signUp({}, {
       success: function (o) {
-        console.log (o.attributes);
+        console.log(o.attributes);
         promise.resolve(o);
         $rootScope.$digest();
       },
@@ -421,33 +420,33 @@ angular.module('myApp')
 
   this.userLogin = function (username, pwd) {
     var promise = $q.defer();
-      Parse.User.logIn(username, pwd, {
-        success: function (user) {
-          promise.resolve(user);
-          $rootScope.$digest()
-        },
-        error: function (model, error) {
-          alert('Login error '+error.code+", "+error.message);
-          promise.reject(error);
-          $rootScope.$digest()
-        }
-      });
+    Parse.User.logIn(username, pwd, {
+      success: function (user) {
+        promise.resolve(user);
+        $rootScope.$digest()
+      },
+      error: function (model, error) {
+        alert('Login error ' + error.code + ", " + error.message);
+        promise.reject(error);
+        $rootScope.$digest()
+      }
+    });
     return promise.promise;
   };
 
   this.userLogout = function () {
-      Parse.User.logOut();
+    Parse.User.logOut();
   };
 
   this.userPasswordReset = function (email) {
     var promise = $q.defer();
-    Parse.User.requestPasswordReset (email, {
+    Parse.User.requestPasswordReset(email, {
       success: function () {
         promise.resolve();
         $rootScope.$digest()
       },
       error: function (error) {
-        alert('Password reset error '+error.code+", "+error.message);
+        alert('Password reset error ' + error.code + ", " + error.message);
         promise.reject(error);
         $rootScope.$digest()
       }
@@ -470,23 +469,23 @@ angular.module('myApp')
   // role
   // ----
 
-  this.createRole = function (name,admin,users) {
+  this.createRole = function (name, admin, users) {
     var promise = $q.defer();
     var roleACL = new Parse.ACL();
-    for (var i=0;i<users.length;i++) {
-      roleACL.setReadAccess(users[i],true);
+    for (var i = 0; i < users.length; i++) {
+      roleACL.setReadAccess(users[i], true);
     }
-    roleACL.setWriteAccess(admin,true);
-    var role = new Parse.Role(name,roleACL);
+    roleACL.setWriteAccess(admin, true);
+    var role = new Parse.Role(name, roleACL);
     role.getUsers().add(users);
-    role.save({},{
+    role.save({}, {
       success: function (r) {
         console.log('role:');
         console.log(r);
         promise.resolve(r);
         $rootScope.$digest();
       },
-      error: function (model,error) {
+      error: function (model, error) {
         alert('Role Save Error ' + error.code + ", " + error.message);
         promise.reject();
         $rootScope.$digest();
@@ -515,7 +514,7 @@ angular.module('myApp')
 
   this.queryAccessComponents = function (catId) {
     var accessComponentsQuery = new Parse.Query(AccessComponents);
-    accessComponentsQuery.equalTo('CompItemId',catId);
+    accessComponentsQuery.equalTo('CompItemId', catId);
     return query(accessComponentsQuery);
   };
 
@@ -523,7 +522,7 @@ angular.module('myApp')
 
   this.queryAccessCatalogSubitems = function (catId) {
     var accessCatalogSubitemsQuery = new Parse.Query(AccessCatalogSubitems);
-    accessCatalogSubitemsQuery.equalTo('ContainerId',catId);
+    accessCatalogSubitemsQuery.equalTo('ContainerId', catId);
     return query(accessCatalogSubitemsQuery);
   };
 
@@ -558,7 +557,7 @@ angular.module('myApp')
 
   this.queryAccessOrderItems = function (orderId) {
     var accessOrderItemsQuery = new Parse.Query(AccessOrderItems);
-    accessOrderItemsQuery.equalTo('OrderId',orderId);
+    accessOrderItemsQuery.equalTo('OrderId', orderId);
     accessOrderItemsQuery.limit(1000);
     accessOrderItemsQuery.ascending('ItemId');
     return query(accessOrderItemsQuery);
@@ -571,7 +570,7 @@ angular.module('myApp')
 
   this.queryAccessOrderActivities = function (orderId) {
     var accessOrderActivitiesQuery = new Parse.Query(AccessOrderActivities);
-    accessOrderActivitiesQuery.equalTo('ActivityOrder',orderId);
+    accessOrderActivitiesQuery.equalTo('ActivityOrder', orderId);
     accessOrderActivitiesQuery.limit(1000);
     accessOrderActivitiesQuery.descending('Id'); // ActivityTime is string, no good for sort
     return query(accessOrderActivitiesQuery);

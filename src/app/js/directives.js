@@ -4,25 +4,25 @@
 
 
 angular.module('myApp').
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
+  directive('appVersion', ['version', function (version) {
+    return function (scope, elm, attrs) {
       elm.text(version);
     };
   }])
 
-/*
-Source: github/fiestah/angular-money-directive
-This directive validates monetary inputs in "42.53" format (some additional work is needed for "32,00" European formats).
-Note that this is not designed to work with currency symbols. It largely behaves like Angular's implementation of type="number".
+  /*
+   Source: github/fiestah/angular-money-directive
+   This directive validates monetary inputs in "42.53" format (some additional work is needed for "32,00" European formats).
+   Note that this is not designed to work with currency symbols. It largely behaves like Angular's implementation of type="number".
 
-It does a few things:
+   It does a few things:
 
-  Prevents entering non-numeric characters
-Prevents entering the minus sign when min >= 0
-Supports min and max like in <input type="number">
-Rounds the model value by precision, e.g. 42.219 will be rounded to 42.22 by default
-On blur, the input field is auto-formatted. Say if you enter 42, it will be formatted to 42.00
-*/
+   Prevents entering non-numeric characters
+   Prevents entering the minus sign when min >= 0
+   Supports min and max like in <input type="number">
+   Rounds the model value by precision, e.g. 42.219 will be rounded to 42.22 by default
+   On blur, the input field is auto-formatted. Say if you enter 42, it will be formatted to 42.00
+   */
   .directive('money', function () {
     'use strict';
 
@@ -84,7 +84,7 @@ On blur, the input field is auto-formatted. Say if you enter 42, it will be form
       });
       ngModelCtrl.$formatters.push(formatViewValue);
 
-      var minValidator = function(value) {
+      var minValidator = function (value) {
         if (!ngModelCtrl.$isEmpty(value) && value < min) {
           ngModelCtrl.$setValidity('min', false);
           return undefined;
@@ -98,7 +98,7 @@ On blur, the input field is auto-formatted. Say if you enter 42, it will be form
 
       if (attrs.max) {
         var max = parseFloat(attrs.max);
-        var maxValidator = function(value) {
+        var maxValidator = function (value) {
           if (!ngModelCtrl.$isEmpty(value) && value > max) {
             ngModelCtrl.$setValidity('max', false);
             return undefined;

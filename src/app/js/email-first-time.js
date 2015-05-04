@@ -16,6 +16,7 @@
             scope.authorized = true;
           }
         }
+
         scope.onConnect = function () {
           gmailClientLowLevel.authorize().then(authCallback);
         };

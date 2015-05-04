@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller ('CatalogExitListCtrl', function($modalInstance, catalogItem) {
+  .controller('CatalogExitListCtrl', function ($modalInstance, catalogItem) {
 
 
   this.productDescription = catalogItem.attributes.productDescription;
@@ -17,11 +17,11 @@ angular.module('myApp')
 
   //TODO: set focus on added item
   this.addItem = function () {
-    this.exitList.push({item:''});
+    this.exitList.push({item: ''});
   };
 
   this.delItem = function (ind) {
-    this.exitList.splice(ind,1);
+    this.exitList.splice(ind, 1);
   };
 
   this.done = function () {
@@ -37,8 +37,7 @@ angular.module('myApp')
 })
 
 
-
-  .controller ('ComponentsCtrl', function($modalInstance,
+  .controller('ComponentsCtrl', function ($modalInstance,
                                           catalogItem,
                                           targetDomain,
                                           targetCategories,
@@ -47,20 +46,20 @@ angular.module('myApp')
                                           measurementUnits) {
 
 
-  this.setComponentView = function(compId) {
+  this.setComponentView = function (compId) {
     var view = {};
-    var catItem = targetItems.filter (function(cat) {
+    var catItem = targetItems.filter(function (cat) {
       return cat.id === compId;
     })[0];
-    if(!catItem) {
-      alert('missing component catalog entry for '+compId);
+    if (!catItem) {
+      alert('missing component catalog entry for ' + compId);
       return view;
     }
-    view.category = targetCategories.filter (function(cat) {
+    view.category = targetCategories.filter(function (cat) {
       return cat.tId === catItem.attributes.category;
     })[0];
     view.productDescription = catItem.attributes.productDescription;
-    view.measurementUnit = measurementUnits.filter (function(mu) {
+    view.measurementUnit = measurementUnits.filter(function (mu) {
       return mu.tId === catItem.attributes.measurementUnit;
     })[0];
     return view;
@@ -68,34 +67,34 @@ angular.module('myApp')
 
   this.setCategory = function () {
     var that = this;
-    this.filteredItems = targetItems.filter (function (cat) {
+    this.filteredItems = targetItems.filter(function (cat) {
       if (cat.attributes.category !== that.currentCategory.tId) {
         return false;
       }
       // exclude items already in list
-      for (var i=0;i<that.components.length;i++) {
+      for (var i = 0; i < that.components.length; i++) {
         if (that.components[i].attr.id === cat.id) {
           return false;
         }
       }
       return true;
     });
-      this.filteredItems.sort (function (a,b) {
-        if (a.attributes.productDescription > b.attributes.productDescription) {
-          return 1
-        } else {
-          return -1
-        }
-      });
+    this.filteredItems.sort(function (a, b) {
+      if (a.attributes.productDescription > b.attributes.productDescription) {
+        return 1
+      } else {
+        return -1
+      }
+    });
   };
 
-  this.setItem = function() {
+  this.setItem = function () {
     var newItem = {};
     newItem.attr = {}; // attr is the object we are going to store. the rest of the item is for view only
     newItem.attr.id = this.currentItem.id;
     newItem.attr.domain = this.currentItem.attributes.domain;
     newItem.attr.quantity = 0;
-    newItem.view = this.setComponentView (newItem.attr.id);
+    newItem.view = this.setComponentView(newItem.attr.id);
     this.components.push(newItem);
   };
 
@@ -105,7 +104,7 @@ angular.module('myApp')
   };
 
   this.delItem = function (ind) {
-    this.components.splice(ind,1);
+    this.components.splice(ind, 1);
   };
 
   this.done = function () {
@@ -116,7 +115,7 @@ angular.module('myApp')
         return (comp.domain !== targetDomain);
       })
     }
-    var localComponents = this.components.map (function(comp) {
+    var localComponents = this.components.map(function (comp) {
       return comp.attr;
     });
     catalogItem.attributes.components = globalComponents.concat(localComponents);
@@ -143,19 +142,18 @@ angular.module('myApp')
 
   var tempComponents = [];
   if (catalogItem.attributes.components) {
-    tempComponents = catalogItem.attributes.components.filter (function (comp) {
+    tempComponents = catalogItem.attributes.components.filter(function (comp) {
       return (comp.domain === targetDomain &&
-              comp.id !== config.unhandledItemComponent &&  // don't show unhandled item entries
-              comp.id !== config.unhandledItemMaterial);    // they will be stored for modified item only if no other comps exist
+      comp.id !== config.unhandledItemComponent &&  // don't show unhandled item entries
+      comp.id !== config.unhandledItemMaterial);    // they will be stored for modified item only if no other comps exist
     })
   }
-  this.components = tempComponents.map(function(comp) {
+  this.components = tempComponents.map(function (comp) {
     var c = {};
     c.attr = comp;
     c.view = that.setComponentView(comp.id);
     return c;
   });
-
 
 
 });

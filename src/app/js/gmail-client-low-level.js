@@ -20,6 +20,7 @@
 
     this.authenticateIfAuthorized = function () {
       var p = $q.defer();
+
       function immediateAuth() {
         if (!gapi || !gapi.auth || !gapi.auth.authorize) {
           $timeout(immediateAuth, 100);
@@ -33,6 +34,7 @@
           p.resolve(false);
         });
       }
+
       immediateAuth();
       return p.promise;
     };
