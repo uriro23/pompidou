@@ -6,6 +6,9 @@ var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
 
+var s3 = require("gulp-s3");
+var fs = require('fs');
+
 module.exports = function(options) {
   gulp.task('partials', function () {
     return gulp.src([
@@ -85,4 +88,12 @@ module.exports = function(options) {
   });
 
   gulp.task('build', ['html', 'fonts', 'other']);
+
+  var aws = JSON.parse(fs.readFileSync('./aws.json'));
+  var deployOptions = { headers: {'Cache-Control': 'max-age=3600, no-transform, public'} };
+
+  gulp.task('deploy', function () {
+    return gulp.src('dist/**', {read: true})
+      .pipe(s3(aws, deployOptions));
+  });
 };
