@@ -1,7 +1,8 @@
-logs/*
-!.gitkeep
 node_modules/
-tmp
+bower_components/
+.sass-cache/
+.tmp/
+dist/
+secrets.js
 .DS_Store
 .idea
-secrets.js

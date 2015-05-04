@@ -1,0 +1,148 @@
+
+<div id="bid_container" style="padding: 2% 20%; width: 100%; background-color: #ffffff; direction:rtl;">
+    <header >
+
+        <div id="contact" style="color:purple; font: 14pt Tahoma; float:right">
+            <span>יובל רוזנן</span><br/>
+            <span>054-7514061</span><br/>
+            <span>yuval@pompidou.co.il</span><br/>
+        </div>
+
+
+
+        <div id="logo" style="width:35%;float:left;">
+            <img align="left" style="width:100%;" src="app/img/menu_logo.png"/>
+        </div>
+
+
+    </header>
+
+
+
+    <div id="bid_content" style="clear:both;padding:0;margin:0" >
+
+        <span>{{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}</span><br/>
+        <label>מספרנו: </label><span>{{bidModel.bid.attributes.order.number}}</span><br/>
+            <div>
+              <span>לכ'</span><br/>
+              <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>
+            </div>
+            <h1 ng-show="bidModel.bid.attributes.documentType===1" align="center" style="font-size:5em; ">הצעת מחיר</h1>
+            <h1 ng-show="bidModel.bid.attributes.documentType===2" align="center" style="font-size:5em; ">הזמנה</h1>
+        <br/>
+        <div ng-show="bidModel.bid.attributes.documentType===1" >
+            <ng-include src="bidModel.startBidTextType.url"></ng-include>
+        </div>
+        <div ng-show="bidModel.bid.attributes.documentType===2" >
+            <ng-include src="bidModel.config.orderStartTextUrl"></ng-include>
+        </div><br/>
+            <div>
+              <label style="font-weight: bold">סוג ארוע: </label><span>{{bidModel.eventType.label}}</span>
+              <label style="font-weight: bold">תאריך ארוע: </label><span>{{bidModel.bid.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</span>
+              <label style="font-weight: bold">שעת המשלוח: </label><span>{{bidModel.bid.attributes.order.eventTime | date: 'HH:mm'}}</span>
+              <label style="font-weight: bold">מס' משתתפים: </label><span align="left">{{bidModel.bid.attributes.order.noOfParticipants}}</span>
+            </div>
+
+            <div>
+              <label style="font-weight: bold">מקום משלוח: </label><span>{{bidModel.bid.attributes.order.deliveryLocation}}</span>
+            </div>
+            <div ng-show="bidModel.bid.attributes.order.includeRemarksInBid">
+              <label style="font-weight: bold">הערות: </label><span>{{bidModel.bid.attributes.order.remarks}}</span>
+            </div>
+            <div>
+              <label style="font-weight: bold">טלפונים: </label><span>{{bidModel.customer.homePhone+' '+bidModel.customer.mobilePhone+' '+bidModel.customer.workPhone}}</span>
+            </div>
+
+
+            <div ng-repeat="category in bidModel.filteredCategories" style="clear:both; width:100%;">
+              <label style="font-weight: bold;">{{category.label}}</label><br>
+              {{bidModel.setupCategoryItems(category.tId)}}
+              <table>
+                <tbody>
+                    <tr ng-repeat="item in bidModel.categoryItems">
+                      <td style="width:70%">{{item.productDescription}}</td>
+                      <td style="width:20%"> {{item.quantity}}</td>
+                      <td style="width:10%"> {{item.measurementUnit.label}}</td>
+                      <td style="width:10%" ng-hide="bidModel.bid.attributes.order.isFixedPrice" >{{item.price | currency }}</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+            {{bidModel.setupFreeItems()}}
+
+            <!--bonus items div -->
+            <div ng-show="bidModel.freeItems.length" style="clear:both; width:100%;">
+
+              <label style="font-weight: bold;" >בונוס</label>
+              <table >
+                <tbody>
+                    <tr ng-repeat="item in bidModel.freeItems">
+                      <td style="width:70%">{{item.productDescription}}</td>
+                      <td style="width:20%">{{item.quantity}}</td>
+                      <td style="width:10%">{{item.measurementUnit.label}}</td>
+                      <td style="width:10%">&nbsp;</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- End of bonus items div -->
+            <div>
+              <table >
+                <tr ng-hide="bidModel.bid.attributes.order.isFixedPrice">
+                  <td style="width:90%"><label style="font-weight: bold">סה"כ הזמנה</label></td>
+                  <td style="width:10%">{{bidModel.bid.attributes.order.subTotal | currency}}</td>
+                </tr>
+                <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
+                  <td style="width:90%">
+                    <label style="font-weight: bold">הנחה בגובה %</label>
+                    <label>{{bidModel.bid.attributes.order.discountRate}}</label>
+                    <label style="font-weight: bold"> עקב </label>
+                    <label style="font-weight: bold">{{bidModel.discountCause.label}}</label>
+                  </td>
+                  <td style="width:10%">{{bidModel.bid.attributes.order.discount | currency}}</td>
+                </tr>
+                <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.transportation">
+                  <td style="width:90%"><label style="font-weight: bold">משלוח</label></td>
+                  <td style="width:10%">{{bidModel.bid.attributes.order.transportation | currency}}</td>
+                </tr>
+                <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isTransportationBonus">
+                  <td style="width:90%"><label style="font-weight: bold">בונוס - זיכוי משלוח</label></td>
+                  <td style="width:10%">{{bidModel.bid.attributes.order.transportationBonus | currency}}</td>
+                </tr>
+                <tr ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isBusinessEvent">
+                  <td style="width:90%">
+                    <label style="font-weight: bold">מע"מ בשיעור %</label>
+                    <label style="font-weight: bold">{{bidModel.bid.attributes.order.vatRate*100}}</label>
+                  </td>
+                  <td style="width:10%">{{bidModel.bid.attributes.order.vat | currency}}</td>
+                </tr>
+                <tr>
+                  <td style="width:90%"><label style="font-weight: bold">סה"כ לתשלום</label></td>
+                    <td ng-hide="bidModel.bid.attributes.order.isFixedPrice"
+                        style="width:10%"><b>{{bidModel.bid.attributes.order.total | currency}}</b></td>
+                    <td ng-show="bidModel.bid.attributes.order.isFixedPrice"
+                        style="width:10%"><b>{{bidModel.bid.attributes.order.fixedPrice | currency}}</b></td>
+                </tr>
+                <tr ng-hide="bidModel.bid.attributes.order.isFixedPrice">
+                  <td style="width:90%">
+                    <label style="font-weight: bold">מחיר למשתתף </label>
+                    <label style="font-weight: bold">{{bidModel.bid.attributes.order.total / bidModel.bid.attributes.order.noOfParticipants | currency}}</label>
+                  </td>
+                </tr>
+              </table>
+            </div>
+        <div ng-show="bidModel.bid.attributes.documentType===1" >
+            <ng-include src="bidModel.endBidTextType.url"></ng-include>
+        </div>
+        <div ng-show="bidModel.bid.attributes.documentType===2" >
+            <div ng-repeat="textType in bidModel.bid.attributes.order.orderDocTextTypes">
+                <ng-include src="textType.url"></ng-include>
+            </div>
+        </div>
+
+    </div><!--End of bid_content -->
+
+</div> <!--End of bid_container -->
+

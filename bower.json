@@ -1,24 +1,23 @@
 {
   "name": "pompidou",
-  "version": "0.1.0",
-  "main": "dist/scripts/pompidou.js",
-  "ignore": [
-    ".*",
-    "Gemfile*",
-    "Gruntfile.js",
-    "pom.xml",
-    "*.json",
-    "*.conf.js",
-    "app",
-    "test",
-    "maven",
-    "*.sublime*"
-  ],
+  "version": "0.0.0",
   "dependencies": {
-    "angular": "~1.2.0",
-    "parse-js-sdk": "~1.2.19",
-    "angular-ui-router": null,
-    "ng-ckeditor": "~0.2.1"
+    "jquery": "~2.1.1",
+    "angular-ui-router": "~0.2.13",
+    "bootstrap": "~3.3.1",
+    "angular-bootstrap": "~0.12.0",
+    "angular": "~1.3.4",
+    "parse-js-sdk": "~1.4.0",
+    "angular-ckeditor": "~0.4.2",
+    "ng-ckeditor": "~0.2.1",
+    "angular-sanitize": "~1.3.15",
+    "angular-ui-select": "~0.11.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "angular-mocks": "~1.3.4"
+  },
+  "resolutions": {
+    "jquery": "~2.1.1",
+    "angular": "1.3.15"
+  }
 }
