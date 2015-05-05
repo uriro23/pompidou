@@ -93,7 +93,7 @@ angular.module('myApp')
     this.updateExitList = function (ind) {
       var that = this;
       var exitListModal = $modal.open({
-        templateUrl: 'partials/catalogExitList.html',
+        templateUrl: 'app/partials/catalogExitList.html',
         controller: 'CatalogExitListCtrl as catalogExitListModel',
         resolve: {
           catalogItem: function () {
@@ -111,7 +111,7 @@ angular.module('myApp')
     this.updateComponents = function (ind, targetDomain) {
       var that = this;
       var componentsModal = $modal.open({
-        templateUrl: 'partials/components.html',
+        templateUrl: 'app/partials/components.html',
         controller: 'ComponentsCtrl as componentsModel',
         resolve: {
           catalogItem: function () {

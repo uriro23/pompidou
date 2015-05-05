@@ -242,7 +242,7 @@ angular.module('myApp')
     this.selectOrders = function () {
       var that = this;
       var ackDelModal = $modal.open({
-        templateUrl: 'partials/workOrder/ackDelete.html',
+        templateUrl: 'app/partials/workOrder/ackDelete.html',
         controller: 'AckDelWorkOrderCtrl as ackDelWorkOrderModel',
         size: 'sm'
       });
@@ -385,7 +385,7 @@ angular.module('myApp')
 
     this.backInfo = function (woItem) {
       var backTraceModal = $modal.open({
-        templateUrl: 'partials/workOrder/backTrace.html',
+          templateUrl: 'app/partials/workOrder/backTrace.html',
         controller: 'WorkOrderBackTraceCtrl as workOrderBackTraceModel',
         resolve: {
           workOrderItem: function () {

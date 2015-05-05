@@ -77,7 +77,7 @@ angular.module('myApp')
       var that = this;
 
       var selectCustomer = $modal.open({
-        templateUrl: 'partials/customer.html',
+      templateUrl: 'app/partials/customer.html',
         controller: 'CustomerCtrl as customerModel',
         resolve: {
           customers: function (api) {
@@ -151,7 +151,7 @@ angular.module('myApp')
     this.deleteOrder = function () {
       var that = this;
       var ackDelModal = $modal.open({
-        templateUrl: 'partials/order/ackDelete.html',
+        templateUrl: 'app/partials/order/ackDelete.html',
         controller: 'AckDelOrderCtrl as ackDelOrderModel',
         resolve: {
           order: function () {
@@ -443,7 +443,7 @@ angular.module('myApp')
     this.updatePrices = function () {
       var that = this;
       var updatePricesModal = $modal.open({
-        templateUrl: 'partials/order/updatePrices.html',
+        templateUrl: 'app/partials/order/updatePrices.html',
         controller: 'UpdatePricesCtrl as updatePricesModel',
         resolve: {
           order: function () {
@@ -560,7 +560,7 @@ angular.module('myApp')
 
     this.showMail = function (mailId) {
       var showMailModal = $modal.open({
-        templateUrl: 'partials/order/showMail.html',
+        templateUrl: 'app/partials/order/showMail.html',
         controller: 'ShowMailCtrl as showMailModel',
         resolve: {
           mail: function () {
@@ -646,7 +646,7 @@ angular.module('myApp')
     this.sendMail = function () {
       var that = this;
       var sendMailModal = $modal.open({
-        templateUrl: 'partials/order/sendMail.html',
+        templateUrl: 'app/partials/order/sendMail.html',
         controller: 'SendMailCtrl as sendMailModel',
         resolve: {
           order: function () {
@@ -895,7 +895,7 @@ angular.module('myApp')
       // handle change of vat rate
       if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
         var vatChangeModal = $modal.open({
-          templateUrl: 'partials/order/vatChange.html',
+          templateUrl: 'app/partials/order/vatChange.html',
           controller: 'VatChangeCtrl as vatChangeModel',
           resolve: {
             orderVat: function () {

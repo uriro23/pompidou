@@ -89,7 +89,7 @@ angular.module('myApp')
       var that = this;
 
       var selectCustomer = $modal.open({
-        templateUrl: 'partials/customer.html',
+        templateUrl: 'app/partials/customer.html',
         controller: 'CustomerCtrl as customerModel',
         resolve: {
           customers: function () {
