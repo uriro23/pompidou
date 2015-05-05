@@ -11,7 +11,12 @@ $(document).ready(function () {
   }
 
   $(document).on("click", ".moveLeft", function () {
-    alert('ggggggggggggggggggggg');
+  	
+    $('#printed_menu_leftColumn').append('<div id="printed_menu_category">' + 
+                                              + $(this).closest('#printed_menu_category').find('#printed_menu_header').html()
+                                              + '</div>');
+    
+        
   });
 
 });

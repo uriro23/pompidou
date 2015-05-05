@@ -6,8 +6,15 @@
     margin:0;
     padding: 2% 15%;
     width: 100%;
-    background-color: #ffffff; 
-    font: 15px Tahoma;    
+    background-color:#FFFFFF; 
+    font: 14pt Tahoma;  
+    
+}
+
+header
+{
+	background-color:#C9C9C9;
+	border: 1px solid black;
 }
 
 @media print {
@@ -19,6 +26,7 @@
     #contact
     {
         font: 15pt Tahoma; 
+       
     }
     
     #bid_container h1
@@ -28,18 +36,36 @@
 }
 
 /* Yuval' s details in the top of the page */
+
+#bid_head
+{
+	clear:both;
+	margin-bottom:10%;	
+	height:contain;
+}
+
+#bid_head:after{
+    clear: both;
+    content: "";
+    display: block;
+}
+
 #contact
 {
     color:#892f78; 
+  
     font: 20pt Tahoma; 
     float:right;
-    margin-top: 10%; /* drops the cotact a bit below the logo */
+    width:65%;
+    
+    padding-top: 10%; /* drops the cotact a bit below the logo */
 }
 
 #bid_container #logo
 {
     width:35%;
     float:left;
+ 
 }
 
 #bid_container #logo img
@@ -51,6 +77,7 @@
 #bid_content
 {
     clear:both;
+    background-color:#EAEAEA;
 }
 
 /* "הצעת מחיר/הזמנה" header */
@@ -69,8 +96,13 @@
 
 .event_details
 {
-    margin-left:5%;
+    padding-left:5%;
     display:inline-block;
+}
+
+#bid_content
+{
+	padding: 5%;
 }
 
 #bid_content ul
@@ -83,16 +115,24 @@
 
 #items_list, #bonus_list
 {
-    border:1px solid black;
+    /*border:1px solid black;*/
+    box-shadow: 10px 10px 5px #888888;
+    padding: 3%;
+    margin:0;
+    background-color: #ffffff;
+}
+
+#sum_up
+{
+    /*border:1px solid black;*/
+    box-shadow: 10px 10px 5px #888888;
     padding: 3%;
     background-color: #DCDCDC;
     margin:0;
 }
 
-#sum_up
+.endText
 {
-    border:3px solid black;
-    padding: 3%;
-    background-color: #EE82EE;
-    margin:0;
+	padding:10%;
+	
 }

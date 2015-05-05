@@ -7,22 +7,29 @@
 
 
 <div id="bid_container" ng-hide="bidModel.docNotAvailable">
-    <header>
-        <div id="contact">
-            <span>יובל רוזנן</span><br/>
-            <span>054-7514061</span><br/>
-            <span>yuval@pompidou.co.il</span><br/>
-        </div>
+   
+        
 
-        <div id="logo">
-            <img align="left" src="app/img/logo.png"/>
-        </div>
-
-    </header>
+    
 
 
 
     <div id="bid_content">
+    	
+    	<!-- top of bid - contact and logo  -->
+    	<div id="bid_head">
+	    	<div id="contact">
+	            <span>יובל רוזנן</span><br/>
+	            <span>054-7514061</span><br/>
+	            <span>yuval@pompidou.co.il</span><br/>
+	        </div>
+        
+
+	        <div id="logo">
+	            <img align="left" src="app/img/logo.png"/>
+	        </div>
+	        
+        </div>
 
         <!-- basic details of bid  -->
         <div>
@@ -84,7 +91,14 @@
         <!--start of bid table -->
 
         <!--table of items and prices -->
+        
+        <h1>
+        		תפריט
+        </h1>
+        
         <div  id="items_list">
+        	
+        	
 
             <div ng-repeat="category in bidModel.filteredCategories">
 
@@ -191,10 +205,10 @@
                 <!-- End of sum_up div -->
 
 
-        <div ng-show="bidModel.bid.attributes.documentType===1" >
+        <div class="endText" ng-show="bidModel.bid.attributes.documentType===1" >
             <ng-include src="bidModel.endBidTextType.url"></ng-include>
         </div>
-        <div ng-show="bidModel.bid.attributes.documentType===2" >
+        <div class="endText" ng-show="bidModel.bid.attributes.documentType===2" >
             <div ng-repeat="textType in bidModel.bid.attributes.order.orderDocTextTypes">
                 <ng-include src="textType.url"></ng-include>
             </div>
