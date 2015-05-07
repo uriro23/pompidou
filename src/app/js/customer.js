@@ -13,8 +13,7 @@ angular.module('myApp')
       }
       if (this.filteredCustomers.length === 0) {  // not looking for selected item or no item is selected
         this.filteredCustomers = this.customers.filter(function (cust) {
-          return (cust.attributes.firstName.indexOf(that.filterText) > -1) ||
-            (cust.attributes.lastName.indexOf(that.filterText) > -1) ||
+          return ((cust.attributes.firstName+' '+cust.attributes.lastName).indexOf(that.filterText) > -1) ||
             (cust.attributes.mobilePhone.indexOf(that.filterText) > -1) ||
             (cust.attributes.homePhone.indexOf(that.filterText) > -1) ||
             (cust.attributes.workPhone.indexOf(that.filterText) > -1) ||
