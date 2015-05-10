@@ -21,16 +21,23 @@
 
 
 
-#printed_menu_category
+#printed_menu_list #printed_menu_category
 {
 
     width:100%;
-
     padding-right: 3cm;
     margin-bottom:1cm;
 }
 
-#printed_menu_category ul
+#printed_menu_leftColumn #printed_menu_category
+{
+
+    width:100%;
+    padding-right: 2.2cm; 
+    margin-bottom:1cm;
+}
+
+#printed_menu_category ul, #printed_menu_leftColumn ul
 {
     padding: 0;
 
@@ -50,6 +57,7 @@
     padding-top:22%;
     padding-bottom:14.3%;
     float:right;
+    overflow: scroll;
 }
 
 #printed_menu_leftColumn
@@ -67,15 +75,11 @@
 #printed_menu_container li
 {
     list-style-type:none;
-    line-height: 100%; /* The gap between lines of same item description */
-    margin-bottom:-5pt;  /* The gap between items */
+    line-height: 90%; /* The gap between lines of same item description */
+    margin-bottom:5pt;  /* The gap between items */
 }
 
-@page
-{
-    size: A4 landscape;
-    margin: 0;
-}
+
 
 @media print
 {
@@ -89,6 +93,10 @@
         display: none !important;
     }
 
+	.hideInPrint
+	{
+		display:none;
+	}
 
 
 
