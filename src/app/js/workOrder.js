@@ -19,7 +19,6 @@ angular.module('myApp')
 
     this.destroyWorkOrderDomains = function (domain) {
       var that = this;
-      var promise = $q.defer();
       var woItemsToDelete = this.workOrder.filter(function (wo) {
         return wo.attributes.domain >= domain;
       });

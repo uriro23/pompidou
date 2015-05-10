@@ -8,9 +8,6 @@
            ng-class="adminModel.vatError?'myError':null">
     <button class="btn btn-default" ng-click="adminModel.updateVat()">עדכן</button>
   </tab>
-  <!--<tab heading="טקסטים">
-    <ng-include src="'partials/admin/bidTextTypes.html'"></ng-include>
-  </tab> -->
   <tab heading="שינוי סיסמה">
     <table>
       <tbody>
@@ -46,13 +43,22 @@
     </table>
     <div>
       <button class="btn btn-default" ng-click="adminModel.newUser()">משתמש חדש</button>
-      <input type="text" ng-model="conversionModel.user.attributes.username" placeholder="username">
-      <input type="text" ng-model="conversionModel.user.attributes.password" placeholder="password">
-      <input type="text" ng-model="conversionModel.user.attributes.email" placeholder="email">
-      <button class="btn btn-default btn-sm" ng-click="conversionModel.saveUser()">צור</button>
+      <input type="text" ng-model="adminModel.user.attributes.username" placeholder="username">
+      <input type="text" ng-model="adminModel.user.attributes.password" placeholder="password">
+      <input type="text" ng-model="adminModel.user.attributes.email" placeholder="email">
+      <button class="btn btn-default btn-sm" ng-click="adminModel.saveUser()">צור</button>
     </div>
     <div>
       <button class="btn btn-default" ng-click="adminModel.createRole()">Role</button>
+    </div>
+  </tab>
+  <tab heading="סביבה">
+    <div>
+      <span>סביבה נוכחית היא </span>
+      <span>{{environment}}</span>
+    </div>
+    <div>
+      <button class="btn btn-default" ng-click="adminModel.switchEnv()">שנה</button>
     </div>
   </tab>
 </tabset>

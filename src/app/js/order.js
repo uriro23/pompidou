@@ -86,7 +86,7 @@ angular.module('myApp')
               return custs;
             });
           },
-          currentCustomerId: function (api) {
+          currentCustomerId: function () {
             if (custType === 1) {
               return that.order.view.customer.id;
             } else {
@@ -164,7 +164,7 @@ angular.module('myApp')
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
           api.deleteObj(that.order)
-            .then(function (obj) { // cascade delete to bids and mails
+            .then(function () { // cascade delete to bids and mails
             api.queryBidsByOrder(that.order.id)
               .then(function (bids) {
                 api.deleteObjects(bids)
@@ -404,7 +404,7 @@ angular.module('myApp')
                 if (!r) {
                   r = 1
                 }
-                templateItem.quantity = Math.ceil(templateItem.quantity / r) * r  // round up
+                templateItem.quantity = Math.ceil(templateItem.quantity / r) * r;  // round up
               }
               var thisItem = thisOrder.items.filter(function (itm) {    // check if product exists in order
                 return itm.catalogId === templateItem.catalogId;
@@ -580,7 +580,7 @@ angular.module('myApp')
     // Documents tab
     // -------------
 
-    this.setOrderDocTextType = function (textType) {
+    this.setOrderDocTextType = function () {
       this.order.attributes.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
         return t.isInclude;
       }));
@@ -625,7 +625,7 @@ angular.module('myApp')
           that.order.attributes = bid.attributes.order;
           that.setupOrderView();
           api.saveObj(that.order)
-            .then(function (o) {
+            .then(function () {
               alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +
                 $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm'))
             })
@@ -767,7 +767,6 @@ angular.module('myApp')
       if ($state.current.name === 'newOrder') {
         var that = this;
         //  I. query OrderNum class containing single counter object
-        var orderNumQuery = new Parse.Query('OrderNum');
         return api.queryOrderNum()
           //  II. bump counter and assign it to order
           .then(function (results) {

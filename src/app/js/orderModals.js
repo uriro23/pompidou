@@ -142,7 +142,7 @@ angular.module('myApp')
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
       //     baseUrl = baseUrl+'/bid/';
-      this.mail.text += '<br/><br/><span>מסמכים מצורפים:</span><br/>';
+      this.mail.text += '<br/><br/><span>קישורים למסמכים:</span><br/>';
       var bidCnt = 0;
       var orderCnt = 0;
       for (var i = 0; i < this.bids.length; i++) {
@@ -166,11 +166,11 @@ angular.module('myApp')
           }
           this.mail.text += (bids[i].attributes.desc + ' </span>');
           this.mail.text += '<a href="' + baseUrl + '/bid/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
-          this.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bids[i].attributes.uuid + '">הדפסה</a>'
+          this.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bids[i].attributes.uuid + '">הדפסה</a>';
           this.mail.text += '<br/>';
         }
       }
-      this.mail.text = '<div dir="rtl">' + this.mail.text + '</div>'
+      this.mail.text = '<div dir="rtl">' + this.mail.text + '</div>';
       gmailClientLowLevel.sendEmail(this.mail)
         .then(function () {
           var newMail = api.initMail();

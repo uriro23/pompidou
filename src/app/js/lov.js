@@ -27,8 +27,7 @@ angular.module('myApp')
   .factory('eventTypesPromise', function (api) {
     return api.queryEventTypes().then(function (res) {
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+        return obj.attributes;
       });
     });
   })
@@ -36,8 +35,7 @@ angular.module('myApp')
   .factory('bidTextTypesPromise', function (api) {
     return api.queryBidTextTypes().then(function (res) {
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+        return obj.attributes;
       });
     });
   })
@@ -45,17 +43,15 @@ angular.module('myApp')
   .factory('categoriesPromise', function (api) {
     return api.queryCategories(1).then(function (res) { // we actually load product domain categories only. used in order views
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
-      });
+       return obj.attributes;
+       });
     });
   })
 
   .factory('allCategoriesPromise', function (api) {
     return api.queryCategories().then(function (res) { // all domains for work order
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+        return obj.attributes;
       });
     });
   })
@@ -63,8 +59,7 @@ angular.module('myApp')
   .factory('measurementUnitsPromise', function (api) {
     return api.queryMeasurementUnits().then(function (res) {
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+        return obj.attributes;
       });
     });
   })
@@ -72,8 +67,7 @@ angular.module('myApp')
   .factory('discountCausesPromise', function (api) {
     return api.queryDiscountCauses().then(function (res) {
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+        return obj.attributes;
       });
     });
   })
@@ -81,8 +75,7 @@ angular.module('myApp')
   .factory('configPromise', function (api) {
     return api.queryConfig().then(function (res) {
       return res.map(function (obj) {
-        var o = obj.attributes;
-        return o;
+        return obj.attributes;
       });
     });
   })

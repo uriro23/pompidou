@@ -46,7 +46,7 @@
         ng-class="orderModel.order.view.changes.orderTextType?'myChanged':null">
         <td>
             <input type="checkbox" ng-model="textType.isInclude"
-                   ng-change="orderModel.setOrderDocTextType(textType)">
+                   ng-change="orderModel.setOrderDocTextType()">
         </td>
         <td>{{textType.label}}</td>
     </tr>

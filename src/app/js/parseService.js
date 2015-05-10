@@ -10,7 +10,8 @@ angular.module('myApp')
     this.environment = 'test';
     Parse.initialize(secrets.test.parseKey, secrets.test.parseSecret)
   }
-  $rootScope.environment = this.environment;
+    console.log(secrets[this.environment].parseKey);
+    $rootScope.environment = this.environment;
 
   this.getEnvironment = function () {
     return this.environment
@@ -255,13 +256,6 @@ angular.module('myApp')
     return query(workOrderQuery);
   };
 
-  this.queryWorkOrderByKey = function (key, val) {
-    var workOrderQuery = new Parse.Query(WorkOrder);
-    workOrderQuery.equalTo(key, val);
-    workOrderQuery.limit(1000);
-    return query(workOrderQuery);
-  };
-
 
   // WorkOrderDomains
   // ----------------
@@ -327,10 +321,6 @@ angular.module('myApp')
   // -----------
 
   var BidTextType = Parse.Object.extend("BidTextType");
-
-  this.initBidTextType = function () {
-    return new BidTextType();
-  };
 
   this.queryBidTextTypes = function (id) {
     var bidTextTypesQuery = new Parse.Query(BidTextType);
@@ -400,8 +390,10 @@ angular.module('myApp')
 
   this.userSignUp = function (obj) {
     var promise = $q.defer();
-    for (var fieldName in obj.attributes) {
-      obj.set(fieldName, obj.attributes[fieldName]);
+    for (var attr in obj.attributes) {
+      if (obj.attributes.hasOwnProperty(attr)) {
+        obj.set(attr, obj.attributes[attr])
+      }
     }
     obj.signUp({}, {
       success: function (o) {

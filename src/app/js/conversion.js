@@ -140,7 +140,7 @@ angular.module('myApp')
         .then(function (comps) {
         catalogItem.attributes.exitList = comps.map(function (comp) {
           return {item: comp.attributes.CompName};
-        })
+        });
         api.queryAccessCatalogSubitems(accessCatalog[i].ItemId)
           .then(function (subs) {
           catalogItem.attributes.components = subs.map(function (sub) {
@@ -154,20 +154,20 @@ angular.module('myApp')
             return c;
           }).filter(function (sub) {  // filter out some illegal items who have a bad contained id in access
             return sub.id;
-          })
+          });
           api.saveObj(catalogItem)
             .then(function (obj) {
             idMap[obj.attributes.accessKey] = obj.id;
             if (obj.attributes.accessKey === lov.accessBoxItemId) {
-              console.log('found boxItem id ' + obj.id)
+              console.log('found boxItem id ' + obj.id);
               config.attributes.boxItem = obj.id;
             }
             if (obj.attributes.accessKey === lov.accessUnhandledItemComponent) {
-              console.log('found unhandledItemComponent id ' + obj.id)
+              console.log('found unhandledItemComponent id ' + obj.id);
               config.attributes.unhandledItemComponent = obj.id;
             }
             if (obj.attributes.accessKey === lov.accessUnhandledItemMaterial) {
-              console.log('found unhandledItemMaterial id ' + obj.id)
+              console.log('found unhandledItemMaterial id ' + obj.id);
               config.attributes.unhandledItemMaterial = obj.id;
             }
             cvCatalog(i + 1)

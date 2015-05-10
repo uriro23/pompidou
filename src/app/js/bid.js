@@ -24,8 +24,6 @@ angular.module('myApp')
       + ' ' + (this.customer.lastName ? this.customer.lastName : '')
       + ' ' + this.bid.attributes.desc;
 
-      var that = this;
-
 
       //fetch start bid text type
       if (currentOrder.startBidTextType) {
