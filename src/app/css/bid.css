@@ -8,7 +8,7 @@
     width: 100%;
     background-color:#FFFFFF; 
     font: 14pt Tahoma;  
-    
+    min-width: 650px;
 }
 
 header
@@ -41,7 +41,7 @@ header
 {
 	clear:both;
 	margin-bottom:10%;	
-	height:contain;
+	
 }
 
 #bid_head:after{
@@ -135,3 +135,22 @@ header
 	padding:10%;
 	
 }
+
+     @media (min-width:801px) and (max-width: 1300px)
+     {
+	 	 #bid_container
+		 {   
+		     padding: 2% 5%;
+		     font: 13pt Tahoma;    
+		 }
+     }
+	
+    @media (min-width:1px) and (max-width: 800px)
+    {
+	 	#bid_container
+		{ 
+		    padding: 2% 2%;
+		    font: 10pt Tahoma;  
+		    
+		}
+    }

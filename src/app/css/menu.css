@@ -25,16 +25,16 @@
 {
 
     width:100%;
-    padding-right: 3cm;
-    margin-bottom:1cm;
+    padding-right: 3cm; /* places the content in line with decoration. */
+    margin-bottom:1cm; /* spacing between categories */ 
 }
 
 #printed_menu_leftColumn #printed_menu_category
 {
 
     width:100%;
-    padding-right: 2.2cm; 
-    margin-bottom:1cm;
+    padding-right: 2.2cm; /* places the content in line with decoration. */
+    margin-bottom:1cm;/* spacing between categories */ 
 }
 
 #printed_menu_category ul, #printed_menu_leftColumn ul
@@ -58,6 +58,7 @@
     padding-bottom:14.3%;
     float:right;
     overflow: scroll;
+    margin: 0 ;
 }
 
 #printed_menu_leftColumn
@@ -65,9 +66,10 @@
 	width:50%;
     height:100%;
     font-size:11pt;
-    padding-top:22%;
-    padding-bottom:14.3%;
+    padding-top:10%;
+    padding-bottom:20%;
     float:left;
+    margin: 0 ;
 	
 }
 
@@ -79,6 +81,11 @@
     margin-bottom:5pt;  /* The gap between items */
 }
 
+@page 
+{
+	margin:0 ; 
+	
+}
 
 
 @media print
@@ -98,10 +105,6 @@
 		display:none;
 	}
 
-
-
-
 }
 
-/*----------------- End of version 2  ------------------ */
 

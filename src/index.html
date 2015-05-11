@@ -23,23 +23,25 @@
     <!--[if lt IE 10]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+	<div id="mainAppContainer">
+	    <ul class="menu" ng-show="menuStatus==='show'">
+	      <li><a ng-href="#/orderListView">רשימת אירועים</a></li>
+	      <li><a ng-href="#/newOrderView">אירוע חדש</a></li>
+	      <li><a ng-href="#/workOrderView">פקודת עבודה</a> </li>
+	      <li><a ng-href="#/catalog">קטלוג</a></li>
+	      <li><a ng-href="#/admin">ניהול</a></li>
+	      <li><a ng-href="#/conversion">הסבה</a> </li>
+	      <li>{{'שלום '+username}}</li>
+	      <li><a ng-href="#/login">התנתק</a> </li>
+	      <li>{{environment}}</li>
+	    </ul>
+	    <ul class="menu" ng-show="menuStatus==='empty'">
+	      <li>נא לסיים את ביצוע העדכונים</li>
+	    </ul>
 
-    <ul class="menu" ng-show="menuStatus==='show'">
-      <li><a ng-href="#/orderListView">רשימת אירועים</a></li>
-      <li><a ng-href="#/newOrderView">אירוע חדש</a></li>
-      <li><a ng-href="#/workOrderView">פקודת עבודה</a> </li>
-      <li><a ng-href="#/catalog">קטלוג</a></li>
-      <li><a ng-href="#/admin">ניהול</a></li>
-      <li><a ng-href="#/conversion">הסבה</a> </li>
-      <li>{{'שלום '+username}}</li>
-      <li><a ng-href="#/login">התנתק</a> </li>
-      <li>{{environment}}</li>
-    </ul>
-    <ul class="menu" ng-show="menuStatus==='empty'">
-      <li>נא לסיים את ביצוע העדכונים</li>
-    </ul>
-
-    <div ui-view></div>
+	    <div id="uiView" ui-view></div>
+	    
+	</div>  <!-- end of #mainAppContainer  -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>
