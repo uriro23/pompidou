@@ -94,6 +94,17 @@ angular.module('myApp')
         .then(function () {
           alert('נשלח מייל להחלפת סיסמה');
         })
-    }
+    };
 
+    // env
+
+    this.switchEnv = function () {
+      if (api.getEnvironment()==='test') {
+        alert('הנך עובר לטפל בנתוני סביבת הייצור');
+        api.setEnvironment('prod')
+      } else {
+        api.setEnvironment('test')
+      }
+      $state.go('login');
+    }
   });

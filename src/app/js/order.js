@@ -189,10 +189,10 @@ angular.module('myApp')
       var thisOrder = this.order.attributes;
       return api.queryCatalogByCategory(this.currentCategory.tId)
         .then(function (cat) {
-        var tempCat = cat.filter(function (c) {
+          that.baseCatalog = cat.filter(function (c) {
           return !c.attributes.isDeleted
         });
-        that.filteredCatalog = tempCat.map(function (c) {
+        that.baseCatalog = that.baseCatalog.map(function (c) {
           var cc = c.attributes;
           cc.id = c.id;
           cc.isInOrder = false; // check items already in order, just for attention
@@ -203,13 +203,14 @@ angular.module('myApp')
           }
           return cc;
         });
-        that.filteredCatalog.sort(function (a, b) {
+        that.baseCatalog.sort(function (a, b) {
           if (a.productDescription > b.productDescription) {
             return 1
           } else {
             return -1
           }
         });
+        that.filteredCatalog = that.baseCatalog;
         that.filterText = '';
       })
     };
@@ -238,7 +239,7 @@ angular.module('myApp')
 
     this.filterProducts = function () {
       var that = this;
-      this.filteredCatalog = this.filteredCatalog.filter(function (cat) {
+      this.filteredCatalog = this.baseCatalog.filter(function (cat) {
         return cat.productDescription.indexOf(that.filterText) > -1;
       })
     };

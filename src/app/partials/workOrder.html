@@ -11,21 +11,21 @@
 <tabset>
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
        active="workOrderModel.isActiveTab[3]">
-    <ng-include src="'partials/workOrder/shoppingList.html'"></ng-include>
+    <ng-include src="'app/partials/workOrder/shoppingList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[2].forWorkItem}}"
        active="workOrderModel.isActiveTab[2]">
-    <ng-include src="'partials/workOrder/preparationList.html'"></ng-include>
+    <ng-include src="'app/partials/workOrder/preparationList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[1].forWorkItem}}"
        active="workOrderModel.isActiveTab[1]">
-    <ng-include src="'partials/workOrder/menuItemList.html'"></ng-include>
+    <ng-include src="'app/partials/workOrder/menuItemList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[0].forWorkItem}}"
        active="workOrderModel.isActiveTab[0]">
     <ng-include ng-hide="workOrderModel.isSelectOrders"
-                src="'partials/workOrder/smallOrderList.html'"></ng-include>
+                src="'app/partials/workOrder/smallOrderList.html'"></ng-include>
     <ng-include ng-show="workOrderModel.isSelectOrders"
-                src="'partials/workOrder/orderList.html'"></ng-include>
+                src="'app/partials/workOrder/orderList.html'"></ng-include>
   </tab>
   </tabset>

@@ -3,18 +3,15 @@
 angular.module('myApp')
 
   .service('api', function ($q, $rootScope, secrets, today) {
-  if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod
-    this.environment = 'prod';
-    Parse.initialize(secrets.prod.parseKey, secrets.prod.parseSecret)
-  } else {
-    this.environment = 'test';
-    Parse.initialize(secrets.test.parseKey, secrets.test.parseSecret)
-  }
-    console.log(secrets[this.environment].parseKey);
-    $rootScope.environment = this.environment;
 
   this.getEnvironment = function () {
     return this.environment
+  };
+
+  this.setEnvironment = function (env) {
+    console.log('initializing '+env);
+    Parse.initialize(secrets[env].parseKey, secrets[env].parseSecret);
+    $rootScope.environment = this.environment = env;
   };
 
 // Generic functions
@@ -568,4 +565,13 @@ angular.module('myApp')
     return query(accessOrderActivitiesQuery);
   };
 
-});
+    // main block
+
+    if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod
+      this.setEnvironment('prod');
+    } else {
+      this.setEnvironment('test');
+    }
+
+
+  });
