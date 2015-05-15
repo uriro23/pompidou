@@ -15,7 +15,9 @@ angular.module('myApp')
     }
 
     this.setReadOnly = function () {
-      this.isReadOnly = this.order.attributes.eventDate < today && !this.order.attributes.template;
+      this.isReadOnly = this.order.attributes.eventDate &&
+                        this.order.attributes.eventDate < today &&
+                        !this.order.attributes.template;
     };
 
     this.calcTotal = function () {
@@ -124,7 +126,7 @@ angular.module('myApp')
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
       this.orderChanged('header');
-      this.order.view.errors.eventDate = thisOrder.eventDate < today;  // past dates not allowed
+      this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < today;  // past dates not allowed
       this.setReadOnly();
     };
 
@@ -850,8 +852,10 @@ angular.module('myApp')
         this.order.view.contact = {};
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
         this.order.view.discountCause = this.discountCauses[0]; // set to "no"
+        this.order.view.errors.eventDate = true; // empty event date is error
         this.order.view.errors.customer = true; // empty customer is error
         this.order.view.errors.noOfParticipants = true; // empty no of participants is error
+        this.order.view.errors.transportationInclVat = true; // force it illegal on new Order
       }
     };
 
@@ -943,14 +947,14 @@ angular.module('myApp')
       $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();
       this.setupOrderView();
-      this.order.attributes.eventDate = today;
+      // this.order.attributes.eventDate = today;
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.items = [];
       this.order.attributes.vatRate = this.vatRate;
       this.order.attributes.subTotal = 0;
       this.order.attributes.discountRate = 0;
       this.order.attributes.discount = 0;
-      this.order.attributes.transportationInclVat = 0;
+      this.order.attributes.transportationInclVat = ''; // force it illegal
       this.order.attributes.transportation = 0;
       this.order.attributes.transportationBonus = 0;
       this.order.attributes.activities = [];
