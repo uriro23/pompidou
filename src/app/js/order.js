@@ -186,6 +186,29 @@ angular.module('myApp')
     };
 
     // items tab
+
+    this.calcItemsTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
+      outer_loop:
+        for (i = 0; i < this.order.attributes.items.length; i++) {
+          var thisItem = this.order.attributes.items[i];
+          for (var fieldName in thisItem.errors) {
+            if (thisItem.errors.hasOwnProperty(fieldName)) {
+              if (thisItem.errors[fieldName]) {
+                this.isErrorItemsTab = true;
+                console.log('found error in field '+fieldName+' of item '+i);
+                break outer_loop;
+              }
+            }
+          }
+        }
+    };
+
+    this.switchItemsTab = function () { // called upon dummy error Items tab selection, causes real tab to display
+      this.isItemsTabActive = true;
+      this.isErrorItemsTab = false;
+    };
+
+
     this.setCategory = function () {
       var that = this;
       var thisOrder = this.order.attributes;
@@ -442,6 +465,17 @@ angular.module('myApp')
 
 
     // financial tab
+
+    this.calcFinancialTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
+      this.isErrorFinancialTab =  this.order.view.errors.discountRate ||
+                                  this.order.view.errors.transportationInclVat ||
+                                  this.order.view.errors.fixedPrice;
+    };
+
+    this.switchFinancialTab = function () { // called upon dummy error financial tab selection, causes real tab to display
+      this.isFinancialTabActive = true;
+      this.isErrorFinancialTab = false;
+    };
 
     this.updatePrices = function () {
       var that = this;
@@ -856,6 +890,7 @@ angular.module('myApp')
         this.order.view.errors.customer = true; // empty customer is error
         this.order.view.errors.noOfParticipants = true; // empty no of participants is error
         this.order.view.errors.transportationInclVat = true; // force it illegal on new Order
+        this.isErrorFinancialTab =true; // cause dummy error financial tab to be displayed
       }
     };
 
@@ -888,6 +923,7 @@ angular.module('myApp')
     this.filterText = '';
     this.activityDate = new Date();
     this.activityText = '';
+    this.isItemsTabActive = true;
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;

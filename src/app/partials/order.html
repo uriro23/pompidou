@@ -27,12 +27,28 @@
             <tab heading="פעילויות">
                 <ng-include src="'app/partials/order/activities.html'"></ng-include>
             </tab>
-            <tab heading="נתונים כספיים">
-                <ng-include src="'app/partials/order/financial.html'"></ng-include>
-            </tab>
-            <tab heading="תפריט"  active="true">
-                <ng-include src="'app/partials/order/items.html'"></ng-include>
-            </tab>
+          <tab active="orderModel.isFinancialTabActive"
+               deselect="orderModel.calcFinancialTabErrors()"
+               ng-hide="orderModel.isErrorFinancialTab"
+               heading="נתונים כספיים">
+            <ng-include src="'app/partials/order/financial.html'"></ng-include>
+          </tab>
+          <tab class="myError"
+               select="orderModel.switchFinancialTab()"
+               ng-show="orderModel.isErrorFinancialTab"
+               heading="נתונים כספיים">
+          </tab>
+          <tab active="orderModel.isItemsTabActive"
+               deselect="orderModel.calcItemsTabErrors()"
+               ng-hide="orderModel.isErrorItemsTab"
+               heading="תפריט">
+            <ng-include src="'app/partials/order/items.html'"></ng-include>
+          </tab>
+          <tab class="myError"
+               select="orderModel.switchItemsTab()"
+               ng-show="orderModel.isErrorItemsTab"
+               heading="תפריט">
+          </tab>
             <tab heading="פרטים כלליים">
                 <ng-include src="'app/partials/order/general.html'"></ng-include>
             </tab>
