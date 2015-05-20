@@ -83,7 +83,7 @@
     </td>
     <td>{{item.measurementUnit.label}}</td>
     <td>
-      <input type="number" size="3" max=1000 min=0
+      <input type="number" size="3" min=0
              ng-model="item.quantity"
              ng-change="orderModel.setQuantity($index)"
              ng-disabled="orderModel.isReadOnly"
