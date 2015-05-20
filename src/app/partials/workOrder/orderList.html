@@ -2,6 +2,7 @@
   <span>בחר אירועים</span>
   <span>&nbsp;</span>
   <button class="btn btn-default"
+          ng-disabled="workOrderModel.isProcessing"
           ng-click="workOrderModel.createWorkOrderDomain(1)">
     {{'חשב '+workOrderModel.domains[1].forWorkItem}}
   </button>

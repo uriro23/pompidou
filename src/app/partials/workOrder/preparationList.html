@@ -4,6 +4,7 @@
         --- לא מעודכן ---
       </span>
   <button class="btn btn-default"
+          ng-disabled="workOrderModel.isProcessing"
           ng-show="workOrderModel.domainStatuses.attributes.status[2]"
           ng-click="workOrderModel.createWorkOrderDomain(3)">
     {{'חשב '+workOrderModel.domains[3].forWorkItem}}

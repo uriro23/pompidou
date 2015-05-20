@@ -1,7 +1,9 @@
 <h3>
   פקודת עבודה
 &nbsp;&nbsp;&nbsp;
-<button ng-click="workOrderModel.selectOrders()" class="btn btn-default">
+<button ng-click="workOrderModel.selectOrders()"
+        ng-disabled="workOrderModel.isProcessing"
+        class="btn btn-default">
   חדשה
 </button>
 </h3>
