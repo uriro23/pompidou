@@ -13,7 +13,11 @@
       <span>הסטוריה </span>
       <input type="radio" ng-model="orderListModel.queryType" value="all"
                                   ng-change="orderListModel.setQuery()">
-      <span>כולם </span>
+      <span>כולם </span> &nbsp;&nbsp;
+      <span>מבוטלים:</span>
+      <input type="checkbox"
+             ng-model="orderListModel.isIncludecanceled"
+             ng-change="orderListModel.filterOrders()"> &nbsp;&nbsp;
       <span ng-show="orderListModel.queryType==='past' || orderListModel.queryType==='all'">
         <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
                 ng-show="orderListModel.filterByCustomer.id">
@@ -48,7 +52,7 @@
                         order.view.orderStatus.id===1?'myNewEvent':
                         order.view.orderStatus.id===2?'myActiveEvent':
                         order.view.orderStatus.id===3?'myFinalEvent':
-                        order.view.orderStatus.id===6?'myCancelledEvent':null">
+                        order.view.orderStatus.id===6?'mycanceledEvent':null">
         <td>
             <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
         </td>

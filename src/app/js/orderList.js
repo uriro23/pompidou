@@ -26,6 +26,12 @@ angular.module('myApp')
         })
       }
 
+      if (!this.isIncludecanceled) {
+        this.orders = this.orders.filter(function (ord) {
+          return ord.attributes.orderStatus!==6
+        })
+      }
+
       this.orders.sort(function (a, b) {
         if (that.queryType === 'future') {
           return a.attributes.eventDate - b.attributes.eventDate;
