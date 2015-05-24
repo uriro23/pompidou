@@ -49,13 +49,16 @@ angular.module('myApp')
 
       var t = 0;
       var b = 0;
+      var s = 0;
       for (i = 0; i < thisOrder.items.length; i++) {
         t += thisOrder.items[i].price;
         b += thisOrder.items[i].boxCount;
+        s += thisOrder.items[i].satietyIndex;
       }
       thisOrder.subTotal = t;
       thisOrder.discount = -(t * thisOrder.discountRate / 100);
       thisOrder.boxEstimate = b;
+      thisOrder.satietyIndex = s;
       this.calcTotal();
     };
 
@@ -309,6 +312,17 @@ angular.module('myApp')
         thisItem.productionBoxCount = boxData[0].quantity;
       }
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
+
+      var satietyIndexData = catalogEntry.components.filter(function (comp) {
+        return comp.id === config[0].satietyIndexItem;
+      });
+      if (satietyIndexData.length === 0) {
+        thisItem.productionSatietyIndex = 0;
+      } else {
+        thisItem.productionSatietyIndex = satietyIndexData[0].quantity;
+      }
+      thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
+
       thisItem.errors = {}; // initialize errors object for new item
       thisItem.isChanged = true;
       this.isAddItem = false;
@@ -339,6 +353,7 @@ angular.module('myApp')
         thisItem.price = thisItem.priceInclVat;
       }
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
+      thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
       this.calcSubTotal();
       this.orderChanged();
       thisItem.isChanged = true;
@@ -454,6 +469,7 @@ angular.module('myApp')
                 thisItem.price = thisItem.priceInclVat;
               }
               thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
+              thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
               thisItem.isChanged = true;
             }
           }

@@ -81,7 +81,7 @@
                                ng-change="orderModel.orderChanged('header')">
     </td>
     <td style="width: 18%">
-      <label>מספר משתתפים</label><input type="number" min=1 max=1000
+      <label>מספר משתתפים</label><input type="number" min=1 max="1000"
                                         ng-model="orderModel.order.attributes.noOfParticipants"
                                         ng-change="orderModel.setNoOfParticipants()"
                                         ng-disabled="orderModel.isReadOnly"
