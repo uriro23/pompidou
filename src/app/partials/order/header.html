@@ -68,26 +68,26 @@
       </tr>
     </tbody>
   </table>
-<table style="width: 80%">
+<table style="width: 95%">
   <tr ng-class="orderModel.order.view.changes.header?'myChanged':null">
-    <td style="width: 21%">
+    <td style="width: 18%">
       <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
                                  ng-change="orderModel.setEventDate()" required
                                  ng-class="orderModel.order.view.errors.eventDate?'myError':null">
     </td>
-    <td style="width: 14%">
+    <td style="width: 12%">
       <label>שעה</label><input type="time" ng-model="orderModel.order.attributes.eventTime"
                                ng-disabled="orderModel.isReadOnly"
                                ng-change="orderModel.orderChanged('header')">
     </td>
-    <td style="width: 18%">
-      <label>מספר משתתפים</label><input type="number" min=1 max="1000"
+    <td style="width: 14%">
+      <label>משתתפים</label><input type="number" min=1 max="9999"
                                         ng-model="orderModel.order.attributes.noOfParticipants"
                                         ng-change="orderModel.setNoOfParticipants()"
                                         ng-disabled="orderModel.isReadOnly"
                                         ng-class="orderModel.order.view.errors.noOfParticipants?'myError':null">
     </td>
-    <td style="width: 19%">
+    <td style="width: 17%">
       <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType"
                                       ng-change="orderModel.orderChanged('header')"
                                       ng-options="eventType.label for eventType in orderModel.eventTypes"
@@ -106,15 +106,22 @@
       </ui-select>
       -->
     </td>
-    <td style="width: 14%">
+    <td style="width: 11%">
       <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus"
                                   ng-change="orderModel.orderChanged('header')"
                                   ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"
-                                  ng-disabled="orderModel.isReadOnly"
             ></select>
     </td>
-    <td style="width: 14%">
-      <label>סכום: </label><span>{{orderModel.order.attributes.total | currency}}</span>
+    <td style="width: 10%">
+      <label>סכום: </label>&nbsp;<span>{{orderModel.order.attributes.total | currency}}</span>
+    </td>
+    <td style="width: 9%">
+      <label>קופסאות: </label>&nbsp;<span>{{orderModel.order.attributes.boxEstimate | number:2}}</span>
+    </td>
+    <td style="width: 9%">
+      <label>שובע: </label>&nbsp;<span>
+      {{orderModel.order.attributes.satietyIndex / orderModel.order.attributes.noOfParticipants | number:2}}
+      </span>
     </td>
   </tr>
 </table>

@@ -61,19 +61,17 @@
       </tbody>
   </table>
 </span>
-<table style="width: 90%">
+<table style="width: 80%">
   <thead>
-  <th style="width: 7%">קטגוריה</th>
-  <th style="width: 66%">מוצר</th>
-  <th style="width: 5%">יח'</th>
+  <th style="width: 9%">קטגוריה</th>
+  <th style="width: 73%">מוצר</th>
+  <th style="width: 6%">יח'</th>
   <th style="width: 2%">כמות</th>
-  <th style="width: 5%">קופ'</th>
-  <th style="width: 5%">שובע</th>
   <th style="width: 5%">מחיר</th>
   <th style="width: 5%">בונוס</th>
   </thead>
   <tbody>
-  <tr>
+  <!-- <tr>
     <td></td>
     <td></td>
     <td>סה"כ:</td>
@@ -81,7 +79,7 @@
     <td>{{orderModel.order.attributes.boxEstimate | number:2}}</td>
     <td>{{orderModel.order.attributes.satietyIndex / orderModel.order.attributes.noOfParticipants | number:2}}</td>
     <td>{{orderModel.order.attributes.subTotal | currency}}</td>
-  </tr>
+  </tr> -->
   <tr ng-repeat="item in orderModel.order.attributes.items track by item.index"
       ng-class="item.isChanged?'myChanged':null">
     <td>{{item.category.label}}</td>
@@ -99,8 +97,6 @@
              ng-disabled="orderModel.isReadOnly"
              ng-class="item.errors.quantity?'myError':null">
     </td>
-    <td>{{item.boxCount | number: 2}}</td>
-    <td>{{item.satietyIndex | number:1}}</td>
     <td>
       <input type="text" size="7" money min=0 ng-model="item.price"
              ng-change="orderModel.setPrice($index)"
