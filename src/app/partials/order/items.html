@@ -1,41 +1,42 @@
-<button ng-click="orderModel.addItem(true)"
-        ng-show="!orderModel.isAddTemplate && !orderModel.isAddItem"
-        ng-disabled="orderModel.isReadOnly"
+<div ng-controller="ItemsCtrl as itemsModel">
+<button ng-click="itemsModel.addItem(true)"
+        ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem"
+        ng-disabled="itemsModel.isReadOnly"
         class="btn btn-default"
         >הוסף פריט</button>
-<button ng-click="orderModel.addItem(false)"
-        ng-show="orderModel.isAddItem"
-        ng-disabled="orderModel.isReadOnly"
+<button ng-click="itemsModel.addItem(false)"
+        ng-show="itemsModel.isAddItem"
+        ng-disabled="itemsModel.isReadOnly"
         class="btn btn-warning">
     בטל
 </button>
-<span ng-show="orderModel.isAddItem">
-    <select ng-model="orderModel.currentCategory" ng-change="orderModel.setCategory()"
-            ng-options="category.label for category in orderModel.categories"></select>
-    <label>סינון:</label><input type="text" ng-model="orderModel.filterText"
-                                ng-change="orderModel.filterProducts()">
+<span ng-show="itemsModel.isAddItem">
+    <select ng-model="itemsModel.currentCategory" ng-change="itemsModel.setCategory()"
+            ng-options="category.label for category in itemsModel.categories"></select>
+    <label>סינון:</label><input type="text" ng-model="itemsModel.filterText"
+                                ng-change="itemsModel.filterProducts()">
     <table border="1">
       <thead>
       <th>שם מנה</th>
       <th>כבר מופיע?</th>
       </thead>
       <tbody>
-      <tr ng-repeat="product in orderModel.filteredCatalog">
-        <td ng-click="orderModel.setProduct(product)">{{product.productDescription}}</td>
+      <tr ng-repeat="product in itemsModel.filteredCatalog">
+        <td ng-click="itemsModel.setProduct(product)">{{product.productDescription}}</td>
         <td>{{product.isInOrder | checkMark}}</td>
       </tr>
       </tbody>
     </table>
 </span>
-<button ng-click="orderModel.addTemplate(true)"
-        ng-show="!orderModel.isAddTemplate && !orderModel.isAddItem"
-        ng-disabled="orderModel.isReadOnly"
+<button ng-click="itemsModel.addTemplate(true)"
+        ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem"
+        ng-disabled="itemsModel.isReadOnly"
         class="btn btn-default">
     הוסף תבנית
 </button>
-<span ng-show="orderModel.isAddTemplate">
-  <button ng-click="orderModel.addTemplate(false)"
-          ng-disabled="orderModel.isReadOnly"
+<span ng-show="itemsModel.isAddTemplate">
+  <button ng-click="itemsModel.addTemplate(false)"
+          ng-disabled="itemsModel.isReadOnly"
           class="btn btn-warning">
       בטל
   </button>
@@ -43,18 +44,18 @@
   <span>
     התאמת כמויות
   </span>
-  <input type="checkbox" ng-model="orderModel.isAdjustQuantity">
+  <input type="checkbox" ng-model="itemsModel.isAdjustQuantity">
   <table border="1">
     <thead>
     <th>שם תבנית</th>
     <th>משתתפים</th>
     </thead>
       <tbody>
-      <tr ng-repeat="template in orderModel.templates">
-        <td ng-click="orderModel.setTemplate(template)">
+      <tr ng-repeat="template in itemsModel.templates">
+        <td ng-click="itemsModel.setTemplate(template)">
           {{template.attributes.template}}
         </td>
-        <td ng-click="orderModel.setTemplate(template)">
+        <td ng-click="itemsModel.setTemplate(template)">
           {{template.attributes.noOfParticipants}}
         </td>
       </tr>
@@ -71,51 +72,43 @@
   <th style="width: 5%">בונוס</th>
   </thead>
   <tbody>
-  <!-- <tr>
-    <td></td>
-    <td></td>
-    <td>סה"כ:</td>
-    <td>{{orderModel.order.attributes.items.length}}</td>
-    <td>{{orderModel.order.attributes.boxEstimate | number:2}}</td>
-    <td>{{orderModel.order.attributes.satietyIndex / orderModel.order.attributes.noOfParticipants | number:2}}</td>
-    <td>{{orderModel.order.attributes.subTotal | currency}}</td>
-  </tr> -->
-  <tr ng-repeat="item in orderModel.order.attributes.items track by item.index"
+  <tr ng-repeat="item in itemsModel.order.attributes.items track by item.index"
       ng-class="item.isChanged?'myChanged':null">
     <td>{{item.category.label}}</td>
     <td>
       <input type="text" size="100" ng-model="item.productDescription"
-             ng-change="orderModel.setProductDescription($index)"
-             ng-disabled="orderModel.isReadOnly"
+             ng-change="itemsModel.setProductDescription($index)"
+             ng-disabled="itemsModel.isReadOnly"
              ng-class="item.errors.productDescription?'myError':null">
     </td>
     <td>{{item.measurementUnit.label}}</td>
     <td>
       <input type="number" size="1" min=0 max="10000"
              ng-model="item.quantity"
-             ng-change="orderModel.setQuantity($index)"
-             ng-disabled="orderModel.isReadOnly"
+             ng-change="itemsModel.setQuantity($index)"
+             ng-disabled="itemsModel.isReadOnly"
              ng-class="item.errors.quantity?'myError':null">
     </td>
     <td>
       <input type="text" size="7" money min=0 ng-model="item.price"
-             ng-change="orderModel.setPrice($index)"
-             ng-disabled="orderModel.isReadOnly"
+             ng-change="itemsModel.setPrice($index)"
+             ng-disabled="itemsModel.isReadOnly"
              ng-class="item.errors.price?'myError':null">
     </td>
     <td>
       <input type="checkbox"
              ng-model="item.isFreeItem"
-             ng-change="orderModel.setFreeItem($index)"
-             ng-disabled="orderModel.isReadOnly"
+             ng-change="itemsModel.setFreeItem($index)"
+             ng-disabled="itemsModel.isReadOnly"
           >
     </td>
     <td>
-      <button ng-click="orderModel.deleteItem($index)"
-              ng-disabled="orderModel.isReadOnly"
+      <button ng-click="itemsModel.deleteItem($index)"
+              ng-disabled="itemsModel.isReadOnly"
               class="btn btn-warning btn-sm"
           >מחק</button>
     </td>
   </tr>
   </tbody>
 </table>
+</div>
