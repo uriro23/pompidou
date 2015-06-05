@@ -1,100 +1,102 @@
+<div ng-controller="FinancialCtrl as financialModel">
 <table>
   <tbody>
   <tr>
     <td><label>ס"ה ביניים</label></td>
     <td></td>
-    <td>{{orderModel.order.attributes.subTotal | currency}}</td>
+    <td>{{financialModel.order.attributes.subTotal | currency}}</td>
     <td>
-      <button ng-click="orderModel.updatePrices()"
+      <button ng-click="financialModel.updatePrices()"
               class="btn btn-default">
               עדכן מחירים
       </button>
     </td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.discountCause?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.discountCause?'myChanged':null">
     <td><label>סיבת הנחה</label></td>
     <td>
-      <select ng-model="orderModel.order.view.discountCause"
-              ng-change="orderModel.setDiscountCause()"
-              ng-options="discountCause.label for discountCause in orderModel.discountCauses"
-              ng-disabled="orderModel.isReadOnly"
+      <select ng-model="financialModel.order.view.discountCause"
+              ng-change="financialModel.setDiscountCause()"
+              ng-options="discountCause.label for discountCause in financialModel.discountCauses"
+              ng-disabled="financialModel.isReadOnly"
           ></select>
     </td>
     <td></td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.discountRate?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.discountRate?'myChanged':null">
     <td><label>% הנחה</label></td>
     <td>
-      <input type="number" max=100 min = 0 ng-model="orderModel.order.attributes.discountRate"
-             ng-disabled="!orderModel.order.view.discountCause.tId>0 || orderModel.isReadOnly"
-             ng-change="orderModel.setDiscountRate()"
-             ng-class="orderModel.order.view.errors.discountRate?'myError':null">
+      <input type="number" max=100 min = 0 ng-model="financialModel.order.attributes.discountRate"
+             ng-disabled="!financialModel.order.view.discountCause.tId>0 || financialModel.isReadOnly"
+             ng-change="financialModel.setDiscountRate()"
+             ng-class="financialModel.order.view.errors.discountRate?'myError':null">
     </td>
-    <td>{{orderModel.order.attributes.discount | currency}}</td>
+    <td>{{financialModel.order.attributes.discount | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.transportationInclVat?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.transportationInclVat?'myChanged':null">
     <td><label>משלוח</label></td>
     <td>
-      <input type="text" money size=5 ng-model="orderModel.order.attributes.transportationInclVat"
-             ng-change="orderModel.setTransportation()"
-             ng-disabled="orderModel.isReadOnly"
-             ng-class="orderModel.order.view.errors.transportationInclVat?'myError':null">
+      <input type="text" money size=5 ng-model="financialModel.order.attributes.transportationInclVat"
+             ng-change="financialModel.setTransportation()"
+             ng-disabled="financialModel.isReadOnly"
+             ng-class="financialModel.order.view.errors.transportationInclVat?'myError':null">
     </td>
-    <td>{{orderModel.order.attributes.transportation | currency}}</td>
+    <td>{{financialModel.order.attributes.transportation | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.isTransportationBonus?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.isTransportationBonus?'myChanged':null">
     <td><label>זיכוי משלוח</label></td>
     <td>
-      <input type="checkbox" ng-model="orderModel.order.attributes.isTransportationBonus"
-             ng-disabled="!orderModel.order.attributes.transportation > 0 || orderModel.isReadOnly"
-             ng-change="orderModel.setTransportationBonus()">
+      <input type="checkbox" ng-model="financialModel.order.attributes.isTransportationBonus"
+             ng-disabled="!financialModel.order.attributes.transportation > 0 || financialModel.isReadOnly"
+             ng-change="financialModel.setTransportationBonus()">
     </td>
-    <td>{{orderModel.order.attributes.transportationBonus | currency}}</td>
+    <td>{{financialModel.order.attributes.transportationBonus | currency}}</td>
   </tr>
   <tr>
     <td><label>עיגול</label></td>
     <td></td>
-    <td>{{orderModel.order.attributes.rounding | currency}}</td>
+    <td>{{financialModel.order.attributes.rounding | currency}}</td>
   </tr>
   <tr>
     <td><label>לפני מע"מ</label></td>
     <td></td>
-    <td>{{orderModel.order.attributes.totalBeforeVat | currency}}</td>
+    <td>{{financialModel.order.attributes.totalBeforeVat | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.isBusinessEvent?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.isBusinessEvent?'myChanged':null">
     <td>
       <label>
         <span>מע"מ %</span>
-        <span>{{orderModel.order.attributes.vatRate*100}}</span>
+        <span>{{financialModel.order.attributes.vatRate*100}}</span>
       </label>
     </td>
     <td>אירוע עסקי?
-      <input type="checkbox" ng-model="orderModel.order.attributes.isBusinessEvent"
-             ng-change="orderModel.setBusinessEvent()"
-             ng-disabled="orderModel.isReadOnly">
+      <input type="checkbox" ng-model="financialModel.order.attributes.isBusinessEvent"
+             ng-change="financialModel.setBusinessEvent()"
+             ng-disabled="financialModel.isReadOnly">
     </td>
-    <td>{{orderModel.order.attributes.vat | currency}}</td>
+    <td>{{financialModel.order.attributes.vat | currency}}</td>
   </tr>
   <tr>
     <td><label>לתשלום</label></td>
     <td></td>
-    <td>{{orderModel.order.attributes.total | currency}}</td>
+    <td>{{financialModel.order.attributes.total | currency}}</td>
     <td>למשתתף:</td>
-    <td>{{orderModel.order.attributes.total / orderModel.order.attributes.noOfParticipants | currency}}</td>
+    <td>{{financialModel.order.attributes.total / financialModel.order.attributes.noOfParticipants | currency}}</td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.fixedPrice?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.fixedPrice?'myChanged':null">
     <td><label>מחיר קבוע</label></td>
     <td>
-      <input type="checkbox" ng-model="orderModel.order.attributes.isFixedPrice"
-             ng-disabled="orderModel.isReadOnly"
-             ng-change="orderModel.orderChanged('fixedPrice')">
+      <input type="checkbox" ng-model="financialModel.order.attributes.isFixedPrice"
+             ng-disabled="financialModel.isReadOnly"
+             ng-change="financialModel.orderChanged('fixedPrice')">
     </td>
     <td>
-      <input type="text" money size=5 ng-model="orderModel.order.attributes.fixedPrice"
-             ng-disabled="orderModel.isReadOnly || !orderModel.order.attributes.isFixedPrice"
-             ng-change="orderModel.setFixedPrice()"
-             ng-class="orderModel.order.view.errors.fixedPrice?'myError':null">
+      <input type="text" money size=5 ng-model="financialModel.order.attributes.fixedPrice"
+             ng-disabled="financialModel.isReadOnly || !financialModel.order.attributes.isFixedPrice"
+             ng-change="financialModel.setFixedPrice()"
+             ng-class="financialModel.order.view.errors.fixedPrice?'myError':null">
     </td>
   </tr>
   </tbody>
 </table>
+</div>
