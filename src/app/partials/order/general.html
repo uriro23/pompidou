@@ -1,49 +1,49 @@
+<div ng-controller="GeneralCtrl as generalModel">
 <table>
-  <tr ng-class="orderModel.order.view.changes.template?'myChanged':null">
+  <tr ng-class="generalModel.order.view.changes.template?'myChanged':null">
     <td>תבנית</td>
     <td>
-      <input type="text" ng-model="orderModel.order.attributes.template"
-             ng-change="orderModel.orderChanged('template')"
-             ng-disabled="orderModel.isReadOnly">
+      <input type="text" ng-model="generalModel.order.attributes.template"
+             ng-change="generalModel.orderChanged('template')"
+             ng-disabled="generalModel.isReadOnly">
 
     </td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.deliveryLocation?'myChanged':null">
+  <tr ng-class="generalModel.order.view.changes.deliveryLocation?'myChanged':null">
     <td>מקום משלוח</td>
     <td>
-      <textarea rows="2" cols="48" ng-model="orderModel.order.attributes.deliveryLocation"
-                ng-change="orderModel.orderChanged('deliveryLocation')"
-                ng-disabled="orderModel.isReadOnly"
+      <textarea rows="2" cols="48" ng-model="generalModel.order.attributes.deliveryLocation"
+                ng-change="generalModel.orderChanged('deliveryLocation')"
+                ng-disabled="generalModel.isReadOnly"
           ></textarea>
     </td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.remarks?'myChanged':null">
+  <tr ng-class="generalModel.order.view.changes.remarks?'myChanged':null">
     <td>הערות</td>
     <td>
-      <textarea rows="4" cols="48" ng-model="orderModel.order.attributes.remarks"
-                ng-change="orderModel.orderChanged('remarks')"
-                ng-disabled="orderModel.isReadOnly"
+      <textarea rows="4" cols="48" ng-model="generalModel.order.attributes.remarks"
+                ng-change="generalModel.orderChanged('remarks')"
+                ng-disabled="generalModel.isReadOnly"
           ></textarea>
     </td>
   </tr>
-  <tr ng-class="orderModel.order.view.changes.includeRemarksInBid?'myChanged':null">
+  <tr ng-class="generalModel.order.view.changes.includeRemarksInBid?'myChanged':null">
     <td>הכלל הערות בהצעה</td>
     <td>
-      <input type="checkbox" ng-model="orderModel.order.attributes.includeRemarksInBid"
-             ng-change="orderModel.orderChanged('includeRemarksInBid')"
-             ng-disabled="orderModel.isReadOnly">
+      <input type="checkbox" ng-model="generalModel.order.attributes.includeRemarksInBid"
+             ng-change="generalModel.orderChanged('includeRemarksInBid')"
+             ng-disabled="generalModel.isReadOnly">
     </td>
   </tr>
   <tr></tr>
   <tr>
     <td>
       <button class="btn btn-warning btn-sm"
-              ng-click="orderModel.deleteOrder()"
-              ng-show="orderModel.order.id"
+              ng-click="generalModel.deleteOrder()"
+              ng-show="generalModel.order.id"
               >מחק הזמנה</button>
 
     </td>
   </tr>
 </table>
-
-
+</div>

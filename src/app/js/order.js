@@ -149,46 +149,8 @@ angular.module('myApp')
     };
 
     // general tab
-    this.isShowTextType = function (textType) {
-      return textType.documentType;
-    };
 
-    this.deleteOrder = function () {
-      var that = this;
-      var ackDelModal = $modal.open({
-        templateUrl: 'app/partials/order/ackDelete.html',
-        controller: 'AckDelOrderCtrl as ackDelOrderModel',
-        resolve: {
-          order: function () {
-            return that.order;
-          }
-        },
-        size: 'sm'
-      });
-
-      ackDelModal.result.then(function (isDelete) {
-        if (isDelete) {
-          api.deleteObj(that.order)
-            .then(function () { // cascade delete to bids and mails
-            api.queryBidsByOrder(that.order.id)
-              .then(function (bids) {
-                api.deleteObjects(bids)
-                  .then(function () {
-                    api.queryMailsByOrder(that.order.id)
-                      .then(function (mails) {
-                        api.deleteObjects(mails)
-                          .then(function () {
-                            $state.go('orderList');
-                          })
-                      })
-                  })
-              });
-          })
-        }
-      });
-    };
-
-    // items tab
+     // items tab
 
     this.calcItemsTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
       outer_loop:
@@ -229,38 +191,6 @@ angular.module('myApp')
 
     // activities tab
     // --------------
-
-    this.addActivity = function () {
-      if (this.activityText.length > 0) {
-        this.order.attributes.activities.splice(0, 0, {date: new Date(), text: this.activityText});
-        this.activityText = '';
-        this.orderChanged();
-      }
-    };
-
-    this.delActivity = function (ind) {
-      this.order.attributes.activities.splice(ind, 1);
-      this.orderChanged();
-    };
-
-    this.showMail = function (mailId) {
-      var showMailModal = $modal.open({
-        templateUrl: 'app/partials/order/showMail.html',
-        controller: 'ShowMailCtrl as showMailModel',
-        resolve: {
-          mail: function () {
-            return api.queryMails(mailId)
-              .then(function (mails) {
-                return mails[0].attributes
-              })
-          }
-        },
-        size: 'lg'
-      });
-
-      showMailModal.result.then(function () {
-      });
-    };
 
     // Documents tab
     // -------------
@@ -568,7 +498,6 @@ angular.module('myApp')
     this.config = config;
     this.vatRate = config.vatRate;
     this.activityDate = new Date();
-    this.activityText = '';
     this.isItemsTabActive = true;
 
     if ($state.current.name === 'editOrder') {
