@@ -114,7 +114,7 @@ angular.module('myApp')
         thisItem.price = thisItem.priceInclVat;
       }
       var boxData = catalogEntry.components.filter(function (comp) {
-        return comp.id === that.config[0].boxItem;
+        return comp.id === that.config.boxItem;
       });
       if (boxData.length === 0) {
         thisItem.productionBoxCount = 0;
@@ -124,7 +124,7 @@ angular.module('myApp')
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
 
       var satietyIndexData = catalogEntry.components.filter(function (comp) {
-        return comp.id === that.config[0].satietyIndexItem;
+        return comp.id === that.config.satietyIndexItem;
       });
       if (satietyIndexData.length === 0) {
         thisItem.productionSatietyIndex = 0;

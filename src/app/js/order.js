@@ -566,7 +566,7 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
     this.config = config;
-    this.vatRate = config[0].vatRate;
+    this.vatRate = config.vatRate;
     this.activityDate = new Date();
     this.activityText = '';
     this.isItemsTabActive = true;

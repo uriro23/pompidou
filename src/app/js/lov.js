@@ -76,7 +76,7 @@ angular.module('myApp')
     return api.queryConfig().then(function (res) {
       return res.map(function (obj) {
         return obj.attributes;
-      });
+      })[0];
     });
   })
 

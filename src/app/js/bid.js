@@ -13,7 +13,7 @@ angular.module('myApp')
       this.bid = bid;
 
       this.categories = categories;
-      this.config = config[0];
+      this.config = config;
       var currentOrder = this.bid.attributes.order;
 
       this.customer = bid.attributes.customer;
