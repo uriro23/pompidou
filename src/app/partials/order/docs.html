@@ -1,3 +1,4 @@
+<div ng-controller="DocumentsCtrl as documentsModel">
 <table style="width: 30%">
     <thead>
     <th style="width: 30%">
@@ -7,29 +8,29 @@
     <th style="width: 30%"></th>
     </thead>
     <tbody>
-    <tr ng-class="orderModel.order.view.changes.startBidTextType?'myChanged':null">
+    <tr ng-class="documentsModel.order.view.changes.startBidTextType?'myChanged':null">
         <td>טקסט מבוא</td>
         <td>
-            <select ng-model="orderModel.order.view.startBidTextType"
-                    ng-change="orderModel.orderChanged('startBidTextType')"
-                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
-                    ng-disabled="orderModel.isReadOnly"
+            <select ng-model="documentsModel.order.view.startBidTextType"
+                    ng-change="documentsModel.orderChanged('startBidTextType')"
+                    ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
+                    ng-disabled="documentsModel.isReadOnly"
                     ></select>
         </td>
       <td>
-        <button class="btn btn-default" ng-click="orderModel.sendMail()"
-                ng-disabled="orderModel.isReadOnly || orderModel.order.view.isChanged">
+        <button class="btn btn-default" ng-click="documentsModel.sendMail()"
+                ng-disabled="documentsModel.isReadOnly || documentsModel.order.view.isChanged">
           שלח דוא"ל
         </button>
       </td>
     </tr>
-    <tr ng-class="orderModel.order.view.changes.endBidTextType?'myChanged':null">
+    <tr ng-class="documentsModel.order.view.changes.endBidTextType?'myChanged':null">
         <td>טקסט סיום</td>
         <td>
-            <select ng-model="orderModel.order.view.endBidTextType"
-                    ng-change="orderModel.orderChanged('endBidTextType')"
-                    ng-options="bidTextType.label for bidTextType in orderModel.bidTextTypes | filter: {documentType: 1}"
-                    ng-disabled="orderModel.isReadOnly"
+            <select ng-model="documentsModel.order.view.endBidTextType"
+                    ng-change="documentsModel.orderChanged('endBidTextType')"
+                    ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
+                    ng-disabled="documentsModel.isReadOnly"
                     ></select>
         </td>
     </tr>
@@ -42,28 +43,28 @@
     </th>
     </thead>
     <tbody>
-    <tr ng-repeat="textType in orderModel.bidTextTypes | filter: {documentType: 2}"
-        ng-class="orderModel.order.view.changes.orderTextType?'myChanged':null">
+    <tr ng-repeat="textType in documentsModel.bidTextTypes | filter: {documentType: 2}"
+        ng-class="documentsModel.order.view.changes.orderTextType?'myChanged':null">
         <td>
             <input type="checkbox" ng-model="textType.isInclude"
-                   ng-change="orderModel.setOrderDocTextType()">
+                   ng-change="documentsModel.setOrderDocTextType()">
         </td>
         <td>{{textType.label}}</td>
     </tr>
     </tbody>
 </table>
 
-<div ng-hide="orderModel.order.view.isChanged">
+<div ng-hide="documentsModel.order.view.isChanged">
   <label>
     צור מסמך חדש:
   </label>
   <input type="text" placeholder="תיאור מסמך"
          size=50
-         ng-model="orderModel.bidDesc"
-         ng-disabled="orderModel.isReadOnly">
-    <span ng-repeat="documentType in orderModel.documentTypes | filter: {isRealDocumentType: true}">
-        <button ng-click="orderModel.createBid(documentType.id)"
-                ng-disabled="orderModel.isReadOnly || !orderModel.bidDesc"
+         ng-model="documentsModel.bidDesc"
+         ng-disabled="documentsModel.isReadOnly">
+    <span ng-repeat="documentType in documentsModel.documentTypes | filter: {isRealDocumentType: true}">
+        <button ng-click="documentsModel.createBid(documentType.id)"
+                ng-disabled="documentsModel.isReadOnly || !documentsModel.bidDesc"
                 class="btn btn-default">
             {{documentType.label}}
         </button>
@@ -79,8 +80,8 @@
   <th style="width: 10%"></th>
   </thead>
   <tbody>
-  <tr ng-repeat="bid in orderModel.bids track by bid.id">
-      <td>{{orderModel.documentTypes[bid.attributes.documentType].label}}</td>
+  <tr ng-repeat="bid in documentsModel.bids track by bid.id">
+      <td>{{documentsModel.documentTypes[bid.attributes.documentType].label}}</td>
       <td ng-hide="bid.attributes.documentType===0">
           <a ng-href="#/bid/{{bid.attributes.uuid}}" target="_blank">
               {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
@@ -92,16 +93,16 @@
     <td>{{bid.attributes.desc}}</td>
     <td>{{bid.attributes.order.total | currency}}</td>
       <td>
-          <button ng-click="orderModel.restoreBid(bid)"
-                  ng-hide="orderModel.order.view.isChanged"
-                  ng-disabled="orderModel.isReadOnly"
+          <button ng-click="documentsModel.restoreBid(bid)"
+                  ng-hide="documentsModel.order.view.isChanged"
+                  ng-disabled="documentsModel.isReadOnly"
                   class="btn btn-default btn-sm">
                   שחזר
           </button>
       </td>
       <td>
-          <button ng-click="orderModel.delBid(bid)"
-                  ng-disabled="orderModel.isReadOnly"
+          <button ng-click="documentsModel.delBid(bid)"
+                  ng-disabled="documentsModel.isReadOnly"
                   class="btn btn-default btn-sm">
               מחק
           </button>
@@ -109,3 +110,4 @@
   </tr>
   </tbody>
 </table>
+</div>

@@ -77,79 +77,6 @@ angular.module('myApp')
       $rootScope.menuStatus = 'empty';
     };
 
-    // order header
-    this.setCustomer = function (custType, custHeader) {  // custType: 1 = primary, 2 = secondary
-      var that = this;
-
-      var selectCustomer = $modal.open({
-      templateUrl: 'app/partials/customer.html',
-        controller: 'CustomerCtrl as customerModel',
-        resolve: {
-          customers: function (api) {
-            return api.queryCustomers()
-              .then(function (custs) {
-              return custs;
-            });
-          },
-          currentCustomerId: function () {
-            if (custType === 1) {
-              return that.order.view.customer.id;
-            } else {
-              return that.order.view.contact.id;
-            }
-          },
-          modalHeader: function () {
-            return custHeader;
-          },
-          isOptionalSelect: function () {
-            return custType === 2; // for contact selection in modal is optional
-          }
-        },
-        size: 'lg'
-      });
-
-      selectCustomer.result.then(function (cust) {
-        if (custType === 1) {
-          that.order.view.customer = cust;
-          that.orderChanged('customer');
-          that.order.view.errors.customer = false;
-          that.getPrevOrders();
-        } else if (custType === 2) {
-          that.order.view.contact = cust;
-          that.orderChanged('contact');
-          that.order.view.errors.contact = false;
-        } else {
-          alert('error - bad customer type: ' + custType);
-        }
-      }), function () {
-      };
-
-    };
-
-    this.setEventDate = function () {
-      var thisOrder = this.order.attributes;
-      this.orderChanged('header');
-      this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < today;  // past dates not allowed
-      this.setReadOnly();
-    };
-
-    this.setNoOfParticipants = function () {
-      var thisOrder = this.order.attributes;
-      this.orderChanged('header');
-      this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
-    };
-
-    this.transformNewEventType = function (str) {
-      var newEventType = {
-        tId: 123,   // todo: max tId + 1
-        label: str
-      };
-      console.log(newEventType);
-      return newEventType
-    };
-
-    // general tab
-
      // items tab
 
     this.calcItemsTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
@@ -195,94 +122,7 @@ angular.module('myApp')
     // Documents tab
     // -------------
 
-    this.setOrderDocTextType = function () {
-      this.order.attributes.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
-        return t.isInclude;
-      }));
-      this.orderChanged('orderTextType');
-    };
-
-
-    this.createBid = function (docType) {
-      if (this.order.view.isChanged) {
-        return;
-      }
-      this.bid = api.initBid();
-      this.bid.attributes.documentType = docType;
-      this.bid.attributes.orderId = this.order.id;
-      this.bid.attributes.date = new Date();
-      this.bid.attributes.order = this.order.attributes;
-      this.bid.attributes.customer = this.order.view.customer;
-      this.bid.attributes.desc = this.bidDesc;
-      this.bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-      this.bidDesc = null;
-      var that = this;
-      return api.saveObj(this.bid)
-        .then(function () {
-        return api.queryBidsByOrder(that.order.id)
-          .then(function (bids) {
-          that.bids = bids;
-        })
-      })
-    };
-
-    this.restoreBid = function (bid) {
-      var that = this;
-      if (this.order.view.isChanged) {
-        return;
-      }
-      this.bidDesc = 'גיבוי לפני שחזור לתאריך ' + $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm');
-      this.createBid(0)
-        .then(function () {
-          that.order.attributes = bid.attributes.order;
-          that.setupOrderView();
-          api.saveObj(that.order)
-            .then(function () {
-              alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +
-                $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm'))
-            })
-        })
-    };
-
-    this.delBid = function (bid) {
-      var that = this;
-      return api.deleteObj(bid)
-        .then(function () {
-        return api.queryBidsByOrder(that.order.id)
-          .then(function (bids) {
-          that.bids = bids;
-        })
-      })
-    };
-
-    this.sendMail = function () {
-      var that = this;
-      var sendMailModal = $modal.open({
-        templateUrl: 'app/partials/order/sendMail.html',
-        controller: 'SendMailCtrl as sendMailModel',
-        resolve: {
-          order: function () {
-            return that.order;
-          },
-          bids: function () {
-            return that.bids;
-          },
-          bidTextTypes: function () {
-            return bidTextTypes;
-          }
-        },
-        size: 'lg'
-      });
-
-      sendMailModal.result.then(function () {
-      });
-
-    };
-
-    // prev orders tab
+     // prev orders tab
     // ---------------
 
     this.getPrevOrders = function () {
@@ -491,7 +331,6 @@ angular.module('myApp')
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
-    this.documentTypes = lov.documentTypes;
     this.categories = categories;
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
@@ -583,7 +422,3 @@ angular.module('myApp')
 
 
   });
-
-
-
-

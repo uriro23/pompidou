@@ -1,127 +1,129 @@
+<div ng-controller="HeaderCtrl as headerModel">
 <table>
   <tbody>
-    <tr ng-class="orderModel.order.view.changes.customer?'myChanged':null">
+    <tr ng-class="headerModel.order.view.changes.customer?'myChanged':null">
       <td><label>לקוח</label></td>
       <td>
-        <button ng-click="orderModel.setCustomer(1,'בחירת לקוח')"
-                ng-class="orderModel.order.view.errors.customer?'myError':null"
+        <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
+                ng-class="headerModel.order.view.errors.customer?'myError':null"
                 class="btn btn-default"
-                ng-show="orderModel.order.view.customer.id">
-          {{orderModel.order.view.customer.firstName + ' ' + orderModel.order.view.customer.lastName}}
+                ng-show="headerModel.order.view.customer.id">
+          {{headerModel.order.view.customer.firstName + ' ' + headerModel.order.view.customer.lastName}}
         </button>
-        <button ng-click="orderModel.setCustomer(1,'בחירת לקוח')"
-                ng-class="orderModel.order.view.errors.customer?'myError':null"
+        <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
+                ng-class="headerModel.order.view.errors.customer?'myError':null"
                 class="btn btn-default"
-                ng-hide="orderModel.order.view.customer.id">
+                ng-hide="headerModel.order.view.customer.id">
           בחר
         </button>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.customer.mobilePhone">טל' נייד: </span>
-        <span>{{orderModel.order.view.customer.mobilePhone}}</span>
+        <span ng-show="headerModel.order.view.customer.mobilePhone">טל' נייד: </span>
+        <span>{{headerModel.order.view.customer.mobilePhone}}</span>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.customer.homePhone">טל' בית: </span>
-        <span>{{orderModel.order.view.customer.homePhone}}</span>
+        <span ng-show="headerModel.order.view.customer.homePhone">טל' בית: </span>
+        <span>{{headerModel.order.view.customer.homePhone}}</span>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.customer.workPhone">טל עבודה: </span>
-        <span>{{orderModel.order.view.customer.workPhone}}</span>
+        <span ng-show="headerModel.order.view.customer.workPhone">טל עבודה: </span>
+        <span>{{headerModel.order.view.customer.workPhone}}</span>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.customer.email">דואל: </span>
-        <span>{{orderModel.order.view.customer.email}}</span>
+        <span ng-show="headerModel.order.view.customer.email">דואל: </span>
+        <span>{{headerModel.order.view.customer.email}}</span>
       </td>
     </tr>
-    <tr ng-class="orderModel.order.view.changes.contact?'myChanged':null">
+    <tr ng-class="headerModel.order.view.changes.contact?'myChanged':null">
       <td><label>איש קשר</label></td>
       <td>
-        <button ng-click="orderModel.setCustomer(2,'בחירת איש קשר')"
-                ng-class="orderModel.order.view.errors.contact?'myError':null"
+        <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
+                ng-class="headerModel.order.view.errors.contact?'myError':null"
                 class="btn btn-default"
-                ng-show="orderModel.order.view.contact.id">
-          {{orderModel.order.view.contact.firstName + ' ' + orderModel.order.view.contact.lastName}}
+                ng-show="headerModel.order.view.contact.id">
+          {{headerModel.order.view.contact.firstName + ' ' + headerModel.order.view.contact.lastName}}
         </button>
-        <button ng-click="orderModel.setCustomer(2,'בחירת איש קשר')"
-                ng-class="orderModel.order.view.errors.contact?'myError':null"
+        <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
+                ng-class="headerModel.order.view.errors.contact?'myError':null"
                 class="btn btn-default"
-                ng-hide="orderModel.order.view.contact.id">
+                ng-hide="headerModel.order.view.contact.id">
           בחר
         </button>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.contact.mobilePhone">טל' נייד: </span>
-        <span>{{orderModel.order.view.contact.mobilePhone}}</span>
+        <span ng-show="headerModel.order.view.contact.mobilePhone">טל' נייד: </span>
+        <span>{{headerModel.order.view.contact.mobilePhone}}</span>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.contact.homePhone">טל' בית: </span>
-        <span>{{orderModel.order.view.contact.homePhone}}</span>
+        <span ng-show="headerModel.order.view.contact.homePhone">טל' בית: </span>
+        <span>{{headerModel.order.view.contact.homePhone}}</span>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.contact.workPhone">טל עבודה: </span>
-        <span>{{orderModel.order.view.contact.workPhone}}</span>
+        <span ng-show="headerModel.order.view.contact.workPhone">טל עבודה: </span>
+        <span>{{headerModel.order.view.contact.workPhone}}</span>
       </td>
       <td>
-        <span ng-show="orderModel.order.view.contact.email">דואל: </span>
-        <span>{{orderModel.order.view.contact.email}}</span>
+        <span ng-show="headerModel.order.view.contact.email">דואל: </span>
+        <span>{{headerModel.order.view.contact.email}}</span>
       </td>
       </tr>
     </tbody>
   </table>
 <table style="width: 95%">
-  <tr ng-class="orderModel.order.view.changes.header?'myChanged':null">
+  <tr ng-class="headerModel.order.view.changes.header?'myChanged':null">
     <td style="width: 17%">
-      <label>תאריך</label><input type='date' ng-model="orderModel.order.attributes.eventDate"
-                                 ng-change="orderModel.setEventDate()" required
-                                 ng-class="orderModel.order.view.errors.eventDate?'myError':null">
+      <label>תאריך</label><input type='date' ng-model="headerModel.order.attributes.eventDate"
+                                 ng-change="headerModel.setEventDate()" required
+                                 ng-class="headerModel.order.view.errors.eventDate?'myError':null">
     </td>
     <td style="width: 11%">
-      <label>שעה</label><input type="time" ng-model="orderModel.order.attributes.eventTime"
-                               ng-disabled="orderModel.isReadOnly"
-                               ng-change="orderModel.orderChanged('header')">
+      <label>שעה</label><input type="time" ng-model="headerModel.order.attributes.eventTime"
+                               ng-disabled="headerModel.isReadOnly"
+                               ng-change="headerModel.orderChanged('header')">
     </td>
     <td style="width: 14%">
       <label>משתתפים</label><input type="number" min=1 max="9999"
-                                        ng-model="orderModel.order.attributes.noOfParticipants"
-                                        ng-change="orderModel.setNoOfParticipants()"
-                                        ng-disabled="orderModel.isReadOnly"
-                                        ng-class="orderModel.order.view.errors.noOfParticipants?'myError':null">
+                                        ng-model="headerModel.order.attributes.noOfParticipants"
+                                        ng-change="headerModel.setNoOfParticipants()"
+                                        ng-disabled="headerModel.isReadOnly"
+                                        ng-class="headerModel.order.view.errors.noOfParticipants?'myError':null">
     </td>
     <td style="width: 16%">
-      <label>סוג אירוע</label><select ng-model="orderModel.order.view.eventType"
-                                      ng-change="orderModel.orderChanged('header')"
-                                      ng-options="eventType.label for eventType in orderModel.eventTypes"
-                                      ng-disabled="orderModel.isReadOnly"
+      <label>סוג אירוע</label><select ng-model="headerModel.order.view.eventType"
+                                      ng-change="headerModel.orderChanged('header')"
+                                      ng-options="eventType.label for eventType in headerModel.eventTypes"
+                                      ng-disabled="headerModel.isReadOnly"
             ></select>
       <!--
-      <ui-select tagging="orderModel.transformNewEventType" tagging-label="true"
-                 ng-model="orderModel.order.view.eventType.selected"
+      <ui-select tagging="headerModel.transformNewEventType" tagging-label="true"
+                 ng-model="headerModel.order.view.eventType.selected"
                  theme="bootstrap" >
         <ui-select-match placeholder="סוג אירוע">
           {{$select.selected.label}}
         </ui-select-match>
-        <ui-select-choices repeat="eventType in orderModel.eventTypes | filter: $select.search">
+        <ui-select-choices repeat="eventType in headerModel.eventTypes | filter: $select.search">
           {{eventType.label}}
         </ui-select-choices>
       </ui-select>
       -->
     </td>
     <td style="width: 11%">
-      <label>סטטוס</label><select ng-model="orderModel.order.view.orderStatus"
-                                  ng-change="orderModel.orderChanged('header')"
-                                  ng-options="orderStatus.name for orderStatus in orderModel.orderStatuses"
+      <label>סטטוס</label><select ng-model="headerModel.order.view.orderStatus"
+                                  ng-change="headerModel.orderChanged('header')"
+                                  ng-options="orderStatus.name for orderStatus in headerModel.orderStatuses"
             ></select>
     </td>
     <td style="width: 12%">
-      <label>סכום: </label>&nbsp;<span>{{orderModel.order.attributes.total | currency}}</span>
+      <label>סכום: </label>&nbsp;<span>{{headerModel.order.attributes.total | currency}}</span>
     </td>
     <td style="width: 10%">
-      <label>קופסאות: </label>&nbsp;<span>{{orderModel.order.attributes.boxEstimate | number:2}}</span>
+      <label>קופסאות: </label>&nbsp;<span>{{headerModel.order.attributes.boxEstimate | number:2}}</span>
     </td>
     <td style="width: 9%">
       <label>שובע: </label>&nbsp;<span>
-      {{orderModel.order.attributes.satietyIndex / orderModel.order.attributes.noOfParticipants | number:2}}
+      {{headerModel.order.attributes.satietyIndex / headerModel.order.attributes.noOfParticipants | number:2}}
       </span>
     </td>
   </tr>
 </table>
+</div>
