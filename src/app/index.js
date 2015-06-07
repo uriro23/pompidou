@@ -45,7 +45,40 @@ config(function($stateProvider, $urlRouterProvider) {
         bids: [function () {
           return null;
         }],
-         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+          return discountCausesPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }]
+      }
+    })
+    .state('dupOrder', {
+      url: "/dupOrderView/:basedOnId",
+      templateUrl: "app/partials/order.html",
+      controller: 'OrderCtrl as orderModel',
+      resolve: {
+        currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrders($stateParams.basedOnId).then(function (objs) {
+            return objs[0];
+          });
+        }],
+        bids: [function () {
+          return null;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {

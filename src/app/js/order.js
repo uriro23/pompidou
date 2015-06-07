@@ -62,6 +62,55 @@ angular.module('myApp')
       this.calcTotal();
     };
 
+    this.handleVatRateChange = function () {
+      if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
+        var vatChangeModal = $modal.open({
+          templateUrl: 'app/partials/order/vatChange.html',
+          controller: 'VatChangeCtrl as vatChangeModel',
+          resolve: {
+            orderVat: function () {
+              return that.order.attributes.vatRate;
+            },
+            currentVat: function () {
+              return that.vatRate;
+            }
+          },
+          size: 'sm'
+        });
+
+        vatChangeModal.result.then(function (res) {
+          switch (res) {
+            case '0':   // don't change vatRate
+              break;
+            case '1':   // change vatRate, don't change prices
+              that.order.attributes.vatRate = that.vatRate;
+              for (var i = 0; i < that.order.attributes.items.length; i++) {
+                var it1 = that.order.attributes.items[i];
+                it1.priceBeforeVat = it1.priceInclVat / (1 + that.vatRate);
+                if (that.order.attributes.isBusinessEvent) {
+                  it1.price = it1.priceBeforeVat;
+                }
+              }
+              that.orderChanged('isBusinessEvent');
+              that.calcSubTotal();
+              break;
+            case '2':   // change vatRate, change prices
+              that.order.attributes.vatRate = that.vatRate;
+              for (var j = 0; j < that.order.attributes.items.length; j++) {
+                var it2 = that.order.attributes.items[j];
+                it2.priceInclVat = it2.priceBeforeVat * (1 + that.vatRate);
+                if (!that.order.attributes.isBusinessEvent) {
+                  it2.price = it2.priceInclVat;
+                }
+              }
+              that.orderChanged('isBusinessEvent');
+              that.calcSubTotal();
+              break;
+          }
+        });
+      }
+    };
+
 
     this.orderChanged = function (field) {
       this.order.view.isChanged = true;
@@ -219,7 +268,7 @@ angular.module('myApp')
 
       //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
       //  we do this in 4 steps by chaining 'then's
-      if ($state.current.name === 'newOrder') {
+      if ($state.current.name === 'newOrder' || $state.current.name === 'dupOrder') {
         var that = this;
         //  I. query OrderNum class containing single counter object
         return api.queryOrderNum()
@@ -257,7 +306,7 @@ angular.module('myApp')
       this.order.view = {};
       this.order.view.errors = {};
       this.order.view.changes = {};
-      if ($state.current.name === 'editOrder') {
+      if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {
         var that = this;
         api.queryCustomers(that.order.attributes.customer)
           .then(function (custs) {
@@ -299,7 +348,10 @@ angular.module('myApp')
         this.order.view.discountCause = discountCauses.filter(function (obj) {
           return (obj.tId === that.order.attributes.discountCause);
         })[0];
-      } else {
+        if ($state.current.name === 'dupOrder') {
+          this.order.view.errors.eventDate = true; // empty event date is error
+        }
+      } else { // newOrder
         this.order.view.customer = {};
         this.order.view.contact = {};
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
@@ -326,7 +378,7 @@ angular.module('myApp')
     // main block
     var i;
     var that = this;
-    this.isNewOrder = $state.current.name === 'newOrder'; // used for view heading
+    this.isNewOrder = $state.current.name === 'newOrder' || $state.current.name === 'dupOrder'; // used for view heading
     this.bids = bids;
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
@@ -342,62 +394,23 @@ angular.module('myApp')
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       $rootScope.title = lov.company + ' - אירוע ' + this.order.attributes.number;
-
       this.setupOrderView();
       this.setReadOnly();
-
-      // handle change of vat rate
-      if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
-        var vatChangeModal = $modal.open({
-          templateUrl: 'app/partials/order/vatChange.html',
-          controller: 'VatChangeCtrl as vatChangeModel',
-          resolve: {
-            orderVat: function () {
-              return that.order.attributes.vatRate;
-            },
-            currentVat: function () {
-              return that.vatRate;
-            }
-          },
-          size: 'sm'
-        });
-
-        vatChangeModal.result.then(function (res) {
-          switch (res) {
-            case '0':   // don't change vatRate
-              break;
-            case '1':   // change vatRate, don't change prices
-              that.order.attributes.vatRate = that.vatRate;
-              for (var i = 0; i < that.order.attributes.items.length; i++) {
-                var it1 = that.order.attributes.items[i];
-                it1.priceBeforeVat = it1.priceInclVat / (1 + that.vatRate);
-                if (that.order.attributes.isBusinessEvent) {
-                  it1.price = it1.priceBeforeVat;
-                }
-              }
-              that.orderChanged('isBusinessEvent');
-              that.calcSubTotal();
-              break;
-            case '2':   // change vatRate, change prices
-              that.order.attributes.vatRate = that.vatRate;
-              for (var j = 0; j < that.order.attributes.items.length; j++) {
-                var it2 = that.order.attributes.items[j];
-                it2.priceInclVat = it2.priceBeforeVat * (1 + that.vatRate);
-                if (!that.order.attributes.isBusinessEvent) {
-                  it2.price = it2.priceInclVat;
-                }
-              }
-              that.orderChanged('isBusinessEvent');
-              that.calcSubTotal();
-              break;
-          }
-        });
-      }
+      this.handleVatRateChange();
+    } else if ($state.current.name === 'dupOrder') {
+      $rootScope.title = lov.company + ' - אירוע חדש';
+      this.order = api.initOrder();
+      this.order.attributes = currentOrder.attributes;
+      this.order.attributes.eventDate = undefined;
+      this.order.attributes.eventTime = undefined;
+      this.order.attributes.activities = [];
+      this.setupOrderView();
+      this.setReadOnly();
+      this.handleVatRateChange();
     } else { // new order
       $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();
       this.setupOrderView();
-      // this.order.attributes.eventDate = today;
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.items = [];
       this.order.attributes.vatRate = this.vatRate;

@@ -11,6 +11,10 @@ angular.module('myApp')
     // functions
     this.orderChanged = $scope.orderModel.orderChanged;
 
+    this.duplicateOrder = function () {
+      $state.go('dupOrder',{basedOnId:this.order.id});
+    };
+
     this.deleteOrder = function () {
       var that = this;
       var ackDelModal = $modal.open({

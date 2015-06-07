@@ -38,10 +38,21 @@
   <tr></tr>
   <tr>
     <td>
+      <button class="btn btn-default btn-sm"
+              ng-click="generalModel.duplicateOrder()"
+              ng-show="!generalModel.order.view.isChanged && generalModel.order.id">
+        שכפל אירוע
+      </button>
+
+    </td>
+  </tr>
+  <tr>
+    <td>
       <button class="btn btn-warning btn-sm"
               ng-click="generalModel.deleteOrder()"
-              ng-show="generalModel.order.id"
-              >מחק הזמנה</button>
+              ng-show="generalModel.order.id">
+        מחק אירוע
+      </button>
 
     </td>
   </tr>
