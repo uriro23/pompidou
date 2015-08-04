@@ -51,6 +51,7 @@ angular.module('myApp')
             if (temp.length > 0) {  // item already in list, just add quantity
               workItem = this.workOrder[workItemInd];
               workItem.attributes.quantity += item.quantity;
+              workItem.attributes.originalQuantity = workItem.attributes.quantity;
               workItem.attributes.backTrace.push({
                 id: this.workOrder[i].id,
                 domain: 0,
@@ -66,6 +67,7 @@ angular.module('myApp')
               workItem.attributes.productDescription =
                 catItem ? catItem.attributes.productDescription : item.productDescription;
               workItem.attributes.quantity = item.quantity;
+              workItem.attributes.originalQuantity = workItem.attributes.quantity;
               workItem.attributes.category = item.category;
               workItem.attributes.domain = 1;
               workItem.attributes.measurementUnit = item.measurementUnit;
@@ -103,8 +105,8 @@ angular.module('myApp')
                 });
                 if (temp.length > 0) {  // item already exists, just add quantity
                   workItem = this.workOrder[workItemInd];
-                  var oldQuantity = workItem.attributes.quantity;
                   workItem.attributes.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                  workItem.attributes.originalQuantity = workItem.attributes.quantity;
                   workItem.attributes.backTrace.push({
                     id: this.workOrder[i].id,
                     domain: inWorkItem.domain,
@@ -120,6 +122,7 @@ angular.module('myApp')
                     workItem.attributes.catalogId = component.id;
                     workItem.attributes.productDescription = outCatItem.productDescription;
                     workItem.attributes.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                    workItem.attributes.originalQuantity = workItem.attributes.quantity;
                     workItem.attributes.category = allCategories.filter(function (cat) {
                       return cat.tId === outCatItem.category;
                     })[0];
@@ -357,8 +360,12 @@ angular.module('myApp')
       })
     };
 
+    this.saveWI = function (woItem) {
+      return api.saveObj(woItem);
+    };
+
     this.setQuantity = function (woItem, domain) {
-      api.saveObj(woItem)
+      this.saveWI (woItem)
         .then(function () {
         for (var dd = domain + 1; dd < 4; dd++) {                     // set all further domains as invalid
           that.domainStatuses.attributes.status[dd] = false;
@@ -367,7 +374,14 @@ angular.module('myApp')
       })
     };
 
-    this.delItem = function (dom, cat, item) {
+    this.setIsForToday = function (woItem) {
+      if (woItem.attributes.isForToday) {
+        woItem.attributes.quantityForToday = woItem.attributes.quantity;
+      };
+      this.saveWI(woItem);
+    };
+
+      this.delItem = function (dom, cat, item) {
       var that = this;
       api.deleteObj(this.workOrderByCategory[dom][cat].list[item])
         .then(function (obj) {

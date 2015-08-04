@@ -151,13 +151,41 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         customers: ['api', function (api) {
           return api.queryCustomers()
-              .then(function (objs) {
-                return objs;
-          })
+            .then(function (objs) {
+              return objs;
+            })
         }],
         workOrder: ['api', function (api) {
           return api.queryWorkOrder().then(function (obj) {
             return obj;
+          })
+        }]
+      }
+    })
+
+    .state('todaysPrep', {
+      url: "/todaysPrep",
+      templateUrl: "app/partials/todaysPrep.html",
+      controller: 'TodaysPrepCtrl as todaysPrepModel',
+      resolve: {
+        catalog: ['api', function (api) {
+          return api.queryCatalog(2).then(function (obj) {
+            return obj; // we return all preparations, including deleted items
+          })
+        }],
+        allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
+          return allCategoriesPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        workOrder: ['api', function (api) {
+          return api.queryWorkOrder().then(function (workItems) {
+            return workItems.map(function (wi) {
+              var att = wi.attributes;
+              att.id = wi.id;
+              return att;
+            });
           })
         }]
       }

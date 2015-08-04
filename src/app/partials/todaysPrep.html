@@ -1,0 +1,34 @@
+<h2>&nbsp;&nbsp;רשימת הכנות להיום</h2>
+<table border="1" style="width: 80%">
+<thead>
+  <th style="width: 3%"></th>
+  <th style="width: 13%">שם הכנה</th>
+  <th style="width: 7%">כמות כללית</th>
+  <th style="width: 7%">כמות להיום</th>
+  <th style="width: 70%">מנות</th>
+</thead>
+  <tbody>
+  <tr ng-repeat="prep in todaysPrepModel.todaysPreps">
+    <td></td>
+    <td>{{prep.productDescription}}</td>
+    <td>{{prep.quantity | number:2}}</td>
+    <td>{{prep.quantityForToday | number:2}}</td>
+    <td>
+      <table border="3" style="width: 100%">
+        <thead>
+          <th style="width: 80%">מנה</th>
+          <th style="width: 10%">כמות</th>
+          <th style="width: 10%">אירועים</th>
+        </thead>
+        <tr ng-repeat="menuItem in prep.menuItems">
+          <td>{{menuItem.productDescription}}</td>
+          <td>{{menuItem.quantity | number:2}}</td>
+          <td ng-repeat="order in menuItem.orders">
+            {{order.quantity | number:2}}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  </tbody>
+</table>
