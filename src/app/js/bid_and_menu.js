@@ -11,7 +11,7 @@ $(document).ready(function () {
 	  document.styleSheets[0].insertRule("@page {size: A4 portrait;}", 1);
 	} 
 
-
+	
 
 	$(document).on("click", ".moveLeft", function () {
 	  	
