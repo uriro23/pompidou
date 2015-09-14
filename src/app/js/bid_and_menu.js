@@ -2,8 +2,9 @@ $(document).ready(function () {
 
 
 	var url = window.location.href;
-	var pos = url.search("index.html#/menu/");
 	
+	//rules for printed menu page
+	var pos = url.search("/menu/");
 	if (pos != -1) {
 	  document.styleSheets[0].insertRule("@page {size: A4 landscape;}", 1);
 	} else 
@@ -11,6 +12,14 @@ $(document).ready(function () {
 	  document.styleSheets[0].insertRule("@page {size: A4 portrait;}", 1);
 	} 
 
+	//rules for printed exit list page
+	var pos = url.search("/exitList/");
+	if (pos != -1) {
+	  document.styleSheets[0].insertRule("@page {margin: 5% !important;}", 1);
+	} else 
+	{
+	  
+	}
 	
 
 	$(document).on("click", ".moveLeft", function () {
