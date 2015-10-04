@@ -11,8 +11,8 @@
   <tr ng-repeat="prep in todaysPrepModel.todaysPreps">
     <td></td>
     <td>{{prep.productDescription}}</td>
-    <td>{{prep.quantity | number:2}}</td>
-    <td>{{prep.quantityForToday | number:2}}</td>
+    <td>{{(prep.quantity | number:2) + ' ' + prep.measurementUnit.label}}</td>
+    <td>{{(prep.quantityForToday | number:2) + ' ' + prep.measurementUnit.label}}</td>
     <td>
       <table border="3" style="width: 100%">
         <thead>
