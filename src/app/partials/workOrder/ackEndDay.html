@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h3 class="modal-title">אישור ביצוע עדכון סוף יום</h3>
+</div>
+<div class="modal-body">
+  <span>האם לגרוע את ההכנות הבאות מפקודת העבודה?</span>
+  <table>
+    <tbody>
+    <tr ng-repeat="prep in ackEndDayModel.todaysPreps">
+      <td>{{prep.attributes.productDescription}}</td>
+      <td>{{prep.attributes.quantityForToday}}</td>
+      <td>{{prep.attributes.measurementUnit.label}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="ackEndDayModel.setYes()">כן</button>
+  <button class="btn btn-warning" ng-click="ackEndDayModel.setNo()">לא</button>
+</div>

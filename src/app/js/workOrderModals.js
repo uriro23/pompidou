@@ -11,6 +11,18 @@ angular.module('myApp')
     $modalInstance.close(false);
   };
 })
+  .controller('AckEndDayCtrl', function ($modalInstance, todaysPreps) {
+
+    this.todaysPreps = todaysPreps;
+
+    this.setYes = function () {
+      $modalInstance.close(true);
+    };
+
+    this.setNo = function () {
+      $modalInstance.close(false);
+    };
+  })
 
   .controller('WorkOrderBackTraceCtrl', function ($modalInstance, $filter, workOrderItem, workOrder, domains) {
 

@@ -15,11 +15,23 @@
   </button>
     </td>
       <td style="width: 33%">
+        <button class="btn btn-default"
+                ng-disabled="workOrderModel.isProcessing"
+                ng-show="workOrderModel.domainStatuses.attributes.status[2]">
         <a href="#/todaysPrep" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.domainStatuses.attributes.status[2]">
-          רשימת הכנות יומית
+           ng-show="workOrderModel.domainStatuses.attributes.status[2]">
+             רשימת הכנות יומית
           </a>
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-default"
+                ng-disabled="workOrderModel.isProcessing"
+                ng-show="workOrderModel.domainStatuses.attributes.status[2]"
+                ng-click="workOrderModel.preparationsEndDay()">
+          סוף יום
+        </button>
       </td>
     </tr>
   </table>

@@ -419,6 +419,60 @@ angular.module('myApp')
 
     };
 
+    this.preparationsEndDay = function () {
+      var that = this;
+      var ackEndDayModal = $modal.open({
+        templateUrl: 'app/partials/workOrder/ackEndDay.html',
+        controller: 'AckEndDayCtrl as ackEndDayModel',
+        resolve: {
+          todaysPreps: function () {
+            return that.workOrder.filter(function(wo) {
+              return wo.attributes.domain===2 && wo.attributes.isForToday;
+            })
+          }
+        },
+        size: 'lg'
+      });
+
+      ackEndDayModal.result.then(function (isEndDay) {
+        if (isEndDay) {
+          var saveList = [];
+          var deleteList = [];
+          for (var i=0;i<that.workOrder.length;i++) {
+            var wo = that.workOrder[i];
+            if (wo.attributes.domain===2 && wo.attributes.isForToday) {
+              if (wo.attributes.quantityForToday >= wo.attributes.quantity) {
+                deleteList.push(wo);
+                wo.isToDelete = true;
+              } else {
+                wo.attributes.quantity -= wo.attributes.quantityForToday;
+                wo.delAttributes = {quantityForToday: true}; // set to undefined on save
+                wo.attributes.isForToday = false;
+                saveList.push(wo);
+              }
+            }
+          }
+          console.log ('updating '+saveList.length+' items');
+          api.saveObjects(saveList)
+            .then(function () {
+              console.log('deleting '+deleteList+' items');
+              api.deleteObjects(deleteList)
+                .then(function () {
+                  that.workOrder = that.workOrder.filter (function(wo) {
+                    return !wo.isToDelete
+                  });
+                  that.splitWorkOrder();
+                  console.log('updated workorder:')
+                  console.log(that.workOrder);
+                  that.domainStatuses.attributes.status[3] = false;
+                  api.saveObj(that.domainStatuses);
+                })
+            })
+        }
+      })
+     };
+
+
     // main block
 
     var that = this;
