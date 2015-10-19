@@ -5,7 +5,7 @@
   <th style="width: 13%">שם הכנה</th>
   <th style="width: 7%">כמות כללית</th>
   <th style="width: 7%">כמות להיום</th>
-  <th style="width: 70%">מנות</th>
+  <th style="width: 70%">מנות וכמויות לפי אירועים</th>
 </thead>
   <tbody>
   <tr ng-repeat="prep in todaysPrepModel.todaysPreps">
@@ -18,7 +18,9 @@
         <thead>
           <th style="width: 80%">מנה</th>
           <th style="width: 10%">כמות</th>
-          <th style="width: 10%">אירועים</th>
+          <th style="width: 10%" ng-repeat="ord in todaysPrepModel.allOrders">
+            {{ord.customer.firstName+' '+todaysPrepModel.dayName(ord.order.eventDate)}}
+          </th>
         </thead>
         <tr ng-repeat="menuItem in prep.menuItems">
           <td>{{menuItem.productDescription}}</td>

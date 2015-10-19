@@ -29,7 +29,13 @@ angular.module('myApp')
   var seq = 0;
   var ident = ['', '-', '--', '---', '----'];
 
-  function generateTrace(root, gen, quantity, workOrder, backTrace) {
+    var dayName = function(dat) {
+      var dayNames = ['א','ב','ג','ד','ה','ו','ש'];
+      return dayNames[dat.getDay()]+"'";
+    };
+
+
+    function generateTrace(root, gen, quantity, workOrder, backTrace) {
     root.expand = seq === 0 ? '-' : root.attributes.domain === 0 ? '' : '+';      // initially expand root item
     root.seq = seq++;
     root.generation = gen;
@@ -38,10 +44,8 @@ angular.module('myApp')
     root.quantity = quantity;
     root.domain = domains[root.attributes.domain];
     if (root.attributes.domain === 0) {
-      root.attributes.productDescription = 'מס ' +
-        root.attributes.order.number + ' תאריך ' +
-        $filter('date')(root.attributes.order.eventDate, 'dd/MM/yyyy') + ' שעה ' +
-        $filter('date')(root.attributes.order.eventTime, 'HH:mm')
+      root.attributes.productDescription =
+        root.attributes.customer.firstName + ' ' + dayName(root.attributes.order.eventDate);
     }
     backTrace.push(root);
     if (root.attributes.domain > 0) {
