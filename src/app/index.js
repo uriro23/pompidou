@@ -7,8 +7,12 @@ angular.module('myApp', [
   'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize', 'ui.select', 'pompidou'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
-  $urlRouterProvider.otherwise("/login");
+  $urlRouterProvider.otherwise("/default");
   $stateProvider
+    .state('default', {
+      url:"/default",
+      templateUrl: "app/partials/default.html"
+    })
     .state('login', {
       url: "/login",
       templateUrl: "app/partials/login.html",
