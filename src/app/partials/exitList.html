@@ -2,43 +2,43 @@
 		<h1>
 		  פומפידו - רשימת יציאה
 		</h1>
-		
-		
+
+
 		<table style="width:90%">
 		  <tbody>
 		  <tr>
-		  	
+
 		    <td style="width:25%">
 		      <label>
 		        הזמנה מס':
 		      </label>
 		      <span>{{exitListModel.order.attributes.number}}</span>
 		    </td>
-		    
+
 		    <td style="width:25%">
 		      <label>
 		        תאריך:
 		      </label>
-		      <span>{{exitListModel.order.attributes.eventDate | date: 'dd/MM/yy'}}</span>
+		      <span>{{exitListModel.order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</span>
 		    </td>
-		    
+
 		    <td style="width:25%">
 		      <label>
 		        שעה:
 		      </label>
 		      <span>{{exitListModel.order.attributes.eventTime | date: 'H:mm'}}</span>
 		    </td>
-		    
+
 		    <td style="width:25%">
 		      <label>
 		        משתתפים:
 		      </label>
 		      <span>{{exitListModel.order.attributes.noOfParticipants}}</span>
 		    </td>
-		    
+
 		  </tr>
-		  
-		  
+
+
 		  <tr>
 		    <td>
 		      <label>
@@ -65,12 +65,12 @@
 		      <span>{{exitListModel.customer.workPhone}}</span>
 		    </td>
 		  </tr>
-		  
-		  
+
+
 		  </tbody>
 		</table>
-		
-		
+
+
 		<div>
 		  <label>
 		    כתובת:
@@ -89,8 +89,8 @@
 		  </label>
 		  <span>{{exitListModel.order.attributes.remarks}}</span>
 		</div>
-		
-		
+
+
 		<table style="width:90%">
 		  <tbody>
 		  <tr>
@@ -118,9 +118,9 @@
 		  </tr>
 		  </tbody>
 		</table>
-		
-		
-			
+
+
+
 		<div ng-repeat="category in exitListModel.filteredCategories">
 		  <label>{{category.label}}</label>
 		  {{exitListModel.setupCategoryItems(category.tId)}}
@@ -146,10 +146,10 @@
 		    </tbody>
 		  </table>
 		</div>
-		
-		
-		
-		
 
-				
+
+
+
+
+
 </div> <!-- End of exitListContainer  -->
