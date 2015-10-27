@@ -7,9 +7,9 @@
 
 
 <div id="bid_container" ng-hide="bidModel.docNotAvailable">
-   
+
     <div id="bid_content">
-    	
+
     	<!-- top of bid - contact and logo  -->
     	<div id="bid_head">
 	    	<div id="contact">
@@ -17,12 +17,12 @@
 	            <span>054-7514061</span><br/>
 	            <span>yuval@pompidou.co.il</span><br/>
 	        </div>
-        
+
 
 	        <div id="logo">
 	            <img align="left" src="app/img/logo.png"/>
 	        </div>
-	        
+
         </div>
 
         <!-- basic details of bid  -->
@@ -85,14 +85,14 @@
         <!--start of bid table -->
 
         <!--table of items and prices -->
-        
+
         <h1>
         		תפריט
         </h1>
-        
+
         <div  id="items_list">
-        	
-        	
+
+
 
             <div ng-repeat="category in bidModel.filteredCategories">
 
@@ -143,14 +143,9 @@
 
              <!-- discounts div -->
              <div ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
-                 <ul>
-                     <li style="width:30%" class="bold">הנחה בגובה %</li>
-                     <li style="width:30%">{{bidModel.bid.attributes.order.discountRate}}</li>
-                 </ul>
 
                  <ul>
                      <li style="width:30%" class="bold">
-                         עקב
                          {{bidModel.discountCause.label}}
                      </li>
                      <li style="width:30%">{{bidModel.bid.attributes.order.discount | currency}}</li>

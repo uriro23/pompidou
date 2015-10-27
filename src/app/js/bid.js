@@ -60,6 +60,9 @@ angular.module('myApp')
         return categoryItems.length;
       });
 
+      this.filteredCategories.sort(function(a,b) {
+        return a.order - b.order;
+      });
 
       // filter items for current category
       this.setupCategoryItems = function (catId) {

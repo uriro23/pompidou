@@ -31,8 +31,10 @@ angular.module('myApp')
           return wo.id === currentBackTrace.id;
         })[0];
         currentMenuItem.productDescription = originalMenuItem.productDescription;
-        currentMenuItem.orders = [];
-        currentMenuItem.orders[this.allOrders.length-1] = {} // set array size to max for view
+        currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
+        for (var n=0;n<this.allOrders.length;n++) {
+          currentMenuItem.orders[n] = {seq:n, quantity:0};
+        }
         var m;
         for (var k=0;k<originalMenuItem.backTrace.length;k++) {
          var temp = this.allOrders.filter(function(ord, ind) {
@@ -40,7 +42,7 @@ angular.module('myApp')
               m = ind;
             }
           });
-           currentMenuItem.orders[m] = {quantity: originalMenuItem.backTrace[k].quantity};
+           currentMenuItem.orders[m].quantity += originalMenuItem.backTrace[k].quantity;
           }
         currentPrep.menuItems.push(currentMenuItem);
       }
