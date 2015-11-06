@@ -102,7 +102,10 @@
 
                 {{bidModel.setupCategoryItems(category.tId)}}
                 <div style="padding-right:3%" ng-repeat="item in bidModel.categoryItems">
-                    <div style="width:67%;display:inline-block;">{{item.productDescription}}</div>
+                    <div style="width:67%;display:inline-block;">
+                      <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+                      <span>{{item.productDescription}}</span>
+                    </div>
                     <div style="width:10%;display:inline-block;"> {{item.quantity}}</div>
                     <div style="width:10%;display:inline-block;"> {{item.measurementUnit.label}}</div>
                     <div style="width:10%;display:inline-block;" ng-hide="bidModel.bid.attributes.order.isFixedPrice" >{{item.price | currency }}</div>
@@ -110,63 +113,78 @@
 
             </div>
 
+          <!-- transportation items -->
+          {{bidModel.setupTransportationItems()}}
+          <div ng-show="bidModel.transportationItems.length">
+          <P style="height: 1cm"></P>
+            <div class="bold">
+              השף בקופסא מגיע אלייך בדיוק ברגע הנכון לפני האורחים
+              </div>
+          <div style="padding-right:3%"
+               ng-repeat="item in bidModel.transportationItems">
+            <div style="width:67%;display:inline-block;">
+              <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+              <span>{{item.productDescription}}</span>
+            </div>
+            <div style="width:10%;display:inline-block;"> </div>
+            <div style="width:10%;display:inline-block;"> </div>
+            <div style="width:10%;display:inline-block;"
+                 ng-hide="bidModel.bid.attributes.order.isFixedPrice" >{{item.price | currency }}</div>
+          </div>
+            </div>
+
         </div>
         <!--End of table of items and prices -->
 
-        {{bidModel.setupFreeItems()}}
-
-        <!--bonus items listing -->
-        <div id="bonus_list" ng-show="bidModel.freeItems.length">
-
-            <div class="bold">
-                בונוס
-            </div>
-
-            <div style="padding-right:3%" ng-repeat="item in bidModel.freeItems">
-                <div style="width:67%;display:inline-block;">{{item.productDescription}}</div>
-                <div style="width:10%;display:inline-block;">{{item.quantity}}</div>
-                <div style="width:20%;display:inline-block;">{{item.measurementUnit.label}}</div>
-
-            </div>
-
-        </div>
-        <!-- End of bonus items div -->
-
-
-
-
          <div id="sum_up">
+
+
              <ul ng-hide="bidModel.bid.attributes.order.isFixedPrice">
                 <li class="bold" style="width:30%;">סה"כ הזמנה</li>
                 <li class="bold" style="width:30%">{{bidModel.bid.attributes.order.subTotal | currency}}</li>
              </ul>
+             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice &&
+                           bidModel.bid.attributes.order.transportation &&
+                           !bidModel.bid.attributes.order.isTransportationItem">  <!-- display transportation here if not in item list -->
+               <li style="width:30%">משלוח</li>
+               <li style="width:30%">{{bidModel.bid.attributes.order.transportation | currency}}</li>
+             </ul>
 
-             <!-- discounts div -->
-             <div ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
+           <!-- credits div  -->
 
-                 <ul>
-                     <li style="width:30%" class="bold">
-                         {{bidModel.discountCause.label}}
-                     </li>
-                     <li style="width:30%">{{bidModel.bid.attributes.order.discount | currency}}</li>
-                 </ul>
-             </div> <!-- end of discounts div -->
+           <div id="credits_list" ng-show="bidModel.bid.attributes.order.credits">
+
+              <ul>
+               <li class="bold" style="width: 30%">זיכויים</li>
+               <li class="bold" style="width: 30%">
+                 {{bidModel.bid.attributes.order.credits | currency}}
+               </li>
+             </ul>
+             <ul ng-show="bidModel.bid.attributes.order.bonusValue">
+               <li style="width:2%"></li>
+               <li class="bold" style="width:15%">פריטי בונוס</li>
+               <li class="bold" style="width:15%">{{-bidModel.bid.attributes.order.bonusValue | currency}}</li>
+             </ul>
+             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isTransportationBonus">
+               <li style="width:2%"></li>
+               <li class="bold" style="width:15%">זיכוי משלוח</li>
+               <li class="bold" style="width:15%;">{{-bidModel.bid.attributes.order.transportationBonus | currency}}</li>
+             </ul>
+             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
+               <li style="width:2%"></li>
+               <li class="bold" style="width:15%">{{bidModel.discountCause.label}}</li>
+               <li class="bold" style="width:15%">{{-bidModel.bid.attributes.order.discount | currency}}</li>
+               </ul>
+             </div>
 
 
-                    <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.transportation">
-                        <li class="bold" style="width:30%">משלוח</li>
-                        <li style="width:30%">{{bidModel.bid.attributes.order.transportation | currency}}</li>
-                    </ul>
 
 
-                    <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isTransportationBonus">
-                      <li class="bold" style="width:30%">בונוס - זיכוי משלוח</li>
-                      <li style="width:30%;">{{bidModel.bid.attributes.order.transportationBonus | currency}}</li>
-                    </ul>
+
 
                     <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isBusinessEvent">
 
-                        <li class="bold" style="width:30%">
+                        <li style="width:30%">
                             מע"מ בשיעור %
                             {{bidModel.bid.attributes.order.vatRate*100}}
                         </li>
@@ -185,12 +203,13 @@
                     </ul>
 
                     <ul ng-hide="bidModel.bid.attributes.order.isFixedPrice">
-                        <li class="bold" style="width:30%">מחיר למשתתף </li>
-                        <li class="bold" style="width:30%">
+                        <li style="width:30%">מחיר למשתתף </li>
+                        <li style="width:30%">
                             {{bidModel.bid.attributes.order.total / bidModel.bid.attributes.order.noOfParticipants | currency}}
                         </li>
                     </ul>
                 </div>
+      </div>
                 <!-- End of sum_up div -->
 
 

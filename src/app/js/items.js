@@ -189,14 +189,6 @@ angular.module('myApp')
     this.setFreeItem = function (ind) {
       var thisOrder = this.order.attributes;
       var thisItem = thisOrder.items[ind];
-
-      if (thisItem.isFreeItem) {
-        thisItem.price = 0;
-        thisItem.priceInclVat = 0;
-        thisItem.priceBeforeVat = 0;
-      } else {
-        this.setQuantity(ind);
-      }
       this.calcSubTotal();
       this.orderChanged();
       thisItem.isChanged = true;

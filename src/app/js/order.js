@@ -23,7 +23,11 @@ angular.module('myApp')
     this.calcTotal = function () {
       var thisOrder = this.order.attributes;
 
-      var t = thisOrder.subTotal + thisOrder.discount + thisOrder.transportation + thisOrder.transportationBonus;
+      var t = thisOrder.subTotal
+            + thisOrder.discount
+            + thisOrder.transportation
+            + thisOrder.transportationBonus
+            + thisOrder.bonusValue;
       if (thisOrder.isBusinessEvent) {
         var v = t * thisOrder.vatRate;
       } else {
@@ -50,15 +54,37 @@ angular.module('myApp')
       var t = 0;
       var b = 0;
       var s = 0;
+      var bonus = 0;
+      var transportationBonus = 0;
+      var isOldFreeItems;
       for (i = 0; i < thisOrder.items.length; i++) {
-        t += thisOrder.items[i].price;
-        b += thisOrder.items[i].boxCount;
-        s += thisOrder.items[i].satietyIndex;
+        var thisItem = thisOrder.items[i];
+        t += thisItem.price;
+        b += thisItem.boxCount;
+        s += thisItem.satietyIndex;
+        if (thisItem.isFreeItem) {
+          if (thisItem.price===0) { // old style free item - issue alert
+            isOldFreeItems = true;
+          }
+          if (thisItem.category.isTransportation) {
+            transportationBonus -= thisItem.price;
+          } else {
+            bonus -= thisItem.price;
+          }
+        }
+      }
+
+      if(isOldFreeItems) {
+        alert('שים לב, יש באירוע פריטי בונוס ישנים עם מחיר 0, יש לעדכן את המחיר')
       }
       thisOrder.subTotal = t;
-      thisOrder.discount = -(t * thisOrder.discountRate / 100);
       thisOrder.boxEstimate = b;
       thisOrder.satietyIndex = s;
+      thisOrder.bonusValue = bonus;
+      thisOrder.transportationBonus = transportationBonus;
+      thisOrder.discount = -((t-bonus) * thisOrder.discountRate / 100);
+      thisOrder.credits = thisOrder.bonusValue + thisOrder.transportationBonus + thisOrder.discount;
+
       this.calcTotal();
     };
 
@@ -417,6 +443,8 @@ angular.module('myApp')
       this.order.attributes.subTotal = 0;
       this.order.attributes.discountRate = 0;
       this.order.attributes.discount = 0;
+      this.order.attributes.bonusValue = 0;
+      this.order.attributes.credits = 0;
       this.order.attributes.transportationInclVat = ''; // force it illegal
       this.order.attributes.transportation = 0;
       this.order.attributes.transportationBonus = 0;

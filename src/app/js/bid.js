@@ -52,10 +52,13 @@ angular.module('myApp')
         })[0];
       }
 
-      //filter categories - only those in order and not bonus
+      //filter categories - only those in order and not transportation
       this.filteredCategories = this.categories.filter(function (cat) {
+        if (cat.isTransportation) {
+          return false
+        }
         var categoryItems = currentOrder.items.filter(function (item) {
-          return (item.category.tId === cat.tId && !item.isFreeItem);
+          return (item.category.tId === cat.tId);
         });
         return categoryItems.length;
       });
@@ -67,16 +70,17 @@ angular.module('myApp')
       // filter items for current category
       this.setupCategoryItems = function (catId) {
         this.categoryItems = currentOrder.items.filter(function (item) {
-          return (item.category.tId === catId && !item.isFreeItem);
+          return (item.category.tId === catId);
         })
       };
 
-      // filter bonus items
-      this.setupFreeItems = function () {
-        this.freeItems = currentOrder.items.filter(function (item) {
-          return (item.isFreeItem);
+      // filter transportation items
+      this.setupTransportationItems = function () {
+        this.transportationItems = currentOrder.items.filter(function (item) {
+          return (item.category.isTransportation);
         })
       };
+
 
       if (isPrintBid) {
         $timeout(function () {
