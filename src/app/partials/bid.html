@@ -154,26 +154,17 @@
 
            <div id="credits_list" ng-show="bidModel.bid.attributes.order.credits">
 
-              <ul>
-               <li class="bold" style="width: 30%">זיכויים</li>
-               <li class="bold" style="width: 30%">
-                 {{bidModel.bid.attributes.order.credits | currency}}
-               </li>
+             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.bonusValue">
+               <li class="bold" style="width:30%">זיכוי פריטי בונוס</li>
+               <li class="bold" style="width:30%">{{bidModel.bid.attributes.order.bonusValue | currency}}</li>
              </ul>
-             <ul ng-show="bidModel.bid.attributes.order.bonusValue">
-               <li style="width:2%"></li>
-               <li class="bold" style="width:15%">פריטי בונוס</li>
-               <li class="bold" style="width:15%">{{-bidModel.bid.attributes.order.bonusValue | currency}}</li>
-             </ul>
-             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.isTransportationBonus">
-               <li style="width:2%"></li>
-               <li class="bold" style="width:15%">זיכוי משלוח</li>
-               <li class="bold" style="width:15%;">{{-bidModel.bid.attributes.order.transportationBonus | currency}}</li>
+             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.transportationBonus">
+               <li class="bold" style="width:30%">זיכוי משלוח</li>
+               <li class="bold" style="width:30%;">{{bidModel.bid.attributes.order.transportationBonus | currency}}</li>
              </ul>
              <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
-               <li style="width:2%"></li>
-               <li class="bold" style="width:15%">{{bidModel.discountCause.label}}</li>
-               <li class="bold" style="width:15%">{{-bidModel.bid.attributes.order.discount | currency}}</li>
+               <li class="bold" style="width:30%">{{bidModel.discountCause.label}}</li>
+               <li class="bold" style="width:30%">{{bidModel.bid.attributes.order.discount | currency}}</li>
                </ul>
              </div>
 

@@ -78,7 +78,7 @@ angular.module('myApp')
       this.setupTransportationItems = function () {
         this.transportationItems = currentOrder.items.filter(function (item) {
           return (item.category.isTransportation);
-        })
+        });
       };
 
 

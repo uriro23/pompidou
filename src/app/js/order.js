@@ -51,17 +51,17 @@ angular.module('myApp')
     this.calcSubTotal = function () {
       var thisOrder = this.order.attributes;
 
-      var t = 0;
-      var b = 0;
-      var s = 0;
+      var subTotal = 0;
+      var boxCount = 0;
+      var satiety = 0;
       var bonus = 0;
       var transportationBonus = 0;
       var isOldFreeItems;
       for (i = 0; i < thisOrder.items.length; i++) {
         var thisItem = thisOrder.items[i];
-        t += thisItem.price;
-        b += thisItem.boxCount;
-        s += thisItem.satietyIndex;
+        subTotal += thisItem.price;
+        boxCount += thisItem.boxCount;
+        satiety += thisItem.satietyIndex;
         if (thisItem.isFreeItem) {
           if (thisItem.price===0) { // old style free item - issue alert
             isOldFreeItems = true;
@@ -77,12 +77,12 @@ angular.module('myApp')
       if(isOldFreeItems) {
         alert('שים לב, יש באירוע פריטי בונוס ישנים עם מחיר 0, יש לעדכן את המחיר')
       }
-      thisOrder.subTotal = t;
-      thisOrder.boxEstimate = b;
-      thisOrder.satietyIndex = s;
+      thisOrder.subTotal = subTotal;
+      thisOrder.boxEstimate = boxCount;
+      thisOrder.satietyIndex = satiety;
       thisOrder.bonusValue = bonus;
       thisOrder.transportationBonus = transportationBonus;
-      thisOrder.discount = -((t-bonus) * thisOrder.discountRate / 100);
+      thisOrder.discount = -((subTotal+bonus+transportationBonus) * thisOrder.discountRate / 100);
       thisOrder.credits = thisOrder.bonusValue + thisOrder.transportationBonus + thisOrder.discount;
 
       this.calcTotal();
