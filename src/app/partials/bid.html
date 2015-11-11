@@ -152,7 +152,7 @@
 
            <!-- credits div  -->
 
-           <div id="credits_list" ng-show="bidModel.bid.attributes.order.credits">
+           <div id="credits_list">
 
              <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.bonusValue">
                <li class="bold" style="width:30%">זיכוי פריטי בונוס</li>
@@ -162,11 +162,11 @@
                <li class="bold" style="width:30%">זיכוי משלוח</li>
                <li class="bold" style="width:30%;">{{bidModel.bid.attributes.order.transportationBonus | currency}}</li>
              </ul>
-             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.discountCause">
+             <ul ng-show="!bidModel.bid.attributes.order.isFixedPrice && bidModel.bid.attributes.order.discount">
                <li class="bold" style="width:30%">{{bidModel.discountCause.label}}</li>
                <li class="bold" style="width:30%">{{bidModel.bid.attributes.order.discount | currency}}</li>
                </ul>
-             </div>
+           </div>
 
 
 

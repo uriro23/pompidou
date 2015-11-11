@@ -419,7 +419,7 @@ angular.module('myApp')
 
     };
 
-    this.preparationsEndDay = function () {
+     this.preparationsEndDay = function () {
       var that = this;
       var ackEndDayModal = $modal.open({
         templateUrl: 'app/partials/workOrder/ackEndDay.html',

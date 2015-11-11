@@ -385,9 +385,7 @@ angular.module('myApp')
         this.order.view.errors.eventDate = true; // empty event date is error
         this.order.view.errors.customer = true; // empty customer is error
         this.order.view.errors.noOfParticipants = true; // empty no of participants is error
-        this.order.view.errors.transportationInclVat = true; // force it illegal on new Order
-        this.isErrorFinancialTab =true; // cause dummy error financial tab to be displayed
-      }
+       }
     };
 
     this.cancel = function () {
@@ -445,7 +443,7 @@ angular.module('myApp')
       this.order.attributes.discount = 0;
       this.order.attributes.bonusValue = 0;
       this.order.attributes.credits = 0;
-      this.order.attributes.transportationInclVat = ''; // force it illegal
+      this.order.attributes.transportationInclVat = 0;
       this.order.attributes.transportation = 0;
       this.order.attributes.transportationBonus = 0;
       this.order.attributes.activities = [];

@@ -15,6 +15,7 @@ angular.module('myApp')
       } else return -1
     });
 
+    this.dailyDate = today;
 
     this.todaysPreps = workOrder.filter(function (wi) {
         return wi.domain===2 && wi.isForToday;
@@ -30,7 +31,8 @@ angular.module('myApp')
         var originalMenuItem = workOrder.filter(function (wo) {
           return wo.id === currentBackTrace.id;
         })[0];
-        currentMenuItem.productDescription = originalMenuItem.productDescription;
+        var match = originalMenuItem.productDescription.match(/^\s*\S+\s+\S+\s+\S+/); // extract first 3 words of desc
+        currentMenuItem.productDescription = match ? match[0] : originalMenuItem.productDescription;
         currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
         for (var n=0;n<this.allOrders.length;n++) {
           currentMenuItem.orders[n] = {seq:n, quantity:0};
