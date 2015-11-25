@@ -7,6 +7,7 @@ angular.module('myApp')
     //objects
     this.order = $scope.orderModel.order;
     this.isReadOnly = $scope.orderModel.isReadOnly;
+    this.referralSources = $scope.orderModel.referralSources;
 
     // functions
     this.orderChanged = $scope.orderModel.orderChanged;

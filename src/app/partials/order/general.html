@@ -35,6 +35,22 @@
              ng-disabled="generalModel.isReadOnly">
     </td>
   </tr>
+  <tr ng-class="generalModel.order.view.changes.referralSource?'myChanged':null">
+    <td>מקור הפניה</td>
+    <td>
+      <select ng-model="generalModel.order.view.referralSource"
+              ng-change="generalModel.orderChanged('referralSource')"
+              ng-options="referralSource.label for referralSource in generalModel.referralSources"
+              ng-disabled="generalModel.isReadOnly"
+        ></select>
+    </td>
+    <td>
+      <input type="text" size="50" ng-model="generalModel.order.attributes.referralSourceText"
+             ng-change="generalModel.orderChanged('referralSource')"
+             ng-disabled="generalModel.isReadOnly">
+    </td>
+    <td></td>
+  </tr>
   <tr></tr>
   <tr>
     <td>
