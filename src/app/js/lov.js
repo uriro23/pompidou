@@ -72,6 +72,14 @@ angular.module('myApp')
     });
   })
 
+  .factory('referralSourcesPromise', function (api) {
+    return api.queryReferralSources().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('configPromise', function (api) {
     return api.queryConfig().then(function (res) {
       return res.map(function (obj) {

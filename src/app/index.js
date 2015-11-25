@@ -55,6 +55,9 @@ config(function($stateProvider, $urlRouterProvider) {
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
         }],
+        referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
+          return referralSourcesPromise;
+        }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
         }],
@@ -87,6 +90,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
+        }],
+        referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
+          return referralSourcesPromise;
         }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
@@ -122,6 +128,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
+        }],
+        referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
+          return referralSourcesPromise;
         }],
         config: ['configPromise', function (configPromise) {
           return configPromise;

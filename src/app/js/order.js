@@ -4,7 +4,8 @@
 angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope,
                                      currentOrder, bids, lov, today, eventTypes,
-                                     bidTextTypes, categories, measurementUnits, discountCauses, config) {
+                                     bidTextTypes, categories, measurementUnits,
+                                     discountCauses, referralSources, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -264,6 +265,9 @@ angular.module('myApp')
       if (this.order.view.discountCause) {
         thisOrder.discountCause = this.order.view.discountCause.tId;
       }
+      if (this.order.view.referralSource) {
+        thisOrder.referralSource = this.order.view.referralSource.tId;
+      }
       thisOrder.customer = this.order.view.customer.id;
       thisOrder.contact = this.order.view.contact.id;
       if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
@@ -374,6 +378,9 @@ angular.module('myApp')
         this.order.view.discountCause = discountCauses.filter(function (obj) {
           return (obj.tId === that.order.attributes.discountCause);
         })[0];
+        this.order.view.referralSource = referralSources.filter(function (obj) {
+          return (obj.tId === that.order.attributes.referralSource);
+        })[0];
         if ($state.current.name === 'dupOrder') {
           this.order.view.errors.eventDate = true; // empty event date is error
         }
@@ -382,6 +389,7 @@ angular.module('myApp')
         this.order.view.contact = {};
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
         this.order.view.discountCause = this.discountCauses[0]; // set to "no"
+        this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
         this.order.view.errors.eventDate = true; // empty event date is error
         this.order.view.errors.customer = true; // empty customer is error
         this.order.view.errors.noOfParticipants = true; // empty no of participants is error
@@ -410,6 +418,7 @@ angular.module('myApp')
     this.categories = categories;
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
+    this.referralSources = referralSources;
     this.config = config;
     this.vatRate = config.vatRate;
     this.activityDate = new Date();

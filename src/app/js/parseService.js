@@ -353,22 +353,37 @@ angular.module('myApp')
     return query(measurementUnitsQuery);
   };
 
-  // DiscountCause
-  // -------------
+    // DiscountCause
+    // -------------
 
-  var DiscountCause = Parse.Object.extend("DiscountCause");
+    var DiscountCause = Parse.Object.extend("DiscountCause");
 
-  this.queryDiscountCauses = function (id) {
-    var discountCausesQuery = new Parse.Query(DiscountCause);
-    if (id) {
-      discountCausesQuery.equalTo("tId", id);
-    }
-    discountCausesQuery.ascending("tId");
-    return query(discountCausesQuery);
-  };
+    this.queryDiscountCauses = function (id) {
+      var discountCausesQuery = new Parse.Query(DiscountCause);
+      if (id) {
+        discountCausesQuery.equalTo("tId", id);
+      }
+      discountCausesQuery.ascending("tId");
+      return query(discountCausesQuery);
+    };
 
 
-  // config
+    // ReferralSource
+    // -------------
+
+    var ReferralSource = Parse.Object.extend("ReferralSource");
+
+    this.queryReferralSources = function (id) {
+      var referralSourcesQuery = new Parse.Query(ReferralSource);
+      if (id) {
+        referralSourcesQuery.equalTo("tId", id);
+      }
+      referralSourcesQuery.ascending("order");
+      return query(referralSourcesQuery);
+    };
+
+
+    // config
   // ------
 
   var Config = Parse.Object.extend("Config");
