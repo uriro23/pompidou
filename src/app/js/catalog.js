@@ -99,14 +99,14 @@ angular.module('myApp')
       this.itemChanged(ind);
       this.catalog[ind].isMinTimeError =
         this.catalog[ind].attributes.minTime != Number(this.catalog[ind].attributes.minTime) ||
-        Number(this.catalog[ind].attributes.minTime) <= 0;
+        Number(this.catalog[ind].attributes.minTime) < 0;
     };
 
     this.setMaxTime = function (ind) {
-      this.itemChanged(ind);
+      this.itemChanged(ind); 
       this.catalog[ind].isMaxTimeError =
         this.catalog[ind].attributes.maxTime != Number(this.catalog[ind].attributes.maxTime) ||
-        Number(this.catalog[ind].attributes.maxTime) <= 0;
+        Number(this.catalog[ind].attributes.maxTime) < 0;
     };
 
     this.updateExitList = function (ind) {
