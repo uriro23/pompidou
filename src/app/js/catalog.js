@@ -40,9 +40,14 @@ angular.module('myApp')
       newItem.attributes.domain = this.currentDomain.id;
       newItem.view.category = this.categories[0];
       newItem.view.measurementUnit = measurementUnits[0];
+      newItem.view.minTimeUnit = lov.timeUnits[0];
+      newItem.view.maxTimeUnit = lov.timeUnits[0];
+
       newItem.attributes.priceQuantity = null;
       newItem.attributes.price = null;
       newItem.attributes.productionQuantity = null;
+      newItem.attributes.minTime = null;
+      newItem.attributes.maxTime = null;
       if (this.currentDomain.id === 1) {
         newItem.attributes.isInMenu = true;
       }
@@ -88,6 +93,20 @@ angular.module('myApp')
       this.catalog[ind].isProductionQuantityError =
         this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
         Number(this.catalog[ind].attributes.productionQuantity) <= 0;
+    };
+
+    this.setMinTime = function (ind) {
+      this.itemChanged(ind);
+      this.catalog[ind].isMinTimeError =
+        this.catalog[ind].attributes.minTime != Number(this.catalog[ind].attributes.minTime) ||
+        Number(this.catalog[ind].attributes.minTime) <= 0;
+    };
+
+    this.setMaxTime = function (ind) {
+      this.itemChanged(ind);
+      this.catalog[ind].isMaxTimeError =
+        this.catalog[ind].attributes.maxTime != Number(this.catalog[ind].attributes.maxTime) ||
+        Number(this.catalog[ind].attributes.maxTime) <= 0;
     };
 
     this.updateExitList = function (ind) {
@@ -199,6 +218,16 @@ angular.module('myApp')
               that.catalog[i].view.measurementUnit = that.measurementUnits.filter(function (mes) {
                 return mes.tId === that.catalog[i].attributes.measurementUnit;
               }) [0];
+              if (typeof that.catalog[i].attributes.minTimeUnit === 'number') {
+                that.catalog[i].view.minTimeUnit = lov.timeUnits.filter(function (tu) {
+                  return tu.id === that.catalog[i].attributes.minTimeUnit;
+                }) [0];
+              }
+              if (typeof that.catalog[i].attributes.maxTimeUnit === 'number') {
+                that.catalog[i].view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
+                  return tu.id === that.catalog[i].attributes.maxTimeUnit;
+                }) [0];
+              }
               that.catalog[i].isChanged = false;
             }
             that.setChanged(false);
@@ -220,7 +249,9 @@ angular.module('myApp')
         if (this.catalog[j].isProductDescriptionError ||
           this.catalog[j].isPriceQuantityError ||
           this.catalog[j].isPriceError ||
-          this.catalog[j].isProductionQuantityError) {
+          this.catalog[j].isProductionQuantityError ||
+          this.catalog[j].isMinTimeError ||
+          this.catalog[j].isMaxTimeError) {
           alert('לא ניתן לעדכן. תקן קודם את השגיאות המסומנות');
           return false;
         }
@@ -238,11 +269,19 @@ angular.module('myApp')
             alert('Missing measurement unit in line ' + i + 1);
             return false;
           }
+          if (!this.catalog[i].view.minTimeUnit || !this.catalog[i].view.maxTimeUnit) {
+            alert('Missing time unit in line ' + i + 1);
+            return false;
+          }
           this.catalog[i].attributes.isDeleted = this.catalog[i].view.isDeleted;
           this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
+          this.catalog[i].attributes.minTimeUnit = this.catalog[i].view.minTimeUnit.id;
+          this.catalog[i].attributes.maxTimeUnit = this.catalog[i].view.maxTimeUnit.id;
           this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
           this.catalog[i].attributes.price = Number(this.catalog[i].attributes.price);
           this.catalog[i].attributes.productionQuantity = Number(this.catalog[i].attributes.productionQuantity);
+          this.catalog[i].attributes.minTime = Number(this.catalog[i].attributes.minTime);
+          this.catalog[i].attributes.maxTime = Number(this.catalog[i].attributes.maxTime);
           // if no components/materials were specified insert dummy
           if (this.currentDomain.id === 1 && this.catalog[i].attributes.components.length === 0) {
             this.catalog[i].attributes.components.push({
@@ -275,6 +314,7 @@ angular.module('myApp')
     this.domains.splice(0, 1);   // drop "events" domain
     this.currentDomain = this.domains[0];
     this.measurementUnits = measurementUnits;
+    this.timeUnits = lov.timeUnits;
     this.setDomain();
   });
 

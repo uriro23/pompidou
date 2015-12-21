@@ -11,7 +11,8 @@ config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('default', {
       url:"/default",
-      templateUrl: "app/partials/default.html"
+      templateUrl: "app/partials/default.html",
+      controller: "DefaultCtrl as defaultModel"
     })
     .state('login', {
       url: "/login",

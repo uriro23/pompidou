@@ -15,4 +15,13 @@ angular.module('myApp')
           $state.go('orderList');
         })
     }
+  })
+
+  .controller('DefaultCtrl', function ($rootScope,$location) {
+
+    $rootScope.menuStatus = 'hide';
+
+    this.location = $location.absUrl();
+
   });
+

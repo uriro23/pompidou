@@ -14,24 +14,41 @@
   <table style="width:100%">
       <thead>
         <th style="width:8%">קטגוריה</th>
-        <th style="width:54%">תיאור</th>
+        <th ng-show="catalogModel.currentDomain.id===1" style="width:54%">תיאור</th>
+        <th ng-show="catalogModel.currentDomain.id>1" style="width:15%">תיאור</th>
         <th style="width:5%">יח' מידה</th>
-        <th style="width:3%">כמות</th>
-        <th style="width:5%">מחיר</th>
-        <th style="width:5%">כמות ייצור</th>
+        <th ng-show="catalogModel.currentDomain.id===1" style="width:3%">כמות</th>
+        <th ng-show="catalogModel.currentDomain.id===1" style="width:5%">מחיר</th>
+        <th style="width:10%">כ' יצור</th>
+        <th ng-show="catalogModel.currentDomain.id===2" style="width: 5%">מינימום</th>
+        <th ng-show="catalogModel.currentDomain.id===2" style="width: 5%"></th>
+        <th ng-show="catalogModel.currentDomain.id===2" style="width: 5%">מקסימום</th>
+        <th ng-show="catalogModel.currentDomain.id===2" style="width: 7%"></th>
         <th style="width:2%">מחק</th>
         <th style="width:6%"></th>
         <th style="width:6%"></th>
         <th style="width:6%"></th>
       </thead>
+    <thead  ng-show="catalogModel.currentDomain.id===2">
+    <th></th><th></th><th></th><th></th>
+    <th>זמן</th>
+    <th>יחידה</th>
+    <th>זמן</th>
+    <th>יחידה</th>
+    </thead>
       <tbody>
       <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?'myChanged':null">
         <td>
           <select ng-model="catalogItem.view.category" ng-change="catalogModel.itemChanged($index)"
                 ng-options="category.label for category in catalogModel.categories"></select>
         </td>
-        <td>
+        <td ng-show="catalogModel.currentDomain.id===1">
           <input type="text" size = 90 ng-model="catalogItem.attributes.productDescription"
+                 ng-change="catalogModel.setProductDescription($index, true)"
+                 ng-class="catalogItem.isProductDescriptionError?'myError':null">
+        </td>
+        <td ng-show="catalogModel.currentDomain.id>1">
+          <input type="text" size = 30 ng-model="catalogItem.attributes.productDescription"
                  ng-change="catalogModel.setProductDescription($index, true)"
                  ng-class="catalogItem.isProductDescriptionError?'myError':null">
         </td>
@@ -39,12 +56,12 @@
           <select ng-model="catalogItem.view.measurementUnit" ng-change="catalogModel.itemChanged($index)"
                   ng-options="measurementUnit.label for measurementUnit in catalogModel.measurementUnits"></select>
         </td>
-        <td>
+        <td ng-show="catalogModel.currentDomain.id===1">
           <input type="text" size = 4 ng-model="catalogItem.attributes.priceQuantity"
                  ng-change="catalogModel.setPriceQuantity($index)"
                  ng-class="catalogItem.isPriceQuantityError?'myError':null">
         </td>
-        <td>
+        <td ng-show="catalogModel.currentDomain.id===1">
           <input type="text" money min=0 size = 5 ng-model="catalogItem.attributes.price"
                  ng-change="catalogModel.setPrice($index)"
                  ng-class="catalogItem.isPriceError?'myError':null">
@@ -54,6 +71,24 @@
                  ng-change="catalogModel.setProductionQuantity($index)"
                  ng-class="catalogItem.isProductionQuantityError?'myError':null">
         </td>
+        <td ng-show="catalogModel.currentDomain.id===2">
+          <input type="text" size = 4 ng-model="catalogItem.attributes.minTime"
+                 ng-change="catalogModel.setMinTime($index)"
+                 ng-class="catalogItem.isMinTimeError?'myError':null">
+        </td>
+        <td ng-show="catalogModel.currentDomain.id===2">
+          <select ng-model="catalogItem.view.minTimeUnit" ng-change="catalogModel.itemChanged($index)"
+                  ng-options="timeUnit.label for timeUnit in catalogModel.timeUnits"></select>
+        </td>
+        <td ng-show="catalogModel.currentDomain.id===2">
+          <input type="text" size = 4 ng-model="catalogItem.attributes.maxTime"
+                 ng-change="catalogModel.setMaxTime($index)"
+                 ng-class="catalogItem.isMaxTimeError?'myError':null">
+        </td>
+        <td ng-show="catalogModel.currentDomain.id===2">
+          <select ng-model="catalogItem.view.maxTimeUnit" ng-change="catalogModel.itemChanged($index)"
+                  ng-options="timeUnit.label for timeUnit in catalogModel.timeUnits"></select>
+        </td>
         <td>
           <input type="checkbox" ng-model="catalogItem.view.isDeleted" ng-change="catalogModel.itemChanged($index)">
         </td>
@@ -61,10 +96,10 @@
           <button ng-click="catalogModel.updateExitList($index)" class="btn btn-default btn-sm">עוד</button>
         </td>
         <td ng-show="catalogModel.currentDomain.id===1">
-          <button ng-click="catalogModel.updateComponents($index,2)" class="btn btn-default btn-sm">מרכיבים</button>
+          <button ng-click="catalogModel.updateComponents($index,2)" class="btn btn-default btn-sm">הכנות</button>
         </td>
         <td ng-show="catalogModel.currentDomain.id<3">
-          <button ng-click="catalogModel.updateComponents($index,3)" class="btn btn-default btn-sm">חומרים</button>
+          <button ng-click="catalogModel.updateComponents($index,3)" class="btn btn-default btn-sm">קניות</button>
         </td>
       </tr>
       </tbody>

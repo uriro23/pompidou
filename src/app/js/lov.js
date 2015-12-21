@@ -107,14 +107,14 @@ angular.module('myApp')
       },
       {
         id: 2,
-        label: 'מרכיבים',
-        single: 'מרכיב',
+        label: 'הכנות',
+        single: 'הכנה',
         forWorkItem: 'הכנות'
       },
       {
         id: 3,
-        label: 'חומרים',
-        single: 'חומר',
+        label: 'קניות',
+        single: 'קניה',
         forWorkItem: 'קניות'
       }
     ],
@@ -173,6 +173,18 @@ angular.module('myApp')
         isRealDocumentType: false
       }
     ],
+
+    timeUnits: [
+      {
+        id: 0,
+        label: 'ימים'
+      },
+      {
+        id: 1,
+        label: 'שעות'
+      }
+    ],
+
     accessBoxItemId: 332,
     accessUnhandledItemComponent: 417,
     accessUnhandledItemMaterial: 418

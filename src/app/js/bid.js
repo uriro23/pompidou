@@ -18,6 +18,10 @@ angular.module('myApp')
 
       this.customer = bid.attributes.customer;
 
+      this.isYuvalTest = this.customer.accessKey==='176'; // set prod debug option for customer Yuval
+
+      console.log('isYuvalTest='+this.isYuvalTest);
+
       $rootScope.title = lov.company    // set title so PDF file will be named correctly
       + this.bid.attributes.documentType === 1 ? ' - הצעת מחיר ' : ' - הזמנה '
       + (this.customer.firstName ? this.customer.firstName : '')
