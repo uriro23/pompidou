@@ -436,6 +436,7 @@ angular.module('myApp')
       this.order.attributes = currentOrder.attributes;
       this.order.attributes.eventDate = undefined;
       this.order.attributes.eventTime = undefined;
+      this.order.attributes.exitTime = undefined;
       this.order.attributes.activities = [];
       this.setupOrderView();
       this.setReadOnly();

@@ -33,7 +33,8 @@
       <thead>
       <th style="width: 3%">מס'</th>
       <th style="width: 9%">תאריך</th>
-      <th style="width: 4%">שעה</th>
+      <th style="width: 4%">מסירה</th>
+      <th ng-show="orderListModel.queryType==='future'" style="width: 4%">יציאה</th>
       <th style="width: 8%">לקוח</th>
       <th style="width: 5%">סועדים</th>
       <th style="width: 7%">סוג אירוע</th>
@@ -43,7 +44,7 @@
       <th style="width: 3%">הנחה</th>
       <th ng-show="orderListModel.queryType==='templates'" style="width: 33%">תבנית</th>
       <th ng-show="orderListModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
-      <th ng-show="orderListModel.queryType==='future'" style="width: 28%">פעילות</th>
+      <th ng-show="orderListModel.queryType==='future'" style="width: 24%">פעילות</th>
       <th  ng-show="orderListModel.queryType==='future'"style="width: 6%">הצעת מחיר</th>
       </thead>
       <tbody>
@@ -58,6 +59,7 @@
         </td>
         <td>{{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</td>
         <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
+        <td ng-show="orderListModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>

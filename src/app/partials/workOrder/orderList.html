@@ -16,7 +16,10 @@
     תאריך
   </th>
   <th>
-    שעה
+    מסירה
+  </th>
+  <th>
+יציאה
   </th>
   <th>
     לקוח
@@ -35,6 +38,7 @@
     </td>
     <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
     <td>{{woItem.attributes.order.eventTime | date: 'HH:mm'}}</td>
+    <td>{{woItem.attributes.order.exitTime | date: 'HH:mm'}}</td>
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
     <td>

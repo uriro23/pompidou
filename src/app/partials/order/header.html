@@ -71,13 +71,18 @@
   </table>
 <table style="width: 95%">
   <tr ng-class="headerModel.order.view.changes.header?'myChanged':null">
-    <td style="width: 17%">
+    <td style="width: 15%">
       <label>תאריך</label><input type='date' ng-model="headerModel.order.attributes.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'myError':null">
     </td>
-    <td style="width: 11%">
-      <label>שעה</label><input type="time" ng-model="headerModel.order.attributes.eventTime"
+    <td style="width: 8%">
+      <label>שעת מסירה</label><input type="time" ng-model="headerModel.order.attributes.eventTime"
+                               ng-disabled="headerModel.isReadOnly"
+                               ng-change="headerModel.orderChanged('header')">
+    </td>
+    <td style="width: 8%">
+      <label>שעת יציאה</label><input type="time" ng-model="headerModel.order.attributes.exitTime"
                                ng-disabled="headerModel.isReadOnly"
                                ng-change="headerModel.orderChanged('header')">
     </td>
