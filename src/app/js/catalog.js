@@ -103,7 +103,7 @@ angular.module('myApp')
     };
 
     this.setMaxTime = function (ind) {
-      this.itemChanged(ind); 
+      this.itemChanged(ind);
       this.catalog[ind].isMaxTimeError =
         this.catalog[ind].attributes.maxTime != Number(this.catalog[ind].attributes.maxTime) ||
         Number(this.catalog[ind].attributes.maxTime) < 0;
@@ -269,11 +269,13 @@ angular.module('myApp')
             alert('Missing measurement unit in line ' + i + 1);
             return false;
           }
-          if (!this.catalog[i].view.minTimeUnit || !this.catalog[i].view.maxTimeUnit) {
-            alert('Missing time unit in line ' + i + 1);
-            return false;
+          if (!this.catalog[i].view.minTimeUnit) {
+            this.catalog[i].view.minTimeUnit = lov.timeUnits[0];
           }
-          this.catalog[i].attributes.isDeleted = this.catalog[i].view.isDeleted;
+          if (!this.catalog[i].view.maxTimeUnit) {
+            this.catalog[i].view.maxTimeUnit = lov.timeUnits[0];
+          }
+           this.catalog[i].attributes.isDeleted = this.catalog[i].view.isDeleted;
           this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
           this.catalog[i].attributes.minTimeUnit = this.catalog[i].view.minTimeUnit.id;
           this.catalog[i].attributes.maxTimeUnit = this.catalog[i].view.maxTimeUnit.id;
