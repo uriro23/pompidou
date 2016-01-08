@@ -1,20 +1,4 @@
 <div ng-controller="ItemsCtrl as itemsModel">
-<table>
-  <tbody>
-  <tr style="width:40%">
-    <td style="width: 30%">
-      <a ng-href="#/menu/{{itemsModel.order.id}}"target="_blank">
-        הדפס תפריט
-      </a>
-    </td>
-    <td style="width: 30%">
-      <a ng-href="#/exitList/{{itemsModel.order.id}}"target="_blank">
-        הדפס רשימת יציאה
-      </a>
-    </td>
-  </tr>
-  </tbody>
-</table>
 
 <table style="width: 80%">
   <thead>
@@ -24,7 +8,7 @@
   <th style="width: 4%">בתפריט?</th>
   </thead>
   <tbody>
-  <tr ng-repeat="item in itemsModel.order.attributes.items track by item.index"
+  <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
       ng-class="item.isChanged?'myChanged':null">
     <td>{{item.category.label}}</td>
     <td>{{item.productDescription}}</td>

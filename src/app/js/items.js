@@ -33,8 +33,9 @@ angular.module('myApp')
             var cc = c.attributes;
             cc.id = c.id;
             cc.isInOrder = false; // check items already in order, just for attention
-            for (var i = 0; i < thisOrder.items.length; i++) {
-              if (thisOrder.items[i].catalogId === c.id) {
+            var orderItems = that.order.view.quote.items;
+            for (var i = 0; i < orderItems.length; i++) {
+              if (orderItems[i].catalogId === c.id) {
                 cc.isInOrder = true;
               }
             }
@@ -62,14 +63,13 @@ angular.module('myApp')
     };
 
     this.deleteItem = function (ind) {
-      this.order.attributes.items.splice(ind, 1);
+      this.order.view.quote.items.splice(ind, 1);
       this.calcSubTotal();
       this.orderChanged();
     };
 
     this.itemChanged = function (ind) {
-      var thisOrder = this.order.attributes;
-      var thisItem = thisOrder.items[ind];
+       var thisItem = this.order.view.quote.items[ind];
       this.orderChanged();
       thisItem.isChanged = true;
     };
@@ -84,13 +84,14 @@ angular.module('myApp')
     this.setProduct = function (catalogEntry) {
       var that = this;
       var thisOrder = this.order.attributes;
+      var orderItems = this.order.view.quote.items;
 
-      var maxIndex = thisOrder.items.length === 0 ? 0 : Math.max.apply(null, thisOrder.items.map(function (itm) {
+      var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
         return itm.index
       })) + 1;
 
-      thisOrder.items.splice(0, 0, {});
-      var thisItem = thisOrder.items[0];
+      orderItems.splice(0, 0, {});
+      var thisItem = orderItems[0];
       thisItem.index = maxIndex;
       thisItem.category = this.categories.filter(function (cat) {
         return cat.tId === catalogEntry.category;
@@ -142,8 +143,7 @@ angular.module('myApp')
     };
 
     this.setProductDescription = function (ind) {
-      var thisOrder = this.order.attributes;
-      var thisItem = thisOrder.items[ind];
+      var thisItem = this.order.view.quote.items[ind];
 
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
       this.orderChanged();
@@ -152,7 +152,7 @@ angular.module('myApp')
 
     this.setQuantity = function (ind) {
       var thisOrder = this.order.attributes;
-      var thisItem = thisOrder.items[ind];
+      var thisItem = this.order.view.quote.items[ind];
 
       thisItem.errors.quantity = Number(thisItem.quantity) != thisItem.quantity || Number(thisItem.quantity) < 0;
       thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
@@ -171,7 +171,7 @@ angular.module('myApp')
 
     this.setPrice = function (ind) {
       var thisOrder = this.order.attributes;
-      var thisItem = thisOrder.items[ind];
+      var thisItem = this.order.view.quote.items[ind];
 
       thisItem.errors.price = Number(thisItem.price) != thisItem.price || Number(thisItem.price) < 0;
       if (thisOrder.isBusinessEvent) {
@@ -187,8 +187,7 @@ angular.module('myApp')
     };
 
     this.setFreeItem = function (ind) {
-      var thisOrder = this.order.attributes;
-      var thisItem = thisOrder.items[ind];
+      var thisItem = this.order.view.quote.items[ind];
       this.calcSubTotal();
       this.orderChanged();
       thisItem.isChanged = true;
@@ -217,7 +216,9 @@ angular.module('myApp')
     this.setTemplate = function (template) {
       var that = this;
       var thisOrder = this.order.attributes;
-      var templateCatalogIds = template.attributes.items.map(function (itm) {
+      var orderItems = this.order.view.quote.items;
+      var templateItems = template.attributes.quotes[template.attributes.activeQuote].items;
+      var templateCatalogIds = templateItems.map(function (itm) {
         return itm.catalogId
       });
       api.queryCatalogByIds(templateCatalogIds)
@@ -230,8 +231,8 @@ angular.module('myApp')
             ct.id = c.id;
             return ct
           });
-          for (var j = 0; j < template.attributes.items.length; j++) {
-            var templateItem = template.attributes.items[j];
+          for (var j = 0; j < templateItems.length; j++) {
+            var templateItem = templateItems[j];
             var templateCatalogItem = templateCatalogItems.filter(function (cat) {
               return cat.id === templateItem.catalogId
             })[0];
@@ -250,17 +251,17 @@ angular.module('myApp')
                 }
                 templateItem.quantity = Math.ceil(templateItem.quantity / r) * r;  // round up
               }
-              var thisItem = thisOrder.items.filter(function (itm) {    // check if product exists in order
+              var thisItem = orderItems.filter(function (itm) {    // check if product exists in order
                 return itm.catalogId === templateItem.catalogId;
               })[0];
               if (thisItem) {
                 thisItem.quantity += templateItem.quantity;   // exists, just update quantity
               } else {
-                var maxIndex = thisOrder.items.length === 0 ? 0 : Math.max.apply(null, thisOrder.items.map(function (itm) {
+                var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
                   return itm.index
                 })) + 1;
-                that.order.attributes.items.splice(0, 0, templateItem); // initialize new item as copied one
-                thisItem = that.order.attributes.items[0];
+                orderItems.splice(0, 0, templateItem); // initialize new item as copied one
+                thisItem = orderItems[0];
                 thisItem.index = maxIndex;  // override original index
               }
               // now adjust price

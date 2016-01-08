@@ -72,7 +72,7 @@
   <th style="width: 5%">בונוס</th>
   </thead>
   <tbody>
-  <tr ng-repeat="item in itemsModel.order.attributes.items track by item.index"
+  <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
       ng-class="item.isChanged?'myChanged':null">
     <td>{{item.category.label}}</td>
     <td>

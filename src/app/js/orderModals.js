@@ -32,7 +32,7 @@ angular.module('myApp')
 
   .controller('UpdatePricesCtrl', function ($modalInstance, order, catalog) {
     var that = this;
-    this.changedItems = order.attributes.items.filter(function (item) {
+    this.changedItems = order.view.quote.items.filter(function (item) {
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];

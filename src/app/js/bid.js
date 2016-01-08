@@ -7,6 +7,7 @@ angular.module('myApp')
                                    bidTextTypes, eventTypes, discountCauses, isPrintBid) {
     $rootScope.menuStatus = 'hide';
 
+    console.log(bid);
     if (bid) {
       this.docNotAvailable = false;
 
@@ -14,7 +15,12 @@ angular.module('myApp')
 
       this.categories = categories;
       this.config = config;
-      var currentOrder = this.bid.attributes.order;
+      this.currentOrder = this.bid.attributes.order;
+      if (this.currentOrder.quotes) {
+        this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
+      } else {
+        this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
+      }
 
       this.customer = bid.attributes.customer;
 
@@ -28,31 +34,31 @@ angular.module('myApp')
       + ' ' + (this.customer.lastName ? this.customer.lastName : '')
       + ' ' + this.bid.attributes.desc;
 
-
+      var that = this;
       //fetch start bid text type
-      if (currentOrder.startBidTextType) {
+      if (that.currentOrder.startBidTextType) {
         this.startBidTextType = bidTextTypes.filter(function (btt) {
-          return btt.tId === currentOrder.startBidTextType
+          return btt.tId === that.currentOrder.startBidTextType
         })[0];
       }
 
       // fetch end bid text type
-      if (currentOrder.endBidTextType) {
+      if (that.currentOrder.endBidTextType) {
         this.endBidTextType = bidTextTypes.filter(function (btt) {
-          return btt.tId === currentOrder.endBidTextType
+          return btt.tId === that.currentOrder.endBidTextType
         })[0];
       }
       //fetch event type
-      if (currentOrder.eventType) {
+      if (that.currentOrder.eventType) {
         this.eventType = eventTypes.filter(function (evt) {
-          return evt.tId === currentOrder.eventType
+          return evt.tId === that.currentOrder.eventType
         })[0];
       }
 
       //fetch discount cause
-      if (currentOrder.discountCause) {
+      if (that.currentQuote.discountCause) {
         this.discountCause = discountCauses.filter(function (dsc) {
-          return dsc.tId === currentOrder.discountCause
+          return dsc.tId === that.currentQuote.discountCause
         })[0];
       }
 
@@ -61,7 +67,7 @@ angular.module('myApp')
         if (cat.isTransportation) {
           return false
         }
-        var categoryItems = currentOrder.items.filter(function (item) {
+        var categoryItems = that.currentQuote.items.filter(function (item) {
           return (item.category.tId === cat.tId);
         });
         return categoryItems.length;
@@ -73,14 +79,14 @@ angular.module('myApp')
 
       // filter items for current category
       this.setupCategoryItems = function (catId) {
-        this.categoryItems = currentOrder.items.filter(function (item) {
+        this.categoryItems = that.currentQuote.items.filter(function (item) {
           return (item.category.tId === catId);
         })
       };
 
       // filter transportation items
       this.setupTransportationItems = function () {
-        this.transportationItems = currentOrder.items.filter(function (item) {
+        this.transportationItems = that.currentQuote.items.filter(function (item) {
           return (item.category.isTransportation);
         });
       };

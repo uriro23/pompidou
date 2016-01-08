@@ -72,9 +72,9 @@
           <td ng-hide="orderListModel.queryType==='future'">
               {{order.view.orderStatus.name}}
           </td>
-          <td>{{order.attributes.total | currency}}</td>
-          <td>{{order.attributes.transportationInclVat | currency}}</td>
-          <td>{{order.attributes.discountRate | number:0}}</td>
+          <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
+          <td>{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
+          <td>{{order.attributes.quotes[order.attributes.activeQuote].discountRate | number:0}}</td>
         <td ng-show="orderListModel.queryType==='templates'">{{order.attributes.template}}</td>
         <td ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>
         <td ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].text}}</td>

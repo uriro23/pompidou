@@ -106,5 +106,54 @@ angular.module('myApp')
         api.setEnvironment('test')
       }
       $state.go('login');
-    }
+    };
+
+    // quote conversion  1/2016
+
+    this.createNewQuoteData = function () {
+      api.queryOrders()
+        .then (function(orders) {
+        console.log('read '+orders.length+' orders');
+        for (var i=0;i<orders.length;i++) {
+          var order = orders[i].attributes;
+          var quote = {};
+          quote.name = 'תפריט';
+          quote.items = order.items;
+          quote.bonusValue = order.bonusValue;
+          quote.bonusValue = order.bonusValue;
+          quote.credits = order.credits;
+          quote.discount = order.discount;
+          quote.discountCause = order.discountCause;
+          quote.discountRate = order.discountRate;
+          quote.fixedPrice = order.fixedPrice;
+          quote.isFixedPrice = order.isFixedPrice;
+          quote.isTransportationBonus = order.isTransportationBonus;
+          quote.rounding = order.rounding;
+          quote.satietyIndex = order.satietyIndex;
+          quote.subTotal = order.subTotal;
+          quote.total = order.total;
+          quote.totalBeforeVat = order.totalBeforeVat;
+          quote.totalBeforeVatForInvoice = order.totalBeforeVatForInvoice;
+          quote.oldTransportation = order.transportation;
+          quote.transportationBonus = order.transportationBonus;
+          quote.transportationInclVat = order.transportationInclVat;
+          quote.vat = order.vat;
+          quote.vatForInvoice = order.vatForInvoice;
+          order.quotes = [];
+          order.quotes.push(quote);
+          order.activeQuote = 0;
+        }
+        console.log('updating orders');
+        api.saveObjects(orders)
+          .then(function() {
+            console.log('orders updated')
+          })
+      })
+    };
+
+    this.dropOldQuoteData = function() {
+      alert('not yet implemented')
+    };
+
   });
+

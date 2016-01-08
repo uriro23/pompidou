@@ -12,35 +12,35 @@
 		      <label>
 		        הזמנה מס':
 		      </label>
-		      <span>{{exitListModel.order.attributes.number}}</span>
+		      <span>{{exitListModel.currentOrder.number}}</span>
 		    </td>
 
 		    <td style="width:20%">
 		      <label>
 		        תאריך:
 		      </label>
-		      <span>{{exitListModel.order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</span>
+		      <span>{{exitListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}</span>
 		    </td>
 
         <td style="width:20%">
           <label>
 שעת מסירה:
           </label>
-          <span>{{exitListModel.order.attributes.eventTime | date: 'H:mm'}}</span>
+          <span>{{exitListModel.currentOrder.eventTime | date: 'H:mm'}}</span>
         </td>
 
         <td style="width:20%">
           <label>
 שעת יציאה:
           </label>
-          <span>{{exitListModel.order.attributes.exitTime | date: 'H:mm'}}</span>
+          <span>{{exitListModel.currentOrder.exitTime | date: 'H:mm'}}</span>
         </td>
 
         <td style="width:20%">
 		      <label>
 		        משתתפים:
 		      </label>
-		      <span>{{exitListModel.order.attributes.noOfParticipants}}</span>
+		      <span>{{exitListModel.currentOrder.noOfParticipants}}</span>
 		    </td>
 
 		  </tr>
@@ -88,13 +88,13 @@
 		  <label>
 		    מקום משלוח:
 		  </label>
-		  <span>{{exitListModel.order.attributes.deliveryLocation}}</span>
+		  <span>{{exitListModel.currentOrder.deliveryLocation}}</span>
 		</div>
 		<div>
 		  <label>
 		    הערות:
 		  </label>
-		  <span>{{exitListModel.order.attributes.remarks}}</span>
+		  <span>{{exitListModel.currentOrder.remarks}}</span>
 		</div>
 
 
@@ -105,21 +105,21 @@
 		      <label>
 		        ס"ה לפני מע"מ:
 		      </label>
-		      <span>{{exitListModel.order.attributes.totalBeforeVatForInvoice | currency}}</span>
+		      <span>{{exitListModel.currentQuote.totalBeforeVatForInvoice | currency}}</span>
 		    </td>
 		    <td style="width:33%">
 		      <label>
 		        מע"מ:
 		      </label>
-		      <span>{{exitListModel.order.attributes.vatForInvoice | currency}}</span>
+		      <span>{{exitListModel.currentQuote.vatForInvoice | currency}}</span>
 		    </td>
 		    <td style="width:33%">
 		      <label>
 		        לתשלום:
 		      </label>
 		      <span>
-		        {{exitListModel.order.attributes.isFixedPrice?
-		            exitListModel.order.attributes.fixedPrice:exitListModel.order.attributes.total | currency}}
+		        {{exitListModel.currentQuote.isFixedPrice?
+		            exitListModel.currentQuote.fixedPrice:exitListModel.currentQuote.total | currency}}
 		      </span>
 		    </td>
 		  </tr>

@@ -14,7 +14,8 @@ angular.module('myApp')
     }
 
 
-    this.order = order;
+    var currentOrder = order.attributes;
+    var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
     this.categories = categories;
 
     // fetch customer
@@ -22,7 +23,7 @@ angular.module('myApp')
 
     //filter categories - only those in order
     this.filteredCategories = this.categories.filter(function (cat) {
-      var categoryItems = that.order.attributes.items.filter(function (item) {
+      var categoryItems = currentQuote.items.filter(function (item) {
         return (item.category.tId === cat.tId && item.isInMenu);
       });
       return categoryItems.length;
@@ -31,7 +32,7 @@ angular.module('myApp')
 
     // filter items for current category
     this.setupCategoryItems = function (catId) {
-      this.categoryItems = that.order.attributes.items.filter(function (item) {
+      this.categoryItems = currentQuote.items.filter(function (item) {
         return (item.category.tId === catId && item.isInMenu);
       })
     };

@@ -11,6 +11,29 @@ angular.module('myApp')
 
     // functions
     this.orderChanged = $scope.orderModel.orderChanged;
+    this.calcSubTotal = $scope.orderModel.calcSubTotal;
+    this.calcTotal = $scope.orderModel.calcTotal;
+
+
+    // todo: handle multiple quotes
+    this.setBusinessEvent = function () {
+      var thisOrder = this.order.attributes;
+      var thisQuote = this.order.view.quote;
+
+      if (thisOrder.isBusinessEvent) {
+        for (var i = 0; i < thisQuote.items.length; i++) {
+          thisQuote.items[i].price = thisQuote.items[i].priceBeforeVat;
+        }
+      } else {
+        for (i = 0; i < thisQuote.items.length; i++) {
+          thisQuote.items[i].price = thisQuote.items[i].priceInclVat;
+        }
+      }
+      this.calcSubTotal();
+      this.orderChanged('isBusinessEvent');
+      console.log(thisQuote.vat);
+    };
+
 
     this.duplicateOrder = function () {
       $state.go('dupOrder',{basedOnId:this.order.id});

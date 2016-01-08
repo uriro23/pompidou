@@ -35,6 +35,14 @@
              ng-disabled="generalModel.isReadOnly">
     </td>
   </tr>
+  <tr ng-class="generalModel.order.view.changes.isBusinessEvent?'myChanged':null">
+    <td>אירוע עסקי</td>
+    <td>
+      <input type="checkbox" ng-model="generalModel.order.attributes.isBusinessEvent"
+             ng-change="generalModel.setBusinessEvent()"
+             ng-disabled="generalModel.isReadOnly">
+    </td>
+  </tr>
   <tr ng-class="generalModel.order.view.changes.referralSource?'myChanged':null">
     <td>מקור הפניה</td>
     <td>
@@ -61,9 +69,7 @@
       </button>
 
     </td>
-  </tr>
-  <tr>
-    <td>
+   <td>
       <button class="btn btn-warning btn-sm"
               ng-click="generalModel.deleteOrder()"
               ng-show="generalModel.order.id">

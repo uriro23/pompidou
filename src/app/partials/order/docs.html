@@ -1,4 +1,20 @@
 <div ng-controller="DocumentsCtrl as documentsModel">
+  <table>
+    <tbody>
+    <tr style="width:40%">
+      <td style="width: 30%">
+        <a ng-href="#/menu/{{documentsModel.order.id}}"target="_blank">
+          הדפס תפריט
+        </a>
+      </td>
+      <td style="width: 30%">
+        <a ng-href="#/exitList/{{documentsModel.order.id}}"target="_blank">
+          הדפס רשימת יציאה
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 <table style="width: 30%">
     <thead>
     <th style="width: 30%">

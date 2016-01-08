@@ -39,7 +39,7 @@ angular.module('myApp')
       for (var i = 0; i < this.workOrder.length; i++) {
         var inWorkItem = this.workOrder[i].attributes;
         if (inWorkItem.domain === 0) {
-          var items = inWorkItem.order.items;
+          var items = inWorkItem.order.quotes[inWorkItem.order.activeQuote].items;
           for (var j = 0; j < items.length; j++) {
             var item = items[j];
             var temp = this.workOrder.filter(function (workItem, ind) {

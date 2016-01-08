@@ -119,14 +119,18 @@
             ></select>
     </td>
     <td style="width: 12%">
-      <label>סכום: </label>&nbsp;<span>{{headerModel.order.attributes.total | currency}}</span>
+      <label>סכום: </label>&nbsp;<span>
+      {{headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].total | currency}}
+    </span>
     </td>
     <td style="width: 10%">
-      <label>קופסאות: </label>&nbsp;<span>{{headerModel.order.attributes.boxEstimate | number:2}}</span>
+      <label>קופסאות: </label>&nbsp;<span>
+      {{headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].boxEstimate | number:2}}
+    </span>
     </td>
     <td style="width: 9%">
       <label>שובע: </label>&nbsp;<span>
-      {{headerModel.order.attributes.satietyIndex / headerModel.order.attributes.noOfParticipants | number:2}}
+      {{headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].satietyIndex / headerModel.order.attributes.noOfParticipants | number:2}}
       </span>
     </td>
   </tr>

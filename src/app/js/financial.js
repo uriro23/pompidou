@@ -43,19 +43,19 @@ angular.module('myApp')
 
 
     this.setDiscountRate = function () {
-      var thisOrder = this.order.attributes;
+      var thisQuote = this.order.view.quote;
 
-      this.order.view.errors.discountRate = Number(thisOrder.discountRate) != thisOrder.discountRate || Number(thisOrder.discountRate) < 0;
-      thisOrder.discount = -thisOrder.subTotal * thisOrder.discountRate / 100;
+      this.order.view.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
+      thisQuote.discount = -thisQuote.subTotal * thisQuote.discountRate / 100;
       this.calcTotal();
       this.orderChanged('discountRate');
     };
 
     this.setDiscountCause = function () {
-      var thisOrder = this.order.attributes;
+      var thisQuote = this.order.view.quote;
 
       if (this.order.view.discountCause.tId === 0) {
-        thisOrder.discount = 0;
+        thisQuote.discount = 0;
       } else {
         this.setDiscountRate();
       }
@@ -63,53 +63,11 @@ angular.module('myApp')
       this.orderChanged('discountCause');
     };
 
-    this.setTransportationBonus = function () {
-      var thisOrder = this.order.attributes;
+     this.setFixedPrice = function () {
+      var thisQuote = this.order.view.quote;
 
-      if (thisOrder.isTransportationBonus) {
-        thisOrder.transportationBonus = -thisOrder.transportation;
-      } else {
-        thisOrder.transportationBonus = 0;
-      }
-      this.calcTotal();
-      this.orderChanged('isTransportationBonus');
-    };
-
-    this.setTransportation = function () {
-      var thisOrder = this.order.attributes;
-      this.order.view.errors.transportationInclVat = Number(thisOrder.transportationInclVat) != thisOrder.transportationInclVat ||
-      Number(thisOrder.transportationInclVat) < 0;
-      if (thisOrder.isBusinessEvent) {
-        thisOrder.transportation = thisOrder.transportationInclVat / (1 + thisOrder.vatRate);
-      } else {
-        thisOrder.transportation = thisOrder.transportationInclVat;
-      }
-      this.setTransportationBonus();
-      this.calcTotal();
-      this.orderChanged('transportationInclVat');
-    };
-
-    this.setBusinessEvent = function () {
-      var thisOrder = this.order.attributes;
-
-      if (thisOrder.isBusinessEvent) {
-        for (i = 0; i < thisOrder.items.length; i++) {
-          thisOrder.items[i].price = thisOrder.items[i].priceBeforeVat;
-        }
-      } else {
-        for (var i = 0; i < thisOrder.items.length; i++) {
-          thisOrder.items[i].price = thisOrder.items[i].priceInclVat;
-        }
-      }
-      this.setTransportation(); // recalc considering vat reduced or not
-      this.calcSubTotal();
-      this.orderChanged('isBusinessEvent');
-    };
-
-    this.setFixedPrice = function () {
-      var thisOrder = this.order.attributes;
-      this.order.view.errors.fixedPrice = Number(thisOrder.fixedPrice) != thisOrder.fixedPrice ||
-      Number(thisOrder.fixedPrice) < 0;
+      this.order.view.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
+                              Number(thisQuote.fixedPrice) < 0;
       this.calcTotal();
       this.orderChanged('fixedPrice');
     };
