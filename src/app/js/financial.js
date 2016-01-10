@@ -46,8 +46,7 @@ angular.module('myApp')
       var thisQuote = this.order.view.quote;
 
       this.order.view.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
-      thisQuote.discount = -thisQuote.subTotal * thisQuote.discountRate / 100;
-      this.calcTotal();
+      this.calcSubTotal();
       this.orderChanged('discountRate');
     };
 

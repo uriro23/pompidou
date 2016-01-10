@@ -279,7 +279,7 @@ angular.module('myApp')
         thisOrder.endBidTextType = view.endBidTextType.tId;
       }
       if (view.discountCause) {
-        thisOrder.discountCause = view.discountCause.tId;
+        quote.discountCause = view.discountCause.tId;
       }
       if (view.referralSource) {
         thisOrder.referralSource = view.referralSource.tId;
@@ -396,7 +396,7 @@ angular.module('myApp')
           return (obj.id === that.order.attributes.orderStatus);
         })[0];
         this.order.view.discountCause = discountCauses.filter(function (obj) {
-          return (obj.tId === that.order.attributes.discountCause);
+          return (obj.tId === that.order.view.quote.discountCause);
         })[0];
         this.order.view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.attributes.referralSource);
