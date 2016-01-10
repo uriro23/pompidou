@@ -191,12 +191,6 @@
                             style="width:30%">{{bidModel.currentQuote.fixedPrice | currency}}</li>
                     </ul>
 
-                    <ul ng-hide="bidModel.currentQuote.isFixedPrice">
-                        <li style="width:30%">מחיר למשתתף </li>
-                        <li style="width:30%">
-                            {{bidModel.currentQuote.total / bidModel.currentOrder.noOfParticipants | currency}}
-                        </li>
-                    </ul>
                 </div>
       </div>
                 <!-- End of sum_up div -->
