@@ -479,12 +479,6 @@ angular.module('myApp')
       this.order.view.quote.transportationInclVat = 0;  // just to display on order list
       this.order.view.quote.transportation = 0;  // just to display on order list
       this.order.view.quote.transportationBonus = 0;
-      this.order.view.quote.rounding = 0;
-      this.order.view.quote.total = 0;
-      this.order.view.quote.totalBeforeVat = 0;
-      this.order.view.quote.totalBeforeVatForInvoice = 0;
-      this.order.view.quote.vat = 0;
-      this.order.view.quote.vatForInvoice = 0;
       this.order.view.quote.oldTransportation = 0;
       this.order.attributes.activities = [];
       this.setReadOnly();

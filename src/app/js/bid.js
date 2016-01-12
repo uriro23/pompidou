@@ -7,7 +7,6 @@ angular.module('myApp')
                                    bidTextTypes, eventTypes, discountCauses, isPrintBid) {
     $rootScope.menuStatus = 'hide';
 
-    console.log(bid);
     if (bid) {
       this.docNotAvailable = false;
 

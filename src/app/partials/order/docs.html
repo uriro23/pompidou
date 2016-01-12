@@ -107,7 +107,12 @@
               {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </td>
     <td>{{bid.attributes.desc}}</td>
-    <td>{{bid.attributes.order.total | currency}}</td>
+    <td ng-hide="bid.attributes.order.quotes">  <!-- for bids before the multiple quote era -->
+      {{bid.attributes.order.total | currency}}
+    </td>
+    <td ng-show="bid.attributes.order.quotes">
+      {{bid.attributes.order.quotes[bid.attributes.order.activeQuote].total | currency}}
+    </td>
       <td>
           <button ng-click="documentsModel.restoreBid(bid)"
                   ng-hide="documentsModel.order.view.isChanged"
