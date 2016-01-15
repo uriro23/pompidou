@@ -152,15 +152,23 @@ angular.module('myApp')
     return query(orderQuery);
   };
 
-  this.queryPastOrders = function () {
-    var orderQuery = new Parse.Query(Order);
-    orderQuery.lessThan('eventDate', today);
-    orderQuery.limit(1000);
-    return query(orderQuery);
-  };
+    this.queryPastOrders = function () {
+      var orderQuery = new Parse.Query(Order);
+      orderQuery.lessThan('eventDate', today);
+      orderQuery.limit(1000);
+      return query(orderQuery);
+    };
+
+    this.queryOrdersByRange = function (field, from, to) {
+      var orderQuery = new Parse.Query(Order);
+      orderQuery.lessThanOrEqualTo(field, to);
+      orderQuery.greaterThanOrEqualTo(field, from);
+      orderQuery.limit(1000);
+      return query(orderQuery);
+    };
 
 
-  //  OrderNum
+    //  OrderNum
   //  --------
 
   var OrderNum = Parse.Object.extend("OrderNum");

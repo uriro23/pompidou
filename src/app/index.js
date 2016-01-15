@@ -271,6 +271,14 @@ config(function($stateProvider, $urlRouterProvider) {
     }
   })
 
+    .state ('statistics', {
+    url: "/statistics",
+    templateUrl: "app/partials/statistics.html",
+    controller: "StatisticsCtrl as statisticsModel",
+    resolve: {
+    }
+  })
+
     .state('conversion', {
       url: "/conversion",
       templateUrl: "app/partials/conversion.html",

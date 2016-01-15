@@ -1,0 +1,76 @@
+<h3>סטטיסטיקות של אירועים</h3>
+<div>
+  <table>
+    <tbody>
+    <tr>
+      <td>
+        <label>אוכסוליה:</label>
+      </td>
+      <td>
+        <label>תאריך יצירה</label>
+        <input type="radio" ng-model="statisticsModel.filterField" value="createdAt">
+      </td>
+      <td>
+        <label>תאריך אירוע</label>
+        <input type="radio" ng-model="statisticsModel.filterField" value="eventDate">
+      </td>
+      <td>
+        <label>מתאריך</label>
+        <input type="date" ng-model="statisticsModel.fromDate">
+      </td>
+      <td>
+        <label>עד תאריך</label>
+        <input type="date" ng-model="statisticsModel.toDate">
+      </td>
+      <td>
+        <button class="btn btn-default" ng-click="statisticsModel.loadOrders()">טען</button>
+      </td>
+      <td>ס"ה אירועים&nbsp;{{statisticsModel.fetchedOrders.length}}</td>
+    </tr>
+    <tr>
+      <td><label>סינון:</label></td>
+      <td>
+        <label>כולל מבוטלים</label>
+        <input type="checkbox" ng-model="statisticsModel.isIncludeCanceled" ng-change="statisticsModel.filterOrders()">
+      </td>
+      <td>
+        <label>רק סופיים</label>
+        <input type="checkbox" ng-model="statisticsModel.isOnlyFinal" ng-change="statisticsModel.filterOrders()">
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>אחרי פילטור&nbsp;{{statisticsModel.filteredOrders.length}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <br/>
+  <table style="width: 40%">
+    <thead>
+    <th><label>חודש</label></th>
+    <th><label>מס' אירועים</label></th>
+    <th><label>סכום כולל</label></th>
+    <th><label>ממוצע לאירוע</label></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="month in statisticsModel.monthStats track by month.month">
+      <td>{{month.month | date: 'MM.yy'}}</td>
+      <td>{{month.count}}</td>
+      <td>{{month.total | currency}}</td>
+      <td>{{month.total / month.count | currency}}</td>
+    </tr>
+    <tr>
+      <td><label>ס"ה</label></td>
+      <td>{{statisticsModel.tot.count}}</td>
+      <td>{{statisticsModel.tot.total | currency}}</td>
+      <td>{{statisticsModel.tot.total / statisticsModel.tot.count | currency}}</td>
+    </tr>
+    <tr>
+      <td><label>ממוצע</label></td>
+      <td>{{statisticsModel.avg.count | number:2}}</td>
+      <td>{{statisticsModel.avg.total | currency}}</td>
+      <td>{{statisticsModel.avg.total / statisticsModel.avg.count | currency}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
