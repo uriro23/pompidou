@@ -23,30 +23,40 @@
         <input type="date" ng-model="statisticsModel.toDate">
       </td>
       <td>
-        <button class="btn btn-default" ng-click="statisticsModel.loadOrders()">בצע</button>
+        <button class="btn btn-default" ng-click="statisticsModel.loadOrders()">טען</button>
       </td>
     </tr>
-    <!--
     <tr>
       <td><label>סינון:</label></td>
       <td>
-        <label>כולל מבוטלים</label>
-        <input type="checkbox" ng-model="statisticsModel.isIncludeCanceled" ng-change="statisticsModel.filterOrders()">
+        <label>מסכום</label>
+        <input type="text" size="7" money
+               ng-model="statisticsModel.fromTotal"
+               ng-change="statisticsModel.filterOrders()">
       </td>
       <td>
-        <label>רק סופיים</label>
-        <input type="checkbox" ng-model="statisticsModel.isOnlyFinal" ng-change="statisticsModel.filterOrders()">
+        <label>עד סכום</label>
+        <input type="text" size="7" money
+               ng-model="statisticsModel.toTotal"
+               ng-change="statisticsModel.filterOrders()">
       </td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>אחרי פילטור&nbsp;{{statisticsModel.filteredOrders.length}}</td>
+      <td>
+        <label>ממשתתפים</label>
+        <input type="number" size="1" min="0" max="10000"
+               ng-model="statisticsModel.fromParticipants"
+               ng-change="statisticsModel.filterOrders()">
+      </td>
+      <td>
+        <label>עד משתתפים</label>
+        <input type="number" size="1"  min="0" max="10000"
+               ng-model="statisticsModel.toParticipants"
+               ng-change="statisticsModel.filterOrders()">
+      </td>
     </tr>
-    -->
-    </tbody>
+     </tbody>
   </table>
   <br/>
-  <table style="width: 70%">
+  <table style="width: 80%">
     <thead>
     <th><label>חודש</label></th>
     <th><label>מס' פוט'</label></th>
@@ -56,12 +66,8 @@
     <th><label>% בפועל</label></th>
     <th><label>סכום בפועל</label></th>
     <th><label>ממוצע לאירוע</label></th>
-    <!--
-    <th><label>מס' בוטלו</label></th>
-    <th><label>% בוטלו</label></th>
-    <th><label>סכום בוטלו</label></th>
-    <th><label>ממוצע לאירוע</label></th>
-    -->
+    <th><label>מס' משתתפים</label></th>
+    <th><label>מחיר לאורח</label></th>
     </thead>
     <tbody>
     <tr ng-repeat="month in statisticsModel.monthStats track by month.month">
@@ -73,17 +79,20 @@
       <td>{{(month.actCount / month.potCount) * 100 | number:1}}</td>
       <td>{{month.actTotal | currency}}</td>
       <td>{{month.actTotal / month.actCount | currency}}</td>
+      <td>{{month.actParticipants / month.actCount | number:1}}</td>
+      <td>{{month.actTotal / month.actParticipants | currency}}</td>
     </tr>
     <tr><td></td></tr>
     <tr>
       <td><label>ס"ה</label></td>
       <td>{{statisticsModel.tot.potCount}}</td>
       <td>{{statisticsModel.tot.potTotal | currency}}</td>
-      <td>{{statisticsModel.tot.potTotal / statisticsModel.tot.potCount | currency}}</td>
+      <td></td>
       <td>{{statisticsModel.tot.actCount}}</td>
       <td>{{(statisticsModel.tot.actCount / statisticsModel.tot.potCount) * 100 | number:1}}</td>
       <td>{{statisticsModel.tot.actTotal | currency}}</td>
-      <td>{{statisticsModel.tot.actTotal / statisticsModel.tot.actCount | currency}}</td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <td><label>ממוצע</label></td>
@@ -91,9 +100,11 @@
       <td>{{statisticsModel.avg.potTotal | currency}}</td>
       <td>{{statisticsModel.avg.potTotal / statisticsModel.avg.potCount | currency}}</td>
       <td>{{statisticsModel.avg.actCount | number:2}}</td>
-      <td>{{(statisticsModel.tot.actCount / statisticsModel.tot.potCount) * 100 | number:1}}</td>
+      <td>{{(statisticsModel.avg.actCount / statisticsModel.avg.potCount) * 100 | number:1}}</td>
       <td>{{statisticsModel.avg.actTotal | currency}}</td>
       <td>{{statisticsModel.avg.actTotal / statisticsModel.avg.actCount | currency}}</td>
+      <td>{{statisticsModel.avg.actParticipants / statisticsModel.avg.actCount | number:1}}</td>
+      <td>{{statisticsModel.tot.actTotal / statisticsModel.tot.actParticipants | currency}}</td>
     </tr>
     </tbody>
   </table>
