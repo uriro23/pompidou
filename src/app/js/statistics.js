@@ -32,7 +32,9 @@ angular.module('myApp')
       api.queryOrdersByRange(this.filterField, this.fromDate, this.toDate)
         .then(function(orders) {
           that.fetchedOrders = orders;
-          that.filterOrders();
+          //that.filterOrders();
+          that.filteredOrders = that.fetchedOrders;
+          that.doStat();
         })
           };
 
@@ -56,22 +58,40 @@ angular.module('myApp')
         orderDate.setDate(1);
         var monthInd = orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
         if (!monthStats2[monthInd]) {
-          monthStats2[monthInd] = {'month': orderDate, 'count': 1, 'total': currentQuote.total};
+          monthStats2[monthInd] = {'month': orderDate, 'potCount': 1, 'potTotal': currentQuote.total};
+          if (currentOrder.orderStatus<=3) {
+            monthStats2[monthInd].actCount = 1;
+            monthStats2[monthInd].actTotal = currentQuote.total;
+          } else {
+            monthStats2[monthInd].actCount = 0;
+            monthStats2[monthInd].actTotal = 0;
+          }
         }  else {
-          monthStats2[monthInd].count++;
-          monthStats2[monthInd].total += currentQuote.total;
+          monthStats2[monthInd].potCount++;
+          monthStats2[monthInd].potTotal += currentQuote.total;
+          if (currentOrder.orderStatus<=3) {
+            monthStats2[monthInd].actCount++;
+            monthStats2[monthInd].actTotal += currentQuote.total;
+          }
         }
       }
       this.monthStats = [];  // squeeze months array to eliminate empty months
-      this.tot = {'count': 0, 'total': 0};
+      this.tot = {'potCount': 0, 'potTotal': 0, actCount: 0, actTotal: 0};
       for (var j=0;j<monthStats2.length;j++) {
         if (monthStats2[j]) {
           this.monthStats.push(monthStats2[j]);
-          this.tot.count += monthStats2[j].count;
-          this.tot.total += monthStats2[j].total;
+          this.tot.potCount += monthStats2[j].potCount;
+          this.tot.potTotal += monthStats2[j].potTotal;
+          this.tot.actCount += monthStats2[j].actCount;
+          this.tot.actTotal += monthStats2[j].actTotal;
         }
       }
-      this.avg = {'count': this.tot.count / this.monthStats.length, 'total': this.tot.total / this.monthStats.length}
+      this.avg = {
+        'potCount': this.tot.potCount / this.monthStats.length,
+        'potTotal': this.tot.potTotal / this.monthStats.length,
+        'actCount': this.tot.actCount / this.monthStats.length,
+        'actTotal': this.tot.actTotal / this.monthStats.length
+      }
     };
 
     this.loadOrders();

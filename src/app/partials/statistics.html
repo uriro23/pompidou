@@ -23,10 +23,10 @@
         <input type="date" ng-model="statisticsModel.toDate">
       </td>
       <td>
-        <button class="btn btn-default" ng-click="statisticsModel.loadOrders()">טען</button>
+        <button class="btn btn-default" ng-click="statisticsModel.loadOrders()">בצע</button>
       </td>
-      <td>ס"ה אירועים&nbsp;{{statisticsModel.fetchedOrders.length}}</td>
     </tr>
+    <!--
     <tr>
       <td><label>סינון:</label></td>
       <td>
@@ -42,34 +42,58 @@
       <td></td>
       <td>אחרי פילטור&nbsp;{{statisticsModel.filteredOrders.length}}</td>
     </tr>
+    -->
     </tbody>
   </table>
   <br/>
-  <table style="width: 40%">
+  <table style="width: 70%">
     <thead>
     <th><label>חודש</label></th>
-    <th><label>מס' אירועים</label></th>
-    <th><label>סכום כולל</label></th>
+    <th><label>מס' פוט'</label></th>
+    <th><label>סכום פוט'</label></th>
     <th><label>ממוצע לאירוע</label></th>
+    <th><label>מס' בפועל</label></th>
+    <th><label>% בפועל</label></th>
+    <th><label>סכום בפועל</label></th>
+    <th><label>ממוצע לאירוע</label></th>
+    <!--
+    <th><label>מס' בוטלו</label></th>
+    <th><label>% בוטלו</label></th>
+    <th><label>סכום בוטלו</label></th>
+    <th><label>ממוצע לאירוע</label></th>
+    -->
     </thead>
     <tbody>
     <tr ng-repeat="month in statisticsModel.monthStats track by month.month">
       <td>{{month.month | date: 'MM.yy'}}</td>
-      <td>{{month.count}}</td>
-      <td>{{month.total | currency}}</td>
-      <td>{{month.total / month.count | currency}}</td>
+      <td>{{month.potCount}}</td>
+      <td>{{month.potTotal | currency}}</td>
+      <td>{{month.potTotal / month.potCount | currency}}</td>
+      <td>{{month.actCount}}</td>
+      <td>{{(month.actCount / month.potCount) * 100 | number:1}}</td>
+      <td>{{month.actTotal | currency}}</td>
+      <td>{{month.actTotal / month.actCount | currency}}</td>
     </tr>
+    <tr><td></td></tr>
     <tr>
       <td><label>ס"ה</label></td>
-      <td>{{statisticsModel.tot.count}}</td>
-      <td>{{statisticsModel.tot.total | currency}}</td>
-      <td>{{statisticsModel.tot.total / statisticsModel.tot.count | currency}}</td>
+      <td>{{statisticsModel.tot.potCount}}</td>
+      <td>{{statisticsModel.tot.potTotal | currency}}</td>
+      <td>{{statisticsModel.tot.potTotal / statisticsModel.tot.potCount | currency}}</td>
+      <td>{{statisticsModel.tot.actCount}}</td>
+      <td>{{(statisticsModel.tot.actCount / statisticsModel.tot.potCount) * 100 | number:1}}</td>
+      <td>{{statisticsModel.tot.actTotal | currency}}</td>
+      <td>{{statisticsModel.tot.actTotal / statisticsModel.tot.actCount | currency}}</td>
     </tr>
     <tr>
       <td><label>ממוצע</label></td>
-      <td>{{statisticsModel.avg.count | number:2}}</td>
-      <td>{{statisticsModel.avg.total | currency}}</td>
-      <td>{{statisticsModel.avg.total / statisticsModel.avg.count | currency}}</td>
+      <td>{{statisticsModel.avg.potCount | number:2}}</td>
+      <td>{{statisticsModel.avg.potTotal | currency}}</td>
+      <td>{{statisticsModel.avg.potTotal / statisticsModel.avg.potCount | currency}}</td>
+      <td>{{statisticsModel.avg.actCount | number:2}}</td>
+      <td>{{(statisticsModel.tot.actCount / statisticsModel.tot.potCount) * 100 | number:1}}</td>
+      <td>{{statisticsModel.avg.actTotal | currency}}</td>
+      <td>{{statisticsModel.avg.actTotal / statisticsModel.avg.actCount | currency}}</td>
     </tr>
     </tbody>
   </table>
