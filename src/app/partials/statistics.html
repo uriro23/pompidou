@@ -8,11 +8,11 @@
       </td>
       <td>
         <label>תאריך יצירה</label>
-        <input type="radio" ng-model="statisticsModel.filterField" value="createdAt">
+        <input type="radio" ng-model="statisticsModel.filterBy" value="createdAt" ng-change="statisticsModel.setFilterField()">
       </td>
       <td>
         <label>תאריך אירוע</label>
-        <input type="radio" ng-model="statisticsModel.filterField" value="eventDate">
+        <input type="radio" ng-model="statisticsModel.filterBy" value="eventDate" ng-change="statisticsModel.setFilterField()">
       </td>
       <td>
         <label>מתאריך</label>
@@ -55,57 +55,223 @@
     </tr>
      </tbody>
   </table>
-  <br/>
-  <table style="width: 80%">
-    <thead>
-    <th><label>חודש</label></th>
-    <th><label>מס' פוט'</label></th>
-    <th><label>סכום פוט'</label></th>
-    <th><label>ממוצע לאירוע</label></th>
-    <th><label>מס' בפועל</label></th>
-    <th><label>% בפועל</label></th>
-    <th><label>סכום בפועל</label></th>
-    <th><label>ממוצע לאירוע</label></th>
-    <th><label>מס' משתתפים</label></th>
-    <th><label>מחיר לאורח</label></th>
-    </thead>
-    <tbody>
-    <tr ng-repeat="month in statisticsModel.monthStats track by month.month">
-      <td>{{month.month | date: 'MM.yy'}}</td>
-      <td>{{month.potCount}}</td>
-      <td>{{month.potTotal | currency}}</td>
-      <td>{{month.potTotal / month.potCount | currency}}</td>
-      <td>{{month.actCount}}</td>
-      <td>{{(month.actCount / month.potCount) * 100 | number:1}}</td>
-      <td>{{month.actTotal | currency}}</td>
-      <td>{{month.actTotal / month.actCount | currency}}</td>
-      <td>{{month.actParticipants / month.actCount | number:1}}</td>
-      <td>{{month.actTotal / month.actParticipants | currency}}</td>
-    </tr>
-    <tr><td></td></tr>
-    <tr>
-      <td><label>ס"ה</label></td>
-      <td>{{statisticsModel.tot.potCount}}</td>
-      <td>{{statisticsModel.tot.potTotal | currency}}</td>
-      <td></td>
-      <td>{{statisticsModel.tot.actCount}}</td>
-      <td>{{(statisticsModel.tot.actCount / statisticsModel.tot.potCount) * 100 | number:1}}</td>
-      <td>{{statisticsModel.tot.actTotal | currency}}</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><label>ממוצע</label></td>
-      <td>{{statisticsModel.avg.potCount | number:2}}</td>
-      <td>{{statisticsModel.avg.potTotal | currency}}</td>
-      <td>{{statisticsModel.avg.potTotal / statisticsModel.avg.potCount | currency}}</td>
-      <td>{{statisticsModel.avg.actCount | number:2}}</td>
-      <td>{{(statisticsModel.avg.actCount / statisticsModel.avg.potCount) * 100 | number:1}}</td>
-      <td>{{statisticsModel.avg.actTotal | currency}}</td>
-      <td>{{statisticsModel.avg.actTotal / statisticsModel.avg.actCount | currency}}</td>
-      <td>{{statisticsModel.avg.actParticipants / statisticsModel.avg.actCount | number:1}}</td>
-      <td>{{statisticsModel.tot.actTotal / statisticsModel.tot.actParticipants | currency}}</td>
-    </tr>
-    </tbody>
-  </table>
+  <tabset>
+    <tab heading="חודשים">
+      <table style="width: 80%">
+        <thead ng-show="statisticsModel.monthStats.length">
+        <th><label>חודש</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.monthStats track by line.label">
+          <td>{{line.label | date: 'MM.yy'}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.monthStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.monthTot.potCount}}</td>
+          <td>{{statisticsModel.monthTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.monthTot.actCount}}</td>
+          <td>{{(statisticsModel.monthTot.actCount / statisticsModel.monthTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr ng-show="statisticsModel.monthStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.monthAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.potTotal / statisticsModel.monthAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.monthAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.actCount / statisticsModel.monthAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.actTotal / statisticsModel.monthAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.monthAvg.actParticipants / statisticsModel.monthAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.monthTot.actTotal / statisticsModel.monthTot.actParticipants | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
+    <tab heading="משתתפים">
+    <table style="width: 80%">
+        <thead ng-show="statisticsModel.participantStats.length">
+        <th><label>משתתפים</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.participantStats track by line.label">
+          <td>{{line.label}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.participantStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.participantTot.potCount}}</td>
+          <td>{{statisticsModel.participantTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.participantTot.actCount}}</td>
+          <td>{{(statisticsModel.participantTot.actCount / statisticsModel.participantTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.participantTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr ng-show="statisticsModel.participantStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.participantAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.participantAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.participantAvg.potTotal / statisticsModel.participantAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.participantAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.participantAvg.actCount / statisticsModel.participantAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.participantAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.participantAvg.actTotal / statisticsModel.participantAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.participantAvg.actParticipants / statisticsModel.participantAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.participantTot.actTotal / statisticsModel.participantTot.actParticipants | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
+    <tab heading="סכום">
+      <table style="width: 80%">
+        <thead ng-show="statisticsModel.totalStats.length">
+        <th><label>סכום</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.totalStats track by line.label">
+          <td>{{line.label}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.totalStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.totalTot.potCount}}</td>
+          <td>{{statisticsModel.totalTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.totalTot.actCount}}</td>
+          <td>{{(statisticsModel.totalTot.actCount / statisticsModel.totalTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.totalTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr ng-show="statisticsModel.totalStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.totalAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.totalAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.totalAvg.potTotal / statisticsModel.totalAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.totalAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.totalAvg.actCount / statisticsModel.totalAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.totalAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.totalAvg.actTotal / statisticsModel.totalAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.totalAvg.actParticipants / statisticsModel.totalAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.totalTot.actTotal / statisticsModel.totalTot.actParticipants | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
+    </tab>
+    <tab heading="הפניה">
+      <table style="width: 80%">
+        <thead ng-show="statisticsModel.referralSourceStats.length">
+        <th><label>הפניה</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.referralSourceStats track by line.label">
+          <td>{{line.label}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.referralSourceStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.referralSourceTot.potCount}}</td>
+          <td>{{statisticsModel.referralSourceTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.referralSourceTot.actCount}}</td>
+          <td>{{(statisticsModel.referralSourceTot.actCount / statisticsModel.referralSourceTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.referralSourceTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr ng-show="statisticsModel.referralSourceStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.referralSourceAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.referralSourceAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.referralSourceAvg.potTotal / statisticsModel.referralSourceAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.referralSourceAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.referralSourceAvg.actCount / statisticsModel.referralSourceAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.referralSourceAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.referralSourceAvg.actTotal / statisticsModel.referralSourceAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.referralSourceAvg.actParticipants / statisticsModel.referralSourceAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.referralSourceTot.actTotal / statisticsModel.referralSourceTot.actParticipants | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
+  </tabset>
 </div>

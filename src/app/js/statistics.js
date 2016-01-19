@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('StatisticsCtrl', function ($rootScope, lov, api, today) {
+  .controller('StatisticsCtrl', function ($rootScope, lov, api, today, referralSources) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -17,10 +17,13 @@ angular.module('myApp')
     this.fromDate = angular.copy(this.toDate);
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
-    this.filterField = 'eventDate';
+    var filterField = 'eventDate';
     var dateBias;
-    this.fetchedOrders = [];
-    this.filteredOrders = [];
+    var fetchedOrders = [];
+    var filteredOrders = [];
+
+    var participantsFactor = 10;
+    var totalFactor = 1000;
 
 
     //this.loadOrders();
@@ -29,19 +32,36 @@ angular.module('myApp')
       var that = this;
 
       this.monthStats = []; //  clear existing display
-      this.tot = {};
-      this.avg = {};
+      this.monthTot = {};
+      this.monthAvg = {};
+
+      this.participantStats = []; //  clear existing display
+      this.participantTot = {};
+      this.participantAvg = {};
+
+      this.totalStats = []; //  clear existing display
+      this.totalTot = {};
+      this.totalAvg = {};
+
+      this.referralSourceStats = []; //  clear existing display
+      this.referralSourceTot = {};
+      this.referralSourceAvg = {};
+
       dateBias = this.fromDate.getFullYear()*12 + this.fromDate.getMonth(); // this is index 0 of months array
-      api.queryOrdersByRange(this.filterField, this.fromDate, this.toDate)
+      api.queryOrdersByRange(filterField, this.fromDate, this.toDate)
         .then(function(orders) {
-          that.fetchedOrders = orders;
+          fetchedOrders = orders;
           that.filterOrders();
        })
           };
 
+    this.setFilterField = function () {
+      filterField = this.filterBy;
+    };
+
     this.filterOrders = function () {
         var that = this;
-        this.filteredOrders = this.fetchedOrders.filter (function (ord) {
+        filteredOrders = fetchedOrders.filter (function (ord) {
           var currentOrder = ord.attributes;
           var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
           if (that.fromTotal) {
@@ -69,60 +89,102 @@ angular.module('myApp')
         this.doStat();
      };
 
-    this.doStat = function () {
-      var monthStats2 = [];
-      for (var i=0;i<this.filteredOrders.length;i++) {
-        var currentOrder = this.filteredOrders[i].attributes;
+    function doSegmentation (segArray, tot, avg, getIndex, getLabel) {
+      // segArray - array for output of segmentation
+      // tot - total object
+      // avg - average object
+      // getIndex - function that receives order as argument and returns index into segArray array for that order
+      // getLabel - function that receives an index into segArray as argument and returns a display label for that index
+
+      var tempVec = [];
+      for (var i=0;i<filteredOrders.length;i++) {
+        var currentOrder = filteredOrders[i].attributes;
         var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
-        var orderDate = this.filterField === 'eventDate' ? currentOrder.eventDate : this.filteredOrders[i].createdAt;
-        orderDate.setDate(1);
-        var monthInd = orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
-        if (!monthStats2[monthInd]) {  // first event for month
-          monthStats2[monthInd] = {'month': orderDate, 'potCount': 1, 'potTotal': currentQuote.total};
-          if (currentOrder.orderStatus===2 || currentOrder.orderStatus===3) {  // actually happens
-            monthStats2[monthInd].actCount = 1;
-            monthStats2[monthInd].actTotal = currentQuote.total;
-            monthStats2[monthInd].actParticipants = currentOrder.noOfParticipants;
+        var segIndex = getIndex (filteredOrders[i]);
+        if (!tempVec[segIndex]) {  // first event for index
+          tempVec[segIndex] = {'label': angular.copy(getLabel(segIndex)), 'potCount': 1, 'potTotal': currentQuote.total};
+           if (currentOrder.orderStatus===2 || currentOrder.orderStatus===3) {  // actually happens
+            tempVec[segIndex].actCount = 1;
+            tempVec[segIndex].actTotal = currentQuote.total;
+            tempVec[segIndex].actParticipants = currentOrder.noOfParticipants;
 
           } else {
-            monthStats2[monthInd].actCount = 0;
-            monthStats2[monthInd].actTotal = 0;
-            monthStats2[monthInd].actParticipants = 0;
+            tempVec[segIndex].actCount = 0;
+            tempVec[segIndex].actTotal = 0;
+            tempVec[segIndex].actParticipants = 0;
           }
         }  else {
-          monthStats2[monthInd].potCount++;
-          monthStats2[monthInd].potTotal += currentQuote.total;
+         tempVec[segIndex].potCount++;
+          tempVec[segIndex].potTotal += currentQuote.total;
           if (currentOrder.orderStatus===2 || currentOrder.orderStatus===3) {  // actually happens
-            monthStats2[monthInd].actCount++;
-            monthStats2[monthInd].actTotal += currentQuote.total;
-            monthStats2[monthInd].actParticipants += currentOrder.noOfParticipants;
+            tempVec[segIndex].actCount++;
+            tempVec[segIndex].actTotal += currentQuote.total;
+            tempVec[segIndex].actParticipants += currentOrder.noOfParticipants;
           }
         }
       }
-      this.monthStats = [];  // squeeze months array to eliminate empty months
-      this.tot = {'potCount': 0, 'potTotal': 0, actCount: 0, actTotal: 0, actParticipants: 0};
-      for (var j=0;j<monthStats2.length;j++) {
-        if (monthStats2[j]) {
-          this.monthStats.push(monthStats2[j]);
-          this.tot.potCount += monthStats2[j].potCount;
-          this.tot.potTotal += monthStats2[j].potTotal;
-          this.tot.actCount += monthStats2[j].actCount;
-          this.tot.actTotal += monthStats2[j].actTotal;
-          this.tot.actParticipants += monthStats2[j].actParticipants;
+      segArray.splice(0,segArray.length); // clear output array
+      tot.potCount = 0;
+      tot.potTotal = 0;
+      tot.actCount = 0;
+      tot.actTotal = 0;
+      tot.actParticipants = 0;
+      for (var j=0;j<tempVec.length;j++) {
+        if (tempVec[j]) {
+          segArray.push(tempVec[j]);
+          tot.potCount += tempVec[j].potCount;
+          tot.potTotal += tempVec[j].potTotal;
+          tot.actCount += tempVec[j].actCount;
+          tot.actTotal += tempVec[j].actTotal;
+          tot.actParticipants += tempVec[j].actParticipants;
         }
       }
-      this.avg = {
-        'potCount': this.tot.potCount / this.monthStats.length,
-        'potTotal': this.tot.potTotal / this.monthStats.length,
-        'actCount': this.tot.actCount / this.monthStats.length,
-        'actTotal': this.tot.actTotal / this.monthStats.length,
-        'actParticipants': this.tot.actParticipants / this.monthStats.length
-      }
-      console.log(this.tot);
-      console.log(this.avg);
+
+      avg.potCount = tot.potCount / segArray.length;
+      avg.potTotal = tot.potTotal / segArray.length;
+      avg.actCount = tot.actCount / segArray.length;
+      avg.actTotal = tot.actTotal / segArray.length;
+      avg.actParticipants = tot.actParticipants / segArray.length;
+  }
+
+    this.doStat = function () {
+      var that = this;
+
+      // segmentation by months
+      doSegmentation(this.monthStats, this.monthTot, this.monthAvg, function (ord) {
+        var orderDate = filterField === 'eventDate' ? ord.attributes.eventDate : ord.createdAt;
+        return orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
+      },function (ind) {
+        var dateLabel =  angular.copy(that.fromDate);
+        dateLabel.setMonth(that.fromDate.getMonth()+ind);
+        return dateLabel;
+      });
+      // segmentation by participants
+      doSegmentation(this.participantStats, this.participantTot, this.participantAvg, function (ord) {
+        return  Math.floor((ord.attributes.noOfParticipants + 1) / participantsFactor);
+      },function (ind) {
+        return (ind * participantsFactor + 1) + '-' + ((ind+1) * participantsFactor);
+      });
+      // segmentation by total
+      doSegmentation(this.totalStats, this.totalTot, this.totalAvg, function (ord) {
+        return  Math.floor((ord.attributes.quotes[ord.attributes.activeQuote].total + 1) / totalFactor);
+      },function (ind) {
+        return (ind * totalFactor + 1) + '-' + ((ind+1) * totalFactor);
+      });
+      // segmentation by referralSource
+      doSegmentation(this.referralSourceStats, this.referralSourceTot, this.referralSourceAvg, function (ord) {
+        return ord.attributes.referralSource;
+      },function (ind) {
+        var s = referralSources.filter(function(r) {
+          return r.tId === ind;
+        });
+        if (s.length) {
+          return s[0].label;
+        }
+      });
     };
 
 
-    this.loadOrders();
+      this.loadOrders();
 
   });
