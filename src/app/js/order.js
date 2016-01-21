@@ -159,9 +159,11 @@ angular.module('myApp')
       window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
         return "יש שינויים שלא נשמרו"
       };
+      /*
       window.onblur = function () {
         alert('יש שינויים שלא נשמרו')
       };
+      */
       $rootScope.menuStatus = 'empty';
     };
 
