@@ -50,7 +50,9 @@ angular.module('myApp')
       dateBias = this.fromDate.getFullYear()*12 + this.fromDate.getMonth(); // this is index 0 of months array
       api.queryOrdersByRange(filterField, this.fromDate, this.toDate)
         .then(function(orders) {
-          fetchedOrders = orders;
+          fetchedOrders = orders.filter(function(ord) {
+            return !ord.attributes.template;    // ignore templates
+          });
           that.filterOrders();
        })
           };

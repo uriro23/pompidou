@@ -5,7 +5,7 @@ angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope,
                                      currentOrder, bids, lov, today, eventTypes,
                                      bidTextTypes, categories, measurementUnits,
-                                     discountCauses, referralSources, config) {
+                                     discountCauses, referralSources, menuTypes, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -314,6 +314,10 @@ angular.module('myApp')
         } else return -1;
       });
 
+      for (i=0;i<quote.categories.length;i++) {
+        quote.categories[i].isChanged = false;
+      }
+
       // todo: handle multiple quotes
       this.order.attributes.quotes[0] = quote;
 
@@ -403,11 +407,24 @@ angular.module('myApp')
         this.order.view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.attributes.referralSource);
         })[0];
+        this.order.view.menuType = menuTypes.filter(function(obj) {
+          return (obj.tId === that.order.view.quote.menuType);
+        })[0];
+        this.order.view.endBoxType = menuTypes.filter(function(obj) {
+          return (obj.tId === that.order.view.quote.endBoxType);
+        })[0];
+        this.order.view.endTextType = bidTextTypes.filter(function(obj) {
+          return (obj.tId === that.order.view.quote.endTextType);
+        })[0];
         if ($state.current.name === 'dupOrder') {
           this.order.view.errors.eventDate = true; // empty event date is error
         }
       } else { // newOrder
         this.order.view.quote = {};
+        this.order.view.quote.categories = angular.copy(this.categories); // used to edit category descriptions
+        for (var i=0;i<this.order.view.quote.categories.length;i++) {
+          this.order.view.quote.categories[i].isShowDescription = true;
+        }
         this.order.view.quote.items = [];
         this.order.view.customer = {};
         this.order.view.contact = {};
@@ -442,6 +459,7 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
     this.referralSources = referralSources;
+    this.menuTypes = menuTypes;
     this.config = config;
     this.vatRate = config.vatRate;
     this.activityDate = new Date();

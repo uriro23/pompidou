@@ -390,6 +390,20 @@ angular.module('myApp')
       return query(referralSourcesQuery);
     };
 
+    // MenuType
+    // --------
+
+    var MenuType = Parse.Object.extend("MenuType");
+
+    this.queryMenuTypes = function (id) {
+      var menuTypesQuery = new Parse.Query(MenuType);
+      if (id) {
+        menuTypesQuery.equalTo("tId", id);
+      }
+      menuTypesQuery.ascending("order");
+      return query(menuTypesQuery);
+    };
+
 
     // config
   // ------

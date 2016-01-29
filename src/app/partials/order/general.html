@@ -1,12 +1,11 @@
 <div ng-controller="GeneralCtrl as generalModel">
 <table>
-  <tr ng-class="generalModel.order.view.changes.template?'myChanged':null">
-    <td>תבנית</td>
+  <tr ng-class="generalModel.order.view.changes.eventName?'myChanged':null">
+    <td>שם האירוע</td>
     <td>
-      <input type="text" ng-model="generalModel.order.attributes.template"
-             ng-change="generalModel.orderChanged('template')"
+      <input type="text" size="30" ng-model="generalModel.order.attributes.eventName"
+             ng-change="generalModel.orderChanged('eventName')"
              ng-disabled="generalModel.isReadOnly">
-
     </td>
   </tr>
   <tr ng-class="generalModel.order.view.changes.deliveryLocation?'myChanged':null">
@@ -58,6 +57,15 @@
              ng-disabled="generalModel.isReadOnly">
     </td>
     <td></td>
+  </tr>
+  <tr ng-class="generalModel.order.view.changes.template?'myChanged':null">
+    <td>תבנית</td>
+    <td>
+      <input type="text" ng-model="generalModel.order.attributes.template"
+             ng-change="generalModel.orderChanged('template')"
+             ng-disabled="generalModel.isReadOnly">
+
+    </td>
   </tr>
   <tr></tr>
   <tr>

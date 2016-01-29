@@ -59,6 +59,9 @@ config(function($stateProvider, $urlRouterProvider) {
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
         }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
+        }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
         }],
@@ -94,6 +97,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
         }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
@@ -132,6 +138,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
         }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
@@ -347,7 +356,7 @@ config(function($stateProvider, $urlRouterProvider) {
       discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
       }],
-       categories: ['categoriesPromise', function (categoriesPromise) {
+      categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }],
       isPrintBid: [function () {
@@ -385,6 +394,33 @@ config(function($stateProvider, $urlRouterProvider) {
           return true
       }]
     }
+  })
+    .state ('quote', {
+    url: "/quote/:uuid",
+    templateUrl: "app/partials/quote.html",
+    controller: "QuoteCtrl as quoteModel",
+    resolve: {
+      bid: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+          return bids[0];
+        })
+      }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
+      }],
+      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+        return bidTextTypesPromise;
+      }],
+      menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+        return menuTypesPromise;
+      }],
+     categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
+      }],
+      isPrintQuote: [function () {
+        return false
+      }]
+   }
   })
     .state ('exitList', {
     url: "/exitList/:id",

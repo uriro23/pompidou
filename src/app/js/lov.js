@@ -80,6 +80,14 @@ angular.module('myApp')
     });
   })
 
+  .factory('menuTypesPromise', function (api) {
+    return api.queryMenuTypes().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('configPromise', function (api) {
     return api.queryConfig().then(function (res) {
       return res.map(function (obj) {
@@ -159,18 +167,23 @@ angular.module('myApp')
       },
       {
         id: 1,
-        label: 'הצעת מחיר',
+        label: 'הצעת מחיר ישנה',
         isRealDocumentType: true
       },
       {
         id: 2,
         label: 'הזמנה',
-        isRealDocumentType: true
+        isRealDocumentType: false
       },
       {
         id: 3,
         label: 'דוא"ל',
         isRealDocumentType: false
+      },
+      {
+        id: 4,
+        label: 'הצעת מחיר חדשה',
+        isRealDocumentType: true
       }
     ],
 

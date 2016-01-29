@@ -1,0 +1,58 @@
+<div>
+  <table style="width:60%">
+  <tbody>
+  <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'myChanged':null">
+    <td><label>סוג התפריט</label></td>
+    <td>
+      <select ng-model="quoteParamsModel.order.view.menuType"
+              ng-change="quoteParamsModel.setMenuType()"
+              ng-options="menuType.label for menuType in quoteParamsModel.menuTypes"
+              ng-disabled="quoteParamsModel.isReadOnly"
+        ></select>
+    </td>
+    <td><label>קופסת סיום</label></td>
+    <td>
+      <select ng-model="quoteParamsModel.order.view.endBoxType"
+              ng-change="quoteParamsModel.setEndBoxType()"
+              ng-options="menuType.label for menuType in quoteParamsModel.menuTypes"
+              ng-disabled="quoteParamsModel.isReadOnly"
+        ></select>
+    </td>
+    <td><label>טקסט סיום</label></td>
+    <td>
+    <select ng-model="quoteParamsModel.order.view.endTextType"
+            ng-change="quoteParamsModel.setEndText()"
+            ng-options="bidTextType.label for bidTextType in quoteParamsModel.bidTextTypes | filter: {documentType: 4}"
+            ng-disabled="quoteParamsModel.isReadOnly"
+      ></select>
+    </td>
+  </tr>
+  </tbody>
+    </table>
+     <textarea ng-class="quoteParamsModel.order.view.changes.quoteEndText?'myChanged':null"
+               rows="5" cols="102" ng-model="quoteParamsModel.order.view.quote.endText"
+               ng-change="quoteParamsModel.endTextChanged()"
+               ng-disabled="quoteParamsModel.isReadOnly"
+       ></textarea>
+  <table style="width:90%" ng-show="quoteParamsModel.filteredCategories.length">
+    <thead>
+    <th style="width:12%">קטגוריה</th>
+    <th style="width:8%">להציג?</th>
+    <th style="width:80%">תיאור</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="category in quoteParamsModel.filteredCategories track by category.tId"
+        ng-class="category.isChanged?'myChanged':null">
+      <td>{{category.label}}</td>
+      <td>
+        <input type="checkbox" ng-model="category.isShowDescription"
+               ng-change="quoteParamsModel.categoryChanged($index)">
+      </td>
+      <td>
+        <input type="text" size="120" ng-model="category.description"
+               ng-change="quoteParamsModel.categoryChanged($index)">
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

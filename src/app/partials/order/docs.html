@@ -1,7 +1,13 @@
 <div ng-controller="DocumentsCtrl as documentsModel">
   <table>
     <tbody>
-    <tr style="width:40%">
+    <tr style="width:50%">
+      <td style="width:40%">
+        <button class="btn btn-default" ng-click="documentsModel.sendMail()"
+                ng-disabled="documentsModel.isReadOnly || documentsModel.order.view.isChanged">
+          שלח דוא"ל
+        </button>
+      </td>
       <td style="width: 30%">
         <a ng-href="#/menu/{{documentsModel.order.id}}"target="_blank">
           הדפס תפריט
@@ -15,43 +21,32 @@
     </tr>
     </tbody>
   </table>
-<table style="width: 30%">
-    <thead>
-    <th style="width: 30%">
-        הצעת מחיר
-    </th>
-    <th style="width: 40%"></th>
-    <th style="width: 30%"></th>
-    </thead>
-    <tbody>
-    <tr ng-class="documentsModel.order.view.changes.startBidTextType?'myChanged':null">
-        <td>טקסט מבוא</td>
+  <p></p>
+<table style="width: 50%">
+  <tbody>
+    <tr ng-class="documentsModel.order.view.changes.bidTextType?'myChanged':null">
+      <td><label>הצעת מחיר ישנה:</label></td>
+        <td><label>טקסט מבוא</label></td>
         <td>
             <select ng-model="documentsModel.order.view.startBidTextType"
-                    ng-change="documentsModel.orderChanged('startBidTextType')"
+                    ng-change="documentsModel.orderChanged('bidTextType')"
                     ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
                     ng-disabled="documentsModel.isReadOnly"
                     ></select>
         </td>
+      <td><label>טקסט סיום</label></td>
       <td>
-        <button class="btn btn-default" ng-click="documentsModel.sendMail()"
-                ng-disabled="documentsModel.isReadOnly || documentsModel.order.view.isChanged">
-          שלח דוא"ל
-        </button>
+        <select ng-model="documentsModel.order.view.endBidTextType"
+                ng-change="documentsModel.orderChanged('bidTextType')"
+                ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
+                ng-disabled="documentsModel.isReadOnly"
+          ></select>
       </td>
-    </tr>
-    <tr ng-class="documentsModel.order.view.changes.endBidTextType?'myChanged':null">
-        <td>טקסט סיום</td>
-        <td>
-            <select ng-model="documentsModel.order.view.endBidTextType"
-                    ng-change="documentsModel.orderChanged('endBidTextType')"
-                    ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
-                    ng-disabled="documentsModel.isReadOnly"
-                    ></select>
-        </td>
     </tr>
     </tbody>
 </table>
+  <p></p>
+  <!--
 <table>
     <thead>
     <th>
@@ -69,6 +64,7 @@
     </tr>
     </tbody>
 </table>
+-->
 
 <div ng-hide="documentsModel.order.view.isChanged">
   <label>
@@ -86,11 +82,12 @@
         </button>
    </span>
 </div>
-<table style="width: 50%">
+  <p></p>
+<table style="width: 60%">
   <thead>
-  <th style="width: 10%">סוג מסמך</th>
-  <th style="width: 25%">תאריך</th>
-  <th style="width: 35%">תיאור</th>
+  <th style="width: 20%">סוג מסמך</th>
+  <th style="width: 20%">תאריך</th>
+  <th style="width: 30%">תיאור</th>
   <th style="width: 10%">סכום</th>
   <th style="width: 10%"></th>
   <th style="width: 10%"></th>
@@ -98,12 +95,17 @@
   <tbody>
   <tr ng-repeat="bid in documentsModel.bids track by bid.id">
       <td>{{documentsModel.documentTypes[bid.attributes.documentType].label}}</td>
-      <td ng-hide="bid.attributes.documentType===0">
-          <a ng-href="#/bid/{{bid.attributes.uuid}}" target="_blank">
-              {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
-          </a>
-      </td>
-      <td ng-show="bid.attributes.documentType===0">
+    <td ng-show="bid.attributes.documentType === 1 || bid.attributes.documentType === 2">
+      <a ng-href="#/bid/{{bid.attributes.uuid}}" target="_blank">
+        {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      </a>
+    </td>
+    <td ng-show="bid.attributes.documentType === 4">
+      <a ng-href="#/quote/{{bid.attributes.uuid}}" target="_blank">
+        {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      </a>
+    </td>
+    <td ng-show="bid.attributes.documentType===0">
               {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </td>
     <td>{{bid.attributes.desc}}</td>
