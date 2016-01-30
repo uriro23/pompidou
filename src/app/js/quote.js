@@ -11,7 +11,6 @@ angular.module('myApp')
       this.docNotAvailable = false;
 
       this.bid = bid;
-
       this.categories = categories;
       this.config = config;
       this.currentOrder = this.bid.attributes.order;
@@ -36,13 +35,24 @@ angular.module('myApp')
       var that = this;
 
      //fetch menu type
-      if (that.currentOrder.menuType) {
+      if (that.currentQuote.menuType) {
         this.menuType = menuTypes.filter(function (menu) {
           return menu.tId === that.currentQuote.menuType
         })[0];
+      } else {
+        this.menuType = menuTypes[0];
       }
 
-       //filter categories - only those in order and not transportation
+      this.quoteHeading = this.bid.attributes.order.eventName;
+      if (this.quoteHeading && this.menuType.tId) {
+        this.quoteHeading += ' - ';
+      }
+      if (this.menuType.tId) {
+        this.quoteHeading += this.menuType.label;
+      }
+
+
+      //filter categories - only those in order and not transportation
       this.filteredCategories = this.categories.filter(function (cat) {
         if (cat.isTransportation) {
           return false
@@ -53,6 +63,25 @@ angular.module('myApp')
         return categoryItems.length;
       });
 
+      //merge with updated category descriptions
+       this.filteredCategories = this.filteredCategories.map (function(cat) {
+        var updCat = that.currentQuote.categories.filter(function(uCat) {
+          return cat.tId === uCat.tId;
+        })[0];
+         // if category does not appear in updated quote list, this means user hasn't refreshed the list since category
+        // was added, so we take the original description for it
+        if (!updCat) {
+          return cat;
+        }
+        var newCat = cat;
+        if (updCat.isShowDescription) {
+          newCat.description = updCat.description;
+       } else {
+          newCat.description = '';
+        }
+        return newCat;
+      });
+
       this.filteredCategories.sort(function(a,b) {
         return a.order - b.order;
       });
@@ -61,7 +90,10 @@ angular.module('myApp')
       this.setupCategoryItems = function (catId) {
         this.categoryItems = that.currentQuote.items.filter(function (item) {
           return (item.category.tId === catId);
-        })
+        });
+        this.categoryPrice = this.categoryItems.reduce(function(prev,currentItem) { //sum category item prices
+          return prev + currentItem.price;
+        },0)
       };
 
       // filter transportation items
