@@ -18,6 +18,8 @@
               ng-disabled="quoteParamsModel.isReadOnly"
         ></select>
     </td>
+  </tr>
+  <tr>
     <td><label>טקסט סיום</label></td>
     <td>
     <select ng-model="quoteParamsModel.order.view.endTextType"
@@ -29,11 +31,17 @@
   </tr>
   </tbody>
     </table>
-     <textarea ng-class="quoteParamsModel.order.view.changes.quoteEndText?'myChanged':null"
+  <div>
+    <p></p>
+     <!-- <textarea ng-class="quoteParamsModel.order.view.changes.quoteEndText?'myChanged':null"
                rows="5" cols="102" ng-model="quoteParamsModel.order.view.quote.endText"
                ng-change="quoteParamsModel.endTextChanged()"
                ng-disabled="quoteParamsModel.isReadOnly"
-       ></textarea>
+       ></textarea> -->
+    <div style="width: 50%;display: inline-block; border: 1px dashed #000000" ng-bind-html="quoteParamsModel.order.view.quote.endText"></div>
+    <button class="btn btn-default" ng-click="quoteParamsModel.editEndText()">ערוך</button>
+    </div>
+  <p></p>
   <table style="width:90%" ng-show="quoteParamsModel.filteredCategories.length">
     <thead>
     <th style="width:12%">קטגוריה</th>

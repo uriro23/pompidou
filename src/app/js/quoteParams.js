@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('QuoteParamsCtrl', function ($scope) {
+  .controller('QuoteParamsCtrl', function ($scope, $modal) {
 
     // references to members of parent order controller
     //objects
@@ -50,9 +50,31 @@ angular.module('myApp')
       this.orderChanged('quoteEndText');
     };
 
-    this.endTextChanged = function () {
-      this.orderChanged('quoteEndText');
-    };
+    this.editEndText = function () {
+      var that = this;
+      var editTextModal = $modal.open({
+        templateUrl: 'app/partials/order/editText.html',
+        controller: 'EditTextCtrl as editTextModel',
+        resolve: {
+          text: function () {
+            return that.order.view.quote.endText;
+          },
+          title: function () {
+            return 'עדכון טקסט סיום';
+          }
+        },
+        size: 'lg'
+      });
+
+      editTextModal.result.then(function (txt) {
+        if (txt) {
+          that.order.view.quote.endText = txt;
+          that.orderChanged('quoteEndText');
+        }
+      });
+
+
+      };
 
     // todo: move all lov collections of quote into the quote object (discountCause, menuType)
 

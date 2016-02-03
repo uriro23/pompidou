@@ -227,5 +227,18 @@ angular.module('myApp')
       $modalInstance.close();
     }
 
-  });
+  })
+
+.controller('EditTextCtrl', function ($modalInstance, text, title) {
+    this.text = text;
+    this.title = title;
+
+  this.update = function () {
+    $modalInstance.close(this.text);
+  };
+
+  this.candel = function () {
+    $modalInstance.close(false);
+  };
+});
 

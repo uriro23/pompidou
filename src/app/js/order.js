@@ -314,8 +314,10 @@ angular.module('myApp')
         } else return -1;
       });
 
-      for (i=0;i<quote.categories.length;i++) {
-        quote.categories[i].isChanged = false;
+      if (quote.categories) {
+        for (i = 0; i < quote.categories.length; i++) {
+          quote.categories[i].isChanged = false;
+        }
       }
 
       // todo: handle multiple quotes
