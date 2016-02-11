@@ -49,8 +49,7 @@
       </thead>
       <tbody>
       <tr ng-repeat="order in orderListModel.orders"
-              ng-class="orderListModel.queryType!=='future'?null:
-                        order.view.orderStatus.id===1?'myNewEvent':
+              ng-class="order.view.orderStatus.id===1?'myNewEvent':
                         order.view.orderStatus.id===2?'myActiveEvent':
                         order.view.orderStatus.id===3?'myFinalEvent':
                         order.view.orderStatus.id===6?'mycanceledEvent':null">
@@ -63,14 +62,11 @@
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>
-        <td ng-show="orderListModel.queryType==='future'">
+        <td>
           <select ng-model="order.view.orderStatus"
                   ng-change="orderListModel.setStatus(order)"
                   ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
               ></select>
-          </td>
-          <td ng-hide="orderListModel.queryType==='future'">
-              {{order.view.orderStatus.name}}
           </td>
           <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
           <td>{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
