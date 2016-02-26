@@ -9,7 +9,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
-      ng-class="item.isChanged?'myChanged':null">
+      ng-class="item.isChanged?'bg-success':null">
     <td>{{item.category.label}}</td>
     <td>{{item.productDescription}}</td>
     <td>

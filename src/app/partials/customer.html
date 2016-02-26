@@ -67,7 +67,7 @@
     </th>
     </thead>
     <tbody>
-    <tr ng-class="customerModel.isCustomerChanged?'myChanged':null">
+    <tr ng-class="customerModel.isCustomerChanged?'bg-success':null">
       <td>
         <input type="text" size=3 ng-model="customerModel.currentCustomer.attributes.firstName"
                ng-change="customerModel.customerChanged()"
@@ -105,7 +105,7 @@
       </td>
     </tr>
     <tr ng-repeat="customer in customerModel.filteredCustomers track by customer.id"
-        ng-class="customer.isSelected?'mySelected':null">
+        ng-class="customer.isSelected?'bg-primary':null">
       <td ng-click="customerModel.selectLine($index)">{{customer.attributes.firstName}}</td>
       <td ng-click="customerModel.selectLine($index)">{{customer.attributes.lastName}}</td>
       <td ng-click="customerModel.selectLine($index)">{{customer.attributes.mobilePhone}}</td>

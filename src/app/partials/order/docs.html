@@ -24,7 +24,7 @@
   <p></p>
 <table style="width: 50%">
   <tbody>
-    <tr ng-class="documentsModel.order.view.changes.bidTextType?'myChanged':null">
+    <tr ng-class="documentsModel.order.view.changes.bidTextType?'bg-success':null">
       <td><label>הצעת מחיר ישנה:</label></td>
         <td><label>טקסט מבוא</label></td>
         <td>
@@ -55,7 +55,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="textType in documentsModel.bidTextTypes | filter: {documentType: 2}"
-        ng-class="documentsModel.order.view.changes.orderTextType?'myChanged':null">
+        ng-class="documentsModel.order.view.changes.orderTextType?'bg-success':null">
         <td>
             <input type="checkbox" ng-model="textType.isInclude"
                    ng-change="documentsModel.setOrderDocTextType()">

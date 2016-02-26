@@ -27,7 +27,7 @@
     <td></td>
     <td>{{financialModel.order.view.quote.transportationBonus | currency}}</td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.discountCause?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.discountCause?'bg-success':null">
     <td><label>סיבת הנחה</label></td>
     <td>
       <select ng-model="financialModel.order.view.discountCause"
@@ -38,13 +38,13 @@
     </td>
     <td></td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.discountRate?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.discountRate?'bg-success':null">
     <td><label>% הנחה</label></td>
     <td>
       <input type="number" max=100 min = 0 ng-model="financialModel.order.view.quote.discountRate"
              ng-disabled="!financialModel.order.view.discountCause.tId>0 || financialModel.isReadOnly"
              ng-change="financialModel.setDiscountRate()"
-             ng-class="financialModel.order.view.errors.discountRate?'myError':null">
+             ng-class="financialModel.order.view.errors.discountRate?'bg-danger':null">
     </td>
     <td>{{financialModel.order.view.quote.discount | currency}}</td>
   </tr>
@@ -75,7 +75,7 @@
     <td>למשתתף:</td>
     <td>{{financialModel.order.view.quote.total / financialModel.order.attributes.noOfParticipants | currency}}</td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.fixedPrice?'myChanged':null">
+  <tr ng-class="financialModel.order.view.changes.fixedPrice?'bg-success':null">
     <td><label>מחיר קבוע</label></td>
     <td>
       <input type="checkbox" ng-model="financialModel.order.view.quote.isFixedPrice"
@@ -86,7 +86,7 @@
       <input type="text" money size=5 ng-model="financialModel.order.view.quote.fixedPrice"
              ng-disabled="financialModel.isReadOnly || !financialModel.order.view.quote.isFixedPrice"
              ng-change="financialModel.setFixedPrice()"
-             ng-class="financialModel.order.view.errors.fixedPrice?'myError':null">
+             ng-class="financialModel.order.view.errors.fixedPrice?'bg-danger':null">
     </td>
   </tr>
   </tbody>

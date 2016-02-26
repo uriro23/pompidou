@@ -4,7 +4,7 @@
           ng-disabled="catalogModel.isChanged"
           ng-options="domain.label for domain in catalogModel.domains"></select>
   <button ng-click="catalogModel.addItem()" class="btn btn-default">הוסף פריט</button>
-  <span ng-show="catalogModel.isChanged" class="myChanged">
+  <span ng-show="catalogModel.isChanged" class="bg-success">
     <span>     הקש על</span>
     <button ng-click="catalogModel.updateItems()" class="btn btn-success">שמור</button>
     <span> לשמירת העדכונים שבוצעו, או על </span>
@@ -37,7 +37,7 @@
     <th>יחידה</th>
     </thead>
       <tbody>
-      <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?'myChanged':null">
+      <tr ng-repeat="catalogItem in catalogModel.catalog" ng-class="catalogItem.isChanged?'bg-success':null">
         <td>
           <select ng-model="catalogItem.view.category" ng-change="catalogModel.itemChanged($index)"
                 ng-options="category.label for category in catalogModel.categories"></select>
@@ -45,12 +45,12 @@
         <td ng-show="catalogModel.currentDomain.id===1">
           <input type="text" size = 90 ng-model="catalogItem.attributes.productDescription"
                  ng-change="catalogModel.setProductDescription($index, true)"
-                 ng-class="catalogItem.isProductDescriptionError?'myError':null">
+                 ng-class="catalogItem.isProductDescriptionError?'bg-danger':null">
         </td>
         <td ng-show="catalogModel.currentDomain.id>1">
           <input type="text" size = 30 ng-model="catalogItem.attributes.productDescription"
                  ng-change="catalogModel.setProductDescription($index, true)"
-                 ng-class="catalogItem.isProductDescriptionError?'myError':null">
+                 ng-class="catalogItem.isProductDescriptionError?'bg-danger':null">
         </td>
         <td>
           <select ng-model="catalogItem.view.measurementUnit" ng-change="catalogModel.itemChanged($index)"
@@ -59,22 +59,22 @@
         <td ng-show="catalogModel.currentDomain.id===1">
           <input type="text" size = 4 ng-model="catalogItem.attributes.priceQuantity"
                  ng-change="catalogModel.setPriceQuantity($index)"
-                 ng-class="catalogItem.isPriceQuantityError?'myError':null">
+                 ng-class="catalogItem.isPriceQuantityError?'bg-danger':null">
         </td>
         <td ng-show="catalogModel.currentDomain.id===1">
           <input type="text" money min=0 size = 5 ng-model="catalogItem.attributes.price"
                  ng-change="catalogModel.setPrice($index)"
-                 ng-class="catalogItem.isPriceError?'myError':null">
+                 ng-class="catalogItem.isPriceError?'bg-danger':null">
         </td>
         <td>
           <input type="text" size = 4 ng-model="catalogItem.attributes.productionQuantity"
                  ng-change="catalogModel.setProductionQuantity($index)"
-                 ng-class="catalogItem.isProductionQuantityError?'myError':null">
+                 ng-class="catalogItem.isProductionQuantityError?'bg-danger':null">
         </td>
         <td ng-show="catalogModel.currentDomain.id===2">
           <input type="text" size = 4 ng-model="catalogItem.attributes.minTime"
                  ng-change="catalogModel.setMinTime($index)"
-                 ng-class="catalogItem.isMinTimeError?'myError':null">
+                 ng-class="catalogItem.isMinTimeError?'bg-danger':null">
         </td>
         <td ng-show="catalogModel.currentDomain.id===2">
           <select ng-model="catalogItem.view.minTimeUnit" ng-change="catalogModel.itemChanged($index)"
@@ -83,7 +83,7 @@
         <td ng-show="catalogModel.currentDomain.id===2">
           <input type="text" size = 4 ng-model="catalogItem.attributes.maxTime"
                  ng-change="catalogModel.setMaxTime($index)"
-                 ng-class="catalogItem.isMaxTimeError?'myError':null">
+                 ng-class="catalogItem.isMaxTimeError?'bg-danger':null">
         </td>
         <td ng-show="catalogModel.currentDomain.id===2">
           <select ng-model="catalogItem.view.maxTimeUnit" ng-change="catalogModel.itemChanged($index)"

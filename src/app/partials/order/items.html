@@ -62,38 +62,39 @@
       </tbody>
   </table>
 </span>
-<table style="width: 80%">
+  <p></p>
+<table ng-show="itemsModel.order.view.quote.items.length" style="width: 80%">
   <thead>
-  <th style="width: 9%">קטגוריה</th>
+  <th  class="hidden-xs"style="width: 9%">קטגוריה</th>
   <th style="width: 73%">מוצר</th>
-  <th style="width: 6%">יח'</th>
+  <th  class="hidden-xs"style="width: 6%">יח'</th>
   <th style="width: 2%">כמות</th>
   <th style="width: 5%">מחיר</th>
   <th style="width: 5%">בונוס</th>
   </thead>
   <tbody>
   <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
-      ng-class="item.isChanged?'myChanged':null">
-    <td>{{item.category.label}}</td>
+      ng-class="item.isChanged?'bg-success':null">
+    <td class="hidden-xs">{{item.category.label}}</td>
     <td>
       <input type="text" size="100" ng-model="item.productDescription"
              ng-change="itemsModel.setProductDescription($index)"
              ng-disabled="itemsModel.isReadOnly"
-             ng-class="item.errors.productDescription?'myError':null">
+             ng-class="item.errors.productDescription?'bg-danger':null">
     </td>
-    <td>{{item.measurementUnit.label}}</td>
+    <td class="hidden-xs">{{item.measurementUnit.label}}</td>
     <td>
       <input type="number" size="1" min=0 max="10000"
              ng-model="item.quantity"
              ng-change="itemsModel.setQuantity($index)"
              ng-disabled="itemsModel.isReadOnly"
-             ng-class="item.errors.quantity?'myError':null">
+             ng-class="item.errors.quantity?'bg-danger':null">
     </td>
     <td>
       <input type="text" size="7" money min=0 ng-model="item.price"
              ng-change="itemsModel.setPrice($index)"
              ng-disabled="itemsModel.isReadOnly"
-             ng-class="item.errors.price?'myError':null">
+             ng-class="item.errors.price?'bg-danger':null">
     </td>
     <td>
       <input type="checkbox"

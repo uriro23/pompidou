@@ -9,7 +9,7 @@
     <input type="number" min="0" max="50" ng-change="adminModel.setVat()"
            ng-model-options="{updateOn: 'blur'}"
            ng-model="adminModel.vatRate"
-           ng-class="adminModel.vatError?'myError':null">
+           ng-class="adminModel.vatError?'bg-danger':null">
     <button class="btn btn-default" ng-click="adminModel.updateVat()">עדכן</button>
   </tab>
   <tab heading="שינוי סיסמה">

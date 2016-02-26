@@ -29,30 +29,31 @@
         </button>
       </span>
     </div>
-    <table style="width: 99%">
+    <div class="table-responsive">
+    <table class="table" style="width: 99%">
       <thead>
       <th style="width: 3%">מס'</th>
-      <th style="width: 9%">תאריך</th>
+      <th style="width: 11%">תאריך</th>
       <th style="width: 4%">מסירה</th>
       <th ng-show="orderListModel.queryType==='future'" style="width: 4%">יציאה</th>
       <th style="width: 8%">לקוח</th>
       <th style="width: 5%">סועדים</th>
-      <th style="width: 7%">סוג אירוע</th>
+      <th class="hidden-xs" style="width: 7%">סוג אירוע</th>
       <th style="width: 7%">סטטוס</th>
       <th style="width: 7%">סכום</th>
-      <th style="width: 7%">משלוח</th>
+      <th class="hidden-xs" style="width: 7%">משלוח</th>
       <th style="width: 3%">הנחה</th>
       <th ng-show="orderListModel.queryType==='templates'" style="width: 33%">תבנית</th>
-      <th ng-show="orderListModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
-      <th ng-show="orderListModel.queryType==='future'" style="width: 24%">פעילות</th>
-      <th  ng-show="orderListModel.queryType==='future'"style="width: 6%">הצעת מחיר</th>
+      <th class="hidden-xs" ng-show="orderListModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
+      <th class="hidden-xs" ng-show="orderListModel.queryType==='future'" style="width: 22%">פעילות</th>
+      <th class="hidden-xs" ng-show="orderListModel.queryType==='future'"style="width: 6%">הצעת מחיר</th>
       </thead>
       <tbody>
       <tr ng-repeat="order in orderListModel.orders"
-              ng-class="order.view.orderStatus.id===1?'myNewEvent':
-                        order.view.orderStatus.id===2?'myActiveEvent':
-                        order.view.orderStatus.id===3?'myFinalEvent':
-                        order.view.orderStatus.id===6?'mycanceledEvent':null">
+              ng-class="order.view.orderStatus.id===1?'bg-active':
+                        order.view.orderStatus.id===2?'bg-warning':
+                        order.view.orderStatus.id===3?'bg-success':
+                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
         <td>
             <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
         </td>
@@ -61,7 +62,7 @@
         <td ng-show="orderListModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>
         <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
-        <td>{{order.view.eventType.label}}</td>
+        <td class="hidden-xs">{{order.view.eventType.label}}</td>
         <td>
           <select ng-model="order.view.orderStatus"
                   ng-change="orderListModel.setStatus(order)"
@@ -69,15 +70,16 @@
               ></select>
           </td>
           <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
-          <td>{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
+          <td class="hidden-xs">{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
           <td>{{order.attributes.quotes[order.attributes.activeQuote].discountRate | number:0}}</td>
         <td ng-show="orderListModel.queryType==='templates'">{{order.attributes.template}}</td>
-        <td ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>
-        <td ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].text}}</td>
-          <td ng-show="orderListModel.queryType==='future'">
+        <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>
+        <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].text}}</td>
+          <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">
               <button class="btn btn-default btn-sm" ng-click="orderListModel.getLastBid(order)">הצג</button>
           </td>
       </tr>
       </tbody>
     </table>
+    </div>
 

@@ -19,7 +19,7 @@ body
     padding:0;
     font: 14px Tahoma;
     width:100%;
-    background-color: lightyellow;
+    /* background-color: lightyellow; */
 }
 
 /*
@@ -128,7 +128,7 @@ a:link, a:visited  {
 .myFinalEvent {
     background-color: chartreuse;
 }
-.mycanceledEvent {
+.myCanceledEvent {
     text-decoration: line-through;
 }
 

@@ -1,7 +1,7 @@
 <div>
   <table style="width:60%">
   <tbody>
-  <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'myChanged':null">
+  <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'bg-success':null">
     <td><label>סוג התפריט</label></td>
     <td>
       <select ng-model="quoteParamsModel.order.view.menuType"
@@ -33,7 +33,7 @@
     </table>
   <div>
     <p></p>
-     <!-- <textarea ng-class="quoteParamsModel.order.view.changes.quoteEndText?'myChanged':null"
+     <!-- <textarea ng-class="quoteParamsModel.order.view.changes.quoteEndText?'bg-success':null"
                rows="5" cols="102" ng-model="quoteParamsModel.order.view.quote.endText"
                ng-change="quoteParamsModel.endTextChanged()"
                ng-disabled="quoteParamsModel.isReadOnly"
@@ -50,7 +50,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="category in quoteParamsModel.filteredCategories track by category.tId"
-        ng-class="category.isChanged?'myChanged':null">
+        ng-class="category.isChanged?'bg-success':null">
       <td>{{category.label}}</td>
       <td>
         <input type="checkbox" ng-model="category.isShowDescription"
