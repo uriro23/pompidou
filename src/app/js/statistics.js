@@ -107,7 +107,7 @@ angular.module('myApp')
         var segIndex = getIndex (filteredOrders[i]);
         if (!tempVec[segIndex]) {  // first event for index
           tempVec[segIndex] = {'label': angular.copy(getLabel(segIndex)), 'potCount': 1, 'potTotal': currentQuote.total};
-           if (currentOrder.orderStatus===2 || currentOrder.orderStatus===3) {  // actually happens
+           if (currentOrder.orderStatus >= 2 && currentOrder.orderStatus <= 5) {  // actually happens
             tempVec[segIndex].actCount = 1;
             tempVec[segIndex].actTotal = currentQuote.total;
             tempVec[segIndex].actParticipants = currentOrder.noOfParticipants;
@@ -120,7 +120,7 @@ angular.module('myApp')
         }  else {
          tempVec[segIndex].potCount++;
           tempVec[segIndex].potTotal += currentQuote.total;
-          if (currentOrder.orderStatus===2 || currentOrder.orderStatus===3) {  // actually happens
+          if (currentOrder.orderStatus >= 2 && currentOrder.orderStatus <= 5) {  // actually happens
             tempVec[segIndex].actCount++;
             tempVec[segIndex].actTotal += currentQuote.total;
             tempVec[segIndex].actParticipants += currentOrder.noOfParticipants;

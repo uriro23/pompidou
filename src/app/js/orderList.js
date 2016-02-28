@@ -20,9 +20,10 @@ angular.module('myApp')
         this.orders = fetchedOrders;   // no filter in these states
       } else {
         this.orders = fetchedOrders.filter(function (ord) {
-          return !that.filterByCustomer.id ||
+          return (!that.filterByCustomer.id ||
             ord.attributes.customer === that.filterByCustomer.id ||
-            ord.attributes.contact === that.filterByCustomer.id
+            ord.attributes.contact === that.filterByCustomer.id) &&
+            (!that.filterByStatus || ord.attributes.orderStatus === that.filterByStatus.id)
         })
       }
 
@@ -120,6 +121,10 @@ angular.module('myApp')
       }), function () {
       };
 
+    };
+
+    this.setStatusFilter = function() {
+      this.filterOrders();
     };
 
     this.setStatus = function (order) {

@@ -2,19 +2,19 @@
     רשימת אירועים
 </h2>
     <div>
+      <span>  עתידיים </span>
       <input type="radio" ng-model="orderListModel.queryType" value="future"
                                      ng-change="orderListModel.setQuery()">
-      <span>  עתידיים </span>
+      <span>תבניות </span>
       <input type="radio" ng-model="orderListModel.queryType" value="templates"
                                      ng-change="orderListModel.setQuery()">
-      <span>תבניות </span>
+      <span>הסטוריה </span>
       <input type="radio" ng-model="orderListModel.queryType" value="past"
                                      ng-change="orderListModel.setQuery()">
-      <span>הסטוריה </span>
+      <span>כולם </span>
       <input type="radio" ng-model="orderListModel.queryType" value="all"
                                   ng-change="orderListModel.setQuery()">
-      <span>כולם </span> &nbsp;&nbsp;
-      <span>מבוטלים:</span>
+      &nbsp;&nbsp;<span>מבוטלים:</span>
       <input type="checkbox"
              ng-model="orderListModel.isIncludecanceled"
              ng-change="orderListModel.filterOrders()"> &nbsp;&nbsp;
@@ -27,6 +27,12 @@
                 ng-hide="orderListModel.filterByCustomer.id">
           סינון לפי לקוח
         </button>
+        <span>סטטוס אירוע: </span>
+        <select ng-model="orderListModel.filterByStatus"
+                ng-change="orderListModel.setStatusFilter()"
+                ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses">
+            <option value=""></option>
+          </select>
       </span>
     </div>
     <div class="table-responsive">
@@ -52,7 +58,7 @@
       <tr ng-repeat="order in orderListModel.orders"
               ng-class="order.view.orderStatus.id===1?'bg-active':
                         order.view.orderStatus.id===2?'bg-warning':
-                        order.view.orderStatus.id===3?'bg-success':
+                        (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
                         order.view.orderStatus.id===6?'active myCanceledEvent':null">
         <td>
             <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
