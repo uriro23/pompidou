@@ -10,7 +10,10 @@
                                      ng-change="orderListModel.setQuery()">
       <span>הסטוריה </span>
       <input type="radio" ng-model="orderListModel.queryType" value="past"
-                                     ng-change="orderListModel.setQuery()">
+             ng-change="orderListModel.setQuery()">
+      <span>חובות</span>
+      <input type="radio" ng-model="orderListModel.queryType" value="debts"
+             ng-change="orderListModel.setQuery()">
       <span>כולם </span>
       <input type="radio" ng-model="orderListModel.queryType" value="all"
                                   ng-change="orderListModel.setQuery()">
@@ -55,7 +58,7 @@
       <th class="hidden-xs" ng-show="orderListModel.queryType==='future'"style="width: 6%">הצעת מחיר</th>
       </thead>
       <tbody>
-      <tr ng-repeat="order in orderListModel.orders"
+       <tr ng-repeat="order in orderListModel.orders"
               ng-class="order.view.orderStatus.id===1?'bg-active':
                         order.view.orderStatus.id===2?'bg-warning':
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':

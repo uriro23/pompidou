@@ -71,5 +71,10 @@ angular.module('myApp')
       this.orderChanged('fixedPrice');
     };
 
+    this.setAdvance = function () {
+      this.calcTotal();
+      this.orderChanged('advance');
+    };
+
 
   });

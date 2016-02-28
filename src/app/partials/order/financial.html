@@ -68,13 +68,6 @@
     <td></td>
     <td>{{financialModel.order.view.quote.vat | currency}}</td>
   </tr>
-  <tr>
-    <td><label>לתשלום</label></td>
-    <td></td>
-    <td>{{financialModel.order.view.quote.total | currency}}</td>
-    <td>למשתתף:</td>
-    <td>{{financialModel.order.view.quote.total / financialModel.order.attributes.noOfParticipants | currency}}</td>
-  </tr>
   <tr ng-class="financialModel.order.view.changes.fixedPrice?'bg-success':null">
     <td><label>מחיר קבוע</label></td>
     <td>
@@ -88,6 +81,25 @@
              ng-change="financialModel.setFixedPrice()"
              ng-class="financialModel.order.view.errors.fixedPrice?'bg-danger':null">
     </td>
+  </tr>
+  <tr>
+    <td><label>לתשלום</label></td>
+    <td></td>
+    <td>{{financialModel.order.view.quote.total | currency}}</td>
+    <td>למשתתף:</td>
+    <td>{{financialModel.order.view.quote.total / financialModel.order.attributes.noOfParticipants | currency}}</td>
+  </tr>
+  <tr ng-class="financialModel.order.view.changes.advance?'bg-success':null">
+    <td><label>מקדמה</label></td>
+    <td></td>
+    <td>
+      <input type="text" money size=5 ng-model="financialModel.order.view.quote.advance"
+             ng-disabled="financialModel.isReadOnly"
+             ng-change="financialModel.setAdvance()"
+             ng-class="financialModel.order.view.errors.advance?'bg-danger':null">
+    </td>
+    <td>יתרה:</td>
+    <td>{{financialModel.order.view.quote.balance | currency}}</td>
   </tr>
   </tbody>
 </table>

@@ -82,6 +82,14 @@ angular.module('myApp')
             that.enrichOrders();
           });
           break;
+        case 'debts':
+          api.queryPastOrders().then(function (orders) {
+            fetchedOrders = orders.filter(function (ord) {
+              return ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4; // executed events not fully paid
+            });
+            that.enrichOrders();
+          });
+          break;
         case 'all':
           api.queryOrders().then(function (orders) {
             fetchedOrders = orders;

@@ -24,31 +24,36 @@ angular.module('myApp')
     this.calcTotal = function () {
       var thisOrder = this.order.attributes;
       var quote = this.order.view.quote;
+      if(quote.isFixedPrice) {
+        quote.total = quote.fixedPrice;
+        quote.totalBeforeVat = quote.transportationInclVat = quote.rounding = quote.vat = 0;
+      } else {
+        var t = quote.subTotal
+          + quote.discount
+          + quote.oldTransportation // old style
+          + quote.transportationBonus
+          + quote.bonusValue;
+        if (thisOrder.isBusinessEvent) {
+          var v = t * thisOrder.vatRate;
+        } else {
+          v = 0;
+        }
+        quote.total = Math.round(t + v);
+        if (thisOrder.isBusinessEvent) {
+          quote.totalBeforeVat = quote.total / (1 + thisOrder.vatRate);
+          quote.transportationInclVat = quote.transportation * (1 + thisOrder.vatRate); // just to display on order list
+        } else {
+          quote.totalBeforeVat = quote.total;
+          quote.transportationInclVat = quote.transportation;
+        }
+        quote.rounding = quote.totalBeforeVat - t;
+        quote.vat = quote.total - quote.totalBeforeVat;
+      }
 
-      var t = quote.subTotal
-            + quote.discount
-            + quote.oldTransportation // old style
-            + quote.transportationBonus
-            + quote.bonusValue;
-      if (thisOrder.isBusinessEvent) {
-        var v = t * thisOrder.vatRate;
-      } else {
-        v = 0;
-      }
-      quote.total = Math.round(t + v);
-      if (thisOrder.isBusinessEvent) {
-        quote.totalBeforeVat = quote.total / (1 + thisOrder.vatRate);
-        quote.transportationInclVat = quote.transportation * (1 + thisOrder.vatRate); // just to display on order list
-      } else {
-        quote.totalBeforeVat = quote.total;
-        quote.transportationInclVat = quote.transportation;
-      }
-      quote.rounding = quote.totalBeforeVat - t;
-      quote.vat = quote.total - quote.totalBeforeVat;
+      quote.balance = quote.total - quote.advance;
 
       // the following are for displaying vat in invoice even if non business event
-      t = quote.isFixedPrice ? quote.fixedPrice : quote.total;
-      quote.totalBeforeVatForInvoice = t / (1 + thisOrder.vatRate);
+      quote.totalBeforeVatForInvoice = quote.total / (1 + thisOrder.vatRate);
       quote.vatForInvoice = quote.totalBeforeVatForInvoice * thisOrder.vatRate;
     };
 
@@ -502,6 +507,7 @@ angular.module('myApp')
       this.order.view.quote.transportation = 0;  // just to display on order list
       this.order.view.quote.transportationBonus = 0;
       this.order.view.quote.oldTransportation = 0;
+      this.order.view.quote.advance = 0;
       this.order.attributes.activities = [];
       this.setReadOnly();
     }
