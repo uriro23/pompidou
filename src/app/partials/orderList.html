@@ -50,6 +50,7 @@
       <th class="hidden-xs" style="width: 7%">סוג אירוע</th>
       <th style="width: 7%">סטטוס</th>
       <th style="width: 7%">סכום</th>
+      <th  ng-show="orderListModel.queryType==='debts'" style="width: 7%">יתרה</th>
       <th class="hidden-xs" style="width: 7%">משלוח</th>
       <th style="width: 3%">הנחה</th>
       <th ng-show="orderListModel.queryType==='templates'" style="width: 33%">תבנית</th>
@@ -78,8 +79,11 @@
                   ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
               ></select>
           </td>
-          <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
-          <td class="hidden-xs">{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
+         <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
+         <td ng-show="orderListModel.queryType==='debts'">
+           {{order.attributes.quotes[order.attributes.activeQuote].balance | currency}}
+         </td>
+         <td class="hidden-xs">{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
           <td>{{order.attributes.quotes[order.attributes.activeQuote].discountRate | number:0}}</td>
         <td ng-show="orderListModel.queryType==='templates'">{{order.attributes.template}}</td>
         <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>

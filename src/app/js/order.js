@@ -478,6 +478,9 @@ angular.module('myApp')
       this.setupOrderView();
       this.setReadOnly();
       this.handleVatRateChange();
+      if(!this.order.view.quote.advance) {
+        this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
+      }
     } else if ($state.current.name === 'dupOrder') {
       $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();
@@ -489,6 +492,9 @@ angular.module('myApp')
       this.setupOrderView();
       this.setReadOnly();
       this.handleVatRateChange();
+      if(!this.order.view.quote.advance) {
+        this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
+      }
     } else { // new order
       $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();

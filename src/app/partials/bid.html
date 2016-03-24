@@ -191,7 +191,17 @@
                             style="width:30%">{{bidModel.currentQuote.fixedPrice | currency}}</li>
                     </ul>
 
-                </div>
+           <ul ng-show="bidModel.currentQuote.advance">
+             <li class="bold" style="width: 30%">שולם על חשבון</li>
+             <li class="bold" style="width: 30%">{{bidModel.currentQuote.advance | currency}}</li>
+           </ul>
+
+           <ul ng-show="bidModel.currentQuote.advance">
+             <li class="bold" style="width: 30%">יתרה לתשלום</li>
+             <li class="bold" style="width: 30%">{{bidModel.currentQuote.balance | currency}}</li>
+           </ul>
+
+         </div>
       </div>
                 <!-- End of sum_up div -->
 
