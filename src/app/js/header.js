@@ -76,14 +76,11 @@ angular.module('myApp')
       this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
     };
 
-    /*
-    this.transformNewEventType = function (str) {
-      var newEventType = {
-        tId: 123,   // todo: max tId + 1
-        label: str
-      };
-      console.log(newEventType);
-      return newEventType
+    this.setChildren = function () {
+      var thisOrder = this.order.attributes;
+      this.orderChanged('header');
+      console.log('children='+thisOrder.children);
+      this.order.view.errors.children = thisOrder.children < 0;
     };
-  */
+
   });

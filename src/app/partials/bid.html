@@ -62,11 +62,17 @@
             <span>{{bidModel.currentOrder.eventTime | date: 'HH:mm'}}</span>
         </div>
 
-        <div class="bold event_details">מס' משתתפים:&nbsp;
-            <span >{{bidModel.currentOrder.noOfParticipants}}</span>
-        </div>
+      <div class="bold event_details">מס' משתתפים:&nbsp;
+        <span >{{bidModel.currentOrder.noOfParticipants}}</span>
+        <span ng-show="bidModel.currentOrder.children">
+               &nbsp;&#40;<span>מתוכם</span>&nbsp;
+                <span >{{bidModel.currentOrder.children}}</span>
+                &nbsp;<span>ילדים</span>&#41;
+         </span>
+      </div>
 
-        <div class="bold event_details">מקום משלוח:&nbsp;
+
+      <div class="bold ">מקום משלוח:&nbsp;
             <span>{{bidModel.currentOrder.deliveryLocation}}</span>
         </div>
 

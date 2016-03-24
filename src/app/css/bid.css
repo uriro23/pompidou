@@ -2,12 +2,12 @@
 
 /* the entire container for the bid*/
 #bid_container
-{ 
+{
     margin:0;
     padding: 2% 15%;
     width: 100%;
-    background-color:#FFFFFF; 
-    font: 14pt Tahoma;  
+    background-color:#FFFFFF;
+    font: 14pt Tahoma;
     min-width: 650px;
 }
 
@@ -22,13 +22,13 @@ header
         font: 10pt Tahoma;
         padding: 2% 5%;
     }
-    
+
     #contact
     {
-        font: 15pt Tahoma; 
-       
+        font: 15pt Tahoma;
+
     }
-    
+
     #bid_container h1
     {
         font: 30pt Tahoma;
@@ -40,8 +40,8 @@ header
 #bid_head
 {
 	clear:both;
-	margin-bottom:10%;	
-	
+	margin-bottom:10%;
+
 }
 
 #bid_head:after{
@@ -52,12 +52,12 @@ header
 
 #contact
 {
-    color:#892f78; 
-  
-    font: 20pt Tahoma; 
+    color:#892f78;
+
+    font: 20pt Tahoma;
     float:right;
     width:65%;
-    
+
     padding-top: 10%; /* drops the cotact a bit below the logo */
 }
 
@@ -65,7 +65,7 @@ header
 {
     width:35%;
     float:left;
- 
+
 }
 
 #bid_container #logo img
@@ -91,12 +91,12 @@ header
 #bid_container li
 {
     list-style-type:none;
-    display:inline-block;    
+    display:inline-block;
 }
 
 .event_details
 {
-    padding-left:5%;
+    padding-left:2%;
     display:inline-block;
 }
 
@@ -107,7 +107,7 @@ header
 
 #bid_content ul
 {
-    clear:both; 
+    clear:both;
     width:100%;
     list-style-type:none;
     padding:0;
@@ -123,7 +123,7 @@ header
 
 #sum_up
 {
-   
+
     box-shadow: 10px 10px 5px #888888;
     padding: 3%;
     background-color: #DCDCDC;
@@ -133,24 +133,24 @@ header
 .endText
 {
 	padding:10%;
-	
+
 }
 
      @media (min-width:801px) and (max-width: 1300px)
      {
 	 	 #bid_container
-		 {   
+		 {
 		     padding: 2% 5%;
-		     font: 13pt Tahoma;    
+		     font: 13pt Tahoma;
 		 }
      }
-	
+
     @media (min-width:1px) and (max-width: 800px)
     {
 	 	#bid_container
-		{ 
+		{
 		    padding: 2% 2%;
-		    font: 10pt Tahoma;  
-		    
+		    font: 10pt Tahoma;
+
 		}
     }
