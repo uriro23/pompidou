@@ -11,7 +11,8 @@ angular.module('myApp')
   this.setEnvironment = function (env) {
     console.log('initializing '+env);
     Parse.initialize(secrets[env].parseKey, secrets[env].parseSecret);
-    $rootScope.environment = this.environment = env;
+    Parse.serverURL = 'https://pompidou-test.herokuapp.com';
+      $rootScope.environment = this.environment = env;
   };
 
 // Generic functions
