@@ -11,7 +11,11 @@ angular.module('myApp')
   this.setEnvironment = function (env) {
     console.log('initializing '+env);
     Parse.initialize(secrets[env].parseKey, secrets[env].parseSecret);
-    Parse.serverURL = 'https://pompidou-test.herokuapp.com';
+    if (env === 'test') {
+      Parse.serverURL = 'https://pompidou-test.herokuapp.com';
+    } else {
+      Parse.serverURL = 'https://pompidou-prod.herokuapp.com';
+    }
       $rootScope.environment = this.environment = env;
   };
 
@@ -610,6 +614,6 @@ angular.module('myApp')
     } else {
       this.setEnvironment('test');
     }
-
+    
 
   });
