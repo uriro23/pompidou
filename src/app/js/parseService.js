@@ -614,6 +614,6 @@ angular.module('myApp')
     } else {
       this.setEnvironment('test');
     }
-    
+
 
   });

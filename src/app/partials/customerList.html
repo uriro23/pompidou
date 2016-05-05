@@ -1,0 +1,45 @@
+<h2>
+  <span>
+רשימת לקוחות
+    </span>&nbsp;&nbsp;
+  <button class="btn btn-default" ng-click="orderListModel.newCustomer()">חדש</button>
+</h2>
+<div>
+  <label>
+    סינון:
+  </label>
+  <input type="text"
+         ng-model="customerListModel.filterText"
+         ng-change="customerListModel.filterList()">
+</div>
+<div class="table-responsive">
+  <table class="table" style="width: 99%">
+    <thead> <!--hidden-xs-->
+    <th>שם פרטי</th>
+    <th>שם משפחה</th>
+    <th>טל' נייד</th>
+    <th>טל' בית</th>
+    <th>טל' עבודה</th>
+    <th>דוא"ל</th>
+    <th>כתובת</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="customer in customerListModel.filteredCustomers">
+      <td>
+        <a ng-href="#/editcustomerView/{{customer.id}}">{{customer.attributes.firstName}}</a>
+      </td>
+      <td>
+        <a ng-href="#/editcustomerView/{{customer.id}}">{{customer.attributes.lastName}}</a>
+      </td>
+      <td>{{customer.attributes.mobilePhone}}</td>
+      <td>{{customer.attributes.homePhone}}</td>
+      <td>{{customer.attributes.workPhone}}</td>
+      <td>
+        <a href="mailto:{{customer.attributes.email}}">{{customer.attributes.email}}</a>
+      </td>
+      <td>{{customer.attributes.address}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+

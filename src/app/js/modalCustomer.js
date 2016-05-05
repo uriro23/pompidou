@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('CustomerCtrl', function ($modalInstance, api, customers, currentCustomerId, modalHeader, isOptionalSelect) {
+  .controller('ModalCustomerCtrl', function ($modalInstance, api, customers, currentCustomerId, modalHeader, isOptionalSelect) {
 
     this.filterList = function () {
       var that = this;

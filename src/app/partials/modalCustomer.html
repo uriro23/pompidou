@@ -1,0 +1,128 @@
+<div class="modal-header">
+  <h3 class="modal-title">
+    {{modalCustomerModel.modalHeader}}
+  </h3>
+    <button class="btn btn-primary btn-sm" ng-click="modalCustomerModel.doSelect()"
+            ng-enabled="modalCustomerModel.currentCustomer.id">
+        בחר
+    </button>
+    <button class="btn btn-warning btn-sm" ng-click="modalCustomerModel.doCancel()">
+        בטל
+    </button>
+</div>
+<div class="modal-body">
+  <div>
+    <label>
+      סינון:
+    </label>
+    <input type="text"
+           ng-model="modalCustomerModel.filterText"
+           ng-change="modalCustomerModel.filterList()">
+    <button class="btn btn-success btn-sm"
+            ng-click="modalCustomerModel.newCustomer()">
+      חדש
+    </button>
+    <button class="btn btn-success btn-sm"
+            ng-click="modalCustomerModel.updateCustomer()"
+            ng-show="modalCustomerModel.isCustomerChanged">
+      עדכן
+    </button>
+  </div>
+  <table style="width:100%">
+    <thead>
+    <th>
+      <label>
+        שם פרטי
+      </label>
+    </th>
+    <th>
+    <label>
+        שם משפחה
+      </label>
+    </th>
+    <th>
+     <label>
+        טל' נייד
+      </label>
+    </th>
+    <th>
+      <label>
+        טל' בית
+      </label>
+    </th>
+    <th>
+      <label>
+        טל' עבודה
+      </label>
+    </th>
+    <th>
+      <label>
+        דוא"ל
+      </label>
+    </th>
+    <th>
+      <label>
+        כתובת
+      </label>
+    </th>
+    </thead>
+    <tbody>
+    <tr ng-class="modalCustomerModel.isCustomerChanged?'bg-success':null">
+      <td>
+        <input type="text" size=3 ng-model="modalCustomerModel.currentCustomer.attributes.firstName"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+      </td>
+     <td>
+        <input type="text" size=4 ng-model="modalCustomerModel.currentCustomer.attributes.lastName"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+      </td>
+      <td>
+        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.mobilePhone"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+       </td>
+      <td>
+        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.homePhone"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+       </td>
+      <td>
+        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.workPhone"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+      </td>
+      <td>
+        <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.attributes.email"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+      </td>
+      <td>
+        <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.attributes.address"
+               ng-change="modalCustomerModel.customerChanged()"
+               ng-disabled="!modalCustomerModel.isInputEnabled">
+      </td>
+    </tr>
+    <tr ng-repeat="customer in modalCustomerModel.filteredCustomers track by customer.id"
+        ng-class="customer.isSelected?'bg-primary':null">
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.firstName}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.lastName}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.mobilePhone}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.homePhone}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.workPhone}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.email}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.address}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary btn-sm" ng-click="modalCustomerModel.doSelect()"
+          ng-enabled="modalCustomerModel.currentCustomer.id">
+    בחר
+  </button>
+  <button class="btn btn-warning btn-sm" ng-click="modalCustomerModel.doCancel()">
+    בטל
+  </button>
+</div>

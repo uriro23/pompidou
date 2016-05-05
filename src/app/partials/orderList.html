@@ -1,5 +1,8 @@
 <h2>
+  <span>
     רשימת אירועים
+    </span>&nbsp;&nbsp;
+  <button class="btn btn-default" ng-click="orderListModel.newOrder()">חדש</button>
 </h2>
     <div>
       <span>  עתידיים </span>
@@ -21,7 +24,6 @@
       <input type="checkbox"
              ng-model="orderListModel.isIncludecanceled"
              ng-change="orderListModel.filterOrders()"> &nbsp;&nbsp;
-      <span ng-show="orderListModel.queryType==='past' || orderListModel.queryType==='all'">
         <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
                 ng-show="orderListModel.filterByCustomer.id">
           {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}
@@ -36,8 +38,7 @@
                 ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses">
             <option value=""></option>
           </select>
-      </span>
-    </div>
+        </div>
     <div class="table-responsive">
     <table class="table" style="width: 99%">
       <thead>

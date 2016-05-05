@@ -19,8 +19,8 @@ angular.module('myApp')
       var that = this;
 
       var selectCustomer = $modal.open({
-        templateUrl: 'app/partials/customer.html',
-        controller: 'CustomerCtrl as customerModel',
+        templateUrl: 'app/partials/modalCustomer.html',
+        controller: 'ModalCustomerCtrl as modalCustomerModel',
         resolve: {
           customers: function (api) {
             return api.queryCustomers()

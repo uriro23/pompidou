@@ -156,6 +156,19 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
+    .state ('customerList', {
+      url: "/customerListView",
+      templateUrl: "app/partials/customerList.html",
+      controller: 'CustomerListCtrl as customerListModel',
+      resolve: {
+        customers: ['api', function (api) {
+          return api.queryCustomers()
+            .then(function (objs) {
+              return objs;
+            })
+        }]
+    }
+  })
     .state('workOrder', {
       url: "/workOrderView",
       templateUrl: "app/partials/workOrder.html",

@@ -16,16 +16,12 @@ angular.module('myApp')
 //  function is called from ng-change of criteria controls, as well as from initialization code below
     this.filterOrders = function () {
       var that = this;
-      if (this.queryType === 'future' || this.queryType === 'templates') {
-        this.orders = fetchedOrders;   // no filter in these states
-      } else {
         this.orders = fetchedOrders.filter(function (ord) {
           return (!that.filterByCustomer.id ||
             ord.attributes.customer === that.filterByCustomer.id ||
             ord.attributes.contact === that.filterByCustomer.id) &&
             (!that.filterByStatus || ord.attributes.orderStatus === that.filterByStatus.id)
-        })
-      }
+        });
 
       if (!this.isIncludecanceled) {
         this.orders = this.orders.filter(function (ord) {
@@ -104,8 +100,8 @@ angular.module('myApp')
       var that = this;
 
       var selectCustomer = $modal.open({
-        templateUrl: 'app/partials/customer.html',
-        controller: 'CustomerCtrl as customerModel',
+        templateUrl: 'app/partials/modalCustomer.html',
+        controller: 'ModalCustomerCtrl as modalCustomerModel',
         resolve: {
           customers: function () {
             return customers;
@@ -151,6 +147,10 @@ angular.module('myApp')
           }
         })
 
+    };
+
+    this.newOrder = function () {
+      $state.go('newOrder');
     };
 
 
