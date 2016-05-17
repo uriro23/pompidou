@@ -24,11 +24,6 @@ config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "app/partials/orderList.html",
       controller: 'OrderListCtrl as orderListModel',
       resolve: {
-        fetchedOrders: ['api', function (api) {
-          return api.queryFutureOrders().then(function (objs) {
-            return objs;
-          })
-        }],
         customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
             return objs;
@@ -82,7 +77,7 @@ config(function($stateProvider, $urlRouterProvider) {
       controller: 'OrderCtrl as orderModel',
       resolve: {
         currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrders($stateParams.basedOnId).then(function (objs) {
+          return api.queryOrder($stateParams.basedOnId).then(function (objs) {
             return objs[0];
           });
         }],
@@ -121,14 +116,9 @@ config(function($stateProvider, $urlRouterProvider) {
       controller: 'OrderCtrl as orderModel',
       resolve: {
         currentOrder: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrders($stateParams.id).then(function (objs) {
+          return api.queryOrder($stateParams.id).then(function (objs) {
             return objs[0];
           });
-        }],
-        bids: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryBidsByOrder($stateParams.id).then (function (bids) {
-            return bids;
-          })
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
@@ -441,7 +431,7 @@ config(function($stateProvider, $urlRouterProvider) {
     controller: "ExitListCtrl as exitListModel",
     resolve: {
       order: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryOrders ($stateParams.id).then (function (orders) {
+        return api.queryOrder ($stateParams.id).then (function (orders) {
           return orders[0];
         })
       }],
@@ -466,7 +456,7 @@ config(function($stateProvider, $urlRouterProvider) {
     controller: "MenuCtrl as menuModel",
     resolve: {
       order: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryOrders ($stateParams.id).then (function (orders) {
+        return api.queryOrder ($stateParams.id).then (function (orders) {
           return orders[0];
         })
       }],

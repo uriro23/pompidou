@@ -21,9 +21,16 @@
   <th>
     משתתפים
   </th>
+  <th>
+    סטטוס
+  </th>
   </thead>
   <tbody>
-  <tr ng-repeat="woItem in workOrderModel.woOrders">
+  <tr ng-repeat="woItem in workOrderModel.woOrders"
+      ng-class="woItem.attributes.orderStatus.id===1?'bg-active':
+                        woItem.attributes.orderStatus.id===2?'bg-warning':
+                        (woItem.attributes.orderStatus.id>=3 && woItem.attributes.orderStatus.id<=5)?'bg-success':
+                        woItem.attributes.orderStatus.id===6?'active myCanceledEvent':null">
     <td>
       <a ng-href="#/editOrderView/{{woItem.attributes.order.id}}">{{woItem.attributes.order.number}}</a>
     </td>
@@ -32,6 +39,7 @@
     <td>{{woItem.attributes.order.exitTime | date: 'HH:mm'}}</td>
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
+    <td>{{woItem.attributes.orderStatus.name}}</td>
   </tr>
   </tbody>
 </table>

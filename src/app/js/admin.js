@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('AdminCtrl', function (api, $state, $rootScope,
+  .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, categories,
                                      eventTypes, measurementUnits, discountCauses, users) {
 
@@ -111,7 +111,7 @@ angular.module('myApp')
     // quote conversion  1/2016
 
     this.createNewQuoteData = function () {
-      api.queryOrders()
+      api.queryAllOrders()
         .then (function(orders) {
         console.log('read '+orders.length+' orders');
         for (var i=0;i<orders.length;i++) {
@@ -155,5 +155,23 @@ angular.module('myApp')
       alert('not yet implemented')
     };
 
-  });
+	// create order headers to optimize order lists
+	//  5/2016
+    this.createOrderHeaders = function () {
+      api.queryAllOrders()
+        .then (function(orders) {
+        console.log('read '+orders.length+' orders');
+        for (var i=0;i<orders.length;i++) {
+          orderService.setupOrderHeader(orders[i].attributes);
+		}
+       console.log('updating orders');
+        api.saveObjects(orders)
+          .then(function() {
+            console.log('orders updated')
+          })
+      })
+    };
+
+
+        });
 

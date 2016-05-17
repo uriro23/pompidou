@@ -1,13 +1,12 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('DocumentsCtrl', function ($scope, $modal, $filter, api, lov) {
+  .controller('DocumentsCtrl', function ($scope, $modal, $filter, api, orderService, lov) {
 
     // references to members of parent order controller
     //objects
     this.order = $scope.orderModel.order;
     this.isReadOnly = $scope.orderModel.isReadOnly;
-    this.bids = $scope.orderModel.bids;
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
     this.orderStatuses = $scope.orderModel.orderStatuses; // needed for setupOrderView
 
@@ -17,6 +16,11 @@ angular.module('myApp')
     this.getPrevOrders = $scope.orderModel.getPrevOrders; // needed for setupOrderView
 
     this.documentTypes = lov.documentTypes;
+
+    var that = this;
+    api.queryBidsByOrder(this.order.id).then (function (bids) { // lazy load bids
+      that.bids = bids;
+    });
 
 
     this.setOrderDocTextType = function () {
@@ -63,6 +67,7 @@ angular.module('myApp')
         .then(function () {
           that.order.attributes = bid.attributes.order;
           that.setupOrderView();
+          orderService.setupOrderHeader(bid.attributes.order);
           api.saveObj(that.order)
             .then(function () {
               alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +

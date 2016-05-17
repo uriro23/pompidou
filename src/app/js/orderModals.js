@@ -82,7 +82,8 @@ angular.module('myApp')
     }
   })
 
-  .controller('SendMailCtrl', function ($modalInstance, $location, api, lov, order, bids, bidTextTypes, gmailClientLowLevel, $scope) {
+  .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov, order, bids, bidTextTypes,
+                                        gmailClientLowLevel, $scope) {
     var that = this;
     this.order = order;
     this.bids = bids;
@@ -197,6 +198,7 @@ angular.module('myApp')
                 activity.text += (orderCnt + ' הזמנות')
               }
               order.attributes.activities.splice(0, 0, activity);
+			  orderService.setupOrderHeader(order.attributes);
               api.saveObj(order);
             });
         },
@@ -237,7 +239,7 @@ angular.module('myApp')
     $modalInstance.close(this.text);
   };
 
-  this.candel = function () {
+  this.cancel = function () {
     $modalInstance.close(false);
   };
 });

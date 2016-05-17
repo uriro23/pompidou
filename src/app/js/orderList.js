@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderListCtrl', function ($rootScope, $state, $modal, api, fetchedOrders, lov, today, customers, eventTypes) {
+  .controller('OrderListCtrl', function ($rootScope, $state, $modal, api, lov, today, customers, eventTypes) {
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
@@ -11,6 +11,8 @@ angular.module('myApp')
       $state.go('login');
     }
     $rootScope.title = lov.company + ' - רשימת אירועים';
+
+    var fetchedOrders = [];
 
 //  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
 //  function is called from ng-change of criteria controls, as well as from initialization code below
@@ -59,27 +61,36 @@ angular.module('myApp')
     this.setQuery = function () {
       var that = this;
       this.orders = [];
+      var fieldList = [
+        'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
+        'exitTime','eventType','template','header'
+      ];
+      var t0 = new Date();
       switch (this.queryType) {
         case 'future':
-          api.queryFutureOrders().then(function (orders) {
+          api.queryFutureOrders(fieldList).then(function (orders) {
+            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
         case 'templates':
-          api.queryTemplateOrders().then(function (orders) {
+          api.queryTemplateOrders(fieldList).then(function (orders) {
+            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
         case 'past':
-          api.queryPastOrders().then(function (orders) {
+          api.queryPastOrders(fieldList).then(function (orders) {
+            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
         case 'debts':
-          api.queryPastOrders().then(function (orders) {
+          api.queryPastOrders(fieldList).then(function (orders) {
+            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders.filter(function (ord) {
               return ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4; // executed events not fully paid
             });
@@ -87,14 +98,16 @@ angular.module('myApp')
           });
           break;
         case 'all':
-          api.queryOrders().then(function (orders) {
+          api.queryAllOrders(fieldList).then(function (orders) {
+            console.log (that.queryType+': '+(new Date()-t0).toString());
+            console.log(orders[0]);
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
 
       }
-    };
+     };
 
     this.setCustomerFilter = function () {
       var that = this;
@@ -157,7 +170,7 @@ angular.module('myApp')
     this.filterByCustomer = {};
     this.orderStatuses = lov.orderStatuses;
     this.queryType = 'future';
-    this.enrichOrders();
+    this.setQuery();
 
 
   });

@@ -2,8 +2,8 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope,
-                                     currentOrder, bids, lov, today, eventTypes,
+  .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, orderService,
+                                     currentOrder, lov, today, eventTypes,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, menuTypes, config) {
 
@@ -222,15 +222,31 @@ angular.module('myApp')
 
     this.getPrevOrders = function () {
       var that = this;
-      if (this.order.view.customer.id) {
+      var fieldList = [
+        'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','eventType','header'
+      ];
+      if (this.order.view.customer.id,fieldList) {
         api.queryOrdersByCustomer(this.order.view.customer.id)
           .then(function (orders) {
             that.prevOrders = orders.filter(function (ord) {
               return ord.id !== that.order.id;    // exclude current order
+            });
+            that.prevOrders.forEach(function(ord) {
+              ord.view = {
+                'orderStatus': lov.orderStatuses.filter (function(st) {
+                  return st.id === ord.attributes.orderStatus;
+                })[0],
+                'eventType': ord.attributes.eventType ?
+                    eventTypes.filter(function (et) {
+                    return et.tId === ord.attributes.eventType;
+                })[0]
+                  : undefined
+              }
             })
           })
       }
     };
+
 
     this.getLastBid = function (order) {
       api.queryBidsByOrder(order.id)
@@ -342,6 +358,7 @@ angular.module('myApp')
           })
           //  III. save order
           .then(function () {
+            orderService.setupOrderHeader(that.order.attributes);
           return api.saveObj(that.order);
         })
           //  IV. change state to editOrder
@@ -350,6 +367,8 @@ angular.module('myApp')
         });
         // if not new order, just save it without waiting for resolve
       } else {
+        orderService.setupOrderHeader(this.order.attributes);
+        console.log(this.order.attributes);
         api.saveObj(this.order);
       }
       //  backup order for future cancel
@@ -380,7 +399,7 @@ angular.module('myApp')
           }
           that.order.view.customer = custs[0].attributes;
           that.order.view.customer.id = custs[0].id;
-          that.getPrevOrders();
+          // that.getPrevOrders();
         });
         if (that.order.attributes.contact) {
           api.queryCustomers(that.order.attributes.contact)
@@ -458,7 +477,6 @@ angular.module('myApp')
     // main block
     var i;
     this.isNewOrder = $state.current.name === 'newOrder' || $state.current.name === 'dupOrder'; // used for view heading
-    this.bids = bids;
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;

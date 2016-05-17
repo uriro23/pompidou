@@ -80,15 +80,15 @@
                   ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
               ></select>
           </td>
-         <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
+         <td>{{order.attributes.header.total | currency}}</td>
          <td ng-show="orderListModel.queryType==='debts'">
-           {{order.attributes.quotes[order.attributes.activeQuote].balance | currency}}
+           {{order.attributes.header.balance | currency}}
          </td>
-         <td class="hidden-xs">{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
-          <td>{{order.attributes.quotes[order.attributes.activeQuote].discountRate | number:0}}</td>
+         <td class="hidden-xs">{{order.attributes.header.transportationInclVat | currency}}</td>
+          <td>{{order.attributes.header.discountRate | number:0}}</td>
         <td ng-show="orderListModel.queryType==='templates'">{{order.attributes.template}}</td>
-        <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>
-        <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.activities[0].text}}</td>
+        <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.header.activityDate | date: 'dd/MM/yy'}}</td>
+        <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">{{order.attributes.header.activityText}}</td>
           <td class="hidden-xs" ng-show="orderListModel.queryType==='future'">
               <button class="btn btn-default btn-sm" ng-click="orderListModel.getLastBid(order)">הצג</button>
           </td>

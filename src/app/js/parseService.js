@@ -125,50 +125,71 @@ angular.module('myApp')
     return new Order();
   };
 
-  this.queryOrders = function (id) {
-    var orderQuery = new Parse.Query(Order);
-    if (id) {
+    this.queryOrder = function (id) {
+      var orderQuery = new Parse.Query(Order);
       orderQuery.equalTo('objectId', id);
-    }
-    orderQuery.limit(1000);
-    return query(orderQuery);
-  };
+      return query(orderQuery);
+    };
 
-  this.queryOrdersByCustomer = function (cust) {
+    this.queryAllOrders = function (fields) {
+      var orderQuery = new Parse.Query(Order);
+      orderQuery.limit(1000);
+      if (fields) {
+        orderQuery.select(fields);
+      }
+      return query(orderQuery);
+    };
+
+    this.queryOrdersByCustomer = function (cust,fields) {
     var orderQuery = new Parse.Query(Order);
     if (cust) {
       orderQuery.equalTo('customer', cust);
     }
     orderQuery.limit(1000);
-    return query(orderQuery);
+      if (fields) {
+        orderQuery.select(fields);
+      }
+      return query(orderQuery);
   };
 
-  this.queryTemplateOrders = function () {
+  this.queryTemplateOrders = function (fields) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.exists('template');
     orderQuery.limit(1000);
+    if (fields) {
+      orderQuery.select(fields);
+    }
     return query(orderQuery);
   };
 
-  this.queryFutureOrders = function () {
+  this.queryFutureOrders = function (fields) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.greaterThanOrEqualTo('eventDate', today);
     orderQuery.limit(1000);
+    if (fields) {
+      orderQuery.select(fields);
+    }
     return query(orderQuery);
   };
 
-    this.queryPastOrders = function () {
+    this.queryPastOrders = function (fields) {
       var orderQuery = new Parse.Query(Order);
       orderQuery.lessThan('eventDate', today);
       orderQuery.limit(1000);
+      if (fields) {
+        orderQuery.select(fields);
+      }
       return query(orderQuery);
     };
 
-    this.queryOrdersByRange = function (field, from, to) {
+    this.queryOrdersByRange = function (field, from, to, fields) {
       var orderQuery = new Parse.Query(Order);
       orderQuery.lessThanOrEqualTo(field, to);
       orderQuery.greaterThanOrEqualTo(field, from);
       orderQuery.limit(1000);
+      if (fields) {
+        orderQuery.select(fields);
+      }
       return query(orderQuery);
     };
 

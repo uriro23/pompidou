@@ -1,37 +1,33 @@
-<table style="width: 99%">
+<table style="width: 70%">
     <thead>
-    <th style="width: 3%">מס'</th>
-    <th style="width: 12%">תאריך</th>
-    <th style="width: 4%">מסירה</th>
-    <th style="width: 8%">לקוח</th>
-    <th style="width: 5%">משתתפים</th>
-    <th style="width: 7%">סוג אירוע</th>
-    <th style="width: 7%">סטטוס</th>
-    <th style="width: 6%">סכום</th>
-    <th style="width: 6%">משלוח</th>
-    <th style="width: 3%">הנחה</th>
-    <th style="width: 10%">תבנית</th>
-    <th style="width: 5%">ת' פעילות</th>
-    <th style="width: 18%">פעילות</th>
-    <th style="width: 6%">הצעת מחיר</th>
+    <th style="width: 5%">מס'</th>
+    <th style="width: 20%">תאריך</th>
+    <th style="width: 9%">מסירה</th>
+    <th style="width: 9%">סועדים</th>
+    <th style="width: 9%">סוג אירוע</th>
+    <th style="width: 9%">סטטוס</th>
+    <th style="width: 9%">סכום</th>
+    <th style="width: 9%">משלוח</th>
+    <th style="width: 7%">הנחה</th>
+    <th style="width: 14%">הצעת מחיר</th>
     </thead>
     <tbody>
-    <tr ng-repeat="order in orderModel.prevOrders">
+    <tr ng-repeat="order in orderModel.prevOrders"
+        ng-class="order.view.orderStatus.id===1?'bg-active':
+                        order.view.orderStatus.id===2?'bg-warning':
+                        (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
+                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
         <td>
             <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
         </td>
         <td>{{order.attributes.eventDate | date: 'EEEE dd/MM/yy'}}</td>
         <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
-        <td>{{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.view.eventType.label}}</td>
         <td>{{order.view.orderStatus.name}}</td>
-        <td>{{order.attributes.quotes[order.attributes.activeQuote].total | currency}}</td>
-        <td>{{order.attributes.quotes[order.attributes.activeQuote].transportationInclVat | currency}}</td>
-        <td>{{order.attributes.quotes[order.attributes.activeQuote].discountRate | number:0}}</td>
-        <td>{{order.attributes.template}}</td>
-        <td>{{order.attributes.activities[0].date | date: 'dd/MM/yy'}}</td>
-        <td>{{order.attributes.activities[0].text}}</td>
+        <td>{{order.attributes.header.total | currency}}</td>
+        <td>{{order.attributes.header.transportationInclVat | currency}}</td>
+        <td>{{order.attributes.header.discountRate | number:0}}</td>
         <td>
             <button class="btn btn-default btn-sm" ng-click="orderModel.getLastBid(order)">הצג</button>
         </td>

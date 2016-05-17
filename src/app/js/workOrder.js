@@ -156,16 +156,21 @@ angular.module('myApp')
       api.queryFutureOrders()
         .then(function (futureOrders) {
           for (var j = 0; j < futureOrders.length; j++) {
-            var viewItem = api.initWorkOrder();
-            // create the object for now, but we don't store it until user decides to include it in WO
-            viewItem.attributes.domain = 0;
-            viewItem.attributes.order = futureOrders[j].attributes;
-            viewItem.attributes.order.id = futureOrders[j].id;
-            viewItem.attributes.customer = customers.filter(function (cust) {
-              return cust.id === futureOrders[j].attributes.customer;
-            })[0].attributes;
+            if (futureOrders[j].attributes.orderStatus !== 6) {
+              var viewItem = api.initWorkOrder();
+              // create the object for now, but we don't store it until user decides to include it in WO
+              viewItem.attributes.domain = 0;
+              viewItem.attributes.order = futureOrders[j].attributes;
+              viewItem.attributes.order.id = futureOrders[j].id;
+              viewItem.attributes.customer = customers.filter(function (cust) {
+                return cust.id === futureOrders[j].attributes.customer;
+              })[0].attributes;
+            viewItem.attributes.orderStatus = lov.orderStatuses.filter(function(st) {
+              return st.id === futureOrders[j].attributes.orderStatus;
+            })[0];
             viewItem.isInWorkOrder = false;
             that.orderView.push(viewItem);
+            }
           }
           var ordersToSave = [];  // now include all orders from prev order view in wo
           for (var i = 0; i < that.orderView.length; i++) {

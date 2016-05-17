@@ -19,7 +19,8 @@
         </div>
     <p></p>
         <tabset>
-            <tab heading="אירועים קודמים">
+            <tab heading="אירועים קודמים"
+              select="orderModel.getPrevOrders()">
                 <ng-include src="'app/partials/order/prevOrders.html'"></ng-include>
             </tab>
           <tab heading="מסמכים">
