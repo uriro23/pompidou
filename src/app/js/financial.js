@@ -1,15 +1,13 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('FinancialCtrl', function ($scope, $modal, api) {
+  .controller('FinancialCtrl', function ($scope, $modal, api, orderService) {
 
     // references to members of parent order controller
     this.order = $scope.orderModel.order;
     this.discountCauses = $scope.orderModel.discountCauses;
     this.isReadOnly = $scope.orderModel.isReadOnly;
 
-    this.calcSubTotal = $scope.orderModel.calcSubTotal;
-    this.calcTotal = $scope.orderModel.calcTotal;
     this.orderChanged = $scope.orderModel.orderChanged;
 
 
@@ -34,7 +32,7 @@ angular.module('myApp')
 
       updatePricesModal.result.then(function (isChanged) {
         if (isChanged) {
-          that.calcSubTotal();
+          orderService.calcSubTotal(that.order);
           that.orderChanged();
         }
       })
@@ -46,7 +44,7 @@ angular.module('myApp')
       var thisQuote = this.order.view.quote;
 
       this.order.view.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged('discountRate');
     };
 
@@ -58,7 +56,7 @@ angular.module('myApp')
       } else {
         this.setDiscountRate();
       }
-      this.calcTotal();
+      orderService.calcTotal(this.order);
       this.orderChanged('discountCause');
     };
 
@@ -67,12 +65,12 @@ angular.module('myApp')
 
       this.order.view.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
                               Number(thisQuote.fixedPrice) < 0;
-      this.calcTotal();
-      this.orderChanged('fixedPrice');
+       orderService.calcTotal(this.order);
+       this.orderChanged('fixedPrice');
     };
 
     this.setAdvance = function () {
-      this.calcTotal();
+      orderService.calcTotal(this.order);
       this.orderChanged('advance');
     };
 

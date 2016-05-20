@@ -21,88 +21,6 @@ angular.module('myApp')
                         !this.order.attributes.template;
     };
 
-    this.calcTotal = function () {
-      var thisOrder = this.order.attributes;
-      var quote = this.order.view.quote;
-      if(quote.isFixedPrice) {
-        quote.total = quote.fixedPrice;
-        quote.totalBeforeVat = quote.transportationInclVat = quote.rounding = quote.vat = 0;
-      } else {
-        var t = quote.subTotal
-          + quote.discount
-          + quote.oldTransportation // old style
-          + quote.transportationBonus
-          + quote.bonusValue;
-        if (thisOrder.isBusinessEvent) {
-          var v = t * thisOrder.vatRate;
-        } else {
-          v = 0;
-        }
-        quote.total = Math.round(t + v);
-        if (thisOrder.isBusinessEvent) {
-          quote.totalBeforeVat = quote.total / (1 + thisOrder.vatRate);
-          quote.transportationInclVat = quote.transportation * (1 + thisOrder.vatRate); // just to display on order list
-        } else {
-          quote.totalBeforeVat = quote.total;
-          quote.transportationInclVat = quote.transportation;
-        }
-        quote.rounding = quote.totalBeforeVat - t;
-        quote.vat = quote.total - quote.totalBeforeVat;
-      }
-
-      quote.balance = quote.total - quote.advance;
-
-      // the following are for displaying vat in invoice even if non business event
-      quote.totalBeforeVatForInvoice = quote.total / (1 + thisOrder.vatRate);
-      quote.vatForInvoice = quote.totalBeforeVatForInvoice * thisOrder.vatRate;
-    };
-
-    this.calcSubTotal = function () {
-      var thisOrder = this.order.attributes;
-      var quote = this.order.view.quote;
-
-      var subTotal = 0;
-      var boxCount = 0;
-      var satiety = 0;
-      var bonus = 0;
-      var transportationBonus = 0;
-      var transportation = 0;
-      var isOldFreeItems;
-      for (i = 0; i < quote.items.length; i++) {
-        var thisItem = quote.items[i];
-        subTotal += thisItem.price;
-        boxCount += thisItem.boxCount;
-        satiety += thisItem.satietyIndex;
-        if (thisItem.category.isTransportation) {  // just to display on order list
-          transportation += thisItem.price;
-        }
-        if (thisItem.isFreeItem) {
-          if (thisItem.price===0) { // old style free item - issue alert
-            isOldFreeItems = true;
-          }
-          if (thisItem.category.isTransportation) {
-            transportationBonus -= thisItem.price;
-          } else {
-            bonus -= thisItem.price;
-          }
-        }
-      }
-
-      if(isOldFreeItems) {
-        alert('שים לב, יש באירוע פריטי בונוס ישנים עם מחיר 0, יש לעדכן את המחיר')
-      }
-      quote.subTotal = subTotal;
-      quote.boxEstimate = boxCount;
-      quote.satietyIndex = satiety;
-      quote.bonusValue = bonus;
-      quote.transportation = transportation;
-      quote.transportationBonus = transportationBonus;
-      quote.discount = -((subTotal+bonus+transportationBonus) * quote.discountRate / 100);
-      quote.credits = quote.bonusValue + quote.transportationBonus + quote.discount;
-
-      this.calcTotal();
-    };
-
     this.handleVatRateChange = function () {
       if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
         var that = this;
@@ -136,7 +54,7 @@ angular.module('myApp')
                 }
               }
               that.orderChanged('isBusinessEvent');
-              that.calcSubTotal();
+              orderService.calcSubTotal(that.order);
               break;
             case '2':   // change vatRate, change prices
               that.order.attributes.vatRate = that.vatRate;
@@ -148,7 +66,7 @@ angular.module('myApp')
                 }
               }
               that.orderChanged('isBusinessEvent');
-              that.calcSubTotal();
+              orderService.calcSubTotal(that.order);
               break;
           }
         });
@@ -183,7 +101,6 @@ angular.module('myApp')
             if (thisItem.errors.hasOwnProperty(fieldName)) {
               if (thisItem.errors[fieldName]) {
                 this.isErrorItemsTab = true;
-                console.log('found error in field '+fieldName+' of item '+i);
                 break outer_loop;
               }
             }
@@ -368,7 +285,6 @@ angular.module('myApp')
         // if not new order, just save it without waiting for resolve
       } else {
         orderService.setupOrderHeader(this.order.attributes);
-        console.log(this.order.attributes);
         api.saveObj(this.order);
       }
       //  backup order for future cancel
@@ -535,7 +451,7 @@ angular.module('myApp')
       this.order.attributes.activities = [];
       this.setReadOnly();
     }
-    this.calcSubTotal();
+    orderService.calcSubTotal(this.order);
 
     this.order.view.isChanged = false;
     window.onbeforeunload = function () {

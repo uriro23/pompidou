@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('GeneralCtrl', function ($scope, $state, $modal, api) {
+  .controller('GeneralCtrl', function ($scope, $state, $modal, api, orderService) {
 
     // references to members of parent order controller
     //objects
@@ -11,8 +11,6 @@ angular.module('myApp')
 
     // functions
     this.orderChanged = $scope.orderModel.orderChanged;
-    this.calcSubTotal = $scope.orderModel.calcSubTotal;
-    this.calcTotal = $scope.orderModel.calcTotal;
 
 
     // todo: handle multiple quotes
@@ -29,7 +27,7 @@ angular.module('myApp')
           thisQuote.items[i].price = thisQuote.items[i].priceInclVat;
         }
       }
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged('isBusinessEvent');
       console.log(thisQuote.vat);
     };

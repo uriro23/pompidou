@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('ItemsCtrl', function ($scope, api) {
+  .controller('ItemsCtrl', function ($scope, api, orderService) {
 
     // references to members of parent order controller
     //objects
@@ -12,8 +12,6 @@ angular.module('myApp')
     this.config = $scope.orderModel.config;
 
     // functions
-    this.calcSubTotal = $scope.orderModel.calcSubTotal;
-    this.calcTotal = $scope.orderModel.calcTotal;
     this.orderChanged = $scope.orderModel.orderChanged;
 
     this.filterText = '';
@@ -64,7 +62,7 @@ angular.module('myApp')
 
     this.deleteItem = function (ind) {
       this.order.view.quote.items.splice(ind, 1);
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged();
     };
 
@@ -138,7 +136,7 @@ angular.module('myApp')
       thisItem.isChanged = true;
       this.isAddItem = false;
       this.filterText = '';
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged();
     };
 
@@ -164,7 +162,7 @@ angular.module('myApp')
       }
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged();
       thisItem.isChanged = true;
     };
@@ -181,14 +179,14 @@ angular.module('myApp')
         thisItem.priceInclVat = thisItem.price;
         thisItem.priceBeforeVat = thisItem.price / (1 + thisOrder.vatRate);
       }
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged();
       thisItem.isChanged = true;
     };
 
     this.setFreeItem = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
-      this.calcSubTotal();
+      orderService.calcSubTotal(this.order);
       this.orderChanged();
       thisItem.isChanged = true;
     };
@@ -277,7 +275,7 @@ angular.module('myApp')
               thisItem.isChanged = true;
             }
           }
-          that.calcSubTotal();
+          orderService.calcSubTotal(that.order);
           that.orderChanged();
           that.isAddTemplate = false;
         });

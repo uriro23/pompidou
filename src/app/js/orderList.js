@@ -65,32 +65,27 @@ angular.module('myApp')
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
         'exitTime','eventType','template','header'
       ];
-      var t0 = new Date();
       switch (this.queryType) {
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
-            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
         case 'templates':
           api.queryTemplateOrders(fieldList).then(function (orders) {
-            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
         case 'past':
           api.queryPastOrders(fieldList).then(function (orders) {
-            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders;
             that.enrichOrders();
           });
           break;
         case 'debts':
           api.queryPastOrders(fieldList).then(function (orders) {
-            console.log (that.queryType+': '+(new Date()-t0).toString());
             fetchedOrders = orders.filter(function (ord) {
               return ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4; // executed events not fully paid
             });
@@ -99,8 +94,6 @@ angular.module('myApp')
           break;
         case 'all':
           api.queryAllOrders(fieldList).then(function (orders) {
-            console.log (that.queryType+': '+(new Date()-t0).toString());
-            console.log(orders[0]);
             fetchedOrders = orders;
             that.enrichOrders();
           });
