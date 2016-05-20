@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('QuoteParamsCtrl', function ($scope, $modal) {
+  .controller('QuoteParamsCtrl', function ($scope, $modal, orderService) {
 
     // references to members of parent order controller
     //objects
@@ -10,10 +10,6 @@ angular.module('myApp')
     this.menuTypes = $scope.orderModel.menuTypes;
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
     this.referralSources = $scope.orderModel.referralSources;
-
-    // functions
-    this.orderChanged = $scope.orderModel.orderChanged;
-
 
 
     this.filterCategories = function () {
@@ -34,19 +30,19 @@ angular.module('myApp')
     this.setMenuType = function () {
       this.order.view.quote.menuType = this.order.view.menuType.tId;
       this.order.view.endBoxType = this.order.view.menuType;
-      this.orderChanged('quoteMenuSelections');
+      orderService.orderChanged(this.order,'quoteMenuSelections');
     };
 
     this.setEndBoxType = function () {
       this.order.view.quote.endBoxType = this.order.view.endBoxType.tId;
-      this.orderChanged('quoteMenuSelections');
+      orderService.orderChanged(this.order,'quoteMenuSelections');
     };
 
     this.setEndText = function () {
       this.order.view.quote.endTextType = this.order.view.endTextType.tId;
       this.order.view.quote.endText = this.order.view.endTextType.mailText;
-      this.orderChanged('quoteMenuSelections');
-      this.orderChanged('quoteEndText');
+      orderService.orderChanged(this.order,'quoteMenuSelections');
+      orderService.orderChanged(this.order,'quoteEndText');
     };
 
     this.editEndText = function () {
@@ -68,7 +64,7 @@ angular.module('myApp')
       editTextModal.result.then(function (txt) {
         if (txt) {
           that.order.view.quote.endText = txt;
-          that.orderChanged('quoteEndText');
+          orderService.orderChanged(that.order,'quoteEndText');
         }
       });
 
@@ -81,7 +77,7 @@ angular.module('myApp')
 
     this.categoryChanged = function (ind) {
       this.filteredCategories[ind].isChanged = true;
-      this.orderChanged();
+      orderService.orderChanged(this.order);
     };
 
    // main block
