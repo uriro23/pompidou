@@ -9,8 +9,9 @@ angular.module('myApp')
     this.isReadOnly = $scope.orderModel.isReadOnly;
     this.referralSources = $scope.orderModel.referralSources;
 
-    // functions
-    this.orderChanged = $scope.orderModel.orderChanged;
+    this.orderChanged = function (field) {
+      orderService.orderChanged(this.order,field)
+    };
 
 
     // todo: handle multiple quotes
@@ -28,8 +29,7 @@ angular.module('myApp')
         }
       }
       orderService.calcSubTotal(this.order);
-      this.orderChanged('isBusinessEvent');
-      console.log(thisQuote.vat);
+      orderService.orderChanged(this.order,'isBusinessEvent');
     };
 
 

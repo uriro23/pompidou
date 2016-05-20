@@ -1,15 +1,12 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('ActivitiesCtrl', function ($scope, $modal, api) {
+  .controller('ActivitiesCtrl', function ($scope, $modal, api, orderService) {
 
     // references to members of parent order controller
     //objects
     this.order = $scope.orderModel.order;
     this.isReadOnly = $scope.orderModel.isReadOnly;
-
-    // functions
-    this.orderChanged = $scope.orderModel.orderChanged;
 
     this.activityText = '';
 
@@ -17,13 +14,13 @@ angular.module('myApp')
       if (this.activityText.length > 0) {
         this.order.attributes.activities.splice(0, 0, {date: new Date(), text: this.activityText});
         this.activityText = '';
-        this.orderChanged();
+        orderService.orderChanged(this.order);
       }
     };
 
     this.delActivity = function (ind) {
       this.order.attributes.activities.splice(ind, 1);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
     };
 
     this.showMail = function (mailId) {

@@ -8,8 +8,6 @@ angular.module('myApp')
     this.discountCauses = $scope.orderModel.discountCauses;
     this.isReadOnly = $scope.orderModel.isReadOnly;
 
-    this.orderChanged = $scope.orderModel.orderChanged;
-
 
     this.updatePrices = function () {
       var that = this;
@@ -33,7 +31,7 @@ angular.module('myApp')
       updatePricesModal.result.then(function (isChanged) {
         if (isChanged) {
           orderService.calcSubTotal(that.order);
-          that.orderChanged();
+          orderService.orderChanged(that.order);
         }
       })
 
@@ -45,7 +43,7 @@ angular.module('myApp')
 
       this.order.view.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
       orderService.calcSubTotal(this.order);
-      this.orderChanged('discountRate');
+      orderService.orderChanged(this.order,'discountRate');
     };
 
     this.setDiscountCause = function () {
@@ -57,7 +55,7 @@ angular.module('myApp')
         this.setDiscountRate();
       }
       orderService.calcTotal(this.order);
-      this.orderChanged('discountCause');
+      orderService.orderChanged(this.order,'discountCause');
     };
 
      this.setFixedPrice = function () {
@@ -66,12 +64,12 @@ angular.module('myApp')
       this.order.view.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
                               Number(thisQuote.fixedPrice) < 0;
        orderService.calcTotal(this.order);
-       this.orderChanged('fixedPrice');
+       orderService.orderChanged(this.order,'fixedPrice');
     };
 
     this.setAdvance = function () {
       orderService.calcTotal(this.order);
-      this.orderChanged('advance');
+      orderService.orderChanged(this.order,'advance');
     };
 
 

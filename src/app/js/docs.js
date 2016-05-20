@@ -11,7 +11,6 @@ angular.module('myApp')
     this.orderStatuses = $scope.orderModel.orderStatuses; // needed for setupOrderView
 
     // functions
-    this.orderChanged = $scope.orderModel.orderChanged;
     this.setupOrderView = $scope.orderModel.setupOrderView;
     this.getPrevOrders = $scope.orderModel.getPrevOrders; // needed for setupOrderView
 
@@ -23,11 +22,15 @@ angular.module('myApp')
     });
 
 
+    this.orderChanged = function (field) {
+      orderService.orderChanged(this.order,field);
+    };
+
     this.setOrderDocTextType = function () {
       this.order.attributes.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
         return t.isInclude;
       }));
-      this.orderChanged('orderTextType');
+      orderService.orderChanged(this.order,'orderTextType');
     };
 
 

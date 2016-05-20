@@ -53,7 +53,7 @@ angular.module('myApp')
                   it1.price = it1.priceBeforeVat;
                 }
               }
-              that.orderChanged('isBusinessEvent');
+              orderService.orderChanged(that.order,'isBusinessEvent');
               orderService.calcSubTotal(that.order);
               break;
             case '2':   // change vatRate, change prices
@@ -65,7 +65,7 @@ angular.module('myApp')
                   it2.price = it2.priceInclVat;
                 }
               }
-              that.orderChanged('isBusinessEvent');
+              orderService.orderChanged(that.order,'isBusinessEvent');
               orderService.calcSubTotal(that.order);
               break;
           }
@@ -74,23 +74,7 @@ angular.module('myApp')
     };
 
 
-    this.orderChanged = function (field) {
-      this.order.view.isChanged = true;
-      if (field) {
-        this.order.view.changes[field] = true;
-      }
-      window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
-        return "יש שינויים שלא נשמרו"
-      };
-      /*
-      window.onblur = function () {
-        alert('יש שינויים שלא נשמרו')
-      };
-      */
-      $rootScope.menuStatus = 'empty';
-    };
-
-     // items tab
+   // items tab
 
     // todo: adapt for multiple quotes
     this.calcItemsTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed

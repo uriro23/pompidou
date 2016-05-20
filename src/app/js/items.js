@@ -11,8 +11,6 @@ angular.module('myApp')
     this.measurementUnits = $scope.orderModel.measurementUnits;
     this.config = $scope.orderModel.config;
 
-    // functions
-    this.orderChanged = $scope.orderModel.orderChanged;
 
     this.filterText = '';
     this.isAddItem = false;
@@ -63,12 +61,12 @@ angular.module('myApp')
     this.deleteItem = function (ind) {
       this.order.view.quote.items.splice(ind, 1);
       orderService.calcSubTotal(this.order);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
     };
 
     this.itemChanged = function (ind) {
        var thisItem = this.order.view.quote.items[ind];
-      this.orderChanged();
+      orderService.orderChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -137,14 +135,14 @@ angular.module('myApp')
       this.isAddItem = false;
       this.filterText = '';
       orderService.calcSubTotal(this.order);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
     };
 
     this.setProductDescription = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
 
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -163,7 +161,7 @@ angular.module('myApp')
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
       orderService.calcSubTotal(this.order);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -180,14 +178,14 @@ angular.module('myApp')
         thisItem.priceBeforeVat = thisItem.price / (1 + thisOrder.vatRate);
       }
       orderService.calcSubTotal(this.order);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
       thisItem.isChanged = true;
     };
 
     this.setFreeItem = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
       orderService.calcSubTotal(this.order);
-      this.orderChanged();
+      orderService.orderChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -276,7 +274,7 @@ angular.module('myApp')
             }
           }
           orderService.calcSubTotal(that.order);
-          that.orderChanged();
+          orderService.orderChanged(that.order);
           that.isAddTemplate = false;
         });
     };

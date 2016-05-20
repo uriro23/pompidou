@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('orderService', function () {
+  .service('orderService', function ($rootScope) {
 
     this.calcTotal = function (order) {
       var thisOrder = order.attributes;
@@ -84,6 +84,22 @@ angular.module('myApp')
       quote.credits = quote.bonusValue + quote.transportationBonus + quote.discount;
 
       this.calcTotal(order);
+    };
+
+    this.orderChanged = function (order, field) {
+      order.view.isChanged = true;
+      if (field) {
+        order.view.changes[field] = true;
+      }
+      window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
+        return "יש שינויים שלא נשמרו"
+      };
+      /*
+       window.onblur = function () {
+       alert('יש שינויים שלא נשמרו')
+       };
+       */
+      $rootScope.menuStatus = 'empty';
     };
 
 

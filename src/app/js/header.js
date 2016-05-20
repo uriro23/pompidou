@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('HeaderCtrl', function ($scope, $modal, api, today) {
+  .controller('HeaderCtrl', function ($scope, $modal, api, orderService, today) {
 
     // references to members of parent order controller
     //objects
@@ -11,7 +11,6 @@ angular.module('myApp')
     this.orderStatuses = $scope.orderModel.orderStatuses;
 
     // functions
-    this.orderChanged = $scope.orderModel.orderChanged;
     this.getPrevOrders =  $scope.orderModel.getPrevOrders;
     this.setReadOnly =  $scope.orderModel.setReadOnly;
 
@@ -48,12 +47,12 @@ angular.module('myApp')
       selectCustomer.result.then(function (cust) {
         if (custType === 1) {
           that.order.view.customer = cust;
-          that.orderChanged('customer');
+          orderService.orderChanged(that.order,'customer');
           that.order.view.errors.customer = false;
           that.getPrevOrders();
         } else if (custType === 2) {
           that.order.view.contact = cust;
-          that.orderChanged('contact');
+          orderService.orderChanged(that.order,'contact');
           that.order.view.errors.contact = false;
         } else {
           alert('error - bad customer type: ' + custType);
@@ -65,20 +64,20 @@ angular.module('myApp')
 
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
-      this.orderChanged('header');
+      orderService.orderChanged(this.order,'header');
       this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < today;  // past dates not allowed
       this.setReadOnly();
     };
 
     this.setNoOfParticipants = function () {
       var thisOrder = this.order.attributes;
-      this.orderChanged('header');
+      orderService.orderChanged(this.order,'header');
       this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
     };
 
     this.setChildren = function () {
       var thisOrder = this.order.attributes;
-      this.orderChanged('header');
+      orderService.orderChanged(this.order,'header');
       console.log('children='+thisOrder.children);
       this.order.view.errors.children = thisOrder.children < 0;
     };
