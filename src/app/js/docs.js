@@ -70,7 +70,7 @@ angular.module('myApp')
         .then(function () {
           that.order.attributes = bid.attributes.order;
           that.setupOrderView();
-          orderService.setupOrderHeader(bid.attributes.order);
+          orderService.setupOrderHeader(that.order.attributes);
           api.saveObj(that.order)
             .then(function () {
               alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +

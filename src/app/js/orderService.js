@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('orderService', function ($rootScope) {
+  .service('orderService', function ($rootScope, $state, api, lov) {
 
     this.calcTotal = function (order) {
       var thisOrder = order.attributes;
@@ -104,6 +104,123 @@ angular.module('myApp')
 
 
 
+    this.saveOrder = function (order) {
+      var thisOrder = order.attributes;
+      var view = order.view;
+      var quote = view.quote;
+
+      // check for errors
+      for (var fieldName in view.errors) {
+        if (view.errors.hasOwnProperty(fieldName)) {
+          if (view.errors[fieldName]) {
+            alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
+            return;
+          }
+        }
+      }
+      // check for errors in items
+      for (i = 0; i < quote.items.length; i++) {
+        var thisItem = quote.items[i];
+        for (fieldName in thisItem.errors) {
+          if (thisItem.errors.hasOwnProperty(fieldName)) {
+            if (thisItem.errors[fieldName]) {
+              alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
+              return;
+            }
+          }
+        }
+      }
+
+      // todo: handle errors, isChanged and sort items on multiple quotes
+
+      if (view.eventType) {
+        thisOrder.eventType = view.eventType.tId;
+      }
+      if (view.startBidTextType) {
+        thisOrder.startBidTextType = view.startBidTextType.tId;
+      }
+      if (view.endBidTextType) {
+        thisOrder.endBidTextType = view.endBidTextType.tId;
+      }
+      if (view.discountCause) {
+        quote.discountCause = view.discountCause.tId;
+      }
+      if (view.referralSource) {
+        thisOrder.referralSource = view.referralSource.tId;
+      }
+      thisOrder.customer = view.customer.id;
+      thisOrder.contact = view.contact.id;
+      if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
+        if (order.delAttributes) {
+          order.delAttributes.contact = true
+        } else {
+          order.delAttributes = {contact: true}
+        }
+      }
+      thisOrder.orderStatus = view.orderStatus.id;
+
+      // wipe errors and changes indication from items
+      for (var i = 0; i < quote.items.length; i++) {
+        quote.items[i].errors = {};
+        quote.items[i].isChanged = false;
+      }
+
+      // sort items by category and productDescription
+      quote.items.sort(function (a, b) {
+        if (a.category.order > b.category.order) {
+          return 1;
+        } else if (a.category.order < b.category.order) {
+          return -1
+        } else if (a.productDescription > b.productDescription) {
+          return 1
+        } else return -1;
+      });
+
+      if (quote.categories) {
+        for (i = 0; i < quote.categories.length; i++) {
+          quote.categories[i].isChanged = false;
+        }
+      }
+
+      // todo: handle multiple quotes
+      order.attributes.quotes[0] = quote;
+
+      //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
+      //  we do this in 4 steps by chaining 'then's
+      if ($state.current.name === 'newOrder' || $state.current.name === 'dupOrder') {
+        var that = this;
+        //  I. query OrderNum class containing single counter object
+        return api.queryOrderNum()
+          //  II. bump counter and assign it to order
+          .then(function (results) {
+            order.attributes.number = results[0].attributes.lastOrder + 1;
+            results[0].attributes.lastOrder = order.attributes.number;
+            return api.saveObj(results[0]);
+          })
+          //  III. save order
+          .then(function () {
+            that.setupOrderHeader(order.attributes);
+            return api.saveObj(order);
+          })
+          //  IV. change state to editOrder
+          .then(function (ord) {
+            $state.go('editOrder', {id: ord.id});
+          });
+        // if not new order, just save it without waiting for resolve
+      } else {
+        this.setupOrderHeader(order.attributes);
+        api.saveObj(order);
+      }
+      //  backup order for future cancel
+      view.isChanged = false;
+      window.onbeforeunload = function () {
+      };
+      window.onblur = function () {
+      };
+      $rootScope.menuStatus = 'show';
+      view.changes = {};
+      order.backupOrderAttr = angular.copy(order.attributes);
+    };
 
 
     // used to update the header object in order. This is a flattening mechanism, so when retrieving lists of orders

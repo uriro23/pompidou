@@ -13,7 +13,6 @@ angular.module('myApp')
 
     // functions
     this.orderChanged = $scope.orderModel.orderChanged;
-    this.setupOrderView = $scope.orderModel.setupOrderView;
 
 
 
