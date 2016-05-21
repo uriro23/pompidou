@@ -39,7 +39,7 @@
             <option value=""></option>
           </select>
         </div>
-    <div class="table-responsive">
+    <div ng-hide="orderListModel.queryType==='templates'" class="table-responsive">
     <table class="table" style="width: 99%">
       <thead>
       <th style="width: 3%">מס'</th>
@@ -96,4 +96,39 @@
       </tbody>
     </table>
     </div>
+<div ng-show="orderListModel.queryType==='templates'">
+  <table class="table" style="width: 99%">
+    <thead>
+    <th style="width: 3%">מס'</th>
+    <th style="width: 23%">תבנית</th>
+    <th style="width: 5%">סועדים</th>
+    <th style="width: 7%">סוג אירוע</th>
+    <th style="width: 7%">סטטוס</th>
+    <th style="width: 7%">סכום</th>
+    <th style="width: 48%">הערות</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="order in orderListModel.orders"
+        ng-class="order.view.orderStatus.id===1?'bg-active':
+                        order.view.orderStatus.id===2?'bg-warning':
+                        (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
+                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
+      <td>
+        <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
+      </td>
+      <td>{{order.attributes.template}}</td>
+      <td>{{order.attributes.noOfParticipants}}</td>
+      <td>{{order.view.eventType.label}}</td>
+      <td>
+        <select ng-model="order.view.orderStatus"
+                ng-change="orderListModel.setStatus(order)"
+                ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
+          ></select>
+      </td>
+      <td>{{order.attributes.header.total | currency}}</td>
+      <td>{{order.attributes.remarks}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 

@@ -32,7 +32,13 @@ angular.module('myApp')
       }
 
       this.orders.sort(function (a, b) {
-        if (that.queryType === 'future') {
+        if (that.queryType === 'templates') {
+          if (a.attributes.template > b.attributes.template) {
+            return 1
+          } else {
+            return -1
+          }
+        } else if (that.queryType === 'future') {
           return a.attributes.eventDate - b.attributes.eventDate;
         } else {
           return b.attributes.eventDate - a.attributes.eventDate;
@@ -63,7 +69,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','eventType','template','header'
+        'exitTime','eventType','template','remarks','header'
       ];
       switch (this.queryType) {
         case 'future':
@@ -74,7 +80,9 @@ angular.module('myApp')
           break;
         case 'templates':
           api.queryTemplateOrders(fieldList).then(function (orders) {
-            fetchedOrders = orders;
+            fetchedOrders = orders.filter (function (ord) { // filter templates with empty string names
+              return ord.attributes.template;
+            });
             that.enrichOrders();
           });
           break;
