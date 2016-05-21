@@ -191,7 +191,7 @@ angular.module('myApp')
 
     this.getTemplates = function () {
       var that = this;
-      api.queryTemplateOrders()
+      api.queryTemplateOrders(['template','noOfParticipants'])
         .then(function (temps) {
           that.templates = temps;
           that.templates.sort(function (a, b) {
@@ -213,71 +213,75 @@ angular.module('myApp')
       var that = this;
       var thisOrder = this.order.attributes;
       var orderItems = this.order.view.quote.items;
-      var templateItems = template.attributes.quotes[template.attributes.activeQuote].items;
-      var templateCatalogIds = templateItems.map(function (itm) {
-        return itm.catalogId
-      });
-      api.queryCatalogByIds(templateCatalogIds)
-        .then(function (cat) {
-          var templateCatalogItems = cat.filter(function (c) {
-            return !c.attributes.isDeleted
+      api.queryOrder (template.id)
+        .then(function (tmpl) {
+          var templateItems = tmpl[0].attributes.quotes[tmpl[0].attributes.activeQuote].items;
+          var templateCatalogIds = templateItems.map(function (itm) {
+            return itm.catalogId
           });
-          templateCatalogItems = templateCatalogItems.map(function (c) {
-            var ct = c.attributes;
-            ct.id = c.id;
-            return ct
-          });
-          for (var j = 0; j < templateItems.length; j++) {
-            var templateItem = templateItems[j];
-            var templateCatalogItem = templateCatalogItems.filter(function (cat) {
-              return cat.id === templateItem.catalogId
-            })[0];
-            if (!templateCatalogItem) {
-              alert('מנה ' + templateItem.productDescription + ' לא נמצאת בקטלוג. מדלג עליה')
-            } else {   // fetch up to date price from catalog
-              templateItem.catalogPrice = templateCatalogItem.price;
-              templateItem.catalogQuantity = templateCatalogItem.priceQuantity;
-              if (that.isAdjustQuantity) {
-                templateItem.quantity = templateItem.quantity /
-                template.attributes.noOfParticipants *
-                thisOrder.noOfParticipants;
-                var r = templateItem.measurementUnit.rounding;
-                if (!r) {
-                  r = 1
+          api.queryCatalogByIds(templateCatalogIds)
+            .then(function (cat) {
+              var templateCatalogItems = cat.filter(function (c) {
+                return !c.attributes.isDeleted
+              });
+              templateCatalogItems = templateCatalogItems.map(function (c) {
+                var ct = c.attributes;
+                ct.id = c.id;
+                return ct
+              });
+              for (var j = 0; j < templateItems.length; j++) {
+                var templateItem = templateItems[j];
+                var templateCatalogItem = templateCatalogItems.filter(function (cat) {
+                  return cat.id === templateItem.catalogId
+                })[0];
+                if (!templateCatalogItem) {
+                  alert('מנה ' + templateItem.productDescription + ' לא נמצאת בקטלוג. מדלג עליה')
+                } else {   // fetch up to date price from catalog
+                  templateItem.catalogPrice = templateCatalogItem.price;
+                  templateItem.catalogQuantity = templateCatalogItem.priceQuantity;
+                  if (that.isAdjustQuantity) {
+                    templateItem.quantity = templateItem.quantity /
+                    tmpl[0].attributes.noOfParticipants *
+                    thisOrder.noOfParticipants;
+                    var r = templateItem.measurementUnit.rounding;
+                    if (!r) {
+                      r = 1
+                    }
+                    templateItem.quantity = Math.ceil(templateItem.quantity / r) * r;  // round up
+                  }
+                  var thisItem = orderItems.filter(function (itm) {    // check if product exists in order
+                    return itm.catalogId === templateItem.catalogId;
+                  })[0];
+                  if (thisItem) {
+                    thisItem.quantity += templateItem.quantity;   // exists, just update quantity
+                  } else {
+                    var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
+                      return itm.index
+                    })) + 1;
+                    orderItems.splice(0, 0, templateItem); // initialize new item as copied one
+                    thisItem = orderItems[0];
+                    thisItem.index = maxIndex;  // override original index
+                  }
+                  // now adjust price
+                  thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
+                  thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
+                  if (thisOrder.isBusinessEvent) {
+                    thisItem.price = thisItem.priceBeforeVat;
+                  } else {
+                    thisItem.price = thisItem.priceInclVat;
+                  }
+                  thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
+                  thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
+                  thisItem.isChanged = true;
                 }
-                templateItem.quantity = Math.ceil(templateItem.quantity / r) * r;  // round up
               }
-              var thisItem = orderItems.filter(function (itm) {    // check if product exists in order
-                return itm.catalogId === templateItem.catalogId;
-              })[0];
-              if (thisItem) {
-                thisItem.quantity += templateItem.quantity;   // exists, just update quantity
-              } else {
-                var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
-                  return itm.index
-                })) + 1;
-                orderItems.splice(0, 0, templateItem); // initialize new item as copied one
-                thisItem = orderItems[0];
-                thisItem.index = maxIndex;  // override original index
-              }
-              // now adjust price
-              thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
-              thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
-              if (thisOrder.isBusinessEvent) {
-                thisItem.price = thisItem.priceBeforeVat;
-              } else {
-                thisItem.price = thisItem.priceInclVat;
-              }
-              thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
-              thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
-              thisItem.isChanged = true;
-            }
-          }
-          orderService.calcSubTotal(that.order);
-          orderService.orderChanged(that.order);
-          that.isAddTemplate = false;
+              orderService.calcSubTotal(that.order);
+              orderService.orderChanged(that.order);
+              that.isAddTemplate = false;
+            });
+
         });
-    };
+   };
 
 
 
