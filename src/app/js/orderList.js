@@ -38,11 +38,21 @@ angular.module('myApp')
           } else {
             return -1
           }
-        } else if (that.queryType === 'future') {
-          return a.attributes.eventDate - b.attributes.eventDate;
         } else {
-          return b.attributes.eventDate - a.attributes.eventDate;
-        }
+          var ad = a.attributes.eventDate;
+          var at = a.attributes.eventTime;
+          var bd = b.attributes.eventDate;
+          var bt = b.attributes.eventTime;
+          var a1 = ad.getDate() - 1 + ad.getMonth()*31 + (ad.getFullYear()-2010)*372;
+          if (at) {
+            a1 +=  at.getHours()/24 + at.getMinutes()/1440;
+          }
+          var b1 = bd.getDate() - 1 + bd.getMonth()*31 + (bd.getFullYear()-2010)*372;
+          if (bt) {
+            b1 +=  bt.getHours()/24 + bt.getMinutes()/1440;
+          }
+          return that.queryType === 'future' ? a1 - b1 : b1 - a1;
+         }
       })
     };
 
@@ -74,7 +84,9 @@ angular.module('myApp')
       switch (this.queryType) {
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
-            fetchedOrders = orders;
+            fetchedOrders = orders.filter (function (ord) {
+              return !ord.attributes.template;
+            });
             that.enrichOrders();
           });
           break;
@@ -88,21 +100,26 @@ angular.module('myApp')
           break;
         case 'past':
           api.queryPastOrders(fieldList).then(function (orders) {
-            fetchedOrders = orders;
+            fetchedOrders = orders.filter (function (ord) {
+              return !ord.attributes.template;
+            });
             that.enrichOrders();
           });
           break;
         case 'debts':
           api.queryPastOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter(function (ord) {
-              return ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4; // executed events not fully paid
+              return (ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4) && // executed events not fully paid
+                !ord.attributes.template;
             });
             that.enrichOrders();
           });
           break;
         case 'all':
           api.queryAllOrders(fieldList).then(function (orders) {
-            fetchedOrders = orders;
+            fetchedOrders = orders.filter (function (ord) {
+              return !ord.attributes.template;
+            });
             that.enrichOrders();
           });
           break;
