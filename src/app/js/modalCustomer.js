@@ -1,38 +1,81 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('ModalCustomerCtrl', function ($modalInstance, api, customers, currentCustomerId, modalHeader, isOptionalSelect) {
+  .controller('ModalCustomerCtrl', function ($modalInstance, api, customers, currentCustomerId, modalHeader, isOptionalSelect)
+  {
+    // state diagram
+    //--------------
+    //
+    //       open not selected                                 open selected                                                  |
+    //         |                                                   |
+    //         V                                                   V
+    //      +--------+                                        +--------+
+    //      | Search |  ---------------select --------------> |Selected|
+    //      |        | <------------ deselect --------------- |        |
+    //      +--------+                                        +--------+
+    //        |   ^                                              ^  |
+    //        |   |                                              |  |
+    //       new cancel                                          |  |
+    //        |   |                                              |  |
+    //        V   |                                              |  |
+    //      +-------+                                            |  |
+    //      |  New  |---------------- update --------------------+  |
+    //      |       | <-------------- new --------------------------+
+    //      +-------+
+    //
+    function filterList (customers, isFilterByText, filterText, filterAttr) {
+      var filteredCustomers = [];
+      if (isFilterByText) {  // filter by search text
+        if (filterText.length === 0) {
+          filteredCustomers = customers;
+        } else {
+          filteredCustomers = customers.filter(function (cust) {
+            return ((cust.attributes.firstName + ' ' + cust.attributes.lastName).indexOf(filterText) > -1) ||
+              (cust.attributes.mobilePhone.indexOf(filterText) > -1) ||
+              (cust.attributes.homePhone.indexOf(filterText) > -1) ||
+              (cust.attributes.workPhone.indexOf(filterText) > -1) ||
+              (cust.attributes.email.indexOf(filterText) > -1) ||
+              (cust.attributes.address.indexOf(filterText) > -1);
+          });
+        }
+      } else {  // filter by attributes
+        if (! (filterAttr.firstName ||   // if all attributes are empty - no filter at all
+          filterAttr.lastName ||
+          filterAttr.mobilePhone ||
+          filterAttr.homePhone ||
+          filterAttr.workPhone ||
+          filterAttr.email)) {
+            filteredCustomers = customers;
+        } else {
+         filteredCustomers = customers.filter(function (cust) {
+           var custAttr = cust.attributes;
+            var name = custAttr.firstName+custAttr.lastName;
+            var phone = '\0'+custAttr.mobilePhone+'\0'+custAttr.homePhone+'\0'+custAttr.workPhone;
+            return  ((filterAttr.firstName || filterAttr.lastName) &&
+              (name.indexOf(filterAttr.firstName+filterAttr.lastName) === 0)) ||
+              (filterAttr.mobilePhone && phone.indexOf('\0'+filterAttr.mobilePhone) > -1) ||
+              (filterAttr.homePhone && phone.indexOf('\0'+filterAttr.homePhone) > -1) ||
+              (filterAttr.workPhone && phone.indexOf('\0'+filterAttr.workPhone) > -1) ||
+              (filterAttr.email && custAttr.email.indexOf(filterAttr.email) === 0);
+          });
+        }
+      }
+      return filteredCustomers;
+    }
 
-    this.filterList = function () {
-      var that = this;
-      this.filteredCustomers = [];
-      if (this.filterText === '$') {
-        this.filteredCustomers = this.customers.filter(function (cust) {
-          return cust.isSelected;
-        })
-      }
-      if (this.filteredCustomers.length === 0) {  // not looking for selected item or no item is selected
-        this.filteredCustomers = this.customers.filter(function (cust) {
-          return ((cust.attributes.firstName+' '+cust.attributes.lastName).indexOf(that.filterText) > -1) ||
-            (cust.attributes.mobilePhone.indexOf(that.filterText) > -1) ||
-            (cust.attributes.homePhone.indexOf(that.filterText) > -1) ||
-            (cust.attributes.workPhone.indexOf(that.filterText) > -1) ||
-            (cust.attributes.email.indexOf(that.filterText) > -1) ||
-            (cust.attributes.address.indexOf(that.filterText) > -1);
-        })
-      }
+    this.filterList = function () {  // called from view
+      this.filteredCustomers = filterList(this.customers,true,this.filterText,this.currentCustomer.attributes);
     };
 
-    this.sortList = function () {
-      this.customers.sort(function (a, b) {
+    function sortList (customers) {
+      customers.sort(function (a, b) {
         if (a.attributes.firstName + a.attributes.lastName < b.attributes.firstName + b.attributes.lastName) {
           return -1
         } else {
           return 1
         }
       });
-      this.filterList();
-    };
+    }
 
     this.selectLine = function (ind) {
       var that = this;
@@ -42,7 +85,7 @@ angular.module('myApp')
         }
         this.filteredCustomers[ind].isSelected = false;
         this.currentCustomer = {};
-        this.isInputEnabled = false;
+        this.state = 'search';
       } else {
         if (this.currentCustomer.id) { // turn off previously selected item
           var temp = this.filteredCustomers.filter(function (cust, ind) {
@@ -58,30 +101,31 @@ angular.module('myApp')
         this.filteredCustomers[ind].isSelected = true; // select current line
         this.currentCustomer = this.filteredCustomers[ind];
         this.backupCustomer = angular.copy(this.currentCustomer);
-        this.isInputEnabled = true;
+        this.state = 'selected';
+        this.filteredCustomers = filterList(this.customers,false,this.filterText,this.currentCustomer.attributes);
       }
       this.isCustomerChanged = false;
     };
 
     this.customerChanged = function () {
       this.isCustomerChanged = true;
+      this.filteredCustomers = filterList(this.customers,false,this.filterText,this.currentCustomer.attributes);
     };
 
     this.updateCustomer = function () {
       var that = this;
-      if (this.isNewCustomer) {
+      if (this.state === 'new') {
         this.currentCustomer.isSelected = true;
         this.customers.splice(0, 0, this.currentCustomer);
-        this.isNewCustomer = false;
+        this.state = 'selected';
       }
-      this.filterText = '$';
-      this.sortList();
+      sortList(this.customers);
+      this.filteredCustomers = filterList(this.customers,false,this.filterText,this.currentCustomer.attributes);
       return api.saveObj(this.currentCustomer)
         .then(function (obj) {
         that.currentCustomer = obj;
         that.isCustomerChanged = false;
-      })
-
+      });
     };
 
     this.newCustomer = function () {
@@ -99,15 +143,19 @@ angular.module('myApp')
       }
       this.currentCustomer = api.initCustomer();
       this.currentCustomer.attributes.firstName = '';
-      this.currentCustomer.attributes.lasstName = '';
+      this.currentCustomer.attributes.lastName = '';
       this.currentCustomer.attributes.mobilePhone = '';
       this.currentCustomer.attributes.homePhone = '';
       this.currentCustomer.attributes.workPhone = '';
       this.currentCustomer.attributes.email = '';
       this.currentCustomer.attributes.address = '';
-      this.isNewCustomer = true;
-      this.isInputEnabled = true;
-      this.filterList();
+      this.state = 'new';
+      this.filteredCustomers = filterList(this.customers,false,this.filterText,this.currentCustomer.attributes);
+    };
+
+    this.cancelNew = function () {
+      this.state = 'search';
+      this.filteredCustomers = filterList(this.customers,true,this.filterText,this.currentCustomer.attributes);
     };
 
     this.doSelect = function () {
@@ -148,18 +196,16 @@ angular.module('myApp')
           return true;
         }
       })[0];
-      this.filterText = '$';
-      this.isInputEnabled = true;
+      this.state = 'selected';
     } else {
       this.currentCustomer = {};
       this.filterText = '';
-      this.isInputEnabled = false;
+      this.state = 'search';
     }
     this.backupCustomer = angular.copy(this.currentCustomer); // to undo changes on change focus
     this.isCustomerChanged = false;
-    this.isNewCustomer = false;
     this.modalHeader = modalHeader;
 
-    this.sortList();  // also does filter
-
+    sortList(this.customers);
+    this.filteredCustomers = filterList(this.customers,this.state==='search',this.filterText,this.currentCustomer.attributes);
   });

@@ -17,8 +17,10 @@
     </label>
     <input type="text"
            ng-model="modalCustomerModel.filterText"
+           ng-disabled="modalCustomerModel.state==='selected' || modalCustomerModel.state==='new'"
            ng-change="modalCustomerModel.filterList()">
     <button class="btn btn-success btn-sm"
+            ng-hide="modalCustomerModel.state==='new'"
             ng-click="modalCustomerModel.newCustomer()">
       חדש
     </button>
@@ -27,81 +29,58 @@
             ng-show="modalCustomerModel.isCustomerChanged">
       עדכן
     </button>
+    <button class="btn btn-warning btn-sm"
+            ng-show="modalCustomerModel.state==='new'"
+            ng-click="modalCustomerModel.cancelNew()">
+      בטל חדש
+    </button>
   </div>
   <table style="width:100%">
     <thead>
-    <th>
-      <label>
-        שם פרטי
-      </label>
-    </th>
-    <th>
-    <label>
-        שם משפחה
-      </label>
-    </th>
-    <th>
-     <label>
-        טל' נייד
-      </label>
-    </th>
-    <th>
-      <label>
-        טל' בית
-      </label>
-    </th>
-    <th>
-      <label>
-        טל' עבודה
-      </label>
-    </th>
-    <th>
-      <label>
-        דוא"ל
-      </label>
-    </th>
-    <th>
-      <label>
-        כתובת
-      </label>
-    </th>
+    <th>פרטי</th>
+    <th>משפחה</th>
+    <th>        טל' נייד    </th>
+    <th>        טל' בית    </th>
+    <th>        טל' עבודה    </th>
+    <th>        דוא"ל    </th>
+    <th>        כתובת    </th>
     </thead>
     <tbody>
     <tr ng-class="modalCustomerModel.isCustomerChanged?'bg-success':null">
       <td>
         <input type="text" size=3 ng-model="modalCustomerModel.currentCustomer.attributes.firstName"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
       </td>
      <td>
         <input type="text" size=4 ng-model="modalCustomerModel.currentCustomer.attributes.lastName"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
       </td>
       <td>
         <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.mobilePhone"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
        </td>
       <td>
         <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.homePhone"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
        </td>
       <td>
         <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.workPhone"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
       </td>
       <td>
         <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.attributes.email"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
       </td>
       <td>
         <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.attributes.address"
                ng-change="modalCustomerModel.customerChanged()"
-               ng-disabled="!modalCustomerModel.isInputEnabled">
+               ng-disabled="modalCustomerModel.state==='search'">
       </td>
     </tr>
     <tr ng-repeat="customer in modalCustomerModel.filteredCustomers track by customer.id"
