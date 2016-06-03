@@ -34,7 +34,7 @@
      <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendMailModel.mail.text"
                   ></textarea>
   </div>
-  <table>
+  <table class="table table-hover">
     <caption><label>מסמכים מצורפים</label></caption>
     <tr ng-repeat="bid in sendMailModel.bids | filter: sendMailModel.isShowDocument">
       <td>

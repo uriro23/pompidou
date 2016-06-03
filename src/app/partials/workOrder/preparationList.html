@@ -38,7 +38,7 @@
 
 <div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
   <label>{{cat.category.label}}</label>
-  <table style="width:45%">
+  <table class="table table-hover" style="width:45%">
     <tbody>
     <tr ng-repeat="woItem in cat.list">
       <td style="width: 34%">{{woItem.attributes.productDescription}}</td>

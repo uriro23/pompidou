@@ -12,7 +12,7 @@
 </h4>
 <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
   <label>{{cat.category.label}}</label>
-  <table style="width:70%">
+  <table class="table table-hover" style="width:70%">
     <tbody>
     <tr ng-repeat="woItem in cat.list">
       <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
