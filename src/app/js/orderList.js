@@ -63,6 +63,10 @@ angular.module('myApp')
         fetchedOrders[i].view.customer = customers.filter(function (cust) {
           return cust.id === fetchedOrders[i].attributes.customer;
         })[0];
+        fetchedOrders[i].view.customer.anyPhone =
+          fetchedOrders[i].view.customer.attributes.mobilePhone?fetchedOrders[i].view.customer.attributes.mobilePhone:
+            fetchedOrders[i].view.customer.attributes.homePhone?fetchedOrders[i].view.customer.attributes.homePhone:
+              fetchedOrders[i].view.customer.attributes.workPhone?fetchedOrders[i].view.customer.attributes.workPhone:undefined;
         fetchedOrders[i].view.eventType = eventTypes.filter(function (typ) {
           return typ.tId === fetchedOrders[i].attributes.eventType;
         })[0];
