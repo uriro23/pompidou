@@ -22,7 +22,7 @@
       </thead>
       <tbody>
       <tr ng-repeat="product in itemsModel.filteredCatalog">
-        <td ng-click="itemsModel.setProduct(product)">{{product.productDescription}}</td>
+        <td style="cursor: pointer" ng-click="itemsModel.setProduct(product)">{{product.productDescription}}</td>
         <td>{{product.isInOrder | checkMark}}</td>
       </tr>
       </tbody>
@@ -52,10 +52,10 @@
     </thead>
       <tbody>
       <tr ng-repeat="template in itemsModel.templates">
-        <td ng-click="itemsModel.setTemplate(template)">
+        <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
           {{template.attributes.template}}
         </td>
-        <td ng-click="itemsModel.setTemplate(template)">
+        <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
           {{template.attributes.noOfParticipants}}
         </td>
       </tr>
