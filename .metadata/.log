@@ -22,3 +22,26 @@ Command-line arguments:  -os win32 -ws win32 -arch x86
 !STACK 0
 org.jruby.exceptions.RaiseException: (Errno::EINVAL) =::
 	at org.jruby.RubyHash.replace(org/jruby/RubyHash.java:1623)
+
+!ENTRY com.aptana.ui 4 0 2016-06-04 19:37:47.757
+!MESSAGE 
+!STACK 1
+org.eclipse.core.runtime.CoreException: Could not write file: C:\xampp\htdocs\pompidou\src\app\js\quoteStyle1\js.
+	at org.eclipse.core.internal.filesystem.Policy.error(Policy.java:55)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openOutputStream(LocalFile.java:397)
+	at com.aptana.ide.ui.io.navigator.actions.NewExternalFileWizard$1.run(NewExternalFileWizard.java:114)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+Caused by: java.io.FileNotFoundException: C:\xampp\htdocs\pompidou\src\app\js\quoteStyle1\js (‏‏למערכת אין אפשרות לאתר את הנתיב שצוין)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openOutputStream(LocalFile.java:388)
+	... 2 more
+!SUBENTRY 1 org.eclipse.core.filesystem 4 272 2016-06-04 19:37:47.767
+!MESSAGE Could not write file: C:\xampp\htdocs\pompidou\src\app\js\quoteStyle1\js.
+!STACK 0
+java.io.FileNotFoundException: C:\xampp\htdocs\pompidou\src\app\js\quoteStyle1\js (‏‏למערכת אין אפשרות לאתר את הנתיב שצוין)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at org.eclipse.core.internal.filesystem.local.LocalFile.openOutputStream(LocalFile.java:388)
+	at com.aptana.ide.ui.io.navigator.actions.NewExternalFileWizard$1.run(NewExternalFileWizard.java:114)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)

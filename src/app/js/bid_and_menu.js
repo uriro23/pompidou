@@ -74,9 +74,34 @@ $(document).ready(function () {
 	});
 	
 	
+		//rules for printed exit list page
+	var pos = url.search("/quote/");
+	if (pos != -1) {
+
+
+	  document.styleSheets[0].insertRule("@page {margin: 5% !important;}", 1);
+	} else 
+	{
+	  
+	}
+
+
 	
 	
 
+});
+
+$($("#quoteMainContainer")).ready(function () {
+			var divs = document.getElementsByClassName("greyWhiteAlternate");
+		var i;
+		for (i = 0; i < divs.length; i++) {
+			
+			console.log(divs[i].toString());
+			divs[i].style.backgroundColor = "red";	
+			if (i % 2 == 0) {
+				divs[i].style.backgroundColor = "red";	
+			}
+		}
 });
 
 

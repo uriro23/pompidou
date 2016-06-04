@@ -112,5 +112,8 @@ angular.module('myApp')
     } else {  // bid not there - show error msg on page
       this.docNotAvailable = true
     }
+    
 
   });
+  
+
