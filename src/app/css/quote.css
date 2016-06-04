@@ -1,0 +1,62 @@
+#quoteMainContainer {
+	width: 80%;
+	margin: 0 auto;
+	font-size: 150%;
+}
+#quoteMainContainer li {
+	list-style-type: none;
+	line-height: 200%;
+}
+#quoteMainTitle {
+	float: right;
+}
+
+#quoteMainContainer #logo {
+    width:25%;
+    float:left;
+}
+#quoteMainContainer #logo img, #quoteMainContainer #titleImg img
+{
+    width:100%;
+}
+
+#quoteMainContainer .floatRight {
+	float: right;
+}
+
+#quoteMainContainer #titleImg {
+	width: 35%;
+	float: left;
+	
+}
+#chefImg {
+	
+}
+
+.purpleText {
+	color: #9D2086;
+}
+.purpleBG {
+	background-color: #9D2086;
+	color: #ffffff;
+}
+
+.quoteTextBox {
+	padding: 20px 40px;
+	clear: both;
+}
+
+#topQuoteLine {
+	height: 5px;
+}
+
+#quoteMainContainer #whyShould {
+	color: #ffffff;
+	background-color: #393536;
+	
+}
+
+#quoteMainContainer #whyShouldText {
+	
+	
+}
