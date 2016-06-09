@@ -12,10 +12,10 @@
 </div>
 <div class="modal-body">
   <div>
-   <button class="btn btn-success btn-sm"
-            ng-hide="modalCustomerModel.state==='new'"
-            ng-click="modalCustomerModel.newCustomer()">
-      חדש
+   <button class="btn btn-warning btn-sm"
+           ng-show="modalCustomerModel.isCustomerChanged"
+           ng-click="modalCustomerModel.clearChanges()">
+בטל עדכון
     </button>
     <button class="btn btn-success btn-sm"
             ng-click="modalCustomerModel.updateCustomer()"
@@ -61,7 +61,7 @@
                ng-change="modalCustomerModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.attributes.email"
+        <input style="text-align: left" type="text" size=27 ng-model="modalCustomerModel.currentCustomer.attributes.email"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
       <td>
@@ -70,7 +70,7 @@
       </td>
     </tr>
     <tr ng-repeat="customer in modalCustomerModel.filteredCustomers track by customer.id"
-        ng-class="customer.isSelected?'bg-primary':null">
+        ng-class="customer.isSelected?'bg-success':null">
       <td style="cursor:pointer"
           ng-class="!customer.isSelected&&customer.matches.name?'bg-warning':null"
           ng-click="modalCustomerModel.selectLine($index)">
@@ -90,7 +90,7 @@
       <td ng-class="!customer.isSelected&&customer.matches.workPhone?'bg-warning':null">
         <a href="tel:{{customer.attributes.workPhone}}">{{customer.attributes.workPhone}}</a>
       </td>
-      <td ng-class="!customer.isSelected&&customer.matches.email?'bg-warning':null">
+      <td style="text-align: left" ng-class="!customer.isSelected&&customer.matches.email?'bg-warning':null">
         <a href="mailto:{{customer.attributes.email}}">{{customer.attributes.email}}</a>
       </td>
       <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.address}}</td>

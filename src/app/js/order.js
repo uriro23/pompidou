@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, orderService,
-                                     currentOrder, lov, today, eventTypes,
+                                     currentOrder, customer, lov, today, eventTypes,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, menuTypes, config) {
 
@@ -231,20 +231,27 @@ angular.module('myApp')
         if ($state.current.name === 'dupOrder') {
           this.order.view.errors.eventDate = true; // empty event date is error
         }
-      } else { // newOrder
+      } else { // newOrder or newOrderByCustomer
         this.order.view.quote = {};
         this.order.view.quote.categories = angular.copy(this.categories); // used to edit category descriptions
         for (var i=0;i<this.order.view.quote.categories.length;i++) {
           this.order.view.quote.categories[i].isShowDescription = true;
         }
         this.order.view.quote.items = [];
-        this.order.view.customer = {};
+        if ($state.current.name === 'newOrderByCustomer') {
+          this.order.view.customer = customer.attributes;
+          this.order.view.customer.id = customer.id;
+        } else {
+          this.order.view.customer = {};
+        }
         this.order.view.contact = {};
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
         this.order.view.discountCause = this.discountCauses[0]; // set to "no"
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
         this.order.view.errors.eventDate = true; // empty event date is error
-        this.order.view.errors.customer = true; // empty customer is error
+        if ($state.current.name === 'newOrder') {
+          this.order.view.errors.customer = true; // empty customer is error
+        }
         this.order.view.errors.noOfParticipants = true; // empty no of participants is error
        }
     };
@@ -262,7 +269,9 @@ angular.module('myApp')
 
     // main block
     var i;
-    this.isNewOrder = $state.current.name === 'newOrder' || $state.current.name === 'dupOrder'; // used for view heading
+    this.isNewOrder = $state.current.name === 'newOrder'||
+                      $state.current.name === 'dupOrder' ||
+                      $state.current.name === 'newOrderByCustomer'; // used for view heading
     this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
@@ -296,9 +305,31 @@ angular.module('myApp')
       this.setupOrderView();
       this.setReadOnly();
       this.handleVatRateChange();
-      if(!this.order.view.quote.advance) {
+      if (!this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
+    } else if ($state.current.name === 'newOrderByCustomer') {
+      $rootScope.title = lov.company + ' - אירוע חדש';
+      this.order = api.initOrder();
+      this.order.attributes.customer = customer.id;
+      this.setupOrderView();
+      this.order.attributes.includeRemarksInBid = false;
+      this.order.attributes.quotes = [];
+      this.order.attributes.activeQuote= 0;
+      this.order.attributes.quotes[this.order.attributes.activeQuote] = this.order.view.quote;
+      this.order.attributes.vatRate = this.vatRate;
+      this.order.view.quote.subTotal = 0;
+      this.order.view.quote.discountRate = 0;
+      this.order.view.quote.discount = 0;
+      this.order.view.quote.bonusValue = 0;
+      this.order.view.quote.credits = 0;
+      this.order.view.quote.transportationInclVat = 0;  // just to display on order list
+      this.order.view.quote.transportation = 0;  // just to display on order list
+      this.order.view.quote.transportationBonus = 0;
+      this.order.view.quote.oldTransportation = 0;
+      this.order.view.quote.advance = 0;
+      this.order.attributes.activities = [];
+      this.setReadOnly();
     } else { // new order
       $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();

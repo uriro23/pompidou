@@ -1,3 +1,7 @@
+<h3>
+  <span>רשימת אירועים של </span>
+  {{customerListModel.currentCustomer.attributes.firstName+' '+ customerListModel.currentCustomer.attributes.lastName}}
+</h3>
 <table class="table table-hover" style="width: 70%">
     <thead>
     <th style="width: 5%">מס'</th>
@@ -12,7 +16,7 @@
     <th style="width: 14%">הצעת מחיר</th>
     </thead>
     <tbody>
-    <tr ng-repeat="order in orderModel.prevOrders"
+    <tr ng-repeat="order in customerListModel.customerOrders"
         ng-class="order.view.orderStatus.id===1?'bg-active':
                         order.view.orderStatus.id===2?'bg-warning':
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
@@ -29,7 +33,7 @@
         <td>{{order.attributes.header.transportationInclVat | currency}}</td>
         <td>{{order.attributes.header.discountRate | number:0}}</td>
         <td>
-            <button class="btn btn-default btn-sm" ng-click="orderModel.getLastBid(order)">הצג</button>
+            <button class="btn btn-default btn-sm" ng-click="customerListModel.getLastBid(order)">הצג</button>
         </td>
     </tr>
     </tbody>

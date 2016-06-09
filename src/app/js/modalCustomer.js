@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('ModalCustomerCtrl', function ($modalInstance, api, customers, currentCustomerId, modalHeader, isOptionalSelect)
+  .controller('ModalCustomerCtrl', function ($modalInstance, api, customerService, customers, currentCustomerId, modalHeader, isOptionalSelect)
   {
     // state diagram
     //--------------
@@ -14,54 +14,6 @@ angular.module('myApp')
     //      |        | <------------ deselect, new ---------- |        |
     //      +--------+                                        +--------+
     //
-    function filterList (customers, filterAttr) {
-      var filteredCustomers = [];
-        if (! (filterAttr.firstName ||   // if all attributes are empty - no filter at all
-          filterAttr.lastName ||
-          filterAttr.mobilePhone ||
-          filterAttr.homePhone ||
-          filterAttr.workPhone ||
-          filterAttr.email)) {
-            filteredCustomers = customers;
-        } else {
-         filteredCustomers = customers.filter(function (cust) {
-           var custAttr = cust.attributes;
-           cust.matches = {};
-           cust.matches.name = ((filterAttr.firstName || filterAttr.lastName) &&
-              ((custAttr.firstName+custAttr.lastName).indexOf(filterAttr.firstName+filterAttr.lastName) === 0));
-           cust.matches.mobilePhone =
-             (filterAttr.mobilePhone && custAttr.mobilePhone.indexOf(filterAttr.mobilePhone) === 0) ||
-             (filterAttr.homePhone && custAttr.mobilePhone.indexOf(filterAttr.homePhone) === 0) ||
-             (filterAttr.workPhone && custAttr.mobilePhone.indexOf(filterAttr.workPhone) === 0);
-           cust.matches.homePhone =
-             (filterAttr.mobilePhone && custAttr.homePhone.indexOf(filterAttr.mobilePhone) === 0) ||
-             (filterAttr.homePhone && custAttr.homePhone.indexOf(filterAttr.homePhone) === 0) ||
-             (filterAttr.workPhone && custAttr.homePhone.indexOf(filterAttr.workPhone) === 0);
-           cust.matches.workPhone =
-             (filterAttr.mobilePhone && custAttr.workPhone.indexOf(filterAttr.mobilePhone) === 0) ||
-             (filterAttr.homePhone && custAttr.workPhone.indexOf(filterAttr.homePhone) === 0) ||
-             (filterAttr.workPhone && custAttr.workPhone.indexOf(filterAttr.workPhone) === 0);
-           cust.matches.email = (filterAttr.email && custAttr.email.indexOf(filterAttr.email) === 0);
-           return cust.matches.name ||
-                  cust.matches.mobilePhone ||
-                  cust.matches.homePhone ||
-                  cust.matches.workPhone ||
-                  cust.matches.email;
-         });
-        }
-      return filteredCustomers;
-    }
-
-   function sortList (customers) {
-      customers.sort(function (a, b) {
-        if (a.attributes.firstName + a.attributes.lastName < b.attributes.firstName + b.attributes.lastName) {
-          return -1
-        } else {
-          return 1
-        }
-      });
-    }
-
     this.selectLine = function (ind) {
       var that = this;
       if (this.filteredCustomers[ind].isSelected) { // if current line is selected, just turn it off
@@ -87,14 +39,28 @@ angular.module('myApp')
         this.currentCustomer = this.filteredCustomers[ind];
         this.backupCustomer = angular.copy(this.currentCustomer);
         this.state = 'selected';
-        this.filteredCustomers = filterList(this.customers,this.currentCustomer.attributes);
+        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
       }
       this.isCustomerChanged = false;
     };
 
     this.customerChanged = function () {
       this.isCustomerChanged = true;
-      this.filteredCustomers = filterList(this.customers,this.currentCustomer.attributes);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+    };
+
+    this.clearChanges = function () {
+      if (this.state === 'new') {
+        this.newCustomer();
+      } else {
+        this.customers.forEach(function (cust, ind) {
+          if (cust.id === that.currentCustomer.id) {
+            that.currentCustomer = that.customers[ind] = angular.copy(that.backupCustomer);   // undo changes
+          }
+        })
+      }
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+      this.isCustomerChanged = false;
     };
 
     this.updateCustomer = function () {
@@ -104,8 +70,8 @@ angular.module('myApp')
         this.customers.splice(0, 0, this.currentCustomer);
         this.state = 'selected';
       }
-      sortList(this.customers);
-      this.filteredCustomers = filterList(this.customers,this.currentCustomer.attributes);
+      customerService.sortList(this.customers);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
       return api.saveObj(this.currentCustomer)
         .then(function (obj) {
         that.currentCustomer = obj;
@@ -135,7 +101,8 @@ angular.module('myApp')
       this.currentCustomer.attributes.email = '';
       this.currentCustomer.attributes.address = '';
       this.state = 'new';
-      this.filteredCustomers = filterList(this.customers,this.currentCustomer.attributes);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+      this.isCustomerChanged = false;
     };
 
    this.doSelect = function () {
@@ -185,6 +152,6 @@ angular.module('myApp')
     this.isCustomerChanged = false;
     this.modalHeader = modalHeader;
 
-    sortList(this.customers);
-    this.filteredCustomers = filterList(this.customers,this.currentCustomer.attributes);
+    customerService.sortList(this.customers);
+    this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
   });

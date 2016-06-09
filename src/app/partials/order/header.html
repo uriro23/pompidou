@@ -5,32 +5,32 @@
       <td><label>לקוח</label></td>
       <td>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
-                ng-class="headerModel.order.view.errors.customer?'bg-danger':null"
+                ng-class="headerModel.order.view.errors.customer?'btn btn-danger':'btn btn-default'"
                 class="btn btn-default"
                 ng-show="headerModel.order.view.customer.id">
           {{headerModel.order.view.customer.firstName + ' ' + headerModel.order.view.customer.lastName}}
         </button>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
-                ng-class="headerModel.order.view.errors.customer?'btn-danger':'btn-default'"
+                ng-class="headerModel.order.view.errors.customer?'btn btn-danger':'btn btn-default'"
                 ng-hide="headerModel.order.view.customer.id">
           בחר
         </button>
       </td>
       <td>
         <span ng-show="headerModel.order.view.customer.mobilePhone">טל' נייד: </span>
-        <span>{{headerModel.order.view.customer.mobilePhone}}</span>
+        <a href="tel:{{headerModel.order.view.customer.mobilePhone}}">{{headerModel.order.view.customer.mobilePhone}}</a>
       </td>
       <td>
         <span ng-show="headerModel.order.view.customer.homePhone">טל' בית: </span>
-        <span>{{headerModel.order.view.customer.homePhone}}</span>
+        <a href="tel:{{headerModel.order.view.customer.homePhone}}">{{headerModel.order.view.customer.homePhone}}</a>
       </td>
       <td>
         <span ng-show="headerModel.order.view.customer.workPhone">טל עבודה: </span>
-        <span>{{headerModel.order.view.customer.workPhone}}</span>
+        <a href="tel:{{headerModel.order.view.customer.workPhone}}">{{headerModel.order.view.customer.workPhone}}</a>
       </td>
       <td>
         <span ng-show="headerModel.order.view.customer.email">דואל: </span>
-        <span>{{headerModel.order.view.customer.email}}</span>
+        <a href="mailto:{{headerModel.order.view.customer.email}}">{{headerModel.order.view.customer.email}}</a>
       </td>
     </tr>
     <tr ng-class="headerModel.order.view.changes.contact?'bg-success':null">
@@ -51,19 +51,19 @@
       </td>
       <td>
         <span ng-show="headerModel.order.view.contact.mobilePhone">טל' נייד: </span>
-        <span>{{headerModel.order.view.contact.mobilePhone}}</span>
+        <a href="tel:{{headerModel.order.view.contact.mobilePhone}}">{{headerModel.order.view.contact.mobilePhone}}</a>
       </td>
       <td>
         <span ng-show="headerModel.order.view.contact.homePhone">טל' בית: </span>
-        <span>{{headerModel.order.view.contact.homePhone}}</span>
+        <a href="tel:{{headerModel.order.view.contact.homlePhone}}">{{headerModel.order.view.contact.homlePhone}}</a>
       </td>
       <td>
         <span ng-show="headerModel.order.view.contact.workPhone">טל עבודה: </span>
-        <span>{{headerModel.order.view.contact.workPhone}}</span>
+        <a href="tel:{{headerModel.order.view.contact.workPhone}}">{{headerModel.order.view.contact.workPhone}}</a>
       </td>
       <td>
         <span ng-show="headerModel.order.view.contact.email">דואל: </span>
-        <span>{{headerModel.order.view.contact.email}}</span>
+        <a href="mailto:{{headerModel.order.view.contact.email}}">{{headerModel.order.view.contact.email}}</a>
       </td>
       </tr>
     </tbody>

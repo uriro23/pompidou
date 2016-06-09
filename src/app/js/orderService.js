@@ -187,7 +187,9 @@ angular.module('myApp')
 
       //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
       //  we do this in 4 steps by chaining 'then's
-      if ($state.current.name === 'newOrder' || $state.current.name === 'dupOrder') {
+      if ($state.current.name === 'newOrder' ||
+          $state.current.name === 'dupOrder' ||
+          $state.current.name === 'newOrderByCustomer') {
         var that = this;
         //  I. query OrderNum class containing single counter object
         return api.queryOrderNum()

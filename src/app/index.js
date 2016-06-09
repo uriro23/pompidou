@@ -42,10 +42,49 @@ config(function($stateProvider, $urlRouterProvider) {
         currentOrder: [function () {
           return null;
         }],
-        bids: [function () {
+        customer: [function () {
           return null;
         }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+          return discountCausesPromise;
+        }],
+        referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
+          return referralSourcesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }]
+      }
+    })
+    .state('newOrderByCustomer', {
+      url: "/newOrderByCustomerView/:customerId",
+      templateUrl: "app/partials/order.html",
+      controller: 'OrderCtrl as orderModel',
+      resolve: {
+        currentOrder: [function () {
+          return null;
+        }],
+        customer: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryCustomers($stateParams.customerId).then(function (objs) {
+            return objs[0];
+          });
+        }],
+       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
@@ -81,7 +120,7 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs[0];
           });
         }],
-        bids: [function () {
+        customer: [function () {
           return null;
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
@@ -120,6 +159,9 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs[0];
           });
         }],
+        customer: [function () {
+          return null;
+        }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
@@ -156,6 +198,16 @@ config(function($stateProvider, $urlRouterProvider) {
             .then(function (objs) {
               return objs;
             })
+        }],
+        orders: ['api', function(api) {
+          var fieldList = ['customer'];
+          return api.queryAllOrders(fieldList)
+            .then(function (objs) {
+              return objs;
+            })
+        }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
         }]
     }
   })
