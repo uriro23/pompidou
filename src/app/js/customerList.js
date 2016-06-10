@@ -49,14 +49,14 @@ angular.module('myApp')
         this.currentCustomer = this.filteredCustomers[ind];
         this.backupCustomer = angular.copy(this.currentCustomer);
         this.state = 'selected';
-        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
       }
       this.isCustomerChanged = false;
     };
 
     this.customerChanged = function () {
       this.isCustomerChanged = true;
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
     };
 
     this.clearChanges = function () {
@@ -67,10 +67,10 @@ angular.module('myApp')
           if (cust.id === that.currentCustomer.id) {
             that.currentCustomer = that.customers[ind] = angular.copy(that.backupCustomer);   // undo changes
           }
-        })
+        });
+        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
+        this.isCustomerChanged = false;
       }
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
-      this.isCustomerChanged = false;
     };
 
     this.updateCustomer = function () {
@@ -81,7 +81,7 @@ angular.module('myApp')
         this.state = 'selected';
       }
       customerService.sortList(this.customers);
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
       return api.saveObj(this.currentCustomer)
         .then(function (obj) {
           that.currentCustomer = obj;
@@ -111,7 +111,7 @@ angular.module('myApp')
       this.currentCustomer.attributes.email = '';
       this.currentCustomer.attributes.address = '';
       this.state = 'new';
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
       this.isCustomerChanged = false;
     };
 
@@ -178,14 +178,11 @@ angular.module('myApp')
     });
     var that = this;
 
+   customerService.sortList(this.customers);
    this.currentCustomer = {};
    this.newCustomer();
    this.backupCustomer = angular.copy(this.currentCustomer); // to undo changes on change focus
    this.isCustomerChanged = false;
 
     countOrders (this.customers, orders);
-
-    customerService.sortList(this.customers);
-    this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes);
-
   });
