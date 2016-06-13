@@ -78,7 +78,7 @@ angular.module('myApp')
       this.itemChanged(ind);
       this.catalog[ind].isPriceQuantityError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
-        ((this.catalog[ind].attributes.priceQuantity !== Number(this.catalog[ind].attributes.priceQuantity) ||
+        ((this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
         Number(this.catalog[ind].attributes.priceQuantity) <= 0));
     };
 
@@ -86,28 +86,28 @@ angular.module('myApp')
       this.itemChanged(ind);
       this.catalog[ind].isPriceError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
-        ((this.catalog[ind].attributes.price !== Number(this.catalog[ind].attributes.price) ||
+        ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
         Number(this.catalog[ind].attributes.price) <= 0));
     };
 
     this.setProductionQuantity = function (ind) {
       this.itemChanged(ind);
       this.catalog[ind].isProductionQuantityError =
-        this.catalog[ind].attributes.productionQuantity !== Number(this.catalog[ind].attributes.productionQuantity) ||
+        this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
         Number(this.catalog[ind].attributes.productionQuantity) <= 0;
     };
 
     this.setMinTime = function (ind) {
       this.itemChanged(ind);
       this.catalog[ind].isMinTimeError =
-        this.catalog[ind].attributes.minTime !== Number(this.catalog[ind].attributes.minTime) ||
+        this.catalog[ind].attributes.minTime != Number(this.catalog[ind].attributes.minTime) ||
         Number(this.catalog[ind].attributes.minTime) < 0;
     };
 
     this.setMaxTime = function (ind) {
       this.itemChanged(ind);
       this.catalog[ind].isMaxTimeError =
-        this.catalog[ind].attributes.maxTime !== Number(this.catalog[ind].attributes.maxTime) ||
+        this.catalog[ind].attributes.maxTime != Number(this.catalog[ind].attributes.maxTime) ||
         Number(this.catalog[ind].attributes.maxTime) < 0;
     };
 
