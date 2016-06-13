@@ -42,14 +42,15 @@
 </div>
   <table class="table table-hover" style="width:80%">
     <thead>
-    <th style="width:16%">שם פרטי</th>
-    <th style="width:18%">שם משפחה</th>
+    <th style="width:15%">שם פרטי</th>
+    <th style="width:16%">שם משפחה</th>
     <th style="width:10%">        טל' נייד    </th>
     <th style="width:10%">        טל' בית    </th>
     <th style="width:10%">        טל' עבודה    </th>
     <th style="width:18%">        דוא"ל    </th>
-    <th style="width:18%">        כתובת    </th>
+    <th style="width:16%">        כתובת    </th>
     <th style="width:2%">אירועים</th>
+    <th style="width:3%"></th>
     </thead>
     <tbody>
     <tr ng-class="customerListModel.isCustomerChanged?'bg-success':null">
@@ -82,6 +83,7 @@
                ng-change="customerListModel.customerChanged()">
       </td>
       <td></td>
+      <td></td>
     </tr>
     <tr ng-repeat="customer in customerListModel.filteredCustomers track by customer.id"
         ng-class="customer.isSelected?'bg-success':null">
@@ -109,6 +111,13 @@
       </td>
       <td ng-click="customerListModel.selectLine($index)">{{customer.attributes.address}}</td>
       <td>{{customer.orderCount}}</td>
+      <td>
+        <button class="btn btn-small btn-warning"
+                ng-show="customer.isUniqueMatch && !customer.isSelected"
+                ng-click="customerListModel.mergeCustomer($index)">
+          מזג
+        </button>
+      </td>
     </tr>
     </tbody>
   </table>

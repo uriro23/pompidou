@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h3 class="modal-title">מיזוג לקוחות</h3>
+</div>
+<div class="modal-body">
+  <table class="table table-hover">
+    <thead>
+    <th>שם שדה</th>
+    <th></th>
+    <th>מקור מיזוג</th>
+    <th></th>
+    <th>יעד מיזוג</th>
+    <th>ערך נבחר</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="field in customerMergeModel.fieldList | filter: {valueSelect: '!none'}">
+      <td>{{field.label}}</td>
+      <td ng-show="field.isAttribute">
+        <input type="radio" ng-model="field.valueSelect" value="source"
+               ng-change="customerMergeModel.setValueSelect(field)">
+      </td>
+      <td ng-hide="field.isAttribute"></td>
+      <td ng-show="field.type==='text'">{{field.sourceValue}}</td>
+      <td ng-show="field.type==='date'">{{field.sourceValue | date:'d.M.yy'}}</td>
+      <td ng-show="field.isAttribute">
+        <input type="radio" ng-model="field.valueSelect" value="target"
+               ng-change="customerMergeModel.setValueSelect(field)">
+      </td>
+      <td ng-hide="field.isAttribute"></td>
+      <td ng-show="field.type==='text'">{{field.targetValue}}</td>
+      <td ng-show="field.type==='date'">{{field.targetValue | date:'d.M.yy'}}</td>
+      <td ng-show="field.isAttribute">
+        <input type="text" size="20" ng-model="field.selectedValue">
+      </td>
+      <td ng-hide="field.isAttribute"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="customerMergeModel.doMerge()">בצע</button>
+  <button class="btn btn-warning" ng-click="customerMergeModel.doCancel()">בטל</button>
+</div>

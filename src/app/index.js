@@ -199,14 +199,7 @@ config(function($stateProvider, $urlRouterProvider) {
               return objs;
             })
         }],
-        orders: ['api', function(api) {
-          var fieldList = ['customer'];
-          return api.queryAllOrders(fieldList)
-            .then(function (objs) {
-              return objs;
-            })
-        }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+       eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
           return eventTypesPromise;
         }]
     }

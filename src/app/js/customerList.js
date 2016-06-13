@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('CustomerListCtrl', function ($rootScope, $state, $modal, api,
-                                            customerService, lov, customers, orders, eventTypes) {
+                                            customerService, lov, customers, eventTypes) {
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
@@ -35,14 +35,13 @@ angular.module('myApp')
         this.newCustomer();
       } else {
         if (this.currentCustomer.id) { // turn off previously selected item
-          var temp = this.filteredCustomers.filter(function (cust, ind) {
+          this.filteredCustomers.forEach(function (cust, ind) {
             if (cust.id === that.currentCustomer.id) {
               if (that.isCustomerChanged) {
                 that.filteredCustomers[ind] = angular.copy(that.backupCustomer);   // undo changes
               }
               that.filteredCustomers[ind].isSelected = false;
-              return true;
-            }
+           }
           })
         }
         this.filteredCustomers[ind].isSelected = true; // select current line
@@ -92,13 +91,12 @@ angular.module('myApp')
     this.newCustomer = function () {
       var that = this;
       if (this.currentCustomer.id) { // turn off previously selected item
-        var temp = this.filteredCustomers.filter(function (cust, ind) {
+        this.filteredCustomers.forEach(function (cust, ind) {
           if (cust.id === that.currentCustomer.id) {
             if (that.isCustomerChanged) {
               that.filteredCustomers[ind] = angular.copy(that.backupCustomer);   // undo changes
             }
             that.filteredCustomers[ind].isSelected = false;
-            return true;
           }
         })
       }
@@ -116,13 +114,17 @@ angular.module('myApp')
     };
 
 
-    function countOrders (customers, orders) {
-      customers.forEach(function(cust) {
-        var t = orders.filter(function(ord) {
-          return (ord.attributes.customer===cust.id)
-        });
-        cust.orderCount = t.length;
-      })
+    function countOrders (customers) {
+      var fieldList = ['customer'];
+      api.queryAllOrders(fieldList)
+        .then(function(orders) {
+          customers.forEach(function (cust) {
+            var t = orders.filter(function (ord) {
+              return (ord.attributes.customer === cust.id)
+            });
+            cust.orderCount = t.length;
+          })
+        })
     }
 
     this.showOrders = function () {
@@ -159,9 +161,61 @@ angular.module('myApp')
       $state.go('newOrderByCustomer',{'customerId':this.currentCustomer.id});
     };
 
+    this.mergeCustomer = function (ind) {
+      var that = this;
+      var mergeSourceCustomer = this.filteredCustomers[ind];
+      var customerMergeModal = $modal.open({
+        templateUrl: 'app/partials/customer/merge.html',
+        controller: 'CustomerMergeCtrl as customerMergeModel',
+        resolve: {
+          mergeTarget: function () {
+            return that.currentCustomer;
+          },
+          mergeSource: function () {
+            return mergeSourceCustomer;
+          }
+        },
+        size: 'lg'
+      });
 
+      customerMergeModal.result.then(function (fieldList) {
+        fieldList.forEach(function(field) {   // first update any customer attributes that might have changed
+          if (field.isAttribute) {
+            that.currentCustomer.attributes[field.name] = field.selectedValue;
+          }
+        });
+        api.saveObj (that.currentCustomer)
+          .then(function() {   // now update all orders of source customer to point to target customer
+            api.queryOrdersByCustomer(mergeSourceCustomer.id,['customer'])
+              .then(function(sourceCustOrders) {
+                sourceCustOrders.forEach(function(ord) {
+                  ord.attributes.customer = that.currentCustomer.id;
+                });
+                api.saveObjects(sourceCustOrders)
+                  .then(function() {   // finally delete source customer
+                    api.deleteObj(mergeSourceCustomer)
+                      .then(function() {
+                        var sourceInd;
+                        that.customers.forEach(function(cust,ind) {
+                          if (cust.id === mergeSourceCustomer.id) {
+                            sourceInd = ind;
+                          }
+                        });
+                        that.customers.splice(sourceInd, 1);
+                        that.filteredCustomers = customerService.filterList(that.customers,
+                                                                            that.currentCustomer.attributes,
+                                                                            true);
+                        countOrders(that.customers);
+                      })
+                })
+              });
+          })
+     }, function() {
+        // dismissed
+      });
+    };
 
-    // main block
+      // main block
 
     // make customers array easy for filtering - no undefined fields
     this.customers = customers.map(function (cust) {
@@ -184,5 +238,117 @@ angular.module('myApp')
    this.backupCustomer = angular.copy(this.currentCustomer); // to undo changes on change focus
    this.isCustomerChanged = false;
 
-    countOrders (this.customers, orders);
+    countOrders (this.customers);
+  })
+
+  .controller('CustomerMergeCtrl', function ($modalInstance, mergeTarget, mergeSource) {
+
+    this.fieldList =
+    [
+      {
+        name:   'id',
+        isAttribute:  false,
+        type: 'text',
+        valueSelect:  'none'
+      },
+      {
+        name:   'firstName',
+        isAttribute: true,
+        label:   'שם פרטי',
+        type:     'text'
+      },
+      {
+        name:   'lastName',
+        isAttribute: true,
+        label:   'שם משפחה',
+        type:     'text'
+      },
+      {
+        name:   'mobilePhone',
+        isAttribute: true,
+        label:  'טלפון נייד',
+        type:     'text'
+      },
+      {
+        name:   'homePhone',
+        isAttribute: true,
+        label:  'טלפון בית',
+        type:     'text'
+      },
+      {
+        name:   'workPhone',
+        isAttribute: true,
+        label:  'טלפון עבודה',
+        type:     'text'
+      },
+      {
+        name:   'email',
+        isAttribute: true,
+        label:  'דואל',
+        type:     'text'
+      },
+      {
+        name:   'address',
+        isAttribute: true,
+        label:  'כתובת',
+        type:     'text'
+      },
+      {
+        name:   'createdAt',
+        isAttribute: false,
+        label:  'נוצר',
+        type:     'date',
+        valueSelect:  'readOnly'
+      },
+      {
+        name:   'orderCount',
+        isAttribute: false,
+        label:  'אירועים',
+        type:     'text',
+        valueSelect:  'readOnly'
+      }
+    ];
+
+
+    this.setValueSelect = function (field) {
+      console.log('select value before');
+      console.log(field);
+      if (field.valueSelect === 'target') {
+        field.selectedValue = field.targetValue;
+      } else if (field.valueSelect === 'source') {
+        field.selectedValue = field.sourceValue;
+      }
+      console.log('select value after');
+      console.log(field);
+    };
+
+    this.doMerge = function () {
+      $modalInstance.close(this.fieldList);
+    };
+
+    this.doCancel = function () {
+      $modalInstance.dismiss();
+    };
+
+    // main block
+
+    var that = this;
+    this.fieldList.forEach(function(field,ind) {
+      if (field.isAttribute) {
+        field.sourceValue = mergeSource.attributes[field.name];
+        field.targetValue = mergeTarget.attributes[field.name];
+        if (field.targetValue) {
+          field.valueSelect = 'target';
+        } else if (field.sourceValue) {
+          field.valueSelect = 'source';
+        } else {
+          field.valueSelect = 'none';
+        }
+        that.setValueSelect(field);
+      } else {
+        field.sourceValue = mergeSource[field.name];
+        field.targetValue = mergeTarget[field.name];
+      }
+    });
+
   });

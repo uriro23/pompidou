@@ -22,8 +22,11 @@ angular.module('myApp')
         filteredCustomers = customers.filter(function (cust) {
           var custAttr = cust.attributes;
           cust.matches = {};
-          cust.matches.name = (filterAttr.firstName || filterAttr.lastName) &&
-            ((custAttr.firstName + custAttr.lastName) === (filterAttr.firstName + filterAttr.lastName));
+          cust.matches.name = (filterAttr.firstName && custAttr.firstName === filterAttr.firstName &&
+                              !(filterAttr.lastName && custAttr.lastName && custAttr.lastName !== filterAttr.lastName)) ||
+                              (filterAttr.lastName && custAttr.lastName === filterAttr.lastName &&
+                              !(filterAttr.firstName && custAttr.firstName && custAttr.firstName !== filterAttr.firstName));
+          // a name match occurs if there is a match in one element and no contradiction in the other (missing is OK)
           cust.matches.mobilePhone =
             (filterAttr.mobilePhone && custAttr.mobilePhone === filterAttr.mobilePhone) ||
             (filterAttr.homePhone && custAttr.mobilePhone === filterAttr.homePhone) ||
