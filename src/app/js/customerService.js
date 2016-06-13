@@ -73,12 +73,12 @@ angular.module('myApp')
      this.sortList = function (customers) {
       customers.sort(function (a, b) {
         if (a.attributes.firstName + a.attributes.lastName < b.attributes.firstName + b.attributes.lastName) {
-          return -1
+          return -1;
         } else {
-          return 1
+          return 1;
         }
       });
-    }
+    };
 
 
   });

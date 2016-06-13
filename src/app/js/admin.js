@@ -60,7 +60,7 @@ angular.module('myApp')
         .then(function () {
           that.pwd1 = that.pwd2 = null;
           alert('הסיסמה הוחלפה בהצלחה');
-        })
+        });
     };
 
 
@@ -93,7 +93,7 @@ angular.module('myApp')
       api.userPasswordReset(usr.attributes.email)
         .then(function () {
           alert('נשלח מייל להחלפת סיסמה');
-        })
+        });
     };
 
     // env
@@ -101,9 +101,9 @@ angular.module('myApp')
     this.switchEnv = function () {
       if (api.getEnvironment()==='test') {
         alert('הנך עובר לטפל בנתוני סביבת הייצור');
-        api.setEnvironment('prod')
+        api.setEnvironment('prod');
       } else {
-        api.setEnvironment('test')
+        api.setEnvironment('test');
       }
       $state.go('login');
     };
@@ -146,13 +146,13 @@ angular.module('myApp')
         console.log('updating orders');
         api.saveObjects(orders)
           .then(function() {
-            console.log('orders updated')
-          })
-      })
+            console.log('orders updated');
+          });
+      });
     };
 
     this.dropOldQuoteData = function() {
-      alert('not yet implemented')
+      alert('not yet implemented');
     };
 
 	// create order headers to optimize order lists
@@ -167,9 +167,9 @@ angular.module('myApp')
        console.log('updating orders');
         api.saveObjects(orders)
           .then(function() {
-            console.log('orders updated')
-          })
-      })
+            console.log('orders updated');
+          });
+      });
     };
 
 

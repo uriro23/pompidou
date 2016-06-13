@@ -17,7 +17,7 @@ angular.module('myApp')
       if (bool) {
         this.isChanged = true;
         window.onbeforeunload = function () {   // force the user to commit or abort changes before moving
-          return "יש שינויים שלא נשמרו"
+          return 'יש שינויים שלא נשמרו';
         };
         /*
         window.onblur = function () {
@@ -70,7 +70,7 @@ angular.module('myApp')
       this.catalog[ind].isProductDescriptionError =
         !this.catalog[ind].attributes.productDescription || this.catalog[ind].attributes.productDescription.length === 0;
       if (this.currentDomain.id === 1 && updateShortDesc) {
-        this.catalog[ind].attributes.shortDescription = this.catalog[ind].attributes.productDescription
+        this.catalog[ind].attributes.shortDescription = this.catalog[ind].attributes.productDescription;
       }
     };
 
@@ -78,7 +78,7 @@ angular.module('myApp')
       this.itemChanged(ind);
       this.catalog[ind].isPriceQuantityError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
-        ((this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
+        ((this.catalog[ind].attributes.priceQuantity !== Number(this.catalog[ind].attributes.priceQuantity) ||
         Number(this.catalog[ind].attributes.priceQuantity) <= 0));
     };
 
@@ -86,28 +86,28 @@ angular.module('myApp')
       this.itemChanged(ind);
       this.catalog[ind].isPriceError =
         (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
-        ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
+        ((this.catalog[ind].attributes.price !== Number(this.catalog[ind].attributes.price) ||
         Number(this.catalog[ind].attributes.price) <= 0));
     };
 
     this.setProductionQuantity = function (ind) {
       this.itemChanged(ind);
       this.catalog[ind].isProductionQuantityError =
-        this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
+        this.catalog[ind].attributes.productionQuantity !== Number(this.catalog[ind].attributes.productionQuantity) ||
         Number(this.catalog[ind].attributes.productionQuantity) <= 0;
     };
 
     this.setMinTime = function (ind) {
       this.itemChanged(ind);
       this.catalog[ind].isMinTimeError =
-        this.catalog[ind].attributes.minTime != Number(this.catalog[ind].attributes.minTime) ||
+        this.catalog[ind].attributes.minTime !== Number(this.catalog[ind].attributes.minTime) ||
         Number(this.catalog[ind].attributes.minTime) < 0;
     };
 
     this.setMaxTime = function (ind) {
       this.itemChanged(ind);
       this.catalog[ind].isMaxTimeError =
-        this.catalog[ind].attributes.maxTime != Number(this.catalog[ind].attributes.maxTime) ||
+        this.catalog[ind].attributes.maxTime !== Number(this.catalog[ind].attributes.maxTime) ||
         Number(this.catalog[ind].attributes.maxTime) < 0;
     };
 
@@ -126,7 +126,7 @@ angular.module('myApp')
 
       exitListModal.result.then(function () {
         that.itemChanged(ind);
-      })
+      });
     };
 
     this.updateComponents = function (ind, targetDomain) {
@@ -147,20 +147,20 @@ angular.module('myApp')
               return categories.map(function (cat) {
                 return cat.attributes;
               });
-            })
+            });
           },
           targetItems: function () {
             return api.queryCatalog(targetDomain)
               .then(function (items) {
               return items.filter(function (item) {
-                return !item.attributes.isDeleted
+                return !item.attributes.isDeleted;
               });
-            })
+            });
           },
           config: ['api', function (api) {
             return api.queryConfig().then(function (res) {
               return res[0].attributes;
-            })
+            });
           }],
           measurementUnits: function () {
             return measurementUnits;
@@ -171,7 +171,7 @@ angular.module('myApp')
 
       componentsModal.result.then(function () {
         that.itemChanged(ind);
-      })
+      });
     };
 
     this.sortCatalog = function (catalog) {
@@ -208,7 +208,7 @@ angular.module('myApp')
           return api.queryCatalog(that.currentDomain.id)
             .then(function (results) {
             var tempCatalog = results.filter(function (cat) {
-              return !cat.attributes.isDeleted
+              return !cat.attributes.isDeleted;
             });
             that.catalog = that.sortCatalog(tempCatalog);
             // enrich catalog data
@@ -233,8 +233,8 @@ angular.module('myApp')
               that.catalog[i].isChanged = false;
             }
             that.setChanged(false);
-          })
-        })
+          });
+        });
     };
 
     // insert / update / logical delete all changed / marked catalog items
@@ -307,7 +307,7 @@ angular.module('myApp')
       this.catalog = [];
       api.saveObjects(itemsToUpdate)
         .then(function () {
-          that.setDomain()
+          that.setDomain();
         });
       return true;
     };

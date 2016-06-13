@@ -25,15 +25,14 @@ angular.module('myApp')
         this.newCustomer();
       } else {
         if (this.currentCustomer.id) { // turn off previously selected item
-          var temp = this.filteredCustomers.filter(function (cust, ind) {
+          this.filteredCustomers.forEach(function (cust, ind) {
             if (cust.id === that.currentCustomer.id) {
               if (that.isCustomerChanged) {
                 that.filteredCustomers[ind] = angular.copy(that.backupCustomer);   // undo changes
               }
               that.filteredCustomers[ind].isSelected = false;
-              return true;
             }
-          })
+          });
         }
         this.filteredCustomers[ind].isSelected = true; // select current line
         this.currentCustomer = this.filteredCustomers[ind];
@@ -82,15 +81,14 @@ angular.module('myApp')
     this.newCustomer = function () {
       var that = this;
       if (this.currentCustomer.id) { // turn off previously selected item
-        var temp = this.filteredCustomers.filter(function (cust, ind) {
+        this.filteredCustomers.forEach(function (cust, ind) {
           if (cust.id === that.currentCustomer.id) {
             if (that.isCustomerChanged) {
               that.filteredCustomers[ind] = angular.copy(that.backupCustomer);   // undo changes
             }
             that.filteredCustomers[ind].isSelected = false;
-            return true;
           }
-        })
+        });
       }
       this.currentCustomer = api.initCustomer();
       this.currentCustomer.attributes.firstName = '';

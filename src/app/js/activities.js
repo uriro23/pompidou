@@ -31,8 +31,8 @@ angular.module('myApp')
           mail: function () {
             return api.queryMails(mailId)
               .then(function (mails) {
-                return mails[0].attributes
-              })
+                return mails[0].attributes;
+              });
           }
         },
         size: 'lg'

@@ -33,7 +33,7 @@ angular.module('myApp')
 
   this.cancel = function () {
     $modalInstance.dismiss();
-  }
+  };
 })
 
 
@@ -81,9 +81,9 @@ angular.module('myApp')
     });
     this.filteredItems.sort(function (a, b) {
       if (a.attributes.productDescription > b.attributes.productDescription) {
-        return 1
+        return 1;
       } else {
-        return -1
+        return -1;
       }
     });
   };
@@ -113,7 +113,7 @@ angular.module('myApp')
     if (catalogItem.attributes.components) {
       globalComponents = catalogItem.attributes.components.filter(function (comp) {
         return (comp.domain !== targetDomain);
-      })
+      });
     }
     var localComponents = this.components.map(function (comp) {
       return comp.attr;
@@ -132,7 +132,7 @@ angular.module('myApp')
   this.productDescription = catalogItem.attributes.productDescription;
   this.productionQuantity = catalogItem.attributes.productionQuantity;
   this.measurementUnit = measurementUnits.filter(function (mes) {
-    return mes.tId === catalogItem.attributes.measurementUnit
+    return mes.tId === catalogItem.attributes.measurementUnit;
   })[0];
   this.targetDomain = targetDomain;
   this.targetCategories = targetCategories;
@@ -146,7 +146,7 @@ angular.module('myApp')
       return (comp.domain === targetDomain &&
       comp.id !== config.unhandledItemComponent &&  // don't show unhandled item entries
       comp.id !== config.unhandledItemMaterial);    // they will be stored for modified item only if no other comps exist
-    })
+    });
   }
   this.components = tempComponents.map(function (comp) {
     var c = {};

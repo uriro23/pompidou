@@ -27,44 +27,44 @@ angular.module('myApp')
 
       console.log('isYuvalTest='+this.isYuvalTest);
 
-      $rootScope.title = lov.company    // set title so PDF file will be named correctly
-      + this.bid.attributes.documentType === 1 ? ' - הצעת מחיר ' : ' - הזמנה '
-      + (this.customer.firstName ? this.customer.firstName : '')
-      + ' ' + (this.customer.lastName ? this.customer.lastName : '')
-      + ' ' + this.bid.attributes.desc;
+      $rootScope.title = lov.company  +  // set title so PDF file will be named correctly
+      this.bid.attributes.documentType === 1 ? ' - הצעת מחיר ' : ' - הזמנה ' +
+      (this.customer.firstName ? this.customer.firstName : '') +
+       ' ' + (this.customer.lastName ? this.customer.lastName : '') +
+       ' ' + this.bid.attributes.desc;
 
       var that = this;
       //fetch start bid text type
       if (that.currentOrder.startBidTextType) {
         this.startBidTextType = bidTextTypes.filter(function (btt) {
-          return btt.tId === that.currentOrder.startBidTextType
+          return btt.tId === that.currentOrder.startBidTextType;
         })[0];
       }
 
       // fetch end bid text type
       if (that.currentOrder.endBidTextType) {
         this.endBidTextType = bidTextTypes.filter(function (btt) {
-          return btt.tId === that.currentOrder.endBidTextType
+          return btt.tId === that.currentOrder.endBidTextType;
         })[0];
       }
       //fetch event type
       if (that.currentOrder.eventType) {
         this.eventType = eventTypes.filter(function (evt) {
-          return evt.tId === that.currentOrder.eventType
+          return evt.tId === that.currentOrder.eventType;
         })[0];
       }
 
       //fetch discount cause
       if (that.currentQuote.discountCause) {
         this.discountCause = discountCauses.filter(function (dsc) {
-          return dsc.tId === that.currentQuote.discountCause
+          return dsc.tId === that.currentQuote.discountCause;
         })[0];
       }
 
       //filter categories - only those in order and not transportation
       this.filteredCategories = this.categories.filter(function (cat) {
         if (cat.isTransportation) {
-          return false
+          return false;
         }
         var categoryItems = that.currentQuote.items.filter(function (item) {
           return (item.category.tId === cat.tId);
@@ -80,7 +80,7 @@ angular.module('myApp')
       this.setupCategoryItems = function (catId) {
         this.categoryItems = that.currentQuote.items.filter(function (item) {
           return (item.category.tId === catId);
-        })
+        });
       };
 
       // filter transportation items
@@ -93,11 +93,11 @@ angular.module('myApp')
 
       if (isPrintBid) {
         $timeout(function () {
-          window.print()
-        }, 100)
+          window.print();
+        }, 100);
       }
     } else {  // bid not there - show error msg on page
-      this.docNotAvailable = true
+      this.docNotAvailable = true;
     }
 
   });

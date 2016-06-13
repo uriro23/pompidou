@@ -42,7 +42,7 @@ angular.module('myApp')
               }
               that.filteredCustomers[ind].isSelected = false;
            }
-          })
+          });
         }
         this.filteredCustomers[ind].isSelected = true; // select current line
         this.currentCustomer = this.filteredCustomers[ind];
@@ -98,7 +98,7 @@ angular.module('myApp')
             }
             that.filteredCustomers[ind].isSelected = false;
           }
-        })
+        });
       }
       this.currentCustomer = api.initCustomer();
       this.currentCustomer.attributes.firstName = '';
@@ -120,11 +120,11 @@ angular.module('myApp')
         .then(function(orders) {
           customers.forEach(function (cust) {
             var t = orders.filter(function (ord) {
-              return (ord.attributes.customer === cust.id)
+              return (ord.attributes.customer === cust.id);
             });
             cust.orderCount = t.length;
-          })
-        })
+          });
+        });
     }
 
     this.showOrders = function () {
@@ -147,11 +147,11 @@ angular.module('myApp')
                   return et.tId === ord.attributes.eventType;
                 })[0]
                 : undefined
-            }
+            };
           });
           that.customerOrders.sort (function(a,b) {
             return b.attributes.eventDate - a.attributes.eventDate;
-          })
+          });
         });
      };
 
@@ -206,10 +206,10 @@ angular.module('myApp')
                                                                             that.currentCustomer.attributes,
                                                                             true);
                         countOrders(that.customers);
-                      })
-                })
+                      });
+                });
               });
-          })
+          });
      }, function() {
         // dismissed
       });
@@ -311,15 +311,11 @@ angular.module('myApp')
 
 
     this.setValueSelect = function (field) {
-      console.log('select value before');
-      console.log(field);
-      if (field.valueSelect === 'target') {
+     if (field.valueSelect === 'target') {
         field.selectedValue = field.targetValue;
       } else if (field.valueSelect === 'source') {
         field.selectedValue = field.sourceValue;
       }
-      console.log('select value after');
-      console.log(field);
     };
 
     this.doMerge = function () {
@@ -333,7 +329,7 @@ angular.module('myApp')
     // main block
 
     var that = this;
-    this.fieldList.forEach(function(field,ind) {
+    this.fieldList.forEach(function(field) {
       if (field.isAttribute) {
         field.sourceValue = mergeSource.attributes[field.name];
         field.targetValue = mergeTarget.attributes[field.name];
