@@ -111,11 +111,16 @@
       </td>
       <td ng-click="customerListModel.selectLine($index)">{{customer.attributes.address}}</td>
       <td>{{customer.orderCount}}</td>
-      <td>
+      <td ng-show="customer.isUniqueMatch && !customer.isSelected && customer.orderCount > 0">
         <button class="btn btn-small btn-warning"
-                ng-show="customer.isUniqueMatch && !customer.isSelected"
                 ng-click="customerListModel.mergeCustomer($index)">
           מזג
+        </button>
+      </td>
+      <td ng-show="!customer.isSelected && customer.orderCount === 0">
+        <button class="btn btn-small btn-warning"
+                ng-click="customerListModel.deleteCustomer($index)">
+          מחק
         </button>
       </td>
     </tr>

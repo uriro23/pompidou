@@ -74,18 +74,27 @@ angular.module('myApp')
 
     this.updateCustomer = function () {
       var that = this;
-      if (this.state === 'new') {
-        this.currentCustomer.isSelected = true;
-        this.customers.splice(0, 0, this.currentCustomer);
-        this.state = 'selected';
+      if (!this.currentCustomer.attributes.firstName &&
+          !this.currentCustomer.attributes.lastName &&
+          !this.currentCustomer.attributes.mobilePhone &&
+          !this.currentCustomer.attributes.homePhone &&
+          !this.currentCustomer.attributes.workPhone &&
+          !this.currentCustomer.attributes.email) {
+        alert ('יש לציין נתון כלשהו לגבי הלקוח');
+      } else {
+        if (this.state === 'new') {
+          this.currentCustomer.isSelected = true;
+          this.customers.splice(0, 0, this.currentCustomer);
+          this.state = 'selected';
+        }
+        customerService.sortList(this.customers);
+        this.filteredCustomers = customerService.filterList(this.customers, this.currentCustomer.attributes, false);
+        return api.saveObj(this.currentCustomer)
+          .then(function (obj) {
+            that.currentCustomer = obj;
+            that.isCustomerChanged = false;
+          });
       }
-      customerService.sortList(this.customers);
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
-      return api.saveObj(this.currentCustomer)
-        .then(function (obj) {
-          that.currentCustomer = obj;
-          that.isCustomerChanged = false;
-        });
     };
 
     this.newCustomer = function () {
@@ -180,7 +189,7 @@ angular.module('myApp')
 
       customerMergeModal.result.then(function (fieldList) {
         fieldList.forEach(function(field) {   // first update any customer attributes that might have changed
-          if (field.isAttribute) {
+          if (field.isAttribute && field.selectedValue) {
             that.currentCustomer.attributes[field.name] = field.selectedValue;
           }
         });
@@ -204,7 +213,7 @@ angular.module('myApp')
                         that.customers.splice(sourceInd, 1);
                         that.filteredCustomers = customerService.filterList(that.customers,
                                                                             that.currentCustomer.attributes,
-                                                                            true);
+                                                                            false);
                         countOrders(that.customers);
                       });
                 });
@@ -213,6 +222,22 @@ angular.module('myApp')
      }, function() {
         // dismissed
       });
+    };
+
+    this.deleteCustomer = function (ind) {
+      var custToDelete = this.filteredCustomers[ind];
+      api.deleteObj(custToDelete)
+        .then(function() {
+          var delInd;
+          that.customers.forEach(function(cust,ind) {
+            if (cust.id === custToDelete.id) {
+              delInd = ind;
+            }
+          });
+          that.customers.splice(delInd, 1);
+          that.filteredCustomers = customerService.filterList(that.customers,that.currentCustomer.attributes,
+                                                              that.state==='new');
+        });
     };
 
       // main block

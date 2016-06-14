@@ -14,6 +14,10 @@ angular.module('myApp')
     this.getPrevOrders =  $scope.orderModel.getPrevOrders;
     this.setReadOnly =  $scope.orderModel.setReadOnly;
 
+    this.orderChanged = function (field) {
+      orderService.orderChanged (this.order,field);
+    };
+
     this.setCustomer = function (custType, custHeader) {  // custType: 1 = primary, 2 = secondary
       var that = this;
 
