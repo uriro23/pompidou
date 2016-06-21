@@ -17,11 +17,10 @@ angular.module('myApp')
     }
   })
 
-  .controller('DefaultCtrl', function ($rootScope,$location) {
+  .controller('DefaultCtrl', function ($rootScope,badUrl) {
 
     $rootScope.menuStatus = 'hide';
 
-    this.location = $location.absUrl();
+    this.badUrl = badUrl;
 
   });
-

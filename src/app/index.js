@@ -7,12 +7,35 @@ angular.module('myApp', [
   'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize', 'ui.select', 'pompidou'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
-  $urlRouterProvider.otherwise('/default');
+  $urlRouterProvider.otherwise(function ($injector, $location) {
+    var $state = $injector.get('$state');
+    /*  this is for pdfCrowd
+    var l = $location.$$url.length;
+    var i1 = $location.$$url.indexOf('/bid/');
+    var p1 = $location.$$url.substr(i1+5,l-(i1+4));
+    var i2 = $location.$$url.indexOf('%2Fbid%2F');
+    var p2 = $location.$$url.substr(i2+9,l-(i2+8));
+    if (i1>=0 && l > i1+5) {
+      console.log('uuid1: ' + p1);
+      $state.go('bid', {uuid: p1});
+    } else if (i2>=0 && l > i2+9) {
+      console.log('uuid2: ' + p2);
+      $state.go('bid', {uuid: p2});
+    } else {
+      $state.go('default', {badUrl: $location.$$url});
+    } */
+    $state.go('default', {badUrl: $location.$$url});
+  });
   $stateProvider
     .state('default', {
-      url:'/default',
+      url:'/default/:badUrl',
       templateUrl: 'app/partials/default.html',
-      controller: 'DefaultCtrl as defaultModel'
+      controller: 'DefaultCtrl as defaultModel',
+      resolve: {
+        badUrl: ['$stateParams', function($stateParams) {
+          return $stateParams.badUrl;
+        } ]
+      }
     })
     .state('login', {
       url: '/login',
