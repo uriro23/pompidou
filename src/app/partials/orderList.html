@@ -11,15 +11,16 @@
       <span>תבניות </span>
       <input type="radio" ng-model="orderListModel.queryType" value="templates"
                                      ng-change="orderListModel.setQuery()">
-      <span>הסטוריה </span>
-      <input type="radio" ng-model="orderListModel.queryType" value="past"
-             ng-change="orderListModel.setQuery()">
       <span>חובות</span>
       <input type="radio" ng-model="orderListModel.queryType" value="debts"
              ng-change="orderListModel.setQuery()">
-      <span>כולם </span>
-      <input type="radio" ng-model="orderListModel.queryType" value="all"
-                                  ng-change="orderListModel.setQuery()">
+      &nbsp;
+      <span>שנה:</span>
+      <select ng-model="orderListModel.queryYear"
+              ng-change="orderListModel.setQueryYear()"
+              ng-options="year for year in orderListModel.years">
+        <option value=""></option>
+      </select>
       &nbsp;&nbsp;<span>מבוטלים:</span>
       <input type="checkbox"
              ng-model="orderListModel.isIncludecanceled"
@@ -38,6 +39,13 @@
                 ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses">
             <option value=""></option>
           </select>
+      &nbsp;&nbsp;<span>
+      <span>מוצגים</span>&nbsp;
+      <span>{{orderListModel.noOfDisplayedOrders}}</span>
+      <span>מתוך</span>&nbsp;
+      <span>{{orderListModel.noOfFetchedOrders}}</span>
+      &nbsp;<span>אירועים</span>
+    </span>
         </div>
     <div ng-hide="orderListModel.queryType==='templates'" class="table table-responsive">
     <table class="table table-hover" style="width: 99%">

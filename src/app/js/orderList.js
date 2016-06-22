@@ -14,6 +14,7 @@ angular.module('myApp')
 
     var fetchedOrders = [];
 
+
 //  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
 //  function is called from ng-change of criteria controls, as well as from initialization code below
     this.filterOrders = function () {
@@ -30,6 +31,8 @@ angular.module('myApp')
           return ord.attributes.orderStatus!==6
         })
       }
+
+      this.noOfDisplayedOrders = this.orders.length;
 
       this.orders.sort(function (a, b) {
         if (that.queryType === 'templates') {
@@ -75,6 +78,7 @@ angular.module('myApp')
         })[0];
         fetchedOrders[i].view.isReadOnly = fetchedOrders[i].attributes.eventDate < today;
       }
+      this.noOfFetchedOrders = fetchedOrders.length;
       this.filterOrders();
     };
 
@@ -85,6 +89,9 @@ angular.module('myApp')
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
         'exitTime','eventType','template','remarks','header'
       ];
+      if (this.queryType !== 'year') {
+        this.queryYear = undefined;
+      }
       switch (this.queryType) {
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
@@ -102,16 +109,10 @@ angular.module('myApp')
             that.enrichOrders();
           });
           break;
-        case 'past':
-          api.queryPastOrders(fieldList).then(function (orders) {
-            fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template;
-            });
-            that.enrichOrders();
-          });
-          break;
-        case 'debts':
-          api.queryPastOrders(fieldList).then(function (orders) {
+       case 'debts':
+         var fromDate = new Date(today.getFullYear()-2,today.getMonth(),today.getDate()); // debts beyon 2 years are lost
+         var toDate = new Date(today.getFullYear(),today.getMonth(),today.getDate()-1);
+          api.queryOrdersByRange('eventDate',fromDate,toDate,fieldList).then(function (orders) {
             fetchedOrders = orders.filter(function (ord) {
               return (ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4) && // executed events not fully paid
                 !ord.attributes.template;
@@ -119,17 +120,23 @@ angular.module('myApp')
             that.enrichOrders();
           });
           break;
-        case 'all':
-          api.queryAllOrders(fieldList).then(function (orders) {
-            fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template;
+      case 'year':
+          api.queryOrdersByRange('eventDate',new Date(this.queryYear,0,1),new Date(this.queryYear,11,31),fieldList)
+            .then(function(orders) {
+              fetchedOrders = orders.filter(function(ord) {
+                return !ord.attributes.template;
+              });
+              that.enrichOrders();
             });
-            that.enrichOrders();
-          });
           break;
 
       }
      };
+
+    this.setQueryYear = function () {
+      this.queryType = 'year';
+      this.setQuery();
+    };
 
     this.setCustomerFilter = function () {
       var that = this;
@@ -189,6 +196,10 @@ angular.module('myApp')
     };
 
 
+    this.years = [];
+    for (var y=new Date().getFullYear();y>=2012;y--) {
+      this.years.push(y);
+    }
     this.filterByCustomer = {};
     this.orderStatuses = lov.orderStatuses;
     this.queryType = 'future';

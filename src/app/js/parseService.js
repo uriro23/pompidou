@@ -131,14 +131,19 @@ angular.module('myApp')
       return query(orderQuery);
     };
 
-    this.queryAllOrders = function (fields) {
+    this.queryAllOrders = function (fields,skip) {
       var orderQuery = new Parse.Query(Order);
       orderQuery.limit(1000);
+      orderQuery.descending('eventDate'); // so if we have over 1000 orders, the oldest won't be fetched
       if (fields) {
         orderQuery.select(fields);
       }
+      if (skip) {
+        orderQuery.skip (skip);
+      }
       return query(orderQuery);
     };
+
 
     this.queryOrdersByCustomer = function (cust,fields) {
     var orderQuery = new Parse.Query(Order);
@@ -172,17 +177,7 @@ angular.module('myApp')
     return query(orderQuery);
   };
 
-    this.queryPastOrders = function (fields) {
-      var orderQuery = new Parse.Query(Order);
-      orderQuery.lessThan('eventDate', today);
-      orderQuery.limit(1000);
-      if (fields) {
-        orderQuery.select(fields);
-      }
-      return query(orderQuery);
-    };
-
-    this.queryOrdersByRange = function (field, from, to, fields) {
+   this.queryOrdersByRange = function (field, from, to, fields) {
       var orderQuery = new Parse.Query(Order);
       orderQuery.lessThanOrEqualTo(field, to);
       orderQuery.greaterThanOrEqualTo(field, from);
