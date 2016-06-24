@@ -39,7 +39,7 @@
                 ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses">
             <option value=""></option>
           </select>
-      &nbsp;&nbsp;<span>
+      &nbsp;&nbsp;<span ng-hide="orderListModel.isProcessing">
       <span>מוצגים</span>&nbsp;
       <span>{{orderListModel.noOfDisplayedOrders}}</span>
       <span>מתוך</span>&nbsp;
@@ -49,7 +49,7 @@
         </div>
     <div ng-hide="orderListModel.queryType==='templates'" class="table table-responsive">
     <table class="table table-hover" style="width: 99%">
-      <thead>
+      <thead ng-hide="orderListModel.isProcessing">
       <th style="width: 3%">מס'</th>
       <th style="width: 11%">תאריך</th>
       <th style="width: 4%">מסירה</th>
@@ -113,7 +113,7 @@
     </div>
 <div ng-show="orderListModel.queryType==='templates'">
   <table class="table table-hover" style="width: 99%">
-    <thead>
+    <thead ng-hide="orderListModel.isProcessing">
     <th style="width: 3%">מס'</th>
     <th style="width: 23%">תבנית</th>
     <th style="width: 5%">סועדים</th>

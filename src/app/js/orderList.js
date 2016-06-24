@@ -80,6 +80,7 @@ angular.module('myApp')
       }
       this.noOfFetchedOrders = fetchedOrders.length;
       this.filterOrders();
+      this.isProcessing = false;
     };
 
     this.setQuery = function () {
@@ -92,6 +93,7 @@ angular.module('myApp')
       if (this.queryType !== 'year') {
         this.queryYear = undefined;
       }
+      this.isProcessing = true;
       switch (this.queryType) {
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
@@ -204,6 +206,7 @@ angular.module('myApp')
     this.orderStatuses = lov.orderStatuses;
     this.queryType = 'future';
     this.setQuery();
+    this.isProcessing = false;
 
 
   });
