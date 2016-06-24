@@ -101,20 +101,43 @@ angular.module('myApp')
     return Parse.Promise.when(promises);
   };
 
-  function query(qry) {
-    var promise = $q.defer();
-    qry.find({
-      success: function (results) {
-        promise.resolve(results);
-        $rootScope.$digest();
-      },
-      error: function (error) {
-        promise.reject(error);
-        $rootScope.$digest();
+    function query(qry) {
+      var pageSize = 1000;
+      var skip = 0;
+      var results = [];
+      var promises = [];
+      qry.limit(pageSize);
+
+      // this function is called recursively to fetch a page of objects (up to 1000 - a limit set by Parse)
+      function queryPage (sk) {
+        var promise = $q.defer();
+        promises.push(promise);
+        qry.skip(sk);
+        qry.find({
+          success: function (objs) {
+            results = results.concat(objs);
+            if (objs.length === pageSize) { // maybe more results needed
+              skip += pageSize;
+              return queryPage(skip);
+            } else {
+              while (promises.length > 1) {
+                promises.pop().resolve(); // resolve all intermediate promises without data
+              }
+              promises.pop().resolve(results); // resolve original promise for caller
+              $rootScope.$digest();
+            }
+          },
+          error: function (err) {
+            promise.reject (err);
+            $rootScope.$digest();
+          }
+        });
+        return promise.promise;
       }
-    });
-    return promise.promise;
-  }
+
+      return queryPage(skip);
+
+    }
 
   // Order
   // -----
@@ -131,18 +154,13 @@ angular.module('myApp')
       return query(orderQuery);
     };
 
-    this.queryAllOrders = function (fields,skip) {
+     this.queryAllOrders = function (fields) {
       var orderQuery = new Parse.Query(Order);
-      orderQuery.limit(1000);
-      orderQuery.descending('eventDate'); // so if we have over 1000 orders, the oldest won't be fetched
       if (fields) {
         orderQuery.select(fields);
       }
-      if (skip) {
-        orderQuery.skip (skip);
-      }
       return query(orderQuery);
-    };
+     };
 
 
     this.queryOrdersByCustomer = function (cust,fields) {
@@ -150,7 +168,6 @@ angular.module('myApp')
     if (cust) {
       orderQuery.equalTo('customer', cust);
     }
-    orderQuery.limit(1000);
       if (fields) {
         orderQuery.select(fields);
       }
@@ -160,7 +177,6 @@ angular.module('myApp')
   this.queryTemplateOrders = function (fields) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.exists('template');
-    orderQuery.limit(1000);
     if (fields) {
       orderQuery.select(fields);
     }
@@ -170,8 +186,7 @@ angular.module('myApp')
   this.queryFutureOrders = function (fields) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.greaterThanOrEqualTo('eventDate', today);
-    orderQuery.limit(1000);
-    if (fields) {
+     if (fields) {
       orderQuery.select(fields);
     }
     return query(orderQuery);
@@ -181,7 +196,6 @@ angular.module('myApp')
       var orderQuery = new Parse.Query(Order);
       orderQuery.lessThanOrEqualTo(field, to);
       orderQuery.greaterThanOrEqualTo(field, from);
-      orderQuery.limit(1000);
       if (fields) {
         orderQuery.select(fields);
       }
@@ -259,7 +273,6 @@ angular.module('myApp')
     if (id) {
       customerQuery.equalTo('objectId', id);
     }
-    customerQuery.limit(1000);
     customerQuery.ascending("firstName");
     return query(customerQuery);
   };
@@ -278,7 +291,6 @@ angular.module('myApp')
     if (domain) {
       workOrderQuery.equalTo('domain', domain)
     }
-    workOrderQuery.limit(1000);
     return query(workOrderQuery);
   };
 
@@ -312,7 +324,6 @@ angular.module('myApp')
     if (domain) {
       catalogQuery.equalTo('domain', domain);
     }
-    catalogQuery.limit(1000);
     return query(catalogQuery);
   };
 
@@ -552,7 +563,6 @@ angular.module('myApp')
 
   this.queryAccessCatalog = function () {
     var accessCatalogQuery = new Parse.Query(AccessCatalog);
-    accessCatalogQuery.limit(1000);
     accessCatalogQuery.descending('Domain'); // so that when converting subitems (components) the target items will already be there
     return query(accessCatalogQuery);
   };
@@ -580,7 +590,6 @@ angular.module('myApp')
 
   this.queryAccessCustomers = function () {
     var accessCustomersQuery = new Parse.Query(AccessCustomers);
-    accessCustomersQuery.limit(1000);
     accessCustomersQuery.ascending('CustomerId');
     return query(accessCustomersQuery);
   };
@@ -592,7 +601,6 @@ angular.module('myApp')
 
   this.queryAccessOrders = function () {
     var accessOrdersQuery = new Parse.Query(AccessOrders);
-    accessOrdersQuery.limit(1000);
     accessOrdersQuery.ascending('OrderId');
     return query(accessOrdersQuery);
   };
@@ -605,7 +613,6 @@ angular.module('myApp')
   this.queryAccessOrderItems = function (orderId) {
     var accessOrderItemsQuery = new Parse.Query(AccessOrderItems);
     accessOrderItemsQuery.equalTo('OrderId', orderId);
-    accessOrderItemsQuery.limit(1000);
     accessOrderItemsQuery.ascending('ItemId');
     return query(accessOrderItemsQuery);
   };
@@ -618,7 +625,6 @@ angular.module('myApp')
   this.queryAccessOrderActivities = function (orderId) {
     var accessOrderActivitiesQuery = new Parse.Query(AccessOrderActivities);
     accessOrderActivitiesQuery.equalTo('ActivityOrder', orderId);
-    accessOrderActivitiesQuery.limit(1000);
     accessOrderActivitiesQuery.descending('Id'); // ActivityTime is string, no good for sort
     return query(accessOrderActivitiesQuery);
   };
