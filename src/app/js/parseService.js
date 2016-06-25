@@ -105,26 +105,21 @@ angular.module('myApp')
       var pageSize = 1000;
       var skip = 0;
       var results = [];
-      var promises = [];
       qry.limit(pageSize);
+      var promise = $q.defer();
 
       // this function is called recursively to fetch a page of objects (up to 1000 - a limit set by Parse)
       function queryPage (sk) {
-        var promise = $q.defer();
-        promises.push(promise);
         qry.skip(sk);
         qry.find({
           success: function (objs) {
             results = results.concat(objs);
             if (objs.length === pageSize) { // maybe more results needed
               skip += pageSize;
-              return queryPage(skip);
+              queryPage(skip);
             } else {
-              while (promises.length > 1) {
-                promises.pop().resolve(); // resolve all intermediate promises without data
-              }
-              promises.pop().resolve(results); // resolve original promise for caller
-              $rootScope.$digest();
+             promise.resolve(results);
+             $rootScope.$digest();
             }
           },
           error: function (err) {
@@ -132,10 +127,10 @@ angular.module('myApp')
             $rootScope.$digest();
           }
         });
-        return promise.promise;
       }
 
-      return queryPage(skip);
+      queryPage(skip);
+      return promise.promise;
 
     }
 
