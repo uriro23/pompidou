@@ -4,7 +4,9 @@
     </span>&nbsp;&nbsp;
   <button class="btn btn-default" ng-click="orderListModel.newOrder()">חדש</button>
 </h2>
-    <div>
+<table style="width: 99%">
+  <tr>
+    <td style="width: 60%">
       <span>  עתידיים </span>
       <input type="radio" ng-model="orderListModel.queryType" value="future"
                                      ng-change="orderListModel.setQuery()">
@@ -39,14 +41,16 @@
                 ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses">
             <option value=""></option>
           </select>
-      &nbsp;&nbsp;<span ng-hide="orderListModel.isProcessing">
-      <span>מוצגים</span>&nbsp;
+      </td>
+    <td ng-hide="orderListModel.isProcessing" style="width: 40%;text-align: left">
+       <span>מוצגים</span>
       <span>{{orderListModel.noOfDisplayedOrders}}</span>
-      <span>מתוך</span>&nbsp;
+      <span>מתוך</span>
       <span>{{orderListModel.noOfFetchedOrders}}</span>
-      &nbsp;<span>אירועים</span>
-    </span>
-        </div>
+      <span>אירועים</span>
+    </td>
+  </tr>
+  </table>
     <div ng-hide="orderListModel.queryType==='templates'" class="table table-responsive">
     <table class="table table-hover" style="width: 99%">
       <thead ng-hide="orderListModel.isProcessing">

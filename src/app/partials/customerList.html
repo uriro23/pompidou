@@ -40,17 +40,18 @@
 <div ng-show="customerListModel.isShowOrders">
   <ng-include src="'app/partials/customer/orderList.html'"></ng-include>
 </div>
-  <table class="table table-hover" style="width:80%">
+  <table class="table table-hover" style="width:99%">
     <thead>
-    <th style="width:15%">שם פרטי</th>
-    <th style="width:16%">שם משפחה</th>
-    <th style="width:10%">        טל' נייד    </th>
-    <th style="width:10%">        טל' בית    </th>
-    <th style="width:10%">        טל' עבודה    </th>
-    <th style="width:18%">        דוא"ל    </th>
-    <th style="width:16%">        כתובת    </th>
+    <th style="width:12%">שם פרטי</th>
+    <th style="width:13%">שם משפחה</th>
+    <th style="width:8%">        טל' נייד    </th>
+    <th style="width:8%">        טל' בית    </th>
+    <th style="width:8%">        טל' עבודה    </th>
+    <th style="width:14%">        דוא"ל    </th>
+    <th style="width:13%">        כתובת    </th>
     <th style="width:2%">אירועים</th>
     <th style="width:3%"></th>
+    <th style="width:19%"></th>
     </thead>
     <tbody>
     <tr ng-class="customerListModel.isCustomerChanged?'bg-success':null">
@@ -75,7 +76,7 @@
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
-        <input style="text-align: left" type="text" size=22 ng-model="customerListModel.currentCustomer.attributes.email"
+        <input style="text-align: left" type="text" size=27 ng-model="customerListModel.currentCustomer.attributes.email"
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
@@ -84,6 +85,13 @@
       </td>
       <td></td>
       <td></td>
+      <td style="text-align: left">
+        <span>מוצגים</span>
+        <span>{{customerListModel.filteredCustomers.length}}</span>
+        <span>מתוך</span>
+        <span>{{customerListModel.customers.length}}</span>
+        <span>לקוחות</span>
+      </td>
     </tr>
     <tr ng-repeat="customer in customerListModel.filteredCustomers track by customer.id"
         ng-class="customer.isSelected?'bg-success':null">
