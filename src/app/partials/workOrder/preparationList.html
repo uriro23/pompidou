@@ -4,12 +4,12 @@
   <h4>{{workOrderModel.domains[2].forWorkItem}}</h4>
     </td>
     <td  style="width: 20%">
-      <span ng-hide="workOrderModel.domainStatuses.attributes.status[2]">
+      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[2]">
         --- לא מעודכן ---
       </span>
   <button class="btn btn-default"
           ng-disabled="workOrderModel.isProcessing"
-          ng-show="workOrderModel.domainStatuses.attributes.status[2]"
+          ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
           ng-click="workOrderModel.createWorkOrderDomain(3)">
     {{'חשב '+workOrderModel.domains[3].forWorkItem}}
   </button>
@@ -17,10 +17,10 @@
       <td style="width: 30%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.domainStatuses.attributes.status[2]">
-        <a href="#/todaysPrep" target="_blank"
+                ng-show="workOrderModel.woIndex.attributes.domainStatus[2]">
+        <a href="#/todaysPrep/{{workOrderModel.woIndex.attributes.woId}}" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
-           ng-show="workOrderModel.domainStatuses.attributes.status[2]">
+           ng-show="workOrderModel.woIndex.attributes.domainStatus[2]">
              רשימת הכנות יומית
           </a>
         </button>
@@ -28,7 +28,7 @@
      <td style="width: 30%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.domainStatuses.attributes.status[2]"
+                ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
                 ng-click="workOrderModel.preparationsEndDay()">
           סוף יום
         </button>
@@ -45,25 +45,25 @@
       <td style="width: 11%">
         <input type="text" money size="5"
                ng-model="woItem.attributes.quantity"
-               ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
+               ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
                ng-change="workOrderModel.setQuantity(woItem,2)">
       </td>
       <td style="width: 11%">{{woItem.attributes.measurementUnit.label}}</td>
       <td style="width: 10%">
         <button ng-click="workOrderModel.backInfo(woItem)"
-                ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
+                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
       <td style="width: 13%"
-          ng-hide= "!workOrderModel.domainStatuses.attributes.status[2]">
+          ng-hide= "!workOrderModel.woIndex.attributes.domainStatus[2]">
         <span>להיום: </span>
         <input type="checkbox" ng-model="woItem.attributes.isForToday"
                ng-change="workOrderModel.setIsForToday(woItem)">
       </td>
       <td style="width: 11%"
-          ng-hide= "!workOrderModel.domainStatuses.attributes.status[2]">
+          ng-hide= "!workOrderModel.woIndex.attributes.domainStatus[2]">
         <input type="text" money size="5"
                ng-disabled="!woItem.attributes.isForToday"
                ng-model="woItem.attributes.quantityForToday"
@@ -71,7 +71,7 @@
       </td>
       <td style="width: 10%">
         <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.domainStatuses.attributes.status[2]"
+                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
                 class="btn btn-default btn-sm">
           מחק
         </button>

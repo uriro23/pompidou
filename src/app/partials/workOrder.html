@@ -1,12 +1,26 @@
-<h3>
+<table style="width: 70%">
+  <tr>
+    <td style="width: 30%;font-size: x-large">
   פקודת עבודה
-&nbsp;&nbsp;&nbsp;
+<span>{{workOrderModel.woIndex.attributes.label}}</span>
+      </td>
+    <td style="width: 30%" ng-show="workOrderModel.ordersDisplayMode==='show'">
 <button ng-click="workOrderModel.selectOrders()"
         ng-disabled="workOrderModel.isProcessing"
         class="btn btn-default">
-  חדשה
+<span>צור פקודה</span>
+  <span>{{workOrderModel.woIndex.attributes.label}}</span>
+  <span>חדשה</span>
 </button>
-</h3>
+      </td>
+    <td style="width: 40%" ng-show="workOrderModel.ordersDisplayMode==='show'">
+  <span>החלף סוג פקודה:</span>
+  <select ng-model="workOrderModel.woIndex" ng-change="workOrderModel.switchWorkOrders()"
+          ng-disabled="workOrderModel.isProcessing"
+          ng-options="woIndex.attributes.label for woIndex in workOrderModel.woIndexes"></select>
+    </td>
+  </tr>
+</table>
 <h4 ng-show="workOrderModel.isProcessing">
   המתן...
 </h4>
@@ -25,9 +39,11 @@
   </tab>
   <tab heading="{{workOrderModel.domains[0].forWorkItem}}"
        active="workOrderModel.isActiveTab[0]">
-    <ng-include ng-hide="workOrderModel.isSelectOrders"
-                src="'app/partials/workOrder/smallOrderList.html'"></ng-include>
-    <ng-include ng-show="workOrderModel.isSelectOrders"
+    <ng-include ng-show="workOrderModel.ordersDisplayMode==='show'"
                 src="'app/partials/workOrder/orderList.html'"></ng-include>
+    <ng-include ng-show="workOrderModel.ordersDisplayMode==='select'"
+                src="'app/partials/workOrder/selectOrders.html'"></ng-include>
+    <ng-include ng-show="workOrderModel.ordersDisplayMode==='query'"
+                src="'app/partials/workOrder/queryOrders.html'"></ng-include>
   </tab>
   </tabset>

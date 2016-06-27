@@ -1,6 +1,6 @@
 <h4>
   {{workOrderModel.domains[3].forWorkItem}}
-      <span ng-hide="workOrderModel.domainStatuses.attributes.status[3]">
+      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[3]">
         --- לא מעודכן ---
       </span>
 </h4>
@@ -13,20 +13,20 @@
       <td>
         <input type="text" money size="5"
                ng-model="woItem.attributes.quantity"
-               ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
+               ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[3]"
                ng-change="workOrderModel.setQuantity(woItem,3)">
       </td>
       <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
       <td>
         <button ng-click="workOrderModel.backInfo(woItem)"
-                ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
+                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[3]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
       <td>
         <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.domainStatuses.attributes.status[3]"
+                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[3]"
                 class="btn btn-default btn-sm">
           מחק
         </button>

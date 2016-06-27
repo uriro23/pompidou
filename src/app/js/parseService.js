@@ -281,27 +281,25 @@ angular.module('myApp')
     return new WorkOrder();
   };
 
-  this.queryWorkOrder = function (domain) {
+  this.queryWorkOrder = function (woId,domain) {
     var workOrderQuery = new Parse.Query(WorkOrder);
+    workOrderQuery.equalTo('woId',woId);
     if (domain) {
-      workOrderQuery.equalTo('domain', domain)
+      workOrderQuery.equalTo('domain', domain);
     }
     return query(workOrderQuery);
   };
 
 
-  // WorkOrderDomains
+  // WorkOrderIndex
   // ----------------
 
-  var WorkOrderDomains = Parse.Object.extend("WorkOrderDomains");
+  var WorkOrderIndex = Parse.Object.extend("WorkOrderIndex");
 
-  this.initWorkOrderDomains = function () {
-    return new WorkOrderDomains();
-  };
-
-  this.queryWorkOrderDomains = function () {
-    var workOrderDomainsQuery = new Parse.Query(WorkOrderDomains);
-    return query(workOrderDomainsQuery);
+  this.queryWorkOrderIndex = function () {
+    var q = new Parse.Query(WorkOrderIndex);
+    q.ascending('woId');
+    return query(q);
   };
 
 

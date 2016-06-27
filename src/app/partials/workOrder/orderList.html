@@ -1,11 +1,5 @@
 <h4>
-  <span>בחר אירועים</span>
-  <span>&nbsp;</span>
-  <button class="btn btn-default"
-          ng-disabled="workOrderModel.isProcessing"
-          ng-click="workOrderModel.createWorkOrderDomain(1)">
-    {{'חשב '+workOrderModel.domains[1].forWorkItem}}
-  </button>
+  אירועים
 </h4>
 <table class="table table-hover" style="width:50%">
   <thead>
@@ -28,14 +22,11 @@
     משתתפים
   </th>
   <th>
-סטטוס
-  </th>
-  <th>
-    פק' עבודה
+    סטטוס
   </th>
   </thead>
   <tbody>
-  <tr ng-repeat="woItem in workOrderModel.orderView"
+  <tr ng-repeat="woItem in workOrderModel.woOrders"
       ng-class="woItem.attributes.orderStatus.id===1?'bg-active':
                         woItem.attributes.orderStatus.id===2?'bg-warning':
                         (woItem.attributes.orderStatus.id>=3 && woItem.attributes.orderStatus.id<=5)?'bg-success':
@@ -48,12 +39,8 @@
     <td>{{woItem.attributes.order.exitTime | date: 'HH:mm'}}</td>
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
-	<td>{{woItem.attributes.orderStatus.name}}</td>
-    <td>
-      <input type="checkbox"
-             ng-model="woItem.isInWorkOrder"
-             ng-change="workOrderModel.setOrderInWorkOrder($index)">
-    </td>
+    <td>{{woItem.attributes.orderStatus.name}}</td>
   </tr>
   </tbody>
 </table>
+

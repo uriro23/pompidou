@@ -249,8 +249,8 @@ config(function($stateProvider, $urlRouterProvider) {
               return objs;
             });
         }],
-        workOrder: ['api', function (api) {
-          return api.queryWorkOrder().then(function (obj) {
+        woIndexes: ['api', function (api) {
+          return api.queryWorkOrderIndex().then(function (obj) {
             return obj;
           });
         }]
@@ -258,7 +258,7 @@ config(function($stateProvider, $urlRouterProvider) {
     })
 
     .state('todaysPrep', {
-      url: '/todaysPrep',
+      url: '/todaysPrep/:woId',
       templateUrl: 'app/partials/todaysPrep.html',
       controller: 'TodaysPrepCtrl as todaysPrepModel',
       resolve: {
@@ -273,8 +273,8 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
-        workOrder: ['api', function (api) {
-          return api.queryWorkOrder().then(function (workItems) {
+        workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
             return workItems.map(function (wi) {
               var att = wi.attributes;
               att.id = wi.id;
