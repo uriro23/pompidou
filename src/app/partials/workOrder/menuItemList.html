@@ -1,15 +1,21 @@
-<h4>
+<table style="width:70%">
+  <tr>
+    <td style="width:90%;font-size: large">
   {{workOrderModel.domains[1].forWorkItem}}
       <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[1]">
         --- לא מעודכן ---
       </span>
+    </td>
+    <td style="width:10%">
   <button class="btn btn-default"
           ng-disabled="workOrderModel.isProcessing"
           ng-show="workOrderModel.woIndex.attributes.domainStatus[1]"
           ng-click="workOrderModel.createWorkOrderDomain(2)">
     {{'חשב '+workOrderModel.domains[2].forWorkItem}}
   </button>
-</h4>
+    </td>
+  </tr>
+</table>
 <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
   <label>{{cat.category.label}}</label>
   <table class="table table-hover" style="width:70%">

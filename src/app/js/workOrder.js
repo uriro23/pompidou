@@ -212,9 +212,47 @@ angular.module('myApp')
         });
     };
 
+    this.queryOrders = function () {
+      var that = this;
+      this.isProcessing = true;
+      api.queryOrdersByRange('eventDate',this.fromDate,this.toDate)
+        .then(function(ords) {
+          var orders = ords.filter(function(ord) {
+            return ord.attributes.orderStatus !== 1 && ord.attributes.orderStatus !== 6;
+          });
+          orders.forEach(function(ord) {
+            var viewItem = api.initWorkOrder();
+            viewItem.attributes.woId = woId;
+            viewItem.attributes.domain = 0;
+            viewItem.attributes.order = ord.attributes;
+            viewItem.attributes.order.id = ord.id;
+            viewItem.attributes.customer = customers.filter(function (cust) {
+              return cust.id === ord.attributes.customer;
+            })[0].attributes;
+            viewItem.attributes.orderStatus = lov.orderStatuses.filter(function(st) {
+              return st.id === ord.attributes.orderStatus;
+            })[0];
+            viewItem.isInWorkOrder = true;
+            that.orderView.push(viewItem);
+          });
+          api.saveObjects(that.orderView)
+            .then(function() {
+              api.queryWorkOrder(woId)    // requery to get ids
+                .then(function(woOrders) {
+                  woOrders.forEach(function(wo) {
+                    wo.isInWorkOrder = true;
+                  });
+                  that.orderView = that.workOrder = woOrders;
+                  that.createSmallOrderView();
+                  that.createWorkOrderDomain(1);
+                });
+           });
+         });
+    };
+
     this.createSmallOrderView = function () {
       this.woOrders = this.workOrder.filter(function (wo) {
-        return wo.attributes.domain === 0
+        return wo.attributes.domain === 0;
       });
     };
 
@@ -245,13 +283,13 @@ angular.module('myApp')
             that.createSmallOrderView()
           })
       }
-      for (var dd = 1; dd < 4; dd++) {                     // set all further domains as invalid
-        this.woIndex.attributes.domainStatus[dd] = false;
-      }
-      api.saveObj(this.woIndex);
+ //     for (var dd = 1; dd < 4; dd++) {                     // set all further domains as invalid
+ //       this.woIndex.attributes.domainStatus[dd] = false;
+ //     }
+ //     api.saveObj(this.woIndex);
     };
 
-    this.selectOrders = function () {
+    this.createNewWorkOrder = function () {
       var that = this;
       var ackDelModal = $modal.open({
         templateUrl: 'app/partials/workOrder/ackDelete.html',
@@ -272,11 +310,14 @@ angular.module('myApp')
               that.workOrder = [];
               that.workOrderByCategory = [];
               that.woOrders = [];
-              that.createOrderView();
-              that.ordersDisplayMode = 'select';
+              if (!that.woIndex.attributes.isQuery) {
+                that.createOrderView();
+              }
+              for (var dd = 0; dd < 4; dd++) {                     // all domains - invalid
+                that.woIndex.attributes.domainStatus[dd] = false;
+              }
+              api.saveObj(that.woIndex);
             })
-        } else {
-          that.ordersDisplayMode = 'show';
         }
       });
     };
@@ -338,7 +379,10 @@ angular.module('myApp')
 
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
-      this.ordersDisplayMode = 'show';
+      if (targetDomain===1) { // clicking <compute menuItems> signifies that order selection is complete
+        this.woIndex.attributes.domainStatus[0] = true;
+        api.saveObj(this.woIndex);
+      }
       // destroy existing work order items of target and higher domains
       this.destroyWorkOrderDomains(targetDomain)
         .then(function () {
@@ -356,6 +400,7 @@ angular.module('myApp')
               .then(function (wo) {
                 that.workOrder = wo;
                 that.splitWorkOrder();
+                console.log(that.workOrderByCategory);
                 for (var d = 0; d < 4; d++) {
                   that.isActiveTab[d] = false;
                 }
@@ -472,7 +517,7 @@ angular.module('myApp')
                     return !wo.isToDelete
                   });
                   that.splitWorkOrder();
-                  console.log('updated workorder:')
+                  console.log('updated workOrder:')
                   console.log(that.workOrder);
                   that.woIndex.attributes.domainStatus[3] = false;
                   api.saveObj(that.woIndex);
@@ -485,8 +530,7 @@ angular.module('myApp')
     this.switchWorkOrders = function () {
       var that = this;
       woId = this.woIndex.attributes.woId;
-      this.ordersDisplayMode = 'show';
-      this.isProcessing = true;
+       this.isProcessing = true;
       api.queryWorkOrder(woId)
         .then(function(wo) {
           that.workOrder = wo;
@@ -507,5 +551,9 @@ angular.module('myApp')
     this.woIndex = this.woIndexes.filter(function(index) {
       return index.attributes.isDefault;
     })[0];
+    this.fromDate = new Date(today);
+    this.toDate = new Date(today);
+    this.fromDate.setMonth(this.fromDate.getMonth()-1);
+    this.toDate.setDate(this.toDate.getDate()-1);
     this.switchWorkOrders();
   });

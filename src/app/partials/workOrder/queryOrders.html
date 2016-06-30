@@ -1,1 +1,13 @@
-query
+<p></p>
+<div style="font-size: large">
+  &nbsp;&nbsp;<span>כל האירועים שהתקיימו בפועל מתאריך</span>
+  <input type="date" ng-model="workOrderModel.fromDate">
+  <span>עד תאריך</span>
+  <input type="date" ng-model="workOrderModel.toDate">
+  &nbsp;
+  <button class="btn btn-default"
+          ng-disabled="workOrderModel.isProcessing"
+          ng-click="workOrderModel.queryOrders()">
+    {{'חשב '+workOrderModel.domains[1].forWorkItem}}
+  </button>
+</div>

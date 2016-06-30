@@ -1,20 +1,9 @@
-  <table style="width: 40%">
+  <table style="width: 45%">
     <tr>
-    <td style="width: 10%">
-  <h4>{{workOrderModel.domains[2].forWorkItem}}</h4>
+    <td style="width: 30%">
+  <span style="font-size: large">{{workOrderModel.domains[2].forWorkItem}}</span>
     </td>
-    <td  style="width: 20%">
-      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[2]">
-        --- לא מעודכן ---
-      </span>
-  <button class="btn btn-default"
-          ng-disabled="workOrderModel.isProcessing"
-          ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
-          ng-click="workOrderModel.createWorkOrderDomain(3)">
-    {{'חשב '+workOrderModel.domains[3].forWorkItem}}
-  </button>
-    </td>
-      <td style="width: 30%">
+      <td style="width: 20%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
                 ng-show="workOrderModel.woIndex.attributes.domainStatus[2]">
@@ -24,13 +13,25 @@
              רשימת הכנות יומית
           </a>
         </button>
+      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[2]">
+        --- לא מעודכן ---
+      </span>
       </td>
-     <td style="width: 30%">
+     <td style="width: 20%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
                 ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
                 ng-click="workOrderModel.preparationsEndDay()">
           סוף יום
+        </button>
+      </td>
+      <td style="width: 20%"></td>
+      <td  style="width: 10%">
+        <button class="btn btn-default"
+                ng-disabled="workOrderModel.isProcessing"
+                ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
+                ng-click="workOrderModel.createWorkOrderDomain(3)">
+          {{'חשב '+workOrderModel.domains[3].forWorkItem}}
         </button>
       </td>
     </tr>
