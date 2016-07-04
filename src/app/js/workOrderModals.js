@@ -50,9 +50,10 @@ angular.module('myApp')
     backTrace.push(root);
     if (root.attributes.domain > 0) {
       var bt = root.attributes.backTrace;
-      for (var i = 0; i < bt.length; i++) {
+      //for (var i = 0; i < bt.length; i++) {
+      bt.forEach(function(bti) {
         var son = angular.copy(workOrder.filter(function (wo) {
-          return wo.id === bt[i].id;
+          return wo.id === bti.id;
         })[0]);
         if (!son) {
           console.log('cant find son in backtrace');
@@ -62,16 +63,16 @@ angular.module('myApp')
           console.log(bt);
         } else {
           son.father = root.seq;
-          generateTrace(son, gen + 1, bt[i].quantity, workOrder, backTrace);
+          generateTrace(son, gen + 1, bti.quantity, workOrder, backTrace);
         }
-      }
+      });
     }
   }
 
   this.setExpand = function (item) {
     item.expand = item.expand === '-' ? '+' : item.expand === '+' ? '-' : '';  // reverse expansion
     var sons = this.backTrace.filter(function (itm) {      // get all sons of expanded / collapsed item
-      return itm.father === item.seq
+      return itm.father === item.seq;
     });
     for (var i = 0; i < sons.length; i++) {   // actually changes items in this.backTrace
       sons[i].isShow = item.expand === '-';
@@ -90,7 +91,7 @@ angular.module('myApp')
 
   this.done = function () {
     $modalInstance.close();
-  }
+  };
 
 
 });

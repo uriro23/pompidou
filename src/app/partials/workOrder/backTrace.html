@@ -34,7 +34,7 @@
         <tbody>
         <tr ng-repeat="item in workOrderBackTraceModel.backTrace
                 | filter:workOrderBackTraceModel.isShowItem track by item.seq">
-            <td ng-click="workOrderBackTraceModel.setExpand(item)"><b>{{item.expand}}</b></td>
+            <td ng-click="workOrderBackTraceModel.setExpand(item)"><b style="cursor: pointer">{{item.expand}}</b></td>
              <td>{{item.ident+item.domain.label}}</td>
             <td>{{item.attributes.category.label}}</td>
             <td>{{item.attributes.productDescription}}</td>
