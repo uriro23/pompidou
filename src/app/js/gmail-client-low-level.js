@@ -15,7 +15,7 @@
   };
 
   /* @ngInject */
-  function GmailClientLowLevel($q, $timeout) {
+  function GmailClientLowLevel($q, $timeout, $http) {
     var isInitialized = $q.defer();
 
     this.authenticateIfAuthorized = function () {
@@ -95,9 +95,33 @@
         'Content-Type: text/html; charset=utf-8\r\n' +
         'Content-Transfer-Encoding: 7BIT\r\n';
       return isInitialized.promise.then(function () {
-        return sendMessage(emailHeaders + '\r\n' + content);
+        // return sendMessage(emailHeaders + '\r\n' + content);
+        return sendMessage(Mime.toMimeTxt({
+          "to": to,
+          "cc": cc,
+          "subject": subject,
+          "from": "me",
+          "body": content,
+          // 'Content-Type': 'text/html; charset=utf-8',
+          // 'Content-Transfer-Encoding': '7BIT',
+          "cids": [],
+          "attaches" : [{
+            type: 'application/text',
+            name: 'my.txt',
+            base64: 'a3Uga3UgcmlrdQ=='
+          }]
+        }));
       });
     };
+
+    this.getPdf = function () {
+      $http.post('https://do.convertapi.com/Web2Pdf', {
+        ApiKey: 966567133,
+        CUrl: 'http://pompidou-test.rosenan.net/#/bid/60d062ae-de69-4971-9c39-518acb3321c7'
+      }).then((response) => {
+        console.log(response.data.length);
+      }, () => console.error('BAHHH'));
+    }
 
   }
 
