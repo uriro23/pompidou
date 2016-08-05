@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('AckDelWorkOrderCtrl', function ($modalInstance) {
+  .controller('AckDelWorkOrderCtrl', function ($modalInstance, workOrderType) {
+
+    this.workOrderType = workOrderType;
 
   this.setYes = function () {
     $modalInstance.close(true);

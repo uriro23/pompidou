@@ -123,7 +123,11 @@ angular.module('myApp')
           });
           break;
       case 'year':
-          api.queryOrdersByRange('eventDate',new Date(this.queryYear,0,1),new Date(this.queryYear,11,31),fieldList)
+        var fromDate2 = new Date(this.queryYear,0,1);
+          var toDate2 = this.queryYear===new Date().getFullYear() ? // if current year, limit to past events
+            new Date(today.getFullYear(),today.getMonth(),today.getDate()-1) :
+            new Date(this.queryYear,11,31);
+          api.queryOrdersByRange('eventDate',fromDate2,toDate2,fieldList)
             .then(function(orders) {
               fetchedOrders = orders.filter(function(ord) {
                 return !ord.attributes.template;

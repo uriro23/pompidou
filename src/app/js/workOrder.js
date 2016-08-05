@@ -258,6 +258,8 @@ angular.module('myApp')
     this.createSmallOrderView = function () {
       this.woOrders = this.workOrder.filter(function (wo) {
         return wo.attributes.domain === 0;
+      }).sort(function(a,b) {
+        return a.attributes.order.eventDate - b.attributes.order.eventDate;
       });
     };
 
@@ -298,6 +300,11 @@ angular.module('myApp')
       var ackDelModal = $modal.open({
         templateUrl: 'app/partials/workOrder/ackDelete.html',
         controller: 'AckDelWorkOrderCtrl as ackDelWorkOrderModel',
+        resolve: {
+          workOrderType: function () {
+            return that.woIndex.attributes.label;
+          }
+        },
         size: 'sm'
       });
 
