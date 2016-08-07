@@ -65,6 +65,9 @@ angular.module('myApp')
 
       //merge with updated category descriptions
        this.filteredCategories = this.filteredCategories.map (function(cat) {
+         if (!that.currentQuote.categories) {   // for old orders
+           return cat;
+         }
         var updCat = that.currentQuote.categories.filter(function(uCat) {
           return cat.tId === uCat.tId;
         })[0];
@@ -112,8 +115,8 @@ angular.module('myApp')
     } else {  // bid not there - show error msg on page
       this.docNotAvailable = true
     }
-    
+
 
   });
-  
+
 
