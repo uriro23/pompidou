@@ -4,7 +4,7 @@
   <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'bg-success':null">
     <td><label>סוג התפריט</label></td>
     <td>
-      <select ng-model="quoteParamsModel.order.view.menuType"
+      <select ng-model="quoteParamsModel.order.view.quote.menuType"
               ng-change="quoteParamsModel.setMenuType()"
               ng-options="menuType.label for menuType in quoteParamsModel.menuTypes"
               ng-disabled="quoteParamsModel.isReadOnly"
@@ -12,7 +12,7 @@
     </td>
     <td><label>קופסת סיום</label></td>
     <td>
-      <select ng-model="quoteParamsModel.order.view.endBoxType"
+      <select ng-model="quoteParamsModel.order.view.quote.endBoxType"
               ng-change="quoteParamsModel.setEndBoxType()"
               ng-options="menuType.label for menuType in quoteParamsModel.menuTypes"
               ng-disabled="quoteParamsModel.isReadOnly"
@@ -22,7 +22,7 @@
   <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'bg-success':null">
     <td><label>טקסט סיום</label></td>
     <td>
-    <select ng-model="quoteParamsModel.order.view.endTextType"
+    <select ng-model="quoteParamsModel.order.view.quote.endTextType"
             ng-change="quoteParamsModel.setEndText()"
             ng-options="bidTextType.label for bidTextType in quoteParamsModel.bidTextTypes | filter: {documentType: 4}"
             ng-disabled="quoteParamsModel.isReadOnly"

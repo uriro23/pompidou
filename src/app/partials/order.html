@@ -32,34 +32,27 @@
             <tab heading="פעילויות">
                 <ng-include src="'app/partials/order/activities.html'"></ng-include>
             </tab>
-          <tab ng-controller="QuoteParamsCtrl as quoteParamsModel"
-               select="quoteParamsModel.filterCategories()"
-               heading="הצעת מחיר" >
-            <ng-include src="'app/partials/order/quoteParams.html'"></ng-include>
+          <tab heading="פרטים כלליים">
+            <ng-include src="'app/partials/order/general.html'"></ng-include>
           </tab>
-          <tab active="orderModel.isFinancialTabActive"
-               deselect="orderModel.calcFinancialTabErrors()"
-               ng-hide="orderModel.isErrorFinancialTab"
-               heading="נתונים כספיים">
-            <ng-include src="'app/partials/order/financial.html'"></ng-include>
-          </tab>
-          <tab class="bg-danger"
-               select="orderModel.switchFinancialTab()"
-               ng-show="orderModel.isErrorFinancialTab"
-               heading="נתונים כספיים">
-          </tab>
-          <tab active="orderModel.isItemsTabActive"
-               deselect="orderModel.calcItemsTabErrors()"
-               ng-hide="orderModel.isErrorItemsTab"
-               heading="תפריט">
-            <ng-include src="'app/partials/order/items.html'"></ng-include>
-          </tab>
-          <tab class="bg-danger"
-               select="orderModel.switchItemsTab()"
-               ng-show="orderModel.isErrorItemsTab"
-               heading="תפריט">
-          </tab>
-            <tab heading="פרטים כלליים">
-                <ng-include src="'app/partials/order/general.html'"></ng-include>
+          <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:false}"
+               style="font-style: italic"
+               active="quote.isCurrent"
+               select="orderModel.selectQuote($index)"
+               deselect="orderModel.deselectQuote($index)"
+               heading="{{quote.title}}">
+            <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
             </tab>
+          <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:true}"
+               class="bg-success"
+               style="font-style: italic; font-weight: bold"
+               active="quote.isCurrent"
+               select="orderModel.selectQuote($index)"
+               deselect="orderModel.deselectQuote($index)"
+               heading="{{quote.title}}">
+            <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
+          </tab>
+          <tab heading="ניהול תפריטים:">
+            <ng-include src="'app/partials/order/quoteManagement.html'"></ng-include>
+          </tab>
         </tabset>

@@ -1,0 +1,38 @@
+<div ng-controller="QuoteManagementCtrl as quoteManagementModel">
+<table class="table table-hover" style="width: 60%">
+  <thead>
+  <th>סוג תפריט</th>
+  <th>כותרת</th>
+  <th>סכום</th>
+  <th>נבחר?</th>
+  <th></th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="quote in quoteManagementModel.order.attributes.quotes track by quote.menuType.tId">
+    <td>{{quote.menuType.label}}</td>
+    <td>
+      <input type="text" size="20" ng-model="quote.title">
+    </td>
+    <td>{{quote.total | currency}}</td>
+    <td>
+      <input type="checkbox" ng-model="quote.isActive" ng-change="quoteManagementModel.setActiveQuote($index)">
+    </td>
+    <td>
+      <button class="btn btn-warning btn-small"
+              ng-disabled="quote.isActive"
+              ng-click="quoteManagementModel.delQuote($index)">
+        מחק
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div ng-show="quoteManagementModel.remainingMenuTypes.length">
+<span>הוסף תפריט מסוג:</span>
+<select ng-model="quoteManagementModel.newMenuType"
+        ng-change="quoteManagementModel.addQuote()"
+        ng-options="menuType.label for menuType in quoteManagementModel.remainingMenuTypes"
+        ng-disabled="quoteManagementModel.isReadOnly"
+  ></select>
+  </div>
+  </div>

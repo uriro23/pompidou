@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
-                                     lov, config, bidTextTypes, categories,
+                                     lov, config, bidTextTypes, categories, menuTypes,
                                      eventTypes, measurementUnits, discountCauses, users) {
 
     $rootScope.menuStatus = 'show';
@@ -172,6 +172,36 @@ angular.module('myApp')
       });
     };
 
+    // multiple quotes conversion
+    // 8/2016
+    this.prepareMultipleQuotes = function () {
+      api.queryAllOrders('quotes')
+        .then(function(orders) {
+          console.log('read '+orders.length+' orders');
+          orders.forEach(function(order) {
+            order.attributes.quotes.forEach(function(quote) {
+              // convert lov values in quote from ids to objects
+              quote.discountCause = discountCauses.filter(function (obj) {
+                return (obj.tId === quote.discountCause);
+              })[0];
+              quote.menuType = menuTypes.filter(function(obj) {
+                return (obj.tId === quote.menuType);
+              })[0];
+              quote.endBoxType = menuTypes.filter(function(obj) {
+                return (obj.tId === quote.endBoxType);
+              })[0];
+              quote.endTextType = bidTextTypes.filter(function(obj) {
+                return (obj.tId === quote.endTextType);
+              })[0];
+            })
+          });
+          console.log('updating orders');
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('orders updated');
+            });
+        })
+    };
 
         });
 

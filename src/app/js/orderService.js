@@ -104,6 +104,33 @@ angular.module('myApp')
 
 
 
+    this.initQuote = function (mt, categories) {
+      var quote = {};
+      quote.menuType = mt;
+      quote.endBoxType = mt;
+      quote.title = mt.label;
+      quote.subTotal = 0;
+      quote.discountRate = 0;
+      quote.discount = 0;
+      quote.bonusValue = 0;
+      quote.credits = 0;
+      quote.transportationInclVat = 0;  // just to display on order list
+      quote.transportation = 0;  // just to display on order list
+      quote.transportationBonus = 0;
+      quote.oldTransportation = 0;
+      quote.advance = 0;
+      quote.categories = angular.copy(categories); // used to edit category descriptions
+      quote.categories.forEach (function(cat) {
+        cat.isShowDescription = true;
+      });
+      quote.items = [];
+      quote.isEnabled = false;
+      quote.isActive = false;
+      return quote;
+    };
+
+
+
     this.saveOrder = function (order) {
       var thisOrder = order.attributes;
       var view = order.view;

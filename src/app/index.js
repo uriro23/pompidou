@@ -343,6 +343,11 @@ config(function($stateProvider, $urlRouterProvider) {
           return res;
         });
       }],
+      menuTypes: ['api', function (api) {
+        return api.queryMenuTypes().then(function (res) {
+          return res;
+        });
+      }],
       users: ['api', function (api) {
         return api.queryUsers().then(function (res) {
           return res;

@@ -170,37 +170,12 @@ angular.module('myApp')
 
 
     this.setupOrderView = function () {
+      var that = this;
       this.order.view = {};
       this.order.view.errors = {};
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
-        var that = this;
-        this.order.view.quote = that.order.attributes.quotes[that.order.attributes.activeQuote]; // load active quote
-        api.queryCustomers(that.order.attributes.customer)
-          .then(function (custs) {
-          if (!custs.length) {
-            alert('customer not found');
-            console.log('customer not found');
-            console.log(that.order.attributes.customer);
-          }
-          that.order.view.customer = custs[0].attributes;
-          that.order.view.customer.id = custs[0].id;
-          // that.getPrevOrders();
-        });
-        if (that.order.attributes.contact) {
-          api.queryCustomers(that.order.attributes.contact)
-            .then(function (custs) {
-            if (!custs.length) {
-              alert('contact not found');
-              console.log('contact not found');
-              console.log(that.order.attributes.contact);
-            }
-            that.order.view.contact = custs[0].attributes;
-            that.order.view.contact.id = custs[0].id;
-          });
-        } else {
-          that.order.view.contact = {};
-        }
+        this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -213,31 +188,39 @@ angular.module('myApp')
         this.order.view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === that.order.attributes.orderStatus);
         })[0];
-        this.order.view.discountCause = discountCauses.filter(function (obj) {
-          return (obj.tId === that.order.view.quote.discountCause);
-        })[0];
         this.order.view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.attributes.referralSource);
         })[0];
-        this.order.view.menuType = menuTypes.filter(function(obj) {
-          return (obj.tId === that.order.view.quote.menuType);
-        })[0];
-        this.order.view.endBoxType = menuTypes.filter(function(obj) {
-          return (obj.tId === that.order.view.quote.endBoxType);
-        })[0];
-        this.order.view.endTextType = bidTextTypes.filter(function(obj) {
-          return (obj.tId === that.order.view.quote.endTextType);
-        })[0];
+
+        api.queryCustomers(that.order.attributes.customer)
+          .then(function (custs) {
+            if (!custs.length) {
+              alert('customer not found');
+              console.log('customer not found');
+              console.log(that.order.attributes.customer);
+            }
+            that.order.view.customer = custs[0].attributes;
+            that.order.view.customer.id = custs[0].id;
+            // that.getPrevOrders();
+          });
+        if (that.order.attributes.contact) {
+          api.queryCustomers(that.order.attributes.contact)
+            .then(function (custs) {
+              if (!custs.length) {
+                alert('contact not found');
+                console.log('contact not found');
+                console.log(that.order.attributes.contact);
+              }
+              that.order.view.contact = custs[0].attributes;
+              that.order.view.contact.id = custs[0].id;
+            });
+        } else {
+          that.order.view.contact = {};
+        }
         if ($state.current.name === 'dupOrder') {
           this.order.view.errors.eventDate = true; // empty event date is error
         }
       } else { // newOrder or newOrderByCustomer
-        this.order.view.quote = {};
-        this.order.view.quote.categories = angular.copy(this.categories); // used to edit category descriptions
-        for (var i=0;i<this.order.view.quote.categories.length;i++) {
-          this.order.view.quote.categories[i].isShowDescription = true;
-        }
-        this.order.view.quote.items = [];
         if ($state.current.name === 'newOrderByCustomer') {
           this.order.view.customer = customer.attributes;
           this.order.view.customer.id = customer.id;
@@ -256,6 +239,14 @@ angular.module('myApp')
        }
     };
 
+    this.selectQuote = function (ind) {
+      this.order.view.quote = this.order.attributes.quotes[ind];
+    };
+
+    this.deselectQuote = function (ind)  {
+      this.order.attributes.quotes[ind] = this.order.view.quote;
+    };
+
     this.cancel = function () {
       window.onbeforeunload = function () {
       };
@@ -269,6 +260,7 @@ angular.module('myApp')
 
     // main block
     var i;
+    var that = this;
     this.isNewOrder = $state.current.name === 'newOrder'||
                       $state.current.name === 'dupOrder' ||
                       $state.current.name === 'newOrderByCustomer'; // used for view heading
@@ -308,51 +300,36 @@ angular.module('myApp')
       if (!this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
-    } else if ($state.current.name === 'newOrderByCustomer') {
+    } else {  // new order or new order by customer
       $rootScope.title = lov.company + ' - אירוע חדש';
       this.order = api.initOrder();
-      this.order.attributes.customer = customer.id;
+      if ($state.current.name === 'newOrderByCustomer') {
+        this.order.attributes.customer = customer.id;
+      }
       this.setupOrderView();
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.quotes = [];
-      this.order.attributes.activeQuote= 0;
-      this.order.attributes.quotes[this.order.attributes.activeQuote] = this.order.view.quote;
+      for (i=0;i<menuTypes.length;i++) {  // on order creation, we create a quote for each menu type
+        var mt = menuTypes[i];
+        if (mt.isInitialCreate) {
+          var quote = orderService.initQuote(mt, this.categories);
+          if (mt.isDefault) {
+            quote.isEnabled = true;
+            quote.isActive = true;
+            quote.isCurrent = true;
+            this.order.attributes.activeQuote = i;
+            this.order.view.quote = quote;
+          }
+          this.order.view.quote = quote;  // just for calcSubTotal
+          orderService.calcSubTotal(this.order);
+          this.order.attributes.quotes.push(quote);
+        }
+      }
       this.order.attributes.vatRate = this.vatRate;
-      this.order.view.quote.subTotal = 0;
-      this.order.view.quote.discountRate = 0;
-      this.order.view.quote.discount = 0;
-      this.order.view.quote.bonusValue = 0;
-      this.order.view.quote.credits = 0;
-      this.order.view.quote.transportationInclVat = 0;  // just to display on order list
-      this.order.view.quote.transportation = 0;  // just to display on order list
-      this.order.view.quote.transportationBonus = 0;
-      this.order.view.quote.oldTransportation = 0;
-      this.order.view.quote.advance = 0;
-      this.order.attributes.activities = [];
-      this.setReadOnly();
-    } else { // new order
-      $rootScope.title = lov.company + ' - אירוע חדש';
-      this.order = api.initOrder();
-      this.setupOrderView();
-      this.order.attributes.includeRemarksInBid = false;
-      this.order.attributes.quotes = [];
-      this.order.attributes.activeQuote= 0;
-      this.order.attributes.quotes[this.order.attributes.activeQuote] = this.order.view.quote;
-      this.order.attributes.vatRate = this.vatRate;
-      this.order.view.quote.subTotal = 0;
-      this.order.view.quote.discountRate = 0;
-      this.order.view.quote.discount = 0;
-      this.order.view.quote.bonusValue = 0;
-      this.order.view.quote.credits = 0;
-      this.order.view.quote.transportationInclVat = 0;  // just to display on order list
-      this.order.view.quote.transportation = 0;  // just to display on order list
-      this.order.view.quote.transportationBonus = 0;
-      this.order.view.quote.oldTransportation = 0;
-      this.order.view.quote.advance = 0;
       this.order.attributes.activities = [];
       this.setReadOnly();
     }
-    orderService.calcSubTotal(this.order);
+
 
     this.order.view.isChanged = false;
     window.onbeforeunload = function () {
