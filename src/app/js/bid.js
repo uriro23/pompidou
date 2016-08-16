@@ -55,10 +55,14 @@ angular.module('myApp')
       }
 
       //fetch discount cause
-      if (that.currentQuote.discountCause) {
-        this.discountCause = discountCauses.filter(function (dsc) {
-          return dsc.tId === that.currentQuote.discountCause;
-        })[0];
+      if (this.currentQuote.discountCause) {
+        if (typeof this.currentQuote.discountCause === 'number') {  // pre multiple quotes bid
+          this.discountCause = discountCauses.filter(function (dsc) {
+            return dsc.tId === that.currentQuote.discountCause;
+          })[0];
+        } else {  // in new bids discountCause object is stores in quote
+          this.discoutCause = this.currentQuote.discountCause;
+        }
       }
 
       //filter categories - only those in order and not transportation

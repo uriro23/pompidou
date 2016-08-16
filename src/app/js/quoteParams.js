@@ -28,19 +28,16 @@ angular.module('myApp')
     };
 
     this.setMenuType = function () {
-      this.order.view.quote.menuType = this.order.view.menuType.tId;
-      this.order.view.endBoxType = this.order.view.menuType;
-      orderService.orderChanged(this.order,'quoteMenuSelections');
+      this.order.view.quote.endBoxType = this.order.view.quote.menuType;
+      this.quoteMenuChanged();
     };
 
-    this.setEndBoxType = function () {
-      this.order.view.quote.endBoxType = this.order.view.endBoxType.tId;
+    this.quoteMenuChanged = function () {
       orderService.orderChanged(this.order,'quoteMenuSelections');
     };
 
     this.setEndText = function () {
-      this.order.view.quote.endTextType = this.order.view.endTextType.tId;
-      this.order.view.quote.endText = this.order.view.endTextType.mailText;
+      this.order.view.quote.endText = this.order.view.quote.endTextType.mailText;
       orderService.orderChanged(this.order,'quoteMenuSelections');
       orderService.orderChanged(this.order,'quoteEndText');
     };

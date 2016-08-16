@@ -1,5 +1,6 @@
 <div ng-controller="FinancialCtrl as financialModel">
-<table>
+  <span style="font-size: large;font-weight: bold">{{financialModel.order.view.quote.title}}</span>
+  <table>
   <tbody>
   <tr>
     <td><label>ס"ה ביניים</label></td>
@@ -30,7 +31,7 @@
   <tr ng-class="financialModel.order.view.changes.discountCause?'bg-success':null">
     <td><label>סיבת הנחה</label></td>
     <td>
-      <select ng-model="financialModel.order.view.discountCause"
+      <select ng-model="financialModel.order.view.quote.discountCause"
               ng-change="financialModel.setDiscountCause()"
               ng-options="discountCause.label for discountCause in financialModel.discountCauses"
               ng-disabled="financialModel.isReadOnly"
@@ -42,7 +43,7 @@
     <td><label>% הנחה</label></td>
     <td>
       <input type="number" max=100 min = 0 ng-model="financialModel.order.view.quote.discountRate"
-             ng-disabled="!financialModel.order.view.discountCause.tId>0 || financialModel.isReadOnly"
+             ng-disabled="!financialModel.order.view.quote.discountCause.tId>0 || financialModel.isReadOnly"
              ng-change="financialModel.setDiscountRate()"
              ng-class="financialModel.order.view.errors.discountRate?'bg-danger':null">
     </td>

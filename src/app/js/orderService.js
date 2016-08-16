@@ -104,12 +104,13 @@ angular.module('myApp')
 
 
 
-    this.initQuote = function (mt, categories) {
+    this.initQuote = function (mt, categories, discountCause) {
       var quote = {};
       quote.menuType = mt;
       quote.endBoxType = mt;
       quote.title = mt.label;
       quote.subTotal = 0;
+      quote.discountCause = discountCause;
       quote.discountRate = 0;
       quote.discount = 0;
       quote.bonusValue = 0;
@@ -124,7 +125,6 @@ angular.module('myApp')
         cat.isShowDescription = true;
       });
       quote.items = [];
-      quote.isEnabled = false;
       quote.isActive = false;
       return quote;
     };
@@ -169,10 +169,7 @@ angular.module('myApp')
       if (view.endBidTextType) {
         thisOrder.endBidTextType = view.endBidTextType.tId;
       }
-      if (view.discountCause) {
-        quote.discountCause = view.discountCause.tId;
-      }
-      if (view.referralSource) {
+     if (view.referralSource) {
         thisOrder.referralSource = view.referralSource.tId;
       }
       thisOrder.customer = view.customer.id;
@@ -209,8 +206,7 @@ angular.module('myApp')
         }
       }
 
-      // todo: handle multiple quotes
-      order.attributes.quotes[0] = quote;
+      order.attributes.quotes[this.quoteInd] = quote;
 
       //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
       //  we do this in 4 steps by chaining 'then's

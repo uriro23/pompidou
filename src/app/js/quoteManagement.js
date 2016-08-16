@@ -9,6 +9,7 @@ angular.module('myApp')
     this.isReadOnly = $scope.orderModel.isReadOnly;
     this.menuTypes = $scope.orderModel.menuTypes;
     this.categories = $scope.orderModel.categories;
+    this.discountCauses = $scope.orderModel.discountCauses;
 
 
     this.setActiveQuote = function (ind) {
@@ -31,7 +32,7 @@ angular.module('myApp')
 
     this.addQuote = function () {
       if (this.newMenuType) {
-        var quote = orderService.initQuote(this.newMenuType, this.categories);
+        var quote = orderService.initQuote(this.newMenuType, this.categories, this.discountCauses[0]);
         this.order.view.quote = quote;  // just for calcSubTotal
         orderService.calcSubTotal(this.order);
         this.order.attributes.quotes.push(quote);

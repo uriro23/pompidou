@@ -37,18 +37,17 @@
           </tab>
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:false}"
                style="font-style: italic"
-               active="quote.isCurrent"
-               select="orderModel.selectQuote($index)"
-               deselect="orderModel.deselectQuote($index)"
+               select="orderModel.selectQuote(quote.menuType)"
+               deselect="orderModel.deselectQuote(quote.menuType)"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
             </tab>
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:true}"
                class="bg-success"
                style="font-style: italic; font-weight: bold"
-               active="quote.isCurrent"
-               select="orderModel.selectQuote($index)"
-               deselect="orderModel.deselectQuote($index)"
+               active="true"
+               select="orderModel.selectQuote(quote.menuType)"
+               deselect="orderModel.deselectQuote(quote.menuType)"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
           </tab>

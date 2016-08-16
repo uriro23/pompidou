@@ -126,8 +126,8 @@ angular.module('myApp')
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','eventType','header'
       ];
-      if (this.order.view.customer.id,fieldList) {
-        api.queryOrdersByCustomer(this.order.view.customer.id)
+      if (this.order.view.customer.id) {
+        api.queryOrdersByCustomer(this.order.view.customer.id,fieldList)
           .then(function (orders) {
             that.prevOrders = orders.filter(function (ord) {
               return ord.id !== that.order.id;    // exclude current order
@@ -176,6 +176,7 @@ angular.module('myApp')
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
+        this.quoteInd = this.order.attributes.activeQuote;
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -229,7 +230,6 @@ angular.module('myApp')
         }
         this.order.view.contact = {};
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
-        this.order.view.discountCause = this.discountCauses[0]; // set to "no"
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
         this.order.view.errors.eventDate = true; // empty event date is error
         if ($state.current.name === 'newOrder') {
@@ -239,12 +239,29 @@ angular.module('myApp')
        }
     };
 
-    this.selectQuote = function (ind) {
+    this.selectQuote = function (mt) {
+      var ind;
+      this.order.attributes.quotes.forEach(function(q,i) { // find relevant quote in array
+        if (q.menuType.tId===mt.tId) {
+          ind = i;
+        }
+      });
       this.order.view.quote = this.order.attributes.quotes[ind];
+      this.quoteInd = ind;
     };
 
-    this.deselectQuote = function (ind)  {
-      this.order.attributes.quotes[ind] = this.order.view.quote;
+    this.deselectQuote = function (mt)  {
+      var ind;
+      this.order.attributes.quotes.forEach(function(q,i) { // find relevant quote in array
+        if (q.menuType.tId===mt.tId) {
+          ind = i;
+        }
+      });
+      this.order.attributes.quotes[ind] = this.order.view.quote; // save view version of quote
+      // if we leave a quote tab to a non quote tab (like "docs"), load active quote to view
+      // if another quote tab was selected, this will be overridden by selectQuote()
+      this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote];
+      this.quoteInd = this.order.attributes.activeQuote;
     };
 
     this.cancel = function () {
@@ -312,16 +329,18 @@ angular.module('myApp')
       for (i=0;i<menuTypes.length;i++) {  // on order creation, we create a quote for each menu type
         var mt = menuTypes[i];
         if (mt.isInitialCreate) {
-          var quote = orderService.initQuote(mt, this.categories);
+          var quote = orderService.initQuote(mt, this.categories, this.discountCauses[0]);
           if (mt.isDefault) {
-            quote.isEnabled = true;
             quote.isActive = true;
-            quote.isCurrent = true;
             this.order.attributes.activeQuote = i;
             this.order.view.quote = quote;
+            this.quoteInd = i;
           }
+          var q1 = this.order.view.quote;
           this.order.view.quote = quote;  // just for calcSubTotal
           orderService.calcSubTotal(this.order);
+          this.order.view.quote = q1;
+
           this.order.attributes.quotes.push(quote);
         }
       }

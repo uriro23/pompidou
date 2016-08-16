@@ -49,7 +49,7 @@ angular.module('myApp')
     this.setDiscountCause = function () {
       var thisQuote = this.order.view.quote;
 
-      if (this.order.view.discountCause.tId === 0) {
+      if (thisQuote.discountCause.tId === 0) {
         thisQuote.discount = 0;
       } else {
         this.setDiscountRate();

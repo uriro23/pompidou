@@ -10,12 +10,19 @@ angular.module('myApp')
     if (bid) {
       this.docNotAvailable = false;
 
+      var that = this;
       this.bid = bid;
       this.categories = categories;
       this.config = config;
       this.currentOrder = this.bid.attributes.order;
       if (this.currentOrder.quotes) {
-        this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
+        if (this.bid.attributes.menuType) {
+          this.currentQuote = this.currentOrder.quotes.filter(function (q) {
+            return q.menuType.tId===that.bid.attributes.menuType.tId;
+          })[0];
+        } else { // bid before multiple quotes era -- use active quote
+          this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
+        }
       } else {
         this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
       }
@@ -32,15 +39,20 @@ angular.module('myApp')
       + ' ' + (this.customer.lastName ? this.customer.lastName : '')
       + ' ' + this.bid.attributes.desc;
 
-      var that = this;
 
      //fetch menu type
       if (that.currentQuote.menuType) {
+        if (typeof that.currentQuote.menuType === 'number') {  // bid pre multiple quotes
         this.menuType = menuTypes.filter(function (menu) {
           return menu.tId === that.currentQuote.menuType
         })[0];
-      } else {
-        this.menuType = menuTypes[0];
+        } else {  // bid supports multiple quotes
+          this.menuType = that.currentQuote.menuType;
+        }
+      } else {  // no menuType at all - use default
+        this.menuType = menuTypes.filter(function(mt) {
+          return mt.isDefault;
+        })[0];
       }
 
       this.quoteHeading = this.bid.attributes.order.eventName;
