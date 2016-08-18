@@ -45,7 +45,7 @@
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:true}"
                class="bg-success"
                style="font-style: italic; font-weight: bold"
-               active="true"
+               active="orderModel.isActiveQuoteTab"
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"
                heading="{{quote.title}}">

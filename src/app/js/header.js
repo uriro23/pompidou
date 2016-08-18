@@ -56,7 +56,7 @@ angular.module('myApp')
           that.getPrevOrders();
         } else if (custType === 2) {
           that.order.view.contact = cust;
-          orderService.orderChanged(that.order,'contact');
+          orderService.orderChanged(that.order,'customer');
           that.order.view.errors.contact = false;
         } else {
           alert('error - bad customer type: ' + custType);

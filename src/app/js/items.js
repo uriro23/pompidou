@@ -59,14 +59,15 @@ angular.module('myApp')
     };
 
     this.deleteItem = function (ind) {
-      this.order.view.quote.items.splice(ind, 1);
-      orderService.calcSubTotal(this.order);
-      orderService.orderChanged(this.order);
+      var thisQuote = this.order.view.quote;
+      thisQuote.items.splice(ind, 1);
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order);
     };
 
     this.itemChanged = function (ind) {
        var thisItem = this.order.view.quote.items[ind];
-      orderService.orderChanged(this.order);
+      orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -80,7 +81,8 @@ angular.module('myApp')
     this.setProduct = function (catalogEntry) {
       var that = this;
       var thisOrder = this.order.attributes;
-      var orderItems = this.order.view.quote.items;
+      var thisQuote = this.order.view.quote;
+      var orderItems = thisQuote.items;
 
       var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
         return itm.index
@@ -134,21 +136,22 @@ angular.module('myApp')
       thisItem.isChanged = true;
       this.isAddItem = false;
       this.filterText = '';
-      orderService.calcSubTotal(this.order);
-      orderService.orderChanged(this.order);
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order);
     };
 
     this.setProductDescription = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
 
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
-      orderService.orderChanged(this.order);
+      orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
     this.setQuantity = function (ind) {
       var thisOrder = this.order.attributes;
-      var thisItem = this.order.view.quote.items[ind];
+      var thisQuote = this.order.view.quote;
+      var thisItem = thisQuote.items[ind];
 
       thisItem.errors.quantity = Number(thisItem.quantity) != thisItem.quantity || Number(thisItem.quantity) < 0;
       thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
@@ -160,14 +163,15 @@ angular.module('myApp')
       }
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
-      orderService.calcSubTotal(this.order);
-      orderService.orderChanged(this.order);
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
     this.setPrice = function (ind) {
       var thisOrder = this.order.attributes;
-      var thisItem = this.order.view.quote.items[ind];
+      var thisQuote = this.order.view.quote;
+      var thisItem = thisQuote.items[ind];
 
       thisItem.errors.price = Number(thisItem.price) != thisItem.price || Number(thisItem.price) < 0;
       if (thisOrder.isBusinessEvent) {
@@ -177,15 +181,16 @@ angular.module('myApp')
         thisItem.priceInclVat = thisItem.price;
         thisItem.priceBeforeVat = thisItem.price / (1 + thisOrder.vatRate);
       }
-      orderService.calcSubTotal(this.order);
-      orderService.orderChanged(this.order);
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
     this.setFreeItem = function (ind) {
-      var thisItem = this.order.view.quote.items[ind];
-      orderService.calcSubTotal(this.order);
-      orderService.orderChanged(this.order);
+      var thisQuote = this.order.view.quote;
+      var thisItem = thisQuote.items[ind];
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -212,7 +217,8 @@ angular.module('myApp')
     this.setTemplate = function (template) {
       var that = this;
       var thisOrder = this.order.attributes;
-      var orderItems = this.order.view.quote.items;
+      var thisQuote = this.order.view.quote;
+      var orderItems = thisQuote.items;
       api.queryOrder (template.id)
         .then(function (tmpl) {
           var templateItems = tmpl[0].attributes.quotes[tmpl[0].attributes.activeQuote].items;
@@ -275,8 +281,8 @@ angular.module('myApp')
                   thisItem.isChanged = true;
                 }
               }
-              orderService.calcSubTotal(that.order);
-              orderService.orderChanged(that.order);
+              orderService.calcSubTotal(thisQuote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
+              orderService.quoteChanged(that.order);
               that.isAddTemplate = false;
             });
 

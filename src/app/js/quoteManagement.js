@@ -12,12 +12,18 @@ angular.module('myApp')
     this.discountCauses = $scope.orderModel.discountCauses;
 
 
+    this.setQuoteChanged = function (ind) {
+      this.order.attributes.quotes[ind].changes.management = true;
+      orderService.orderChanged(this.order);
+    };
+
     this.setActiveQuote = function (ind) {
       this.order.attributes.quotes.forEach(function (quote) {
         quote.isActive = false;
       });
       this.order.attributes.quotes[ind].isActive = true;
       this.order.attributes.activeQuote = ind;
+      this.setQuoteChanged(ind);
     };
 
     this.setRemainingMenuTypes = function () {  // build array of all menu types not in use in quotes
@@ -33,10 +39,11 @@ angular.module('myApp')
     this.addQuote = function () {
       if (this.newMenuType) {
         var quote = orderService.initQuote(this.newMenuType, this.categories, this.discountCauses[0]);
-        this.order.view.quote = quote;  // just for calcSubTotal
-        orderService.calcSubTotal(this.order);
-        this.order.attributes.quotes.push(quote);
+        quote.changes.management = true;
+        orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+       this.order.attributes.quotes.push(quote);
         this.setRemainingMenuTypes();
+        orderService.orderChanged(this.order);
       }
     };
 
@@ -49,6 +56,7 @@ angular.module('myApp')
         }
       });
       this.setRemainingMenuTypes();
+      orderService.orderChanged(this.order);
     };
 
     //  main block

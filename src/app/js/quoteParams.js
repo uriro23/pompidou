@@ -9,7 +9,6 @@ angular.module('myApp')
     this.isReadOnly = $scope.orderModel.isReadOnly;
     this.menuTypes = $scope.orderModel.menuTypes;
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
-    this.referralSources = $scope.orderModel.referralSources;
 
 
     this.filterCategories = function () {
@@ -33,13 +32,13 @@ angular.module('myApp')
     };
 
     this.quoteMenuChanged = function () {
-      orderService.orderChanged(this.order,'quoteMenuSelections');
+      orderService.quoteChanged(this.order,'quoteMenuSelections');
     };
 
     this.setEndText = function () {
       this.order.view.quote.endText = this.order.view.quote.endTextType.mailText;
-      orderService.orderChanged(this.order,'quoteMenuSelections');
-      orderService.orderChanged(this.order,'quoteEndText');
+      orderService.quoteChanged(this.order,'quoteMenuSelections');
+      orderService.quoteChanged(this.order,'quoteEndText');
     };
 
     this.editEndText = function () {
@@ -61,20 +60,14 @@ angular.module('myApp')
       editTextModal.result.then(function (txt) {
         if (txt) {
           that.order.view.quote.endText = txt;
-          orderService.orderChanged(that.order,'quoteEndText');
+          orderService.quoteChanged(that.order,'quoteEndText');
         }
       });
-
-
       };
-
-    // todo: move all lov collections of quote into the quote object (discountCause, menuType)
-
-    // todo: handle menuType in order common parts (like referralSource)
 
     this.categoryChanged = function (ind) {
       this.filteredCategories[ind].isChanged = true;
-      orderService.orderChanged(this.order);
+      orderService.quoteChanged(this.order);
     };
 
    // main block

@@ -30,8 +30,8 @@ angular.module('myApp')
 
       updatePricesModal.result.then(function (isChanged) {
         if (isChanged) {
-          orderService.calcSubTotal(that.order);
-          orderService.orderChanged(that.order);
+          orderService.calcSubTotal(that.order.view.quote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
+          orderService.quoteChanged(that.order);
         }
       })
 
@@ -41,9 +41,9 @@ angular.module('myApp')
     this.setDiscountRate = function () {
       var thisQuote = this.order.view.quote;
 
-      this.order.view.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
-      orderService.calcSubTotal(this.order);
-      orderService.orderChanged(this.order,'discountRate');
+      thisQuote.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order,'discountRate');
     };
 
     this.setDiscountCause = function () {
@@ -54,22 +54,23 @@ angular.module('myApp')
       } else {
         this.setDiscountRate();
       }
-      orderService.calcTotal(this.order);
-      orderService.orderChanged(this.order,'discountCause');
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order,'discountCause');
     };
 
      this.setFixedPrice = function () {
       var thisQuote = this.order.view.quote;
 
-      this.order.view.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
+       thisQuote.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
                               Number(thisQuote.fixedPrice) < 0;
-       orderService.calcTotal(this.order);
-       orderService.orderChanged(this.order,'fixedPrice');
+       orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+       orderService.quoteChanged(this.order,'fixedPrice');
     };
 
     this.setAdvance = function () {
-      orderService.calcTotal(this.order);
-      orderService.orderChanged(this.order,'advance');
+      var thisQuote = this.order.view.quote;
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order,'advance');
     };
 
 

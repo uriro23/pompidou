@@ -4,10 +4,8 @@ angular.module('myApp')
 
   .service('orderService', function ($rootScope, $state, api, lov) {
 
-    this.calcTotal = function (order) {
-      var thisOrder = order.attributes;
-      var quote = order.view.quote;
-      if(quote.isFixedPrice) {
+    this.calcTotal = function (quote, isBusinessEvent, vatRate) {
+     if(quote.isFixedPrice) {
         quote.total = quote.fixedPrice;
         quote.totalBeforeVat = quote.transportationInclVat = quote.rounding = quote.vat = 0;
       } else {
@@ -16,15 +14,15 @@ angular.module('myApp')
           + quote.oldTransportation // old style
           + quote.transportationBonus
           + quote.bonusValue;
-        if (thisOrder.isBusinessEvent) {
-          var v = t * thisOrder.vatRate;
+        if (isBusinessEvent) {
+          var v = t * vatRate;
         } else {
           v = 0;
         }
         quote.total = Math.round(t + v);
-        if (thisOrder.isBusinessEvent) {
-          quote.totalBeforeVat = quote.total / (1 + thisOrder.vatRate);
-          quote.transportationInclVat = quote.transportation * (1 + thisOrder.vatRate); // just to display on order list
+        if (isBusinessEvent) {
+          quote.totalBeforeVat = quote.total / (1 + vatRate);
+          quote.transportationInclVat = quote.transportation * (1 + vatRate); // just to display on order list
         } else {
           quote.totalBeforeVat = quote.total;
           quote.transportationInclVat = quote.transportation;
@@ -36,13 +34,11 @@ angular.module('myApp')
       quote.balance = quote.total - quote.advance;
 
       // the following are for displaying vat in invoice even if non business event
-      quote.totalBeforeVatForInvoice = quote.total / (1 + thisOrder.vatRate);
-      quote.vatForInvoice = quote.totalBeforeVatForInvoice * thisOrder.vatRate;
+      quote.totalBeforeVatForInvoice = quote.total / (1 + vatRate);
+      quote.vatForInvoice = quote.totalBeforeVatForInvoice * vatRate;
     };
 
-    this.calcSubTotal = function (order) {
-      var thisOrder = order.attributes;
-      var quote = order.view.quote;
+    this.calcSubTotal = function (quote, isBusinessEvent, vatRate) {
 
       var subTotal = 0;
       var boxCount = 0;
@@ -83,7 +79,7 @@ angular.module('myApp')
       quote.discount = -((subTotal+bonus+transportationBonus) * quote.discountRate / 100);
       quote.credits = quote.bonusValue + quote.transportationBonus + quote.discount;
 
-      this.calcTotal(order);
+      this.calcTotal(quote, isBusinessEvent, vatRate);
     };
 
     this.orderChanged = function (order, field) {
@@ -102,6 +98,14 @@ angular.module('myApp')
       $rootScope.menuStatus = 'empty';
     };
 
+    this.quoteChanged = function (order, field) {
+      if (field) {
+        order.view.quote.changes[field] = true;
+      } else {
+        order.view.quote.changes.general = true;
+      }
+      this.orderChanged(order);
+    };
 
 
     this.initQuote = function (mt, categories, discountCause) {
@@ -126,6 +130,8 @@ angular.module('myApp')
       });
       quote.items = [];
       quote.isActive = false;
+      quote.changes = {};
+      quote.errors = {};
       return quote;
     };
 
@@ -134,9 +140,11 @@ angular.module('myApp')
     this.saveOrder = function (order) {
       var thisOrder = order.attributes;
       var view = order.view;
-      var quote = view.quote;
 
-      // check for errors
+      thisOrder.quotes[order.view.quoteInd] = view.quote;
+
+
+      // check for errors except in quotes
       for (var fieldName in view.errors) {
         if (view.errors.hasOwnProperty(fieldName)) {
           if (view.errors[fieldName]) {
@@ -145,20 +153,34 @@ angular.module('myApp')
           }
         }
       }
-      // check for errors in items
-      for (i = 0; i < quote.items.length; i++) {
-        var thisItem = quote.items[i];
-        for (fieldName in thisItem.errors) {
-          if (thisItem.errors.hasOwnProperty(fieldName)) {
-            if (thisItem.errors[fieldName]) {
-              alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
-              return;
+
+      // handle errors in quotes
+      var err = false;
+      thisOrder.quotes.forEach(function(q) {
+        for (fieldName in q.errors) {
+          if (q.errors.hasOwnProperty(fieldName)) {
+            if (q.errors[fieldName]) {
+              alert('לא ניתן לשמור. תקן קודם את השגיאות ב'+ q.title);
+              err = true;
             }
           }
         }
-      }
+        // check for errors in items
+        q.items.forEach(function(thisItem) {
+          for (fieldName in thisItem.errors) {
+            if (thisItem.errors.hasOwnProperty(fieldName)) {
+              if (thisItem.errors[fieldName]) {
+                alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות במנות ב'+ q.title);
+                err = true;
+              }
+            }
+          }
+        });
+     });
 
-      // todo: handle errors, isChanged and sort items on multiple quotes
+      if (err) {
+        return;
+      }
 
       if (view.eventType) {
         thisOrder.eventType = view.eventType.tId;
@@ -169,7 +191,7 @@ angular.module('myApp')
       if (view.endBidTextType) {
         thisOrder.endBidTextType = view.endBidTextType.tId;
       }
-     if (view.referralSource) {
+      if (view.referralSource) {
         thisOrder.referralSource = view.referralSource.tId;
       }
       thisOrder.customer = view.customer.id;
@@ -183,30 +205,33 @@ angular.module('myApp')
       }
       thisOrder.orderStatus = view.orderStatus.id;
 
-      // wipe errors and changes indication from items
-      for (var i = 0; i < quote.items.length; i++) {
-        quote.items[i].errors = {};
-        quote.items[i].isChanged = false;
-      }
 
-      // sort items by category and productDescription
-      quote.items.sort(function (a, b) {
-        if (a.category.order > b.category.order) {
-          return 1;
-        } else if (a.category.order < b.category.order) {
-          return -1
-        } else if (a.productDescription > b.productDescription) {
-          return 1
-        } else return -1;
-      });
+      // handle quotes
+      thisOrder.quotes.forEach(function(q) {
+        q.changes = {};
+        // wipe errors and changes indication from items
+        q.items.forEach(function (thisItem) {
+          thisItem.errors = {};
+          thisItem.isChanged = false;
+        });
 
-      if (quote.categories) {
-        for (i = 0; i < quote.categories.length; i++) {
-          quote.categories[i].isChanged = false;
+        // sort items by category and productDescription
+        q.items.sort(function (a, b) {
+          if (a.category.order > b.category.order) {
+            return 1;
+          } else if (a.category.order < b.category.order) {
+            return -1
+          } else if (a.productDescription > b.productDescription) {
+            return 1
+          } else return -1;
+        });
+
+        if (q.categories) {
+          q.categories.forEach(function (cat) {
+            cat.isChanged = false;
+          });
         }
-      }
-
-      order.attributes.quotes[this.quoteInd] = quote;
+     });
 
       //  if we save a new order for the first time we have to assign it an order number and bump the order number counter
       //  we do this in 4 steps by chaining 'then's

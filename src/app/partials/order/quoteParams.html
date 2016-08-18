@@ -1,7 +1,7 @@
 <div>
   <table style="width:60%">
   <tbody>
-  <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'bg-success':null">
+  <tr ng-class="quoteParamsModel.order.view.quote.changes.quoteMenuSelections?'bg-success':null">
     <td><label>סוג התפריט</label></td>
     <td>{{quoteParamsModel.order.view.quote.menuType.label}}</td>
     <td><label>שם התפריט</label></td>
@@ -11,7 +11,7 @@
              ng-change="quoteParamsModel.quoteMenuChanged()">
     </td>
  </tr>
-  <tr ng-class="quoteParamsModel.order.view.changes.quoteMenuSelections?'bg-success':null">
+  <tr ng-class="quoteParamsModel.order.view.quote.changes.quoteMenuSelections?'bg-success':null">
     <td><label>קופסת סיום</label></td>
     <td>
       <select ng-model="quoteParamsModel.order.view.quote.endBoxType"

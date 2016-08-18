@@ -1,7 +1,10 @@
 <div ng-controller="HeaderCtrl as headerModel">
-<table>
+<table style="width: 95%">
   <tbody>
     <tr ng-class="headerModel.order.view.changes.customer?'bg-success':null">
+      <td style="width: 50%">
+      <table>
+        <tr>
       <td><label>לקוח</label></td>
       <td>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
@@ -33,7 +36,11 @@
         <a href="mailto:{{headerModel.order.view.customer.email}}">{{headerModel.order.view.customer.email}}</a>
       </td>
     </tr>
-    <tr ng-class="headerModel.order.view.changes.contact?'bg-success':null">
+        </table>
+    </td>
+      <td style="width: 50%">
+        <table>
+          <tr>
       <td><label>איש קשר</label></td>
       <td>
         <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
@@ -65,8 +72,10 @@
         <span ng-show="headerModel.order.view.contact.email">דואל: </span>
         <a href="mailto:{{headerModel.order.view.contact.email}}">{{headerModel.order.view.contact.email}}</a>
       </td>
-      </tr>
-    </tbody>
+          </tr>
+          </table>
+  </td>
+   </tbody>
   </table>
 <table style="width: 95%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">

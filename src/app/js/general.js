@@ -14,21 +14,15 @@ angular.module('myApp')
     };
 
 
-    // todo: handle multiple quotes
     this.setBusinessEvent = function () {
       var thisOrder = this.order.attributes;
-      var thisQuote = this.order.view.quote;
 
-      if (thisOrder.isBusinessEvent) {
-        for (var i = 0; i < thisQuote.items.length; i++) {
-          thisQuote.items[i].price = thisQuote.items[i].priceBeforeVat;
-        }
-      } else {
-        for (i = 0; i < thisQuote.items.length; i++) {
-          thisQuote.items[i].price = thisQuote.items[i].priceInclVat;
-        }
-      }
-      orderService.calcSubTotal(this.order);
+      thisOrder.quotes.forEach(function(quote) {
+        quote.items.forEach(function(item) {
+          item.price = thisOrder.isBusinessEvent ? item.priceBeforeVat : item.priceInclVat;
+        });
+        orderService.calcSubTotal(quote, thisOrder.isBusinessEvent, thisOrder.vatRate);
+      });
       orderService.orderChanged(this.order,'isBusinessEvent');
     };
 

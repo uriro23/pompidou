@@ -8,18 +8,23 @@
   <th></th>
   </thead>
   <tbody>
-  <tr ng-repeat="quote in quoteManagementModel.order.attributes.quotes track by quote.menuType.tId">
+  <tr ng-repeat="quote in quoteManagementModel.order.attributes.quotes track by quote.menuType.tId"
+      ng-class="quote.changes.management?'bg-success':null">
     <td>{{quote.menuType.label}}</td>
     <td>
-      <input type="text" size="20" ng-model="quote.title">
+      <input type="text" size="30" ng-model="quote.title"
+             ng-change="quoteManagementModel.setQuoteChanged($index)"
+             ng-disabled="quoteManagementModel.isReadOnly">
     </td>
     <td>{{quote.total | currency}}</td>
     <td>
-      <input type="checkbox" ng-model="quote.isActive" ng-change="quoteManagementModel.setActiveQuote($index)">
+      <input type="checkbox" ng-model="quote.isActive"
+             ng-change="quoteManagementModel.setActiveQuote($index)"
+             ng-disabled="quoteManagementModel.isReadOnly">
     </td>
     <td>
       <button class="btn btn-warning btn-small"
-              ng-disabled="quote.isActive"
+              ng-disabled="quote.isActive || quoteManagementModel.isReadOnly"
               ng-click="quoteManagementModel.delQuote($index)">
         מחק
       </button>

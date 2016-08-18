@@ -24,7 +24,6 @@ angular.module('myApp')
     this.handleVatRateChange = function () {
       if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
         var that = this;
-        var quote = this.order.view.quote;
         var vatChangeModal = $modal.open({
           templateUrl: 'app/partials/order/vatChange.html',
           controller: 'VatChangeCtrl as vatChangeModel',
@@ -39,34 +38,35 @@ angular.module('myApp')
           size: 'sm'
         });
 
-        //todo: change vat rate for multiple quotes
         vatChangeModal.result.then(function (res) {
           switch (res) {
             case '0':   // don't change vatRate
               break;
             case '1':   // change vatRate, don't change prices
               that.order.attributes.vatRate = that.vatRate;
-              for (var i = 0; i < quote.items.length; i++) {
-                var it1 = quote.items[i];
-                it1.priceBeforeVat = it1.priceInclVat / (1 + that.vatRate);
-                if (that.order.attributes.isBusinessEvent) {
-                  it1.price = it1.priceBeforeVat;
-                }
-              }
-              orderService.orderChanged(that.order,'isBusinessEvent');
-              orderService.calcSubTotal(that.order);
-              break;
+              that.order.attributes.quotes.forEach(function(quote) {
+                quote.items.forEach(function(item) {
+                  item.priceBeforeVat = item.priceInclVat / (1 + that.vatRate);
+                  if (that.order.attributes.isBusinessEvent) {
+                    item.price = item.priceBeforeVat;
+                  }
+               });
+               orderService.calcSubTotal(quote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
+              });
+            orderService.orderChanged(that.order,'isBusinessEvent');
+            break;
             case '2':   // change vatRate, change prices
               that.order.attributes.vatRate = that.vatRate;
-              for (var j = 0; j < quote.items.length; j++) {
-                var it2 = quote.items[j];
-                it2.priceInclVat = it2.priceBeforeVat * (1 + that.vatRate);
-                if (!that.order.attributes.isBusinessEvent) {
-                  it2.price = it2.priceInclVat;
-                }
-              }
+              that.order.attributes.quotes.forEach(function(quote) {
+                quote.items.forEach(function(item) {
+                  item.priceInclVat = item.priceBeforeVat * (1 + that.vatRate);
+                  if (!that.order.attributes.isBusinessEvent) {
+                    item.price = item.priceInclVat;
+                  }
+                });
+                orderService.calcSubTotal(quote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
+              });
               orderService.orderChanged(that.order,'isBusinessEvent');
-              orderService.calcSubTotal(that.order);
               break;
           }
         });
@@ -76,7 +76,6 @@ angular.module('myApp')
 
    // items tab
 
-    // todo: adapt for multiple quotes
     this.calcItemsTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
       outer_loop:
         for (i = 0; i < this.order.view.quote.items.length; i++) {
@@ -176,7 +175,7 @@ angular.module('myApp')
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
-        this.quoteInd = this.order.attributes.activeQuote;
+        this.order.view.quoteInd = this.order.attributes.activeQuote;
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -247,7 +246,7 @@ angular.module('myApp')
         }
       });
       this.order.view.quote = this.order.attributes.quotes[ind];
-      this.quoteInd = ind;
+      this.order.view.quoteInd = ind;
     };
 
     this.deselectQuote = function (mt)  {
@@ -261,7 +260,7 @@ angular.module('myApp')
       // if we leave a quote tab to a non quote tab (like "docs"), load active quote to view
       // if another quote tab was selected, this will be overridden by selectQuote()
       this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote];
-      this.quoteInd = this.order.attributes.activeQuote;
+      this.order.view.quoteInd = this.order.attributes.activeQuote;
     };
 
     this.cancel = function () {
@@ -293,6 +292,7 @@ angular.module('myApp')
     this.vatRate = config.vatRate;
     this.activityDate = new Date();
     this.isItemsTabActive = true;
+    this.isActiveQuoteTab = true;
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
@@ -334,12 +334,9 @@ angular.module('myApp')
             quote.isActive = true;
             this.order.attributes.activeQuote = i;
             this.order.view.quote = quote;
-            this.quoteInd = i;
+            this.order.view.quoteInd = i;
           }
-          var q1 = this.order.view.quote;
-          this.order.view.quote = quote;  // just for calcSubTotal
-          orderService.calcSubTotal(this.order);
-          this.order.view.quote = q1;
+          orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
 
           this.order.attributes.quotes.push(quote);
         }

@@ -28,7 +28,7 @@
     <td></td>
     <td>{{financialModel.order.view.quote.transportationBonus | currency}}</td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.discountCause?'bg-success':null">
+  <tr ng-class="financialModel.order.view.quote.changes.discountCause?'bg-success':null">
     <td><label>סיבת הנחה</label></td>
     <td>
       <select ng-model="financialModel.order.view.quote.discountCause"
@@ -39,13 +39,13 @@
     </td>
     <td></td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.discountRate?'bg-success':null">
+  <tr ng-class="financialModel.order.view.quote.changes.discountRate?'bg-success':null">
     <td><label>% הנחה</label></td>
     <td>
       <input type="number" max=100 min = 0 ng-model="financialModel.order.view.quote.discountRate"
              ng-disabled="!financialModel.order.view.quote.discountCause.tId>0 || financialModel.isReadOnly"
              ng-change="financialModel.setDiscountRate()"
-             ng-class="financialModel.order.view.errors.discountRate?'bg-danger':null">
+             ng-class="financialModel.order.view.quote.errors.discountRate?'bg-danger':null">
     </td>
     <td>{{financialModel.order.view.quote.discount | currency}}</td>
   </tr>
@@ -69,7 +69,7 @@
     <td></td>
     <td>{{financialModel.order.view.quote.vat | currency}}</td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.fixedPrice?'bg-success':null">
+  <tr ng-class="financialModel.order.view.quote.changes.fixedPrice?'bg-success':null">
     <td><label>מחיר קבוע</label></td>
     <td>
       <input type="checkbox" ng-model="financialModel.order.view.quote.isFixedPrice"
@@ -80,7 +80,7 @@
       <input type="text" money size=5 ng-model="financialModel.order.view.quote.fixedPrice"
              ng-disabled="financialModel.isReadOnly || !financialModel.order.view.quote.isFixedPrice"
              ng-change="financialModel.setFixedPrice()"
-             ng-class="financialModel.order.view.errors.fixedPrice?'bg-danger':null">
+             ng-class="financialModel.order.view.quote.errors.fixedPrice?'bg-danger':null">
     </td>
   </tr>
   <tr>
@@ -90,13 +90,13 @@
     <td>למשתתף:</td>
     <td>{{financialModel.order.view.quote.total / financialModel.order.attributes.noOfParticipants | currency}}</td>
   </tr>
-  <tr ng-class="financialModel.order.view.changes.advance?'bg-success':null">
+  <tr ng-class="financialModel.order.view.quote.changes.advance?'bg-success':null">
     <td><label>מקדמה</label></td>
     <td></td>
     <td>
       <input type="text" money size=5 ng-model="financialModel.order.view.quote.advance"
              ng-change="financialModel.setAdvance()"
-             ng-class="financialModel.order.view.errors.advance?'bg-danger':null">
+             ng-class="financialModel.order.view.quote.errors.advance?'bg-danger':null">
     </td>
     <td>יתרה:</td>
     <td>{{financialModel.order.view.quote.balance | currency}}</td>
