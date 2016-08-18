@@ -56,12 +56,10 @@ angular.module('myApp')
       }
 
       this.quoteHeading = this.bid.attributes.order.eventName;
-      if (this.quoteHeading && this.menuType.tId) {
+      if (this.quoteHeading && this.currentQuote.title) {
         this.quoteHeading += ' - ';
       }
-      if (this.menuType.tId) {
-        this.quoteHeading += this.menuType.label;
-      }
+      this.quoteHeading += this.currentQuote.title;
 
 
       //filter categories - only those in order and not transportation

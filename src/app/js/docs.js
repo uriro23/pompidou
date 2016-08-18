@@ -38,22 +38,31 @@ angular.module('myApp')
       if (this.order.view.isChanged) {
         return;
       }
-      this.bid = api.initBid();
-      this.bid.attributes.documentType = docType;
-      this.bid.attributes.orderId = this.order.id;
-      this.bid.attributes.date = new Date();
-      this.bid.attributes.order = this.order.attributes;
-      this.bid.attributes.customer = this.order.view.customer;
-      this.bid.attributes.desc = this.bidDesc;
-      this.bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+
+      var fromQuote = docType===1 ? this.order.attributes.activeQuote : 0;
+      var toQuote =   docType===1 ? this.order.attributes.activeQuote : this.order.attributes.quotes.length-1;
+      var bids = [];
+      for (var ind=fromQuote;ind<=toQuote;ind++) {
+        var bid = api.initBid();
+        bid.attributes.documentType = docType;
+        bid.attributes.menuType = this.order.attributes.quotes[ind].menuType;
+        bid.attributes.orderId = this.order.id;
+        bid.attributes.date = new Date();
+        bid.attributes.order = this.order.attributes;
+        bid.attributes.total = this.order.attributes.quotes[ind].total;
+        bid.attributes.customer = this.order.view.customer;
+        bid.attributes.desc = docType===1 ? this.bidDesc : this.bidDesc+' '+this.order.attributes.quotes[ind].title;
+        bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+        bids.push(bid);
+      }
       this.bidDesc = null;
       var that = this;
-      return api.saveObj(this.bid)
+      return api.saveObjects(bids)
         .then(function () {
-          return api.queryBidsByOrder(that.order.id)
+          return api.queryBidsByOrder(that.order.id)  // requery bids for view
             .then(function (bids) {
               that.bids = bids;
             })

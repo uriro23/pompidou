@@ -231,7 +231,7 @@ angular.module('myApp')
         this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
         this.order.view.errors.eventDate = true; // empty event date is error
-        if ($state.current.name === 'newOrder') {
+       if ($state.current.name === 'newOrder') {
           this.order.view.errors.customer = true; // empty customer is error
         }
         this.order.view.errors.noOfParticipants = true; // empty no of participants is error
@@ -325,20 +325,23 @@ angular.module('myApp')
       }
       this.setupOrderView();
       this.order.attributes.includeRemarksInBid = false;
+      this.order.attributes.eventName = '';
       this.order.attributes.quotes = [];
+      var j = 0;  // count only initialCreate menuTypes
       for (i=0;i<menuTypes.length;i++) {  // on order creation, we create a quote for each menu type
         var mt = menuTypes[i];
         if (mt.isInitialCreate) {
           var quote = orderService.initQuote(mt, this.categories, this.discountCauses[0]);
           if (mt.isDefault) {
             quote.isActive = true;
-            this.order.attributes.activeQuote = i;
+            this.order.attributes.activeQuote = j;
             this.order.view.quote = quote;
-            this.order.view.quoteInd = i;
+            this.order.view.quoteInd = j;
           }
           orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
 
           this.order.attributes.quotes.push(quote);
+          j++;
         }
       }
       this.order.attributes.vatRate = this.vatRate;
