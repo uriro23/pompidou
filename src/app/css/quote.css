@@ -1,49 +1,105 @@
-#quoteMainContainer {
+/*The  "body" of the bid */
+.quoteMainContainer {
 	background-color: #3D3D3D;
 }
 
-#quoteMainContent {
-	width: 80%;
+/*The container of content - taking part of the width only */
+.quoteMainContent {
+	width: 900px;
 	margin: 0 auto;
-	font-size: 150%;
+	font-size: 130%;
 	background-color: #ffffff;
-}
-#quoteMainContainer li {
-	list-style-type: none;
-	line-height: 200%;
-}
-#quoteMainTitle {
-	float: right;
-	
+	line-height: 1.5em;
 }
 
-#quoteDetails {
+/*The purple line in the top of the qute*/
+.topQuoteLine {
+	height: 8px;
+	width: 100%;
+}
+/**/
+.quoteFoodCategoryName {
+	font-size: 110%;
+}
+
+.greyWhiteAlternate:nth-child(odd) {
+	background-color: #f4f4f4;
+}
+
+
+.quoteMainTitle {
+	float: right;
+	line-height: 100px;
+}
+
+.quoteMainContainer .quoteLogo {
+    height:100px;
+    float:left;
+}
+
+.quoteMainContainer .quoteTitleImg {
+	height: 200px;
+}
+.quoteMainContainer .quoteLogo img, .quoteMainContainer .quoteTitleImg img
+{
+    height:100%;
+    display: inline-block;
+}
+
+/* the top part with all the customer's details*/
+.quoteDetails {
 	background-color: #F4F4F4;
 	overflow:auto;
 }
-
-#quoteMainContainer #logo {
-    width:25%;
-    float:left;
-}
-#quoteMainContainer #logo img, #quoteMainContainer #titleImg img
-{
-    width:100%;
+.quotePhoneOnImg {
+	position: absolute;
+	left: 5%;
+	padding: 1%;
+	background-color: #ffffff;
 }
 
-#quoteMainContainer .floatRight {
+.quoteMainContainer .floatRight {
 	float: right;
 	position: relative;
 }
 
-#quoteMainContainer #titleImg {
+.quoteMainContainer .floatLeft {
+	float: left;
+	position: relative;
+}
+
+.quoteMainContainer .titleImg {
 	width: 35%;
 	float: left;
 	
 }
-#chefImg {
+.quoteTextItemLine {
+	clear: both;
+}
+.quoteItemDescription {
+	/* Handle the  ............................. */
+	overflow-x: hidden;
+	white-space: nowrap;
+	display: inline;
+	text-align: left;
+	text-overflow: ellipsis;
+	position: relative;
 	float: right;
-	height: 100%;
+	width: 85%;
+}
+
+/* The quantityt and units of items*/
+.quoteQuantAndUnit {
+	position: relative;
+	text-align: left;
+	float: left;
+}
+
+
+.whyShouldChefImg {
+	display: inline-block;
+	margin: 30px;
+	vertical-align: top;
 	
 }
 
@@ -51,30 +107,33 @@
 	color: #9D2086;
 }
 .purpleBG {
-	background-color: #9D2086;
+	background-color: #9D2086 !important;
 	color: #ffffff;
+	float: left;
 }
 
 .quoteTextBox {
-	padding: 20px 40px;
+	padding: 0.2em 5%;
+	width: 100%;
 	clear: both;
 }
 
-#topQuoteLine {
-	height: 5px;
-}
 
-#quoteMainContainer #whyShould {
+.quoteMainContainer .whyShould {
 	color: #ffffff;
 	background-color: #393536;
-	overflow: hidden;
-	
 }
 
-#quoteMainContainer #whyShouldText {
-	
-	float: left:
-	border: 1px solid yellow;
-	padding: 0 5%;
-	overflow: hidden;
+.quoteMainContainer .whyShouldText {
+	display: inline-block;
+	width: 65%;
+	clear: both;
+}
+
+.quoteMainContainer .whyShouldText li {
+	list-style-type: square;
+	list-style-position: inside;
+}
+.quoteMainContainer .whyShouldText ul {
+	padding-right: 0;
 }

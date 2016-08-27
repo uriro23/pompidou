@@ -1,67 +1,94 @@
-<div id="quoteMainContainer">
+<div class="quoteMainContainer">
 
-	<div id="quoteMainContent">
-			
-		<div class="purpleBG bold" id="topQuoteLine"></div>
+	<div class="quoteMainContent">
+		
+		<!-- Top Purple line  -->
+		<div class="purpleBG topQuoteLine"></div>
+
+
+		<!-- Header + main logo -->
 		<div class="quoteTextBox">
-			<h2 class="purpleText quoteTextBox bold" id="quoteMainTitle">הצעת תפריט</h2>
-			<div id="logo">
+			<h2 class="purpleText bold quoteMainTitle">הצעת תפריט</h2>
+			<div class="quoteLogo">
 			   <img align="left" src="app/img/logo.png"/>
 		    </div>
 		</div>
-		
-		<div class="quoteTextBox" id="quoteDetails">
-		  <ul class="floatRight">
-		    <li>
-		      <span class="bold">שם:</span>
-		      <span>{{quoteModel.bid.attributes.customer.firstName+' '+quoteModel.bid.attributes.customer.lastName}}</span>
-		    </li>
-		    <li>
-		      <span class="bold">תאריך האירוע:</span>
-		      <span>{{quoteModel.bid.attributes.order.eventDate | date: 'EEEE  dd/MM/yyyy'}}</span>
-		    </li>
-		    <li>
-		      <span class="bold">זמן האספקה:</span>
-		      <span>{{quoteModel.bid.attributes.order.eventTime | date: 'H:mm'}}</span>
-		    </li>
-		    <li>
-		      <span class="bold">מספר המשתתפים:</span>
-		      <span>{{quoteModel.bid.attributes.order.noOfParticipants}}</span>
-		    </li>
-		  </ul>
+
+
+		<!-- Customer's details + nice image -->
+		<div class="quoteTextBox quoteDetails">
+
+			<div class="floatRight">
+
+			  <span class="bold">שם:</span>
+			  <span>{{quoteModel.bid.attributes.customer.firstName+' '+quoteModel.bid.attributes.customer.lastName}}</span>
+			  <br>
+			  <span class="bold">תאריך האירוע:</span>
+			  <span>{{quoteModel.bid.attributes.order.eventDate | date: 'EEEE  dd/MM/yyyy'}}</span>
+			  <br>
+			  <span class="bold">זמן האספקה:</span>
+			  <span>{{quoteModel.bid.attributes.order.eventTime | date: 'H:mm'}}</span>
+			  <br>
+			  <span class="bold">מספר המשתתפים:</span>
+			  <span>{{quoteModel.bid.attributes.order.noOfParticipants}}</span>
+
+		    </div>
+
 	
-		  
-		    <div id="titleImg">
+		  	<!-- image next to customer's details -->
+		    <div class="quoteTitleImg floatLeft">
+		       <div class="quotePhoneOnImg bold purpleText">טלפון: 054-7514061 </div> 
 			   <img align="left" src="app/img/box_1.jpg"/>
 		    </div>
 	
 		</div>
 		
-	    <p class="purpleBG quoteTextBox bold">
+		<!-- Purple backgroung event type header -->
+	    <div class="purpleBG quoteTextBox bold">
 		    <span>{{quoteModel.quoteHeading}}</span>
-	    </p>
-	    
+	    </div>
+
+	    <!-- Starting event food items list by categeries -->
 		<div class="quoteTextBox greyWhiteAlternate" ng-repeat="category in quoteModel.filteredCategories" on-finish-render="ngRepeatFinished">
 		
-		  <div class="bold">
+		  <!-- Food category header -->
+		  <div class="bold quoteFoodCategoryName">
 		    {{category.label}}
 		  </div>
 		  
-		  <div>
+		  <!-- Food category description -->
+		  <div class="bold">
 		  	{{category.description}}
 		  </div>
 		
 			{{quoteModel.setupCategoryItems(category.tId)}}
-		
-			<div class="quoteTextBox"  ng-repeat="item in quoteModel.categoryItems">
-			  <div style="width:77%;display:inline-block;">
+
+			<!-- Regular items  -->
+			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems">
+
+			  <!-- Item description taken from DB, bonus/free added if needed -->
+			  <div class="quoteItemDescription">
 			    <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
 			    <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
 			    <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+			    ...................................................................................................................................................................................................
 			  </div>
-			  <div style="width:10%;display:inline-block;"> {{item.quantity}}</div>
-			  <div style="width:10%;display:inline-block;"> {{item.measurementUnit.label}}</div>
-			 </div>
+
+
+
+		  	  <div class="quoteQuantAndUnit">
+				  <!-- Item quantity -->
+				  <span style="display:inline-block;"> {{item.quantity}}</span>
+
+				  <!-- Item measurement -->
+				  <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+
+		      </div>
+
+			</div>
+			<!-- End of  regular items -->
+
+
 			  <div style="width:70%;padding-right: 3%" ng-hide="quoteModel.currentQuote.isFixedPrice">
 			    <div style="width:77%;display: inline-block;">
 			      <span class="bold">מחיר</span>
@@ -89,45 +116,49 @@
 		</div>
 		
 		<p style="height: 0.5cm"></p>
+
+
+		<!-- Sum up of prices - purple BG  -->
 		
 		<div class="quoteTextBox purpleBG">
 		
 			<div ng-hide="quoteModel.currentQuote.isFixedPrice">
-			  <div class="bold" style="width:77%;display: inline-block">סה"כ</div>
-			  <div style="width:20%;display:inline-block;">
+			  <div class="bold quoteItemDescription">סה"כ</div>
+			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.subTotal | currency}}
 			  </div>
 			</div>
 			
 			<div>
-			    <div class="bold" style="width:77%;display: inline-block">סה"כ זיכויים</div>
-			    <div style="width:20%;display:inline-block;">
+			    <div class="bold quoteItemDescription">סה"כ זיכויים...................................................................................................................................................................................................</div>
+			    <div class="quoteQuantAndUnit">
 			      {{quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus | currency}}
 			    </div>
 			</div>
 			
 			<div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
-			  <div class="bold" style="width:77%;display: inline-block">
-			    הנחה מיוחדת
+			  <div class="bold quoteItemDescription">
+			    הנחה מיוחדת...................................................................................................................................................................................................
 			  </div>
-			  <div style="width:20%;display:inline-block;">
+			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.discount | currency}}
 			  </div>
 			</div>
 			
 			<div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">
-			  <div class="bold" style="width:77%;display: inline-block">
+			  <div class="bold quoteItemDescription" >
 			    <span>מע"מ בשיעור %</span>
 			    <span>{{quoteModel.currentOrder.vatRate * 100}}</span>
+			    ...................................................................................................................................................................................................
 			  </div>
-			  <div style="width:20%;display:inline-block;">
+			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.vat | currency}}
 			  </div>
 			</div>
 			
 			<div>
-			  <div class="bold" style="width:77%;display: inline-block">סה"כ לתשלום</div>
-			  <div style="width:20%;display:inline-block;">
+			  <div class="bold quoteItemDescription">סה"כ לתשלום...................................................................................................................................................................................................</div>
+			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.isFixedPrice ? quoteModel.currentQuote.fixedPrice : quoteModel.currentQuote.total | currency}}
 			  </div>
 			</div>
@@ -137,15 +168,19 @@
 		<p style="height: 0.5cm"></p>
 		
 		
-		<div id="whyShould" class="quoteTextBox">
+		<div class="whyShould" class="quoteTextBox">
 		
-	    	<div id="chefImg">
+	    	<div class="whyShouldChefImg">
 			   <img src="app/img/portrait_yuval.jpg"/>
 			</div>
-			
-			<ng-include src="quoteModel.menuType.quoteEndBoxUrl"></ng-include>
+
+
+			<div class="whyShouldText">
+				<!-- Content taken from src\app\bidTexts\chefMenuEndBox.html -->
+				<ng-include src="quoteModel.menuType.quoteEndBoxUrl"></ng-include>
+			</div>
 	  
-	   </div>
+	    </div>
 	
 		<p style="height: 0.5cm"></p>
 		
