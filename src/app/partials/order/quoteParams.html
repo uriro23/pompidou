@@ -38,7 +38,7 @@
                ng-change="quoteParamsModel.endTextChanged()"
                ng-disabled="quoteParamsModel.isReadOnly"
        ></textarea> -->
-    <div style="width: 50%;display: inline-block; border: 1px dashed #000000" ng-bind-html="quoteParamsModel.order.view.quote.endText"></div>
+    <div style="width: 80%;display: inline-block; border: 1px dashed #000000" ng-bind-html="quoteParamsModel.order.view.quote.endText"></div>
     <button class="btn btn-default" ng-click="quoteParamsModel.editEndText()">ערוך</button>
     </div>
   <p></p>
@@ -57,8 +57,9 @@
                ng-change="quoteParamsModel.categoryChanged($index)">
       </td>
       <td>
-        <input type="text" size="120" ng-model="category.description"
+        <textarea rows="2" cols="80"  ng-model="category.description"
                ng-change="quoteParamsModel.categoryChanged($index)">
+          </textarea>
       </td>
     </tr>
     </tbody>

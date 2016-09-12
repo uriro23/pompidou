@@ -141,9 +141,6 @@ angular.module('myApp')
       var thisOrder = order.attributes;
       var view = order.view;
 
-      thisOrder.quotes[order.view.quoteInd] = view.quote;
-
-
       // check for errors except in quotes
       for (var fieldName in view.errors) {
         if (view.errors.hasOwnProperty(fieldName)) {

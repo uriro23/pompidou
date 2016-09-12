@@ -9,6 +9,7 @@ angular.module('myApp')
 
     if (bid) {
       this.docNotAvailable = false;
+      var that = this;
 
       this.bid = bid;
 
@@ -16,10 +17,17 @@ angular.module('myApp')
       this.config = config;
       this.currentOrder = this.bid.attributes.order;
       if (this.currentOrder.quotes) {
-        this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
+        if (this.bid.attributes.menuType) {
+          this.currentQuote = this.currentOrder.quotes.filter(function (q) {
+            return q.menuType.tId===that.bid.attributes.menuType.tId;
+          })[0];
+        } else { // bid before multiple quotes era -- use active quote
+          this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
+        }
       } else {
         this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
       }
+
 
       this.customer = bid.attributes.customer;
 

@@ -23,6 +23,7 @@ angular.module('myApp')
       });
       this.order.attributes.quotes[ind].isActive = true;
       this.order.attributes.activeQuote = ind;
+      this.order.view.quote = this.order.attributes.quotes[ind];
       this.setQuoteChanged(ind);
     };
 

@@ -39,28 +39,26 @@ angular.module('myApp')
         return;
       }
 
-      var fromQuote = docType===1 ? this.order.attributes.activeQuote : 0;
-      var toQuote =   docType===1 ? this.order.attributes.activeQuote : this.order.attributes.quotes.length-1;
+      var that = this;
       var bids = [];
-      for (var ind=fromQuote;ind<=toQuote;ind++) {
+      this.order.attributes.quotes.forEach(function(quote) {
         var bid = api.initBid();
         bid.attributes.documentType = docType;
-        bid.attributes.menuType = this.order.attributes.quotes[ind].menuType;
-        bid.attributes.orderId = this.order.id;
+        bid.attributes.menuType = quote.menuType;
+        bid.attributes.orderId = that.order.id;
         bid.attributes.date = new Date();
-        bid.attributes.order = this.order.attributes;
-        bid.attributes.total = this.order.attributes.quotes[ind].total;
-        bid.attributes.customer = this.order.view.customer;
-        bid.attributes.desc = docType===1 ? this.bidDesc : this.bidDesc+' '+this.order.attributes.quotes[ind].title;
+        bid.attributes.order = that.order.attributes;
+        bid.attributes.total = that.total;
+        bid.attributes.customer = that.order.view.customer;
+        bid.attributes.desc = that.bidDesc+' '+quote.title;
         bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
           var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
           return v.toString(16);
         }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
         bids.push(bid);
-      }
+      });
       this.bidDesc = null;
-      var that = this;
-      return api.saveObjects(bids)
+     return api.saveObjects(bids)
         .then(function () {
           return api.queryBidsByOrder(that.order.id)  // requery bids for view
             .then(function (bids) {

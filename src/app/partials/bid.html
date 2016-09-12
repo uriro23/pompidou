@@ -34,7 +34,13 @@
         </div>
 
 
-        <h1 ng-show="bidModel.bid.attributes.documentType===1">הצעת מחיר</h1>
+        <h1 ng-show="bidModel.bid.attributes.documentType===1">
+          <span>הצעת מחיר</span>
+          <span ng-show="bidModel.currentOrder.quotes && bidModel.currentOrder.quotes.length > 1">
+            <span> - </span>
+          <span>{{bidModel.currentQuote.title}}</span>
+        </span>
+        </h1>
         <h1 ng-show="bidModel.bid.attributes.documentType===2">הזמנה</h1>
 
         <!-- selected intro texts 1 and 2 -->
@@ -50,9 +56,6 @@
         <br>
 
 
-        <div class="bold event_details" >סוג ארוע: &nbsp;
-            <span>{{bidModel.eventType.label}}</span>
-        </div>
 
         <div class="bold event_details">תאריך: &nbsp;
             <span>{{bidModel.currentOrder.eventDate | date: 'dd/MM/yyyy'}}</span>

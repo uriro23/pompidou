@@ -1,16 +1,22 @@
 <tabset>
   <tab ng-controller="QuoteParamsCtrl as quoteParamsModel"
-       select="quoteParamsModel.filterCategories()"
-       heading="הצעת מחיר" >
-    <ng-include src="'app/partials/order/quoteParams.html'"></ng-include>
-  </tab>
-  <tab active="orderModel.isFinancialTabActive"
+       active="orderModel.isFinancialTabActive"
        deselect="orderModel.calcFinancialTabErrors()"
        ng-hide="orderModel.isErrorFinancialTab"
-       heading="נתונים כספיים">
-    <ng-include src="'app/partials/order/financial.html'"></ng-include>
+       select="quoteParamsModel.filterCategories()"
+       heading="הצעת מחיר" >
+    <table style="width:95%">
+     <tr>
+        <td style="width: 60%; vertical-align: top">
+          <ng-include src="'app/partials/order/quoteParams.html'"></ng-include>
+       </td>
+        <td style="width: 40%; vertical-align: top">
+          <ng-include src="'app/partials/order/financial.html'"></ng-include>
+        </td>
+      </tr>
+    </table>
   </tab>
-  <tab class="bg-danger"
+ <tab class="bg-danger"
        select="orderModel.switchFinancialTab()"
        ng-show="orderModel.isErrorFinancialTab"
        heading="נתונים כספיים">

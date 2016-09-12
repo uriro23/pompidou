@@ -14,7 +14,7 @@
           {{headerModel.order.view.customer.firstName + ' ' + headerModel.order.view.customer.lastName}}
         </button>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
-                ng-class="headerModel.order.view.errors.customer?'btn btn-danger':'btn btn-default'"
+                ng-class="headerModel.order.view.errors.customer?'btn bg-danger':'btn btn-default'"
                 ng-hide="headerModel.order.view.customer.id">
           בחר
         </button>

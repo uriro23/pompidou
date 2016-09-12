@@ -179,20 +179,29 @@ angular.module('myApp')
         .then(function(orders) {
           console.log('read '+orders.length+' orders');
           orders.forEach(function(order) {
+            order.attributes.version = lov.version;
             order.attributes.quotes.forEach(function(quote) {
               // convert lov values in quote from ids to objects
-              quote.discountCause = discountCauses.filter(function (obj) {
-                return (obj.tId === quote.discountCause);
-              })[0];
-              quote.menuType = menuTypes.filter(function(obj) {
-                return (obj.tId === quote.menuType);
-              })[0];
-              quote.endBoxType = menuTypes.filter(function(obj) {
-                return (obj.tId === quote.endBoxType);
-              })[0];
-              quote.endTextType = bidTextTypes.filter(function(obj) {
-                return (obj.tId === quote.endTextType);
-              })[0];
+              if (typeof quote.discountCause === 'number') {
+                quote.discountCause = discountCauses.filter(function (obj) {
+                  return (obj.tId === quote.discountCause);
+                })[0];
+              }
+              if (typeof quote.menuType === 'number') {
+                quote.menuType = menuTypes.filter(function (obj) {
+                  return (obj.tId === quote.menuType);
+                })[0];
+              }
+              if (typeof quote.endBoxType === 'number') {
+                quote.endBoxType = menuTypes.filter(function (obj) {
+                  return (obj.tId === quote.endBoxType);
+                })[0];
+              }
+              if (typeof quote.endTextType === 'number') {
+                quote.endTextType = bidTextTypes.filter(function (obj) {
+                  return (obj.tId === quote.endTextType);
+                })[0];
+              }
             })
           });
           console.log('updating orders');

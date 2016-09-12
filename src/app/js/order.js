@@ -175,7 +175,6 @@ angular.module('myApp')
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
-        this.order.view.quoteInd = this.order.attributes.activeQuote;
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -246,7 +245,6 @@ angular.module('myApp')
         }
       });
       this.order.view.quote = this.order.attributes.quotes[ind];
-      this.order.view.quoteInd = ind;
     };
 
     this.deselectQuote = function (mt)  {
@@ -256,11 +254,9 @@ angular.module('myApp')
           ind = i;
         }
       });
-      this.order.attributes.quotes[ind] = this.order.view.quote; // save view version of quote
       // if we leave a quote tab to a non quote tab (like "docs"), load active quote to view
       // if another quote tab was selected, this will be overridden by selectQuote()
       this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote];
-      this.order.view.quoteInd = this.order.attributes.activeQuote;
     };
 
     this.cancel = function () {
@@ -336,7 +332,6 @@ angular.module('myApp')
             quote.isActive = true;
             this.order.attributes.activeQuote = j;
             this.order.view.quote = quote;
-            this.order.view.quoteInd = j;
           }
           orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
 
