@@ -3,8 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
-                                     lov, config, bidTextTypes, categories, menuTypes,
-                                     eventTypes, measurementUnits, discountCauses, users) {
+                                     lov, config, bidTextTypes, menuTypes, discountCauses, users) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -175,12 +174,24 @@ angular.module('myApp')
     // multiple quotes conversion
     // 8/2016
     this.prepareMultipleQuotes = function () {
-      api.queryAllOrders('quotes')
+      // part 1: convert orders
+      api.queryAllOrders('number,quotes')
         .then(function(orders) {
           console.log('read '+orders.length+' orders');
           orders.forEach(function(order) {
-            order.attributes.version = lov.version;
-            order.attributes.quotes.forEach(function(quote) {
+            order.attributes.version = lov.version; // set version to current
+            if (order.attributes.quotes.length > 1) {  // already new version, maybe corrupt but don't handle it
+              console.log('multiple quotes on order '+order.attributes.number);
+            } else {
+              var quote = order.attributes.quotes[0];
+              quote.isActive = true;
+              if (!quote.menuType) {
+                quote.menuType = menuTypes.filter(function(mt) {
+                  return mt.isDefault;
+                })[0];
+                quote.title = quote.menuType.label;
+                console.log('order '+order.attributes.number+' no mt');
+              }
               // convert lov values in quote from ids to objects
               if (typeof quote.discountCause === 'number') {
                 quote.discountCause = discountCauses.filter(function (obj) {
@@ -188,6 +199,7 @@ angular.module('myApp')
                 })[0];
               }
               if (typeof quote.menuType === 'number') {
+                console.log('order '+order.attributes.number+' old mt '+quote.menuType);
                 quote.menuType = menuTypes.filter(function (obj) {
                   return (obj.tId === quote.menuType);
                 })[0];
@@ -202,12 +214,33 @@ angular.module('myApp')
                   return (obj.tId === quote.endTextType);
                 })[0];
               }
-            })
+            }
           });
           console.log('updating orders');
           api.saveObjects(orders)
             .then(function() {
               console.log('orders updated');
+
+              // part 2: version bids
+
+              api.queryAllBids('order,menuType,version')
+                .then(function(bids) {
+                  console.log('read '+bids.length+' bids');
+                  bids.forEach(function(bid) {
+                    if (bid.attributes.menuType) {
+                      bid.attributes.version = 4;
+                    } else if (bid.attributes.order.quotes) {
+                      bid.attributes.version = 3;
+                    } else {
+                      bid.attributes.version = 2;
+                    }
+                  });
+                  console.log('updating bids');
+                  api.saveObjects(bids)
+                    .then(function() {
+                      console.log('bids updated');
+                    });
+                });
             });
         })
     };

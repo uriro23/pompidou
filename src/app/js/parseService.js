@@ -224,13 +224,21 @@ angular.module('myApp')
     return query(bidQuery);
   };
 
-  this.queryBidByUuid = function (uuid) {
-    var bidQuery = new Parse.Query(Bid);
-    bidQuery.equalTo("uuid", uuid);
-    return query(bidQuery);
-  };
+    this.queryBidByUuid = function (uuid) {
+      var bidQuery = new Parse.Query(Bid);
+      bidQuery.equalTo("uuid", uuid);
+      return query(bidQuery);
+    };
 
-  // Mail
+    this.queryAllBids = function (fields) {
+      var bidQuery = new Parse.Query(Bid);
+      if (fields) {
+        bidQuery.select(fields);
+      }
+      return query(bidQuery);
+    };
+
+    // Mail
   // -----
 
   var Mail = Parse.Object.extend("Mail");

@@ -16,16 +16,15 @@ angular.module('myApp')
       this.categories = categories;
       this.config = config;
       this.currentOrder = this.bid.attributes.order;
-      if (this.currentOrder.quotes) {
-        if (this.bid.attributes.menuType) {
-          this.currentQuote = this.currentOrder.quotes.filter(function (q) {
-            return q.menuType.tId===that.bid.attributes.menuType.tId;
-          })[0];
-        } else { // bid before multiple quotes era -- use active quote
-          this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
-        }
-      } else {
-        this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
+
+      if (this.bid.attributes.version >= 4) { // bid with menuType
+        this.currentQuote = this.currentOrder.quotes.filter(function (q) {  // find relevant quote in order
+          return q.menuType.tId===that.bid.attributes.menuType.tId;
+        })[0];
+      } else if (this.bid.attributes.version === 3) { // bid w/o menuType but with quotes array
+        this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote]; // use active quote of order
+      } else {  // bid w/o quotes array
+        this.currentQuote = this.currentOrder; // use body of order
       }
 
 
@@ -41,7 +40,6 @@ angular.module('myApp')
        ' ' + (this.customer.lastName ? this.customer.lastName : '') +
        ' ' + this.bid.attributes.desc;
 
-      var that = this;
       //fetch start bid text type
       if (that.currentOrder.startBidTextType) {
         this.startBidTextType = bidTextTypes.filter(function (btt) {

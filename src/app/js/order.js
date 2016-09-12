@@ -125,6 +125,7 @@ angular.module('myApp')
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','eventType','header'
       ];
+      console.log(this.order.view.customer);
       if (this.order.view.customer.id) {
         api.queryOrdersByCustomer(this.order.view.customer.id,fieldList)
           .then(function (orders) {
@@ -320,6 +321,7 @@ angular.module('myApp')
         this.order.attributes.customer = customer.id;
       }
       this.setupOrderView();
+      this.order.attributes.version = lov.version;
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.eventName = '';
       this.order.attributes.quotes = [];

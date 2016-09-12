@@ -43,6 +43,7 @@ angular.module('myApp')
       var bids = [];
       this.order.attributes.quotes.forEach(function(quote) {
         var bid = api.initBid();
+        bid.attributes.version = lov.version;
         bid.attributes.documentType = docType;
         bid.attributes.menuType = quote.menuType;
         bid.attributes.orderId = that.order.id;

@@ -10,11 +10,13 @@
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="headerModel.order.view.errors.customer?'btn btn-danger':'btn btn-default'"
                 class="btn btn-default"
+                ng-disabled="headerModel.isReadOnly"
                 ng-show="headerModel.order.view.customer.id">
           {{headerModel.order.view.customer.firstName + ' ' + headerModel.order.view.customer.lastName}}
         </button>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="headerModel.order.view.errors.customer?'btn bg-danger':'btn btn-default'"
+                ng-disabled="headerModel.isReadOnly"
                 ng-hide="headerModel.order.view.customer.id">
           בחר
         </button>
@@ -46,12 +48,14 @@
         <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
                 ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
                 class="btn btn-default"
+                ng-disabled="headerModel.isReadOnly"
                 ng-show="headerModel.order.view.contact.id">
           {{headerModel.order.view.contact.firstName + ' ' + headerModel.order.view.contact.lastName}}
         </button>
         <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
                 ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
                 class="btn btn-default"
+                ng-disabled="headerModel.isReadOnly"
                 ng-hide="headerModel.order.view.contact.id">
           בחר
         </button>
@@ -123,7 +127,7 @@
       ></select>
     </td>
   </tr>
-    <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
+    <tr>
       <td>
         <label>
         {{(headerModel.order.view.quote?headerModel.order.view.quote.title:

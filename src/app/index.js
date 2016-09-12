@@ -318,35 +318,14 @@ config(function($stateProvider, $urlRouterProvider) {
           return res[0];
         });
       }],
-      bidTextTypes: ['api', function (api) {
-        return api.queryBidTextTypes().then(function (res) {
-          return res;
-        });
+      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+        return bidTextTypesPromise;
       }],
-      categories: ['api', function (api) {
-        return api.queryCategories().then (function (res) {
-          return res;
-        });
+     discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+        return discountCausesPromise;
       }],
-      eventTypes: ['api', function (api) {
-        return api.queryEventTypes().then(function (res) {
-          return res;
-        });
-      }],
-      measurementUnits: ['api', function (api) {
-        return api.queryMeasurementUnits().then(function (res) {
-          return res;
-        });
-      }],
-      discountCauses: ['api', function (api) {
-        return api.queryDiscountCauses().then(function (res) {
-          return res;
-        });
-      }],
-      menuTypes: ['api', function (api) {
-        return api.queryMenuTypes().then(function (res) {
-          return res;
-        });
+      menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+        return menuTypesPromise;
       }],
       users: ['api', function (api) {
         return api.queryUsers().then(function (res) {
