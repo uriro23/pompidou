@@ -99,6 +99,7 @@ angular.module('myApp')
   .value('lov',
   {
     company: 'פומפידו',
+    version: 4,   // used to version orders in db
 
     domains: [
       {
