@@ -18,9 +18,15 @@ header
 }
 
 @media print {
+
+    @page {
+      size: A4 portrait;
+    }
+    
+
     #bid_container {
         font: 10pt Tahoma;
-        padding: 2% 5%;
+        padding: 5% 5%;
     }
 
     #contact
