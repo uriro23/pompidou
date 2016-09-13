@@ -36,15 +36,14 @@
             <ng-include src="'app/partials/order/general.html'"></ng-include>
           </tab>
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:false}"
-               style="font-style: italic"
+               style="font-style: italic; font-weight: 100"
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
             </tab>
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:true}"
-               class="bg-success"
-               style="font-style: italic; font-weight: bold"
+               style="font-style:oblique; font-weight: bold"
                active="orderModel.isActiveQuoteTab"
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"

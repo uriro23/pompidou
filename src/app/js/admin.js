@@ -190,8 +190,10 @@ angular.module('myApp')
                   return mt.isDefault;
                 })[0];
                 quote.title = quote.menuType.label;
-                console.log('order '+order.attributes.number+' no mt');
               }
+              quote.endBoxType = quote.menuType;
+              quote.errors = {};
+              quote.changes = {};
               // convert lov values in quote from ids to objects
               if (typeof quote.discountCause === 'number') {
                 quote.discountCause = discountCauses.filter(function (obj) {

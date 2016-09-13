@@ -1,35 +1,32 @@
-<tabset>
-  <tab ng-controller="QuoteParamsCtrl as quoteParamsModel"
-       active="orderModel.isFinancialTabActive"
-       deselect="orderModel.calcFinancialTabErrors()"
-       ng-hide="orderModel.isErrorFinancialTab"
-       select="quoteParamsModel.filterCategories()"
-       heading="הצעת מחיר" >
-    <table style="width:95%">
-     <tr>
-        <td style="width: 60%; vertical-align: top">
-          <ng-include src="'app/partials/order/quoteParams.html'"></ng-include>
-       </td>
-        <td style="width: 40%; vertical-align: top">
-          <ng-include src="'app/partials/order/financial.html'"></ng-include>
-        </td>
-      </tr>
-    </table>
-  </tab>
- <tab class="bg-danger"
-       select="orderModel.switchFinancialTab()"
-       ng-show="orderModel.isErrorFinancialTab"
-       heading="נתונים כספיים">
-  </tab>
-  <tab active="orderModel.isItemsTabActive"
-       deselect="orderModel.calcItemsTabErrors()"
-       ng-hide="orderModel.isErrorItemsTab"
-       heading="מנות">
-    <ng-include src="'app/partials/order/items.html'"></ng-include>
-  </tab>
-  <tab class="bg-danger"
-       select="orderModel.switchItemsTab()"
-       ng-show="orderModel.isErrorItemsTab"
-       heading="מנות">
-  </tab>
-</tabset>
+<div style="font-size: large;height: 10mm">
+  <span style="font-size: large">
+    &nbsp;&nbsp;{{orderModel.order.view.quote.title}}
+    <span ng-show="orderModel.order.view.quote.isActive">
+      (נבחר)
+    </span>
+  </span>
+  &nbsp;
+  <span>הצג: </span>
+  <span ng-class="orderModel.order.view.quote.errors.items?'bg-danger':null">מנות</span>
+  <input type="radio" ng-model="orderModel.quoteViewType" value="items">
+  <span ng-class="orderModel.order.view.quote.errors.quoteData?'bg-danger':null">הצעת מחיר</span>
+  <input type="radio" ng-model="orderModel.quoteViewType" value="quoteData">
+ </div>
+
+<div ng-show="orderModel.quoteViewType==='items'">
+  <ng-include src="'app/partials/order/items.html'"></ng-include>
+</div>
+
+<div ng-show="orderModel.quoteViewType==='quoteData'">
+  <table style="width:95%">
+    <tr>
+      <td style="width: 60%; vertical-align: top">
+        <ng-include src="'app/partials/order/quoteParams.html'"></ng-include>
+      </td>
+      <td style="width: 40%; vertical-align: top">
+        <ng-include src="'app/partials/order/financial.html'"></ng-include>
+      </td>
+    </tr>
+  </table>
+</div>
+

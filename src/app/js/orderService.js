@@ -98,12 +98,31 @@ angular.module('myApp')
       $rootScope.menuStatus = 'empty';
     };
 
+    function calcItemErrors (items) {
+        for (var i = 0; i < items.length; i++) {
+          var thisItem = items[i];
+          for (var fieldName in thisItem.errors) {
+            if (thisItem.errors.hasOwnProperty(fieldName)) {
+              if (thisItem.errors[fieldName]) {
+                return true;
+              }
+            }
+          }
+        }
+      return false;
+    }
+
+
+
     this.quoteChanged = function (order, field) {
       if (field) {
         order.view.quote.changes[field] = true;
       } else {
         order.view.quote.changes.general = true;
       }
+      // calculate cumulative error for quoteData view, to show on radio button label
+      order.view.quote.errors.quoteData = order.view.quote.errors.discountRate ||  order.view.quote.errors.fixedPrice;
+      order.view.quote.errors.items = calcItemErrors (order.view.quote.items);
       this.orderChanged(order);
     };
 
@@ -162,17 +181,6 @@ angular.module('myApp')
             }
           }
         }
-        // check for errors in items
-        q.items.forEach(function(thisItem) {
-          for (fieldName in thisItem.errors) {
-            if (thisItem.errors.hasOwnProperty(fieldName)) {
-              if (thisItem.errors[fieldName]) {
-                alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות במנות ב'+ q.title);
-                err = true;
-              }
-            }
-          }
-        });
      });
 
       if (err) {

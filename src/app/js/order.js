@@ -74,49 +74,6 @@ angular.module('myApp')
     };
 
 
-   // items tab
-
-    this.calcItemsTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
-      outer_loop:
-        for (i = 0; i < this.order.view.quote.items.length; i++) {
-          var thisItem = this.order.view.quote.items[i];
-          for (var fieldName in thisItem.errors) {
-            if (thisItem.errors.hasOwnProperty(fieldName)) {
-              if (thisItem.errors[fieldName]) {
-                this.isErrorItemsTab = true;
-                break outer_loop;
-              }
-            }
-          }
-        }
-    };
-
-    this.switchItemsTab = function () { // called upon dummy error Items tab selection, causes real tab to display
-      this.isItemsTabActive = true;
-      this.isErrorItemsTab = false;
-    };
-
-
-
-    // financial tab
-
-    this.calcFinancialTabErrors = function () { // called upon tab deselection to determine if error dummy tab should be displayed
-      this.isErrorFinancialTab =  this.order.view.errors.discountRate ||
-                                   this.order.view.errors.fixedPrice;
-    };
-
-    this.switchFinancialTab = function () { // called upon dummy error financial tab selection, causes real tab to display
-      this.isFinancialTabActive = true;
-      this.isErrorFinancialTab = false;
-    };
-
-
-    // activities tab
-    // --------------
-
-    // Documents tab
-    // -------------
-
      // prev orders tab
     // ---------------
 
@@ -125,7 +82,6 @@ angular.module('myApp')
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','eventType','header'
       ];
-      console.log(this.order.view.customer);
       if (this.order.view.customer.id) {
         api.queryOrdersByCustomer(this.order.view.customer.id,fieldList)
           .then(function (orders) {
@@ -290,6 +246,7 @@ angular.module('myApp')
     this.activityDate = new Date();
     this.isItemsTabActive = true;
     this.isActiveQuoteTab = true;
+    this.quoteViewType = 'items';
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
