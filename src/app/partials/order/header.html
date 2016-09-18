@@ -148,8 +148,10 @@
     </td>
     <td>
       <label>שובע: </label>&nbsp;<span>
-      {{headerModel.order.view.quote?headerModel.order.view.quote.satietyIndex:
-            headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].satietyIndex | number:2}}
+      {{headerModel.order.view.quote?
+          headerModel.order.view.quote.satietyIndex / headerModel.order.attributes.noOfParticipants:
+          headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].satietyIndex /
+              headerModel.order.attributes.noOfParticipants | number:2}}
       </span>
     </td>
   </tr>

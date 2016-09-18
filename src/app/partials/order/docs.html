@@ -76,7 +76,7 @@
          ng-disabled="documentsModel.isReadOnly">
     <span ng-repeat="documentType in documentsModel.documentTypes | filter: {isRealDocumentType: true}">
         <button ng-click="documentsModel.createBid(documentType.id)"
-                ng-disabled="documentsModel.isReadOnly || !documentsModel.bidDesc"
+                ng-disabled="documentsModel.isReadOnly"
                 class="btn btn-default">
             {{documentType.label}}
         </button>

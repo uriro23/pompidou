@@ -15,6 +15,7 @@ angular.module('myApp')
     this.getPrevOrders = $scope.orderModel.getPrevOrders; // needed for setupOrderView
 
     this.documentTypes = lov.documentTypes;
+    this.bidDesc = '';
 
     var that = this;
     api.queryBidsByOrder(this.order.id).then (function (bids) { // lazy load bids
@@ -42,23 +43,29 @@ angular.module('myApp')
       var that = this;
       var bids = [];
       this.order.attributes.quotes.forEach(function(quote) {
-        var bid = api.initBid();
-        bid.attributes.version = lov.version;
-        bid.attributes.documentType = docType;
-        bid.attributes.menuType = quote.menuType;
-        bid.attributes.orderId = that.order.id;
-        bid.attributes.date = new Date();
-        bid.attributes.order = that.order.attributes;
-        bid.attributes.total = that.total;
-        bid.attributes.customer = that.order.view.customer;
-        bid.attributes.desc = that.bidDesc+' '+quote.title;
-        bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-        bids.push(bid);
+        if (quote.items.length) { // skip empty quotes
+          var bid = api.initBid();
+          bid.attributes.version = lov.version;
+          bid.attributes.documentType = docType;
+          bid.attributes.menuType = quote.menuType;
+          bid.attributes.orderId = that.order.id;
+          bid.attributes.date = new Date();
+          bid.attributes.order = that.order.attributes;
+          bid.attributes.total = that.total;
+          bid.attributes.customer = that.order.view.customer;
+          if (that.order.attributes.quotes.length > 1) {
+            bid.attributes.desc = that.bidDesc + ' ' + quote.title;
+          } else {
+            bid.attributes.desc = that.bidDesc;   // don't use quote  title for single quotes until new quote be used
+          }
+          bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+          bids.push(bid);
+        }
       });
-      this.bidDesc = null;
+      this.bidDesc = '';
      return api.saveObjects(bids)
         .then(function () {
           return api.queryBidsByOrder(that.order.id)  // requery bids for view
