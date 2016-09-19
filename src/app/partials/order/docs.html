@@ -115,7 +115,7 @@
       <td>
           <button ng-click="documentsModel.restoreBid(bid)"
                   ng-hide="documentsModel.order.view.isChanged"
-                  ng-disabled="documentsModel.isReadOnly"
+                  ng-disabled="documentsModel.isReadOnly || bid.attributes.version < 4"
                   class="btn btn-default btn-sm">
                   שחזר
           </button>
