@@ -1,7 +1,7 @@
 <div class="quoteMainContainer">
 
 	<div class="quoteMainContent">
-		
+
 		<!-- Top Purple line  -->
 		<div class="purpleBG topQuoteLine"></div>
 
@@ -34,15 +34,15 @@
 
 		    </div>
 
-	
+
 		  	<!-- image next to customer's details -->
 		    <div class="quoteTitleImg floatLeft">
-		       <div class="quotePhoneOnImg bold purpleText">טלפון: 054-7514061 </div> 
+		       <div class="quotePhoneOnImg bold purpleText">טלפון: 054-7514061 </div>
 			   <img align="left" src="app/img/box_1.jpg"/>
 		    </div>
-	
+
 		</div>
-		
+
 		<!-- Purple backgroung event type header -->
 	    <div class="purpleBG quoteTextBox bold">
 		    <span>{{quoteModel.quoteHeading}}</span>
@@ -50,17 +50,17 @@
 
 	    <!-- Starting event food items list by categeries -->
 		<div class="quoteTextBox greyWhiteAlternate" ng-repeat="category in quoteModel.filteredCategories" on-finish-render="ngRepeatFinished">
-		
+
 		  <!-- Food category header -->
 		  <div class="bold quoteFoodCategoryName">
 		    {{category.label}}
 		  </div>
-		  
+
 		  <!-- Food category description -->
 		  <div class="bold">
 		  	{{category.description}}
 		  </div>
-		
+
 			{{quoteModel.setupCategoryItems(category.tId)}}
 
 			<!-- Regular items  -->
@@ -97,7 +97,7 @@
 			   <div style="width:10%;display: inline-block">{{quoteModel.categoryPrice | currency}}</div>
 			  </div>
 			</div>
-		
+
 		{{quoteModel.setupTransportationItems()}}
 		<div class="quoteTextBox" ng-show="quoteModel.transportationItems.length">
 		  <P style="height: 0.5cm"></P>
@@ -114,28 +114,28 @@
 		         ng-hide="quoteModel.currentQuote.isFixedPrice" >{{item.price | currency }}</div>
 		  </div>
 		</div>
-		
+
 		<p style="height: 0.5cm"></p>
 
 
 		<!-- Sum up of prices - purple BG  -->
-		
+
 		<div class="quoteTextBox purpleBG">
-		
+
 			<div ng-hide="quoteModel.currentQuote.isFixedPrice">
 			  <div class="bold quoteItemDescription">סה"כ</div>
 			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.subTotal | currency}}
 			  </div>
 			</div>
-			
+
 			<div>
 			    <div class="bold quoteItemDescription">סה"כ זיכויים...................................................................................................................................................................................................</div>
 			    <div class="quoteQuantAndUnit">
 			      {{quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus | currency}}
 			    </div>
 			</div>
-			
+
 			<div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
 			  <div class="bold quoteItemDescription">
 			    הנחה מיוחדת...................................................................................................................................................................................................
@@ -144,7 +144,7 @@
 			    {{quoteModel.currentQuote.discount | currency}}
 			  </div>
 			</div>
-			
+
 			<div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">
 			  <div class="bold quoteItemDescription" >
 			    <span>מע"מ בשיעור %</span>
@@ -155,39 +155,40 @@
 			    {{quoteModel.currentQuote.vat | currency}}
 			  </div>
 			</div>
-			
+
 			<div>
 			  <div class="bold quoteItemDescription">סה"כ לתשלום...................................................................................................................................................................................................</div>
 			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.isFixedPrice ? quoteModel.currentQuote.fixedPrice : quoteModel.currentQuote.total | currency}}
 			  </div>
 			</div>
-			
+
 		</div>
-		
+
 		<p style="height: 0.5cm"></p>
-		
-		
-		<div class="whyShould" class="quoteTextBox">
-		
-	    	<div class="whyShouldChefImg">
-			   <img src="app/img/portrait_yuval.jpg"/>
-			</div>
+
+		<div ng-show="quoteModel.menuType.quoteEndBoxUrl">  <!-- show black box only if text exists -->
+      <div class="whyShould" class="quoteTextBox">
+
+          <div class="whyShouldChefImg">
+           <img src="app/img/portrait_yuval.jpg"/>
+        </div>
 
 
-			<div class="whyShouldText">
-				<!-- Content taken from src\app\bidTexts\chefMenuEndBox.html -->
-				<ng-include src="quoteModel.menuType.quoteEndBoxUrl"></ng-include>
-			</div>
-	  
-	    </div>
-	
+        <div class="whyShouldText">
+          <!-- Content taken from src\app\bidTexts\chefMenuEndBox.html -->
+          <ng-include src="quoteModel.menuType.quoteEndBoxUrl"></ng-include>
+        </div>
+
+        </div>
+      </div>
+
 		<p style="height: 0.5cm"></p>
-		
+
 		<div class="quoteTextBox" ng-bind-html="quoteModel.currentQuote.endText"></div>
-		
+
 		<p style="height: 0.5cm"></p>
-		
+
 		<div class="quoteTextBox">
 		  <span>
 		    הקטלוג המלא שלנו נמצא
@@ -197,10 +198,10 @@
 		    ניתן להחליף מנה מסויימת באחרת ולבקש שינוי תמהיל.
 		  </span>
 		</div>
-		
+
 		<p style="height: 0.5cm"></p>
-	
-	
+
+
 	</div>
-	
+
 </div>
