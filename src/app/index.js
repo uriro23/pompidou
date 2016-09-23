@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pompidou', ['ui.router', 'ui.bootstrap']);
+angular.module('pompidou', ['ui.router', 'ui.bootstrap','mwl.calendar']);
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
@@ -54,6 +54,18 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
           return eventTypesPromise;
+        }]
+      }
+    })
+    .state('calendar', {
+      url: '/calendarView',
+      templateUrl: 'app/partials/calendar.html',
+      controller: 'CalendarCtrl as calendarModel',
+      resolve: {
+        customers: ['api', function (api) {
+          return api.queryCustomers().then(function (objs) {
+            return objs;
+          });
         }]
       }
     })

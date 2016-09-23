@@ -1,0 +1,42 @@
+<div>
+  <h2 class="text-center">{{calendarModel.calendarTitle}}</h2>
+
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4 text-center">
+      <div class="btn-group">
+
+        <button
+          class="btn btn-primary"
+          ng-click="calendarModel.setMonth(+1)">
+          הבא
+        </button>
+        <button
+          class="btn btn-default"
+          ng-click="calendarModel.setMonth(0)">
+        היום
+        </button>
+        <button
+          class="btn btn-primary"
+          ng-click="calendarModel.setMonth(-1)">
+          הקודם
+        </button>
+      </div>
+    </div>
+</div>
+  <p></p>
+    <mwl-calendar
+    view="calendarModel.calendarView"
+    view-date="calendarModel.calendarDate"
+    events="calendarModel.events"
+    view-title="calendarModel.calendarTitle"
+    on-event-click="calendarModel.eventClicked(calendarEvent)"
+    on-timespan-click="calendarModel.cellClicked(calendarDate,calendarCell)"
+    cell-is-open="true"
+    day-view-start="08:00"
+    day-view-end="20:00"
+      >
+  </mwl-calendar>
+</div>
