@@ -8,7 +8,7 @@ angular.module('myApp')
     $rootScope.menuStatus = 'show';
     var model = this;
 
-    console.log(calendarConfig);
+   // console.log(calendarConfig);
 
     model.setShowGoogleEvents = function() {
       if (model.isShowGoogleEvents) {
@@ -73,8 +73,8 @@ angular.module('myApp')
                 return {
                   title: 'אירוע חיצוני: '+item.summary,
                   color: calendarConfig.colorTypes.special,
-                  startsAt: item.start.date ? new Date(item.start.date) : new Date(item.start.dateTime),
-                  endsAt: item.end.date ? new Date(item.end.date) : new Date(item.end.dateTime),
+                  startsAt: item.start.date ? new Date(item.start.date+' 0:0') : new Date(item.start.dateTime),
+                  endsAt: item.end.date ? new Date(new Date(item.end.date+' 0:0')-1) : new Date(item.end.dateTime),
                   allDay: item.start.date // if he used date instead of dateTime its a whole day
                 };
               });
@@ -90,9 +90,9 @@ angular.module('myApp')
     };
 
     model.cellClicked = function(calendarDate,calendarCell) {
-      console.log('cell clicked');
-      console.log(calendarDate);
-      console.log(calendarCell);
+      //console.log('cell clicked');
+      //console.log(calendarDate);
+      //console.log(calendarCell);
 
     };
 
@@ -115,11 +115,9 @@ angular.module('myApp')
     });
 
     // initialize access to google calendar
-    model.authorized = false;
     googleCalendarService.authenticateIfAuthorized()
       .then(function(isAuthorized) {
         if (isAuthorized) {
-          model.authorized = true;
           googleCalendarService.authorize()
             .then(function() {
               model.setMonth(0);
