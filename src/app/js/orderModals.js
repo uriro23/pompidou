@@ -158,7 +158,7 @@ angular.module('myApp')
           });
 //          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">');
           this.mail.text += '<span>';
-          if (bids[i].attributes.documentType === 1) {
+          if (bids[i].attributes.documentType === 1 || bids[i].attributes.documentType === 4) {
             this.mail.text += 'הצעת מחיר: ';
             bidCnt++;
           } else {
@@ -166,8 +166,13 @@ angular.module('myApp')
             orderCnt++;
           }
           this.mail.text += (bids[i].attributes.desc + ' </span>');
-          this.mail.text += '<a href="' + baseUrl + '/bid/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
-          this.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bids[i].attributes.uuid + '">הדפסה</a>';
+          if (bids[i].attributes.documentType === 4) {
+            this.mail.text += '<a href="' + baseUrl + '/quote/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
+            this.mail.text += '<a href="' + baseUrl + '/quotePrint/' + bids[i].attributes.uuid + '">הדפסה</a>';
+          } else {
+            this.mail.text += '<a href="' + baseUrl + '/bid/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
+            this.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bids[i].attributes.uuid + '">הדפסה</a>';
+          }
           this.mail.text += '<br/>';
         }
       }
