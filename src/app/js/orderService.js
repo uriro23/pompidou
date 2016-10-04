@@ -259,22 +259,42 @@ angular.module('myApp')
           })
           //  IV. change state to editOrder
           .then(function (ord) {
+            window.onbeforeunload = function () {
+            };
+            window.onblur = function () {
+            };
+            $rootScope.menuStatus = 'show';
+            //  backup order for future cancel
+            order.backupOrderAttr = angular.copy(order.attributes);
             $state.go('editOrder', {id: ord.id});
           });
-        // if not new order, just save it without waiting for resolve
-      } else {
+      } else {  // not new order
         this.setupOrderHeader(order.attributes);
-        api.saveObj(order);
+        // check if order in DB was updated since we retrieved it
+        api.queryOrder(order.id)
+          .then(function(ord) {
+            if (ord[0].updatedAt.toString() !== order.updatedAt.toString()) {
+              alert ('האירוע עודכן בחלון אחר. לא ניתן לבצע את העדכון הנוכחי');
+            } else {
+              api.saveObj(order)
+                .then(function() {
+                  api.queryOrder(order.id)  // requery order to get current update time
+                    .then(function(ord2) {
+                      order.updatedAt = ord2[0].updatedAt;
+                      view.isChanged = false;
+                      view.changes = {};
+                      window.onbeforeunload = function () {
+                      };
+                      window.onblur = function () {
+                      };
+                      $rootScope.menuStatus = 'show';
+                      //  backup order for future cancel
+                      order.backupOrderAttr = angular.copy(order.attributes);
+                    });
+                })
+            }
+          })
       }
-      //  backup order for future cancel
-      view.isChanged = false;
-      window.onbeforeunload = function () {
-      };
-      window.onblur = function () {
-      };
-      $rootScope.menuStatus = 'show';
-      view.changes = {};
-      order.backupOrderAttr = angular.copy(order.attributes);
     };
 
 
