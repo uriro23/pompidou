@@ -17,6 +17,7 @@
   /* @ngInject */
   function GmailClientLowLevel($q, $timeout, $http) {
     var isInitialized = $q.defer();
+    var that = this;
 
     this.authenticateIfAuthorized = function () {
       var p = $q.defer();
@@ -94,33 +95,65 @@
         'Subject: =?utf-8?B?' + encodeUtf8(subject) + '?=\r\n' +
         'Content-Type: text/html; charset=utf-8\r\n' +
         'Content-Transfer-Encoding: 7BIT\r\n';
+
       return isInitialized.promise.then(function () {
-        // return sendMessage(emailHeaders + '\r\n' + content);
-        return sendMessage(Mime.toMimeTxt({
-          "to": to,
-          "cc": cc,
-          "subject": subject,
-          "from": "me",
-          "body": content,
-          // 'Content-Type': 'text/html; charset=utf-8',
-          // 'Content-Transfer-Encoding': '7BIT',
-          "cids": [],
-          "attaches" : [{
-            type: 'application/text',
-            name: 'my.txt',
-            base64: 'a3Uga3UgcmlrdQ=='
-          }]
-        }));
+        that.getPdf().then(function (pdfEncoded) {
+          // return sendMessage(emailHeaders + '\r\n' + content);
+          return sendMessage(Mime.toMimeTxt({
+            "to": to,
+            "cc": cc,
+            "subject": subject,
+            "from": "me",
+            "body": content,
+            // 'Content-Type': 'text/html; charset=utf-8',
+            // 'Content-Transfer-Encoding': '7BIT',
+            "cids": [],
+            "attaches" : [{
+              type: 'application/pdf',
+              name: 'uriburi.pdf',
+              base64: pdfEncoded
+            }]
+          }));
+        });
       });
     };
 
     this.getPdf = function () {
-      $http.post('https://do.convertapi.com/Web2Pdf', {
-        ApiKey: 966567133,
-        CUrl: 'http://pompidou-test.rosenan.net/#/bid/60d062ae-de69-4971-9c39-518acb3321c7'
-      }).then((response) => {
-        console.log(response.data.length);
-      }, () => console.error('BAHHH'));
+
+      return $http({
+        method: 'POST',
+        url: 'https://do.convertapi.com/Web2Pdf',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded',
+          responseType: 'arraybuffer'},
+        transformRequest: function(obj) {
+          var str = [];
+          for(var p in obj)
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          return str.join("&");
+        },
+        data: {
+          ApiKey: 966567133,
+          //CUrl: 'http://pompidou-test.rosenan.net/#/bid/60d062ae-de69-4971-9c39-518acb3321c7'
+          CUrl: 'http://www.whatismyip.net/'
+        }
+      })
+        .then(function (response){
+
+           return Base64.encode(response.data, true);
+        //return btoa(unescape(encodeURIComponent(response.data)));
+        //var p = $q.defer();
+        ////var blob = new Blob([response.data], {type: 'application/pdf'});
+        //var blob = new Blob(["this is my file"], {type: 'application/pdf'});
+        //var a = new FileReader();
+        //a.onload = function(e) {
+        //  // Capture result here
+        //  p.resolve("this is another file");
+        //  console.log(e.target.result);
+        //};
+        //a.readAsArrayBuffer(blob);
+        //return p.promise;
+        ////return Base64.encode(response.data, true);
+      }, function() {console.error('BAHHH')});
     }
 
   }
