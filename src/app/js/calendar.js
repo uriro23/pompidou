@@ -11,12 +11,12 @@ angular.module('myApp')
    // console.log(calendarConfig);
 
     model.setShowGoogleEvents = function() {
-      if (model.isShowGoogleEvents) {
+      if (model.isGoogleCalendarAvailable && model.isShowGoogleEvents) {
         model.events = model.pompidouEvents.concat(model.googleEvents);
       } else {
         model.events = model.pompidouEvents;
       }
-    };
+     };
 
 
     model.setMonth = function(direction) {
@@ -67,19 +67,24 @@ angular.module('myApp')
               orderId: ord.id
             }
           });
-          googleCalendarService.getGoogleEvents(from, to)
-            .then(function(events) {
-              model.googleEvents = events.items.map(function(item) {
-                return {
-                  title: 'אירוע חיצוני: '+item.summary,
-                  color: calendarConfig.colorTypes.special,
-                  startsAt: item.start.date ? new Date(item.start.date+' 0:0') : new Date(item.start.dateTime),
-                  endsAt: item.end.date ? new Date(new Date(item.end.date+' 0:0')-1) : new Date(item.end.dateTime),
-                  allDay: item.start.date // if he used date instead of dateTime its a whole day
-                };
+          if(model.isGoogleCalendarAvailable) {
+            googleCalendarService.getGoogleEvents(from, to)
+              .then(function (events) {
+                console.log('returned '+events.items.length+' google events');
+                model.googleEvents = events.items.map(function (item) {
+                  return {
+                    title: 'אירוע חיצוני: ' + item.summary,
+                    color: calendarConfig.colorTypes.special,
+                    startsAt: item.start.date ? new Date(item.start.date + ' 0:0') : new Date(item.start.dateTime),
+                    endsAt: item.end.date ? new Date(new Date(item.end.date + ' 0:0') - 1) : new Date(item.end.dateTime),
+                    allDay: item.start.date // if he used date instead of dateTime its a whole day
+                  };
+                });
+                model.setShowGoogleEvents();
               });
-             model.setShowGoogleEvents();
-            });
+          } else {
+            model.setShowGoogleEvents();
+          }
         });
     };
 
@@ -90,15 +95,13 @@ angular.module('myApp')
     };
 
     model.cellClicked = function(calendarDate,calendarCell) {
-      //console.log('cell clicked');
-      //console.log(calendarDate);
-      //console.log(calendarCell);
-
     };
 
     // main block
 
     model.calendarView = 'month';
+    model.calendarDate = new Date();
+
     var customerNames = customers.map(function(cust) {
       var name = '';
       if (cust.attributes.firstName) {
@@ -115,13 +118,26 @@ angular.module('myApp')
     });
 
     // initialize access to google calendar
+    model.isGoogleCalendarAvailable = false;
+    model.setMonth(0);  // if google calendar initialization hangs, we still get local events
     googleCalendarService.authenticateIfAuthorized()
       .then(function(isAuthorized) {
-        if (isAuthorized) {
+         if (isAuthorized) {
           googleCalendarService.authorize()
             .then(function() {
+              model.isGoogleCalendarAvailable = true;
+              console.log('authorize succeeded');
+              model.setMonth(0);
+            }, function() {
+              console.log('authorize failed');
               model.setMonth(0);
             });
-        }
+        } else {
+           alert('לא ניתן להתחבר ליומן האירועים החיצוניים'+'\n'+'היכנס לחשבון gmail ונסה מחדש');
+           model.setMonth(0);
+         }
+      }, function() {
+        console.log('authenticateIfAuthorized failed');
+        model.setMonth(0);
       });
   });

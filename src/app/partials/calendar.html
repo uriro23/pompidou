@@ -5,6 +5,7 @@
     <div class="col-md-4">
       <label>הצג אירועים חיצוניים</label>
       <input type="checkbox"
+             ng-disabled="!calendarModel.isGoogleCalendarAvailable"
              ng-model="calendarModel.isShowGoogleEvents"
              ng-change="calendarModel.setShowGoogleEvents()">
     </div>

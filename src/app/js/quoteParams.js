@@ -11,26 +11,6 @@ angular.module('myApp')
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
 
 
-    this.filterCategories = function () {
-      var currentQuote = this.order.view.quote;
-     var that = this;
-      if (currentQuote.categories) {   // false for old orders
-        this.filteredCategories = currentQuote.categories.filter(function (qCat) {
-          var temp = currentQuote.items.filter(function (itm) {
-            return itm.category.tId === qCat.tId;
-          });
-          return temp.length;
-        });
-      } else {
-        this.filteredCategories = [];
-      }
-    };
-
-    this.setMenuType = function () {
-      this.order.view.quote.endBoxType = this.order.view.quote.menuType;
-      this.quoteMenuChanged();
-    };
-
     this.quoteMenuChanged = function () {
       orderService.quoteChanged(this.order,'quoteMenuSelections');
     };
@@ -65,13 +45,10 @@ angular.module('myApp')
       });
       };
 
-    this.categoryChanged = function (ind) {
-      this.filteredCategories[ind].isChanged = true;
+    this.categoryChanged = function (category) {
+      category.isChanged = true;
       orderService.quoteChanged(this.order);
     };
 
-   // main block
-    this.filterCategories();
-
-  });
+   });
 

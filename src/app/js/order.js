@@ -202,6 +202,7 @@ angular.module('myApp')
         }
       });
       this.order.view.quote = this.order.attributes.quotes[ind];
+      this.filteredCategories = orderService.filterCategories(this.order.view.quote);
     };
 
     this.deselectQuote = function (mt)  {

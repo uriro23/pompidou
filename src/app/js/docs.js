@@ -34,6 +34,27 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'orderTextType');
     };
 
+    function createBidForQuote (quote, docType, bidDesc, isMultipleQuotes) {
+      var bid = api.initBid();
+      bid.attributes.version = lov.version;
+      bid.attributes.documentType = docType;
+      bid.attributes.menuType = quote.menuType;
+      bid.attributes.orderId = that.order.id;
+      bid.attributes.date = new Date();
+      bid.attributes.order = that.order.attributes;
+      bid.attributes.total = that.total;
+      bid.attributes.customer = that.order.view.customer;
+      if (isMultipleQuotes) {
+        bid.attributes.desc = bidDesc + ' ' + quote.title;
+      } else {
+        bid.attributes.desc = bidDesc;   // don't use quote  title for single quotes until new quote be used
+      }
+      bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+      return bid;
+    }
 
     this.createBid = function (docType) {
       if (this.order.view.isChanged) {
@@ -42,29 +63,15 @@ angular.module('myApp')
 
       var that = this;
       var bids = [];
-      this.order.attributes.quotes.forEach(function(quote) {
-        if (quote.items.length) { // skip empty quotes
-          var bid = api.initBid();
-          bid.attributes.version = lov.version;
-          bid.attributes.documentType = docType;
-          bid.attributes.menuType = quote.menuType;
-          bid.attributes.orderId = that.order.id;
-          bid.attributes.date = new Date();
-          bid.attributes.order = that.order.attributes;
-          bid.attributes.total = that.total;
-          bid.attributes.customer = that.order.view.customer;
-          if (that.order.attributes.quotes.length > 1) {
-            bid.attributes.desc = that.bidDesc + ' ' + quote.title;
-          } else {
-            bid.attributes.desc = that.bidDesc;   // don't use quote  title for single quotes until new quote be used
+      if (docType === 0) { // if creating backup, pick the active quote only
+        bids.push(createBidForQuote(this.order.view.quote, 0, this.bidDesc, false));
+      } else {
+        this.order.attributes.quotes.forEach(function (quote) {
+          if (quote.items.length) { // skip empty quotes
+            bids.push(createBidForQuote(quote, docType, that.bidDesc, that.order.attributes.quotes.length > 1));
           }
-          bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-          }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-          bids.push(bid);
-        }
-      });
+        });
+      }
       this.bidDesc = '';
      return api.saveObjects(bids)
         .then(function () {
@@ -88,8 +95,12 @@ angular.module('myApp')
           orderService.setupOrderHeader(that.order.attributes);
           api.saveObj(that.order)
             .then(function () {
-              alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +
-              $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm'))
+              api.queryOrder(that.order.id)   // requery order to get new update timestamp
+                .then(function(ord) {
+                  that.order.updatedAt = ord[0].updatedAt;
+                  alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +
+                  $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm'))
+                });
             })
         })
     };

@@ -42,23 +42,23 @@
     <button class="btn btn-default" ng-click="quoteParamsModel.editEndText()">ערוך</button>
     </div>
   <p></p>
-  <table class="table table-hover" style="width:90%" ng-show="quoteParamsModel.filteredCategories.length">
+  <table class="table table-hover" style="width:90%">
     <thead>
     <th style="width:12%">קטגוריה</th>
     <th style="width:8%">להציג?</th>
     <th style="width:80%">תיאור</th>
     </thead>
     <tbody>
-    <tr ng-repeat="category in quoteParamsModel.filteredCategories track by category.tId"
+    <tr ng-repeat="category in orderModel.filteredCategories track by category.tId"
         ng-class="category.isChanged?'bg-success':null">
       <td>{{category.label}}</td>
       <td>
         <input type="checkbox" ng-model="category.isShowDescription"
-               ng-change="quoteParamsModel.categoryChanged($index)">
+               ng-change="quoteParamsModel.categoryChanged(category)">
       </td>
       <td>
         <textarea rows="2" cols="80"  ng-model="category.description"
-               ng-change="quoteParamsModel.categoryChanged($index)">
+               ng-change="quoteParamsModel.categoryChanged(category)">
           </textarea>
       </td>
     </tr>
