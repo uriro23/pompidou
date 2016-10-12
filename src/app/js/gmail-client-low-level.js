@@ -108,54 +108,57 @@
             // 'Content-Type': 'text/html; charset=utf-8',
             // 'Content-Transfer-Encoding': '7BIT',
             "cids": [],
-            "attaches" : [{
+            "attaches": [{
               type: 'application/pdf',
               name: 'uriburi.pdf',
               base64: pdfEncoded
             }]
           }));
+        }, function (err) {
+          console.error("error getting pdf", err);
         });
       });
     };
 
-    this.getPdf = function () {
-
-      return $http({
-        method: 'POST',
-        url: 'https://do.convertapi.com/Web2Pdf',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded',
-          responseType: 'arraybuffer'},
-        transformRequest: function(obj) {
-          var str = [];
-          for(var p in obj)
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-          return str.join("&");
-        },
-        data: {
-          ApiKey: 966567133,
-          //CUrl: 'http://pompidou-test.rosenan.net/#/bid/60d062ae-de69-4971-9c39-518acb3321c7'
-          CUrl: 'http://www.whatismyip.net/'
-        }
-      })
-        .then(function (response){
-
-           return Base64.encode(response.data, true);
-        //return btoa(unescape(encodeURIComponent(response.data)));
-        //var p = $q.defer();
-        ////var blob = new Blob([response.data], {type: 'application/pdf'});
-        //var blob = new Blob(["this is my file"], {type: 'application/pdf'});
-        //var a = new FileReader();
-        //a.onload = function(e) {
-        //  // Capture result here
-        //  p.resolve("this is another file");
-        //  console.log(e.target.result);
-        //};
-        //a.readAsArrayBuffer(blob);
-        //return p.promise;
-        ////return Base64.encode(response.data, true);
-      }, function() {console.error('BAHHH')});
+    function _arrayBufferToBase64( buffer ) {
+      var binary = '';
+      var bytes = new Uint8Array( buffer );
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+      }
+      return window.btoa( binary );
     }
+    var transformRequest =function (obj) {
+      var str = [];
+      for (var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      return str.join("&");
+    };
 
+
+    this.getPdf = function () {
+      var q = $q.defer();
+      var url = 'https://do.convertapi.com/Web2Pdf';
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function () {
+        if (this.status === 200) {
+          var type = xhr.getResponseHeader('Content-Type');
+          var blob = new Blob([this.response], { type: type });
+          q.resolve(_arrayBufferToBase64(this.response));
+        } else {
+          q.reject(this);
+        }
+      };
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.send(transformRequest({
+        ApiKey: 966567133,
+        CUrl: 'http://pompidou-test.rosenan.net/#/bid/60d062ae-de69-4971-9c39-518acb3321c7'
+      }));
+      return q.promise;
+    };
   }
 
   angular
