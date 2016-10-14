@@ -15,9 +15,8 @@
   };
 
   /* @ngInject */
-  function GmailClientLowLevel($q, $timeout, $http) {
+  function GmailClientLowLevel($q, $timeout) {
     var isInitialized = $q.defer();
-    var that = this;
 
     this.authenticateIfAuthorized = function () {
       var p = $q.defer();
@@ -88,16 +87,16 @@
       var to = params.to,
         cc = params.cc,
         subject = params.subject,
-        content = params.text;
-      var emailHeaders = 'From: \'me\'\r\n' +
-        'To:  ' + to + '\r\n' +
-        'Cc:  ' + cc + '\r\n' +
-        'Subject: =?utf-8?B?' + encodeUtf8(subject) + '?=\r\n' +
-        'Content-Type: text/html; charset=utf-8\r\n' +
-        'Content-Transfer-Encoding: 7BIT\r\n';
+        content = params.text,
+        attachments = params.attachments;
+      //var emailHeaders = 'From: \'me\'\r\n' +
+      //  'To:  ' + to + '\r\n' +
+      //  'Cc:  ' + cc + '\r\n' +
+      //  'Subject: =?utf-8?B?' + encodeUtf8(subject) + '?=\r\n' +
+      //  'Content-Type: text/html; charset=utf-8\r\n' +
+      //  'Content-Transfer-Encoding: 7BIT\r\n';
 
       return isInitialized.promise.then(function () {
-        that.getPdf().then(function (pdfEncoded) {
           // return sendMessage(emailHeaders + '\r\n' + content);
           return sendMessage(Mime.toMimeTxt({
             "to": to,
@@ -105,60 +104,15 @@
             "subject": subject,
             "from": "me",
             "body": content,
-            // 'Content-Type': 'text/html; charset=utf-8',
-            // 'Content-Transfer-Encoding': '7BIT',
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Transfer-Encoding': '7BIT',
             "cids": [],
-            "attaches": [{
-              type: 'application/pdf',
-              name: 'uriburi.pdf',
-              base64: pdfEncoded
-            }]
+            "attaches": attachments
           }));
-        }, function (err) {
-          console.error("error getting pdf", err);
-        });
       });
     };
 
-    function _arrayBufferToBase64( buffer ) {
-      var binary = '';
-      var bytes = new Uint8Array( buffer );
-      var len = bytes.byteLength;
-      for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-      }
-      return window.btoa( binary );
-    }
-    var transformRequest =function (obj) {
-      var str = [];
-      for (var p in obj)
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-      return str.join("&");
-    };
 
-
-    this.getPdf = function () {
-      var q = $q.defer();
-      var url = 'https://do.convertapi.com/Web2Pdf';
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', url, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function () {
-        if (this.status === 200) {
-          var type = xhr.getResponseHeader('Content-Type');
-          var blob = new Blob([this.response], { type: type });
-          q.resolve(_arrayBufferToBase64(this.response));
-        } else {
-          q.reject(this);
-        }
-      };
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.send(transformRequest({
-        ApiKey: 966567133,
-        CUrl: 'http://pompidou-test.rosenan.net/#/bid/60d062ae-de69-4971-9c39-518acb3321c7'
-      }));
-      return q.promise;
-    };
   }
 
   angular

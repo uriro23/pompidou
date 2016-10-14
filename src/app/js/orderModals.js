@@ -83,7 +83,7 @@ angular.module('myApp')
   })
 
   .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov, order, bids, bidTextTypes,
-                                        gmailClientLowLevel, $scope) {
+                                        pdfService, gmailClientLowLevel, $scope) {
     var that = this;
     this.order = order;
     this.bids = bids;
@@ -138,7 +138,7 @@ angular.module('myApp')
 
     this.doSend = function () {
       var that = this;
-      this.mail.attachments = [];
+      this.mail.attachedBids = [];
       var baseUrl = $location.absUrl();
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
@@ -148,7 +148,7 @@ angular.module('myApp')
       var orderCnt = 0;
       for (var i = 0; i < this.bids.length; i++) {
         if (bids[i].isInclude) {
-          this.mail.attachments.push({    // this is the original bid object without the content of the order
+          this.mail.attachedBids.push({    // this is the original bid object without the content of the order
             uuid: bids[i].attributes.uuid,
             desc: bids[i].attributes.desc,
             documentType: bids[i].attributes.documentType,
@@ -172,47 +172,54 @@ angular.module('myApp')
         }
       }
       this.mail.text = '<div dir="rtl">' + this.mail.text + '</div>';
-      gmailClientLowLevel.sendEmail(this.mail)
-        .then(function () {
-          var newMail = api.initMail();
-          newMail.attributes.orderId = order.id;
-          newMail.attributes.date = new Date();
-          newMail.attributes.customer = that.customer;
-          newMail.attributes.contact = that.contact;
-          newMail.attributes.to = that.mail.to;
-          newMail.attributes.cc = that.mail.cc;
-          newMail.attributes.subject = that.mail.subject;
-          newMail.attributes.text = that.mail.text;
-          newMail.attributes.attachments = that.mail.attachments;
-          api.saveObj(newMail)
-            .then(function (mail) {
-              var activity = {
-                date: new Date(),
-                text: 'נשלח דואל עם ',
-                mail: mail.id
-              };
-              if (bidCnt) {
-                activity.text += (bidCnt + ' הצעות מחיר ')
+      var pdfSource = this.mail.attachedBids.map(function(bid) {
+        return {url: 'http://pompidou.rosenan.net/#' + '/bidPrint/' + bid.uuid, fileName: bid.desc}
+      });
+      pdfService.getPdfCollection(pdfSource, true)
+        .then(function(pdfResult) {
+          that.mail.attachments = pdfResult;
+          gmailClientLowLevel.sendEmail(that.mail)
+            .then(function () {
+              var newMail = api.initMail();
+              newMail.attributes.orderId = order.id;
+              newMail.attributes.date = new Date();
+              newMail.attributes.customer = that.customer;
+              newMail.attributes.contact = that.contact;
+              newMail.attributes.to = that.mail.to;
+              newMail.attributes.cc = that.mail.cc;
+              newMail.attributes.subject = that.mail.subject;
+              newMail.attributes.text = that.mail.text;
+              newMail.attributes.attachments = that.mail.attachedBids;
+              api.saveObj(newMail)
+                .then(function (mail) {
+                  var activity = {
+                    date: new Date(),
+                    text: 'נשלח דואל עם ',
+                    mail: mail.id
+                  };
+                  if (bidCnt) {
+                    activity.text += (bidCnt + ' הצעות מחיר ')
+                  }
+                  if (orderCnt) {
+                    activity.text += (orderCnt + ' הזמנות')
+                  }
+                  order.attributes.activities.splice(0, 0, activity);
+                  orderService.setupOrderHeader(order.attributes);
+                  api.saveObj(order);
+                });
+            },
+            function (error) {
+              console.log(error);
+              var errText = 'send email error:\r\n';
+              if (error.result) {
+                if (error.result.error) {
+                  errText += error.result.error.message
+                }
               }
-              if (orderCnt) {
-                activity.text += (orderCnt + ' הזמנות')
-              }
-              order.attributes.activities.splice(0, 0, activity);
-			  orderService.setupOrderHeader(order.attributes);
-              api.saveObj(order);
-            });
-        },
-        function (error) {
-          console.log(error);
-          var errText = 'send email error:\r\n';
-          if (error.result) {
-            if (error.result.error) {
-              errText += error.result.error.message
+              alert(errText);
             }
-          }
-          alert(errText);
-        }
-      );
+          );
+        });
 
       $modalInstance.close();
     };
