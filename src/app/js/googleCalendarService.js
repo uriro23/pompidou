@@ -22,14 +22,18 @@
       var p = $q.defer();
 
       function immediateAuth() {
+        console.log('entered immediateAuth');
         if (!gapi || !gapi.auth || !gapi.auth.authorize) {
+          console.log('!gapi');
           $timeout(immediateAuth, 100);
           return;
         }
         var immediateProps = angular.extend({}, googleProperties, {immediate: true});
         gapi.auth.authorize(immediateProps).then(function () {
           p.resolve(true);
+          console.log('resolved authorize');
           initialize();
+          console.log('initialize launched');
         }, function () {
           p.resolve(false);
         });
@@ -40,8 +44,10 @@
     };
 
     this.authorize = function () {
+      console.log('entered authorize');
       return promiseTranslator(gapi.auth.authorize(googleProperties)).then(function () {
         initialize();
+        console.log('initialize launched from authorize');
         return true;
       }, function () {
         return false;
@@ -51,6 +57,7 @@
     function initialize() {
       promiseTranslator(gapi.client.load('calendar', 'v3')).then(function () {
         isInitialized.resolve(true);
+        console.log('initialize resolved');
       });
     }
 

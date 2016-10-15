@@ -81,7 +81,7 @@
   </td>
    </tbody>
   </table>
-<table style="width: 95%">
+<table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
     <td style="width: 17%">
       <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.attributes.eventDate"
@@ -98,7 +98,7 @@
                                ng-disabled="headerModel.isReadOnly"
                                ng-change="headerModel.orderChanged('header')">
     </td>
-    <td style="width: 12%">
+    <td style="width: 14%">
       <label>משתתפים:</label>&nbsp;<input type="number" min=1 max="9999"
                                           ng-model="headerModel.order.attributes.noOfParticipants"
                                           ng-change="headerModel.setNoOfParticipants()"
@@ -113,14 +113,14 @@
                                           ng-disabled="headerModel.isReadOnly"
                                           ng-class="headerModel.order.view.errors.children?'bg-danger':null">
     </td>
-    <td style="width: 14%">
+    <td style="width: 16%">
       <label>סוג אירוע:</label>&nbsp;<select ng-model="headerModel.order.view.eventType"
                                       ng-change="headerModel.orderChanged('header')"
                                       ng-options="eventType.label for eventType in headerModel.eventTypes"
                                       ng-disabled="headerModel.isReadOnly"
             ></select>
     </td>
-    <td style="width: 19%">
+    <td style="width: 15%">
       <label>סטטוס:</label>&nbsp;<select ng-model="headerModel.order.view.orderStatus"
                                          ng-change="headerModel.orderChanged('header')"
                                          ng-options="orderStatus.name for orderStatus in headerModel.orderStatuses"

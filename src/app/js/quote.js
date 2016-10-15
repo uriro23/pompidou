@@ -40,17 +40,32 @@ angular.module('myApp')
       + ' ' + this.bid.attributes.desc;
 
 
-     //fetch menu type
+      //fetch menu type
       if (that.currentQuote.menuType) {
         if (typeof that.currentQuote.menuType === 'number') {  // bid pre multiple quotes
-        this.menuType = menuTypes.filter(function (menu) {
-          return menu.tId === that.currentQuote.menuType
-        })[0];
+          this.menuType = menuTypes.filter(function (menu) {
+            return menu.tId === that.currentQuote.menuType
+          })[0];
         } else {  // bid supports multiple quotes
           this.menuType = that.currentQuote.menuType;
         }
       } else {  // no menuType at all - use default
         this.menuType = menuTypes.filter(function(mt) {
+          return mt.isDefault;
+        })[0];
+      }
+
+      //fetch end box type
+      if (that.currentQuote.endBoxType) {
+        if (typeof that.currentQuote.endBoxType === 'number') {  // bid pre multiple quotes
+          this.endBoxType = menuTypes.filter(function (menu) {
+            return menu.tId === that.currentQuote.endBoxType
+          })[0];
+        } else {  // bid supports multiple quotes
+          this.endBoxType = that.currentQuote.endBoxType;
+        }
+      } else {  // no endBoxType at all - use default
+        this.endBoxType = menuTypes.filter(function(mt) {
           return mt.isDefault;
         })[0];
       }

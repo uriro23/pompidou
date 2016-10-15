@@ -480,13 +480,40 @@ config(function($stateProvider, $urlRouterProvider) {
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
       }],
-     categories: ['categoriesPromise', function (categoriesPromise) {
+      categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }],
       isPrintQuote: [function () {
         return false;
       }]
-   }
+    }
+  })
+    .state ('quotePrint', {
+    url: '/quotePrint/:uuid',
+    templateUrl: 'app/partials/quote.html',
+    controller: 'QuoteCtrl as quoteModel',
+    resolve: {
+      bid: ['$stateParams', 'api', function ($stateParams, api) {
+        return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+          return bids[0];
+        });
+      }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
+      }],
+      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+        return bidTextTypesPromise;
+      }],
+      menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+        return menuTypesPromise;
+      }],
+      categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
+      }],
+      isPrintQuote: [function () {
+        return true;
+      }]
+    }
   })
     .state ('exitList', {
     url: '/exitList/:id',
