@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
-                                     lov, config, bidTextTypes, menuTypes, discountCauses, users) {
+                                     lov, config, bidTextTypes, menuTypes, discountCauses, role) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -66,17 +66,54 @@ angular.module('myApp')
     // users
     // -----
 
-    this.users = users;
+    this.refreshUsers = function() {
+      var that = this;
+      this.isUserRefresh = true;
+      api.queryUsers()
+        .then(function(users) {
+          api.queryUsersInRole(role)
+            .then(function(usersInRole) {
+              users.forEach(function(user) {
+                user.isInRole = usersInRole.filter(function(ru) {
+                  return ru.get('username') === user.get('username');
+                }).length>0;
+              });
+            });
+          that.users = users;
+          that.isUserRefresh = false;
+        });
+    };
+
+    this.isNewUser = false;
+    this.refreshUsers();
 
     this.newUser = function () {
+      this.isNewUser = true;
       this.user = api.initUser();
     };
 
-    this.saveUser = function () {
-      api.userSignUp(this.user);
+    this.createUser = function () {
+      this.isNewUser = false;
+      api.userSignUp(this.user)
+        .then(function(user) {  // signUp changes the current user, so we have to force a new login
+          alert('User '+user.get('username')+' created.\nPlease login and add user to role.');
+          $state.go('login');
+         });
     };
 
+    this.cancelNewUser = function () {
+      this.isNewUser = false;
+    };
 
+    this.addUserToRole = function(user) {
+      var that = this;
+      api.addUserToRole(role,user)
+        .then(function(){
+          that.refreshUsers();
+        })
+    };
+
+    /*  only first time
     this.createRole = function () {
       if (api.getCurrentUser().attributes.username !== 'uri') {
         alert('current user not allowed to create role');
@@ -87,6 +124,7 @@ angular.module('myApp')
           });
       }
     };
+    */
 
     this.resetPwd = function (usr) {
       api.userPasswordReset(usr.attributes.email)

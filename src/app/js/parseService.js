@@ -464,7 +464,6 @@ angular.module('myApp')
     }
     obj.signUp({}, {
       success: function (o) {
-        console.log(o.attributes);
         promise.resolve(o);
         $rootScope.$digest();
       },
@@ -525,10 +524,11 @@ angular.module('myApp')
     return query(userQuery);
   };
 
-  // role
+ // role
   // ----
 
-  this.createRole = function (name, admin, users) {
+    /*  only first time
+     this.createRole = function (name, admin, users) {
     var promise = $q.defer();
     var roleACL = new Parse.ACL();
     for (var i = 0; i < users.length; i++) {
@@ -551,8 +551,41 @@ angular.module('myApp')
       }
     })
   };
+  */
+
+    this.queryRoles = function(name) {
+      var roleQuery = new Parse.Query(Parse.Role);
+      if (name) {
+        roleQuery.equalTo('name',name);
+      }
+      return query(roleQuery);
+    };
+
+    this.queryUsersInRole = function(role) {
+      var rel = role.getUsers();
+     return query(rel.query());
+     };
+
+    this.addUserToRole = function(role,user) {
+      var promise = $q.defer();
+      var acl = role.get('ACL').setReadAccess(user,true);
+      role.getUsers().add(user);
+      role.save({}, {
+        success: function (r) {
+          promise.resolve(r);
+          $rootScope.$digest();
+        },
+        error: function (model, error) {
+          alert('Role Save Error ' + error.code + ", " + error.message);
+          promise.reject();
+          $rootScope.$digest();
+        }
+      });
+      return promise.promise;
+    };
 
 
+/*
   //
   //  CONVERSION
   //  ----------
@@ -629,7 +662,7 @@ angular.module('myApp')
     accessOrderActivitiesQuery.descending('Id'); // ActivityTime is string, no good for sort
     return query(accessOrderActivitiesQuery);
   };
-
+*/
     // main block
 
     if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod

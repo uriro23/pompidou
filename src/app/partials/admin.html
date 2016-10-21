@@ -32,7 +32,7 @@
     <button class="btn btn-default" ng-click="adminModel.setPwd()">עדכן</button>
   </tab>
   <tab heading="משתמשים">
-    <table>
+    <table class="table table-hover">
       <thead>
       <th style="text-align: left">username</th>
       <th style="text-align: left">email</th>
@@ -41,6 +41,13 @@
       <tr ng-repeat="user in adminModel.users">
         <td style="text-align: left">{{user.attributes.username}}</td>
         <td style="text-align: left">{{user.attributes.email}}</td>
+        <td>
+          <button class="btn btn-warning"
+                  ng-hide="user.isInRole || adminModel.isUserRefresh"
+                  ng-click="adminModel.addUserToRole(user)">
+            add to role
+          </button>
+        </td>
         <td>
           <button class="btn btn-default btn-sm" ng-click="adminModel.resetPwd(user)">
             אפס סיסמה
@@ -51,14 +58,30 @@
     </table>
     <div>
       <button class="btn btn-default" ng-click="adminModel.newUser()">משתמש חדש</button>
-      <input type="text" ng-model="adminModel.user.attributes.username" placeholder="username">
-      <input type="text" ng-model="adminModel.user.attributes.password" placeholder="password">
-      <input type="text" ng-model="adminModel.user.attributes.email" placeholder="email">
-      <button class="btn btn-default btn-sm" ng-click="adminModel.saveUser()">צור</button>
+      <input type="text"
+             ng-show="adminModel.isNewUser"
+             ng-model="adminModel.user.attributes.username"
+             placeholder="username">
+      <input type="text"
+             ng-show="adminModel.isNewUser"
+             ng-model="adminModel.user.attributes.password"
+             placeholder="password">
+      <input type="text"
+             ng-show="adminModel.isNewUser"
+             ng-model="adminModel.user.attributes.email"
+             placeholder="email">
+      <button ng-show="adminModel.isNewUser"
+              class="btn btn-primary btn-sm"
+              ng-click="adminModel.createUser()">צור</button>
+      <button ng-show="adminModel.isNewUser"
+              class="btn btn-warning btn-sm"
+              ng-click="adminModel.cancelNewUser()">בטל</button>
     </div>
+    <!-- only first time
     <div>
       <button class="btn btn-default" ng-click="adminModel.createRole()">Role</button>
     </div>
+    -->
   </tab>
   <tab heading="סביבה">
     <div>

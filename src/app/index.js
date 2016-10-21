@@ -339,9 +339,9 @@ config(function($stateProvider, $urlRouterProvider) {
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
       }],
-      users: ['api', function (api) {
-        return api.queryUsers().then(function (res) {
-          return res;
+      role: ['api', function (api) {
+        return api.queryRoles('everyone').then(function (res) {
+          return res[0];
         });
       }]
     }
