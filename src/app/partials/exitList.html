@@ -147,17 +147,17 @@
 		<div ng-repeat="category in exitListModel.filteredCategories">
 		  <label>{{category.label}}</label>
 		  {{exitListModel.setupCategoryItems(category.tId)}}
-		  <table class="table table-hover" style="width:90%">
+		  <table style="width:90%">
 		    <tbody>
 		    <tr ng-repeat="item in exitListModel.categoryItems">
 		      <td style="width:85%">
 		        &#9634;
 		        {{item.productDescription}}
 		        {{exitListModel.setupItemExitList(item.catalogId)}}
-		        <table class="table table-hover">
+		        <table>
 		          <tr ng-repeat="listItem in exitListModel.exitList">
 		            <td>
-		              &#9634;
+		              &nbsp;&nbsp;&#9634;
 		              {{listItem.item}}
 		            </td>
 		          </tr>

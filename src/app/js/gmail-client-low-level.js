@@ -84,11 +84,11 @@
     }
 
     this.sendEmail = function (params) {
-      var to = params.to,
-        cc = params.cc,
-        subject = params.subject,
-        content = params.text,
-        attachments = params.attachments;
+      //var to = params.to,
+      //  cc = params.cc,
+      //  subject = params.subject,
+      //  content = params.text,
+      //  attachments = params.attachments;
       //var emailHeaders = 'From: \'me\'\r\n' +
       //  'To:  ' + to + '\r\n' +
       //  'Cc:  ' + cc + '\r\n' +
@@ -98,17 +98,17 @@
 
       return isInitialized.promise.then(function () {
           // return sendMessage(emailHeaders + '\r\n' + content);
-          return sendMessage(Mime.toMimeTxt({
-            "to": to,
-            "cc": cc,
-            "subject": subject,
+        var mimeMsg =
+          Mime.toMimeTxt({
+            "to": params.to,
+            "cc": params.cc,
+            "subject": params.subject,
             "from": "me",
-            "body": content,
-            'Content-Type': 'text/html; charset=utf-8',
-            'Content-Transfer-Encoding': '7BIT',
-            "cids": [],
-            "attaches": attachments
-          }));
+            "body": params.text,
+             "cids": [],
+            "attaches": params.attachments
+          });
+        return sendMessage(mimeMsg);
       });
     };
 

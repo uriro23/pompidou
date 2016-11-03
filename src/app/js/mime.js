@@ -38,9 +38,9 @@
       createHtml = function(msg) {
         var htmlContent;
         htmlContent = msg.body || "";
-        htmlContent = htmlContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/\n/g, '\n<br/>');
-        htmlContent = linkify(htmlContent);
-        htmlContent = '<div>' + htmlContent + '</div>';
+        //htmlContent = htmlContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/\n/g, '\n<br/>');
+        //htmlContent = linkify(htmlContent);
+        //htmlContent = '<div>' + htmlContent + '</div>';
         return '\nContent-Type: text/html; charset=UTF-8' + '\nContent-Transfer-Encoding: base64' + '\n\n' + (Base64.encode(htmlContent, true)).replace(/.{76}/g, "$&\n");
       };
       createAlternative = function(text, html) {
@@ -114,9 +114,10 @@
         related = plain;
       } else {
         htm = createHtml(mail);
-        alternative = createAlternative(plain, htm);
-        cids = createCids(mail.cids);
-        related = createRelated(alternative, cids);
+        //alternative = createAlternative(plain, htm);
+        //cids = createCids(mail.cids);
+        //related = createRelated(alternative, cids);
+        related = htm;    // skip alternate  and related stuff
       }
       attaches = createAttaches(mail.attaches);
       result = createMixed(related, attaches);

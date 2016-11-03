@@ -18,8 +18,10 @@ angular.module('myApp')
     this.bidDesc = '';
 
     var that = this;
+    this.isBidsLoading = true;
     api.queryBidsByOrder(this.order.id).then (function (bids) { // lazy load bids
       that.bids = bids;
+      that.isBidsLoading = false;
     });
 
 
@@ -75,10 +77,12 @@ angular.module('myApp')
       this.bidDesc = '';
      return api.saveObjects(bids)
         .then(function () {
-          return api.queryBidsByOrder(that.order.id)  // requery bids for view
+         that.isBidsLoading = true;
+         return api.queryBidsByOrder(that.order.id)  // requery bids for view
             .then(function (bids) {
               that.bids = bids;
-            })
+              that.isBidsLoading = false;
+           })
         })
     };
 
@@ -109,9 +113,11 @@ angular.module('myApp')
       var that = this;
       return api.deleteObj(bid)
         .then(function () {
+          that.isBidsLoading = true;
           return api.queryBidsByOrder(that.order.id)
             .then(function (bids) {
               that.bids = bids;
+              that.isBidsLoading = false;
             })
         })
     };

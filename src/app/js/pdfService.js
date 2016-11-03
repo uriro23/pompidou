@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('pdfService', function ($q, $rootScope, secrets) {
+  .service('pdfService', function ($q, $rootScope, $timeout, secrets) {
 
 
     function _arrayBufferToBase64( buffer ) {
@@ -52,6 +52,12 @@ angular.module('myApp')
       if (firstTime) {
         this.pdfArray = [];
         this.promise = $q.defer();
+        if (!sourceList.length) { // if no attachments, return empty array
+          $timeout(function () {
+            that.promise.resolve(that.pdfArray);
+          }, 20);
+          return this.promise.promise;
+        }
       }
       if (sourceList.length) {
         var source = sourceList.pop();

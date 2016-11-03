@@ -4,7 +4,9 @@
     <tr style="width:50%">
       <td style="width:40%">
         <button class="btn btn-default" ng-click="documentsModel.sendMail()"
-                ng-disabled="documentsModel.isReadOnly || documentsModel.order.view.isChanged">
+                ng-disabled="documentsModel.isReadOnly ||
+                             documentsModel.order.view.isChanged ||
+                             documentsModel.isBidsLoading">
           שלח דוא"ל
         </button>
       </td>

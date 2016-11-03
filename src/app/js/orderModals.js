@@ -87,6 +87,7 @@ angular.module('myApp')
     var that = this;
     this.order = order;
     this.bids = bids;
+    this.attachmentType = 'link';
     // reset isInclude checkbox from previous sends
     for (var i = 0; i < this.bids.length; i++) {
       bids[i].isInclude = false;
@@ -139,50 +140,49 @@ angular.module('myApp')
     this.doSend = function () {
       var that = this;
       this.mail.attachedBids = [];
+      var bidCnt = 0;
+      var pdfSource = [];
       var baseUrl = $location.absUrl();
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
-      //     baseUrl = baseUrl+'/bid/';
-      this.mail.text += '<br/><br/><span>קישורים למסמכים:</span><br/>';
-      var bidCnt = 0;
-      var orderCnt = 0;
-      for (var i = 0; i < this.bids.length; i++) {
-        if (bids[i].isInclude) {
-          this.mail.attachedBids.push({    // this is the original bid object without the content of the order
-            uuid: bids[i].attributes.uuid,
-            desc: bids[i].attributes.desc,
-            documentType: bids[i].attributes.documentType,
-            orderId: bids[i].attributes.orderId,
-            date: bids[i].attributes.date,
-            customer: bids[i].attributes.customer
+
+      bids.forEach(function(bid) {
+        if (bid.isInclude) {
+          that.mail.attachedBids.push({    // this is the original bid object without the content of the order
+            uuid: bid.attributes.uuid,
+            desc: bid.attributes.desc,
+            documentType: bid.attributes.documentType,
+            orderId: bid.attributes.orderId,
+            date: bid.attributes.date,
+            customer: bid.attributes.customer
           });
-//          this.mail.text += ('<a href="'+baseUrl+bids[i].attributes.uuid+'">');
-          this.mail.text += '<span>';
-          if (bids[i].attributes.documentType === 1 || bids[i].attributes.documentType === 4) {
-            this.mail.text += 'הצעת מחיר: ';
-            bidCnt++;
-          } else {
-            this.mail.text += 'הזמנה: ';
-            orderCnt++;
-          }
-          this.mail.text += (bids[i].attributes.desc + ' </span>');
-          if (bids[i].attributes.documentType === 4) {
-            this.mail.text += '<a href="' + baseUrl + '/quote/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
-            this.mail.text += '<a href="' + baseUrl + '/quotePrint/' + bids[i].attributes.uuid + '">הדפסה</a>';
-          } else {
-            this.mail.text += '<a href="' + baseUrl + '/bid/' + bids[i].attributes.uuid + '">הצגה</a><span>  <span>';
-            this.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bids[i].attributes.uuid + '">הדפסה</a>';
-          }
-          this.mail.text += '<br/>';
+          bidCnt++;
         }
-      }
-      this.mail.text = '<div dir="rtl">' + this.mail.text + '</div>';
-      var pdfSource = this.mail.attachedBids.map(function(bid) {
-        return {url: 'http://pompidou.rosenan.net/#' + '/bidPrint/' + bid.uuid, fileName: bid.desc}
       });
+      if (this.attachmentType==='link') {
+       this.mail.text += '<br/><br/><span>קישורים למסמכים:</span><br/>';
+        this.mail.attachedBids.forEach(function(bid) {
+          that.mail.text += '<span>';
+          that.mail.text += (bid.desc + ' </span>');
+          if (bid.documentType === 4) {
+            that.mail.text += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
+            that.mail.text += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
+          } else {
+            that.mail.text += '<a href="' + baseUrl + '/bid/' + bid.uuid + '">הצגה</a><span>  <span>';
+            that.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
+          }
+          that.mail.text += '<br/>';
+        });
+      } else {    // pdf
+        pdfSource = this.mail.attachedBids.map(function (bid) {
+          var url = bid.documentType===4 ? baseUrl + '/quote/' + bid.uuid : baseUrl + '/bid/' + bid.uuid;
+          return {url: url, fileName: bid.desc}
+        });
+      }
       pdfService.getPdfCollection(pdfSource, true)
         .then(function(pdfResult) {
           that.mail.attachments = pdfResult;
+          that.mail.text = '<div dir="rtl">' + that.mail.text + '</div>';
           gmailClientLowLevel.sendEmail(that.mail)
             .then(function () {
               var newMail = api.initMail();
@@ -194,20 +194,15 @@ angular.module('myApp')
               newMail.attributes.cc = that.mail.cc;
               newMail.attributes.subject = that.mail.subject;
               newMail.attributes.text = that.mail.text;
+              newMail.attributes.attachmentType = that.attachmentType;
               newMail.attributes.attachments = that.mail.attachedBids;
               api.saveObj(newMail)
                 .then(function (mail) {
                   var activity = {
                     date: new Date(),
-                    text: 'נשלח דואל עם ',
+                    text: 'נשלח דואל עם ' + bidCnt + ' הצעות מחיר',
                     mail: mail.id
                   };
-                  if (bidCnt) {
-                    activity.text += (bidCnt + ' הצעות מחיר ')
-                  }
-                  if (orderCnt) {
-                    activity.text += (orderCnt + ' הזמנות')
-                  }
                   order.attributes.activities.splice(0, 0, activity);
                   orderService.setupOrderHeader(order.attributes);
                   api.saveObj(order);
@@ -234,7 +229,6 @@ angular.module('myApp')
     }
   })
   .controller('ShowMailCtrl', function ($modalInstance, mail) {
-    console.log(mail);
     this.mail = mail;
 
     this.close = function () {
