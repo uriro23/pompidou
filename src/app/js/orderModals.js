@@ -83,7 +83,7 @@ angular.module('myApp')
   })
 
   .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov, order, bids, bidTextTypes,
-                                        pdfService, gmailClientLowLevel, $scope) {
+                                        pdfService, gmailClientLowLevel, $scope, $filter) {
     var that = this;
     this.order = order;
     this.bids = bids;
@@ -97,9 +97,10 @@ angular.module('myApp')
     this.mail = {
       to: '',
       cc: '',
-      subject: 'אירוע פומפידו',
+      subject: 'אירוע פומפידו בתאריך '+ $filter('date')(order.attributes.eventDate,'dd/MM/yyyy'),
       text: ''
     };
+    this.msg = '';
     api.queryCustomers(order.attributes.customer)
       .then(function (custs) {
         that.customer = custs[0].attributes;
@@ -125,7 +126,7 @@ angular.module('myApp')
 
 
     this.setText = function () {
-      this.mail.text = this.mailTextType.mailText;
+      this.msg = this.mailTextType.mailText;
     };
 
     this.isShowDocument = function (doc) {
@@ -160,18 +161,18 @@ angular.module('myApp')
         }
       });
       if (this.attachmentType==='link') {
-       this.mail.text += '<br/><br/><span>קישורים למסמכים:</span><br/>';
+       this.msg += '<br/><br/><span>קישורים למסמכים:</span><br/>';
         this.mail.attachedBids.forEach(function(bid) {
-          that.mail.text += '<span>';
-          that.mail.text += (bid.desc + ' </span>');
+          that.msg += '<span>';
+          that.msg += (bid.desc + ' </span>');
           if (bid.documentType === 4) {
-            that.mail.text += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
-            that.mail.text += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
+            that.msg += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
+            that.msg += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
           } else {
-            that.mail.text += '<a href="' + baseUrl + '/bid/' + bid.uuid + '">הצגה</a><span>  <span>';
-            that.mail.text += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
+            that.msg += '<a href="' + baseUrl + '/bid/' + bid.uuid + '">הצגה</a><span>  <span>';
+            that.msg += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
           }
-          that.mail.text += '<br/>';
+          that.msg += '<br/>';
         });
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
@@ -182,7 +183,7 @@ angular.module('myApp')
       pdfService.getPdfCollection(pdfSource, true)
         .then(function(pdfResult) {
           that.mail.attachments = pdfResult;
-          that.mail.text = '<div dir="rtl">' + that.mail.text + '</div>';
+          that.mail.text = '<div dir="rtl">' + that.msg + '</div>';
           gmailClientLowLevel.sendEmail(that.mail)
             .then(function () {
               var newMail = api.initMail();

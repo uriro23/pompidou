@@ -31,7 +31,7 @@
             ng-change="sendMailModel.setText()"
             ng-options="bidTextType.label for bidTextType in sendMailModel.bidTextTypes | filter: {documentType: 3}"
             ></select><br/>
-     <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendMailModel.mail.text"
+     <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendMailModel.msg"
                   ></textarea>
   </div>
   <div>
@@ -55,7 +55,7 @@
 <div class="modal-footer">
     <email-first-time-experience>
         <button class="btn btn-primary" ng-click="sendMailModel.doSend()"
-                ng-disabled = "!sendMailModel.mail.text || !sendMailModel.mail.to"
+                ng-disabled = "!sendMailModel.msg || !sendMailModel.mail.to"
                 >שלח</button>
     </email-first-time-experience>
   <button class="btn btn-warning" ng-click="sendMailModel.cancel()">ביטול</button>

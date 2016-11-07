@@ -82,7 +82,6 @@ angular.module('myApp')
     this.setChildren = function () {
       var thisOrder = this.order.attributes;
       orderService.orderChanged(this.order,'header');
-      console.log('children='+thisOrder.children);
       this.order.view.errors.children = thisOrder.children < 0;
     };
 
