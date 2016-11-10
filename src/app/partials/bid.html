@@ -58,11 +58,11 @@
 
 
         <div class="bold event_details">תאריך: &nbsp;
-            <span>{{bidModel.currentOrder.eventDate | date: 'dd/MM/yyyy'}}</span>
+            <span>{{bidModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
         </div>
 
-        <div class="bold event_details">שעת המשלוח: &nbsp;
-            <span>{{bidModel.currentOrder.eventTime | date: 'HH:mm'}}</span>
+        <div class="bold event_details" ng-show="bidModel.eventTime">שעת המשלוח: &nbsp;
+            <span>{{bidModel.eventTime | convertTimezone:'Asia/Jerusalem' | formatTime: 'H:mm'}}</span>
         </div>
 
       <div class="bold event_details">מס' משתתפים:&nbsp;
@@ -75,7 +75,7 @@
       </div>
 
 
-      <div class="bold ">מקום משלוח:&nbsp;
+      <div class="bold " ng-show="bidModel.currentOrder.deliveryLocation">מקום משלוח:&nbsp;
             <span>{{bidModel.currentOrder.deliveryLocation}}</span>
         </div>
 
@@ -224,10 +224,6 @@
             </div>
         </div>
 
-   <div id="pdf" ng-show="bidModel.isYuvalTest">
-    <span>להורדת הצעת המחיר לקובץ PDF </span>
-    <a href="//pdfcrowd.com/url_to_pdf/?width=210mm&height=297mm">לחץ כאן</a>
-  </div>
     </div><!--End of bid_content -->
 
 

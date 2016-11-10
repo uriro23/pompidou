@@ -177,7 +177,7 @@ angular.module('myApp')
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
           var url = bid.documentType===4 ? baseUrl + '/quote/' + bid.uuid : baseUrl + '/bid/' + bid.uuid;
-          return {url: url, fileName: bid.desc}
+          return {url: url, fileName: bid.desc+'.pdf'}
         });
       }
       pdfService.getPdfCollection(pdfSource, true)

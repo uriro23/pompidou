@@ -24,10 +24,12 @@
 			  <span>{{quoteModel.bid.attributes.customer.firstName+' '+quoteModel.bid.attributes.customer.lastName}}</span>
 			  <br>
 			  <span class="bold">תאריך האירוע:</span>
-			  <span>{{quoteModel.bid.attributes.order.eventDate | date: 'EEEE  dd/MM/yyyy'}}</span>
+        <span>{{quoteModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
 			  <br>
-			  <span class="bold">זמן האספקה:</span>
-			  <span>{{quoteModel.bid.attributes.order.eventTime | date: 'H:mm'}}</span>
+			  <span class="bold" ng-show="quoteModel.eventTime">זמן האספקה:</span>
+        <span ng-show="quoteModel.eventTime">
+          {{quoteModel.eventTime | convertTimezone:'Asia/Jerusalem' | formatTime: 'H:mm'}}
+        </span>
 			  <br>
 			  <span class="bold">מספר המשתתפים:</span>
 			  <span>{{quoteModel.bid.attributes.order.noOfParticipants}}</span>

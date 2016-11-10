@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('BidCtrl', function (api, $state, $filter, $rootScope, $timeout,
-                                   bid, lov, config, categories,
+                                   bid, lov, config, categories, moment,
                                    bidTextTypes, eventTypes, discountCauses, isPrintBid) {
     $rootScope.menuStatus = 'hide';
 
@@ -17,6 +17,11 @@ angular.module('myApp')
       this.config = config;
       this.currentOrder = this.bid.attributes.order;
 
+
+      this.eventDate = moment(this.currentOrder.eventDate);
+      if (this.currentOrder.eventTime) {
+        this.eventTime = moment(this.currentOrder.eventTime);
+      }
       if (this.bid.attributes.version >= 4) { // bid with menuType
         this.currentQuote = this.currentOrder.quotes.filter(function (q) {  // find relevant quote in order
           return q.menuType.tId===that.bid.attributes.menuType.tId;

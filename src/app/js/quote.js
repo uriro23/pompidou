@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('QuoteCtrl', function (api, $state, $filter, $rootScope, $timeout,
-                                   bid, lov, config, categories,
+                                   bid, lov, config, categories, moment,
                                    bidTextTypes, menuTypes, isPrintQuote) {
     $rootScope.menuStatus = 'hide';
 
@@ -15,6 +15,10 @@ angular.module('myApp')
       this.categories = categories;
       this.config = config;
       this.currentOrder = this.bid.attributes.order;
+      this.eventDate = moment(this.currentOrder.eventDate);
+      if (this.currentOrder.eventTime) {
+        this.eventTime = moment(this.currentOrder.eventTime);
+      }
       if (this.currentOrder.quotes) {
         if (this.bid.attributes.menuType) {
           this.currentQuote = this.currentOrder.quotes.filter(function (q) {
