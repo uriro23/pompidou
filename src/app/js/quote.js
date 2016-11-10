@@ -74,7 +74,7 @@ angular.module('myApp')
         })[0];
       }
 
-      this.quoteHeading = this.bid.attributes.order.eventName;
+      this.quoteHeading = this.bid.attributes.order.eventName || '';
       if (this.quoteHeading && this.currentQuote.title) {
         this.quoteHeading += ' - ';
       }

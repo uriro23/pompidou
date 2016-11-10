@@ -33,6 +33,11 @@
 			  <br>
 			  <span class="bold">מספר המשתתפים:</span>
 			  <span>{{quoteModel.bid.attributes.order.noOfParticipants}}</span>
+        <span ng-show="quoteModel.currentOrder.children">
+               &nbsp;&#40;<span>מתוכם</span>&nbsp;
+                <span >{{quoteModel.currentOrder.children}}</span>
+                &nbsp;<span>ילדים</span>&#41;
+         </span>
 
 		    </div>
 
@@ -45,7 +50,7 @@
 
 		</div>
 
-		<!-- Purple backgroung event type header -->
+		<!-- Purple background event type header -->
 	    <div class="purpleBG quoteTextBox bold">
 		    <span>{{quoteModel.quoteHeading}}</span>
 	    </div>
@@ -69,18 +74,17 @@
 			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems">
 
 			  <!-- Item description taken from DB, bonus/free added if needed -->
-			  <div class="quoteItemDescription">
+			  <div style="width:90%;display:inline-block;">
 			    <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
 			    <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
 			    <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
-			    ...................................................................................................................................................................................................
 			  </div>
 
 
 
 		  	  <div class="quoteQuantAndUnit">
 				  <!-- Item quantity -->
-				  <span style="display:inline-block;"> {{item.quantity}}</span>
+				  <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
 
 				  <!-- Item measurement -->
 				  <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
@@ -132,16 +136,14 @@
 			</div>
 
 			<div>
-			    <div class="bold quoteItemDescription">סה"כ זיכויים...................................................................................................................................................................................................</div>
+			    <div class="bold quoteItemDescription">סה"כ זיכויים</div>
 			    <div class="quoteQuantAndUnit">
 			      {{quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus | currency}}
 			    </div>
 			</div>
 
 			<div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
-			  <div class="bold quoteItemDescription">
-			    הנחה מיוחדת...................................................................................................................................................................................................
-			  </div>
+			  <div class="bold quoteItemDescription">הנחה מיוחדת</div>
 			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.discount | currency}}
 			  </div>
@@ -151,15 +153,14 @@
 			  <div class="bold quoteItemDescription" >
 			    <span>מע"מ בשיעור %</span>
 			    <span>{{quoteModel.currentOrder.vatRate * 100}}</span>
-			    ...................................................................................................................................................................................................
-			  </div>
+			   </div>
 			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.vat | currency}}
 			  </div>
 			</div>
 
 			<div>
-			  <div class="bold quoteItemDescription">סה"כ לתשלום...................................................................................................................................................................................................</div>
+			  <div class="bold quoteItemDescription">סה"כ לתשלום</div>
 			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.isFixedPrice ? quoteModel.currentQuote.fixedPrice : quoteModel.currentQuote.total | currency}}
 			  </div>
