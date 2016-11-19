@@ -16,9 +16,9 @@
     <td>
       <select ng-model="quoteParamsModel.order.view.quote.endBoxType"
               ng-change="quoteParamsModel.quoteMenuChanged()"
-              ng-options="menuType.label for menuType in quoteParamsModel.menuTypes"
-              ng-disabled="quoteParamsModel.isReadOnly"
-        ></select>
+              ng-options="menuType.endBoxLabel for menuType in quoteParamsModel.menuTypes"
+              ng-disabled="quoteParamsModel.isReadOnly">
+      </select>
     </td>
     <td><label>טקסט סיום</label></td>
     <td>

@@ -132,6 +132,11 @@ angular.module('myApp')
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
+        if (this.order.view.quote.endBoxType) {
+          this.order.view.quote.endBoxType = menuTypes.filter(function (obj) { // so select in quoteParams will work
+            return (obj.tId === that.order.view.quote.endBoxType.tId);
+          })[0];
+        }
         this.order.view.eventType = eventTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.eventType);
         })[0];
@@ -203,6 +208,12 @@ angular.module('myApp')
       });
       this.order.view.quote = this.order.attributes.quotes[ind];
       this.filteredCategories = orderService.filterCategories(this.order.view.quote);
+      // make endBoxType point to member of menuTypes array, so select control in quoteParams view will work correctly
+      if (this.order.view.quote.endBoxType) {
+        this.order.view.quote.endBoxType = menuTypes.filter(function (mt) {
+          return mt.tId === that.order.view.quote.endBoxType.tId;
+        })[0];
+      }
     };
 
     this.deselectQuote = function (mt)  {

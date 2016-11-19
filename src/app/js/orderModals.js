@@ -146,6 +146,7 @@ angular.module('myApp')
       var baseUrl = $location.absUrl();
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
+      var msgText = this.msg;
 
       bids.forEach(function(bid) {
         if (bid.isInclude) {
@@ -161,18 +162,19 @@ angular.module('myApp')
         }
       });
       if (this.attachmentType==='link') {
-       this.msg += '<br/><br/><span>קישורים למסמכים:</span><br/>';
+       msgText += '<br/><br/><span>קישורים למסמכים:</span><br/>';
         this.mail.attachedBids.forEach(function(bid) {
-          that.msg += '<span>';
-          that.msg += (bid.desc + ' </span>');
+          msgText += '<span>';
+          msgText += (bid.desc + ' </span>');
           if (bid.documentType === 4) {
-            that.msg += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
-            that.msg += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
+            msgText += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
+            msgText += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
           } else {
-            that.msg += '<a href="' + baseUrl + '/bid/' + bid.uuid + '">הצגה</a><span>  <span>';
-            that.msg += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
+            msgText += '<a href="' + baseUrl + '/bid/' + bid.uuid + '">הצגה</a><span>  <span>';
+            msgText += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
           }
-          that.msg += '<br/>';
+          msgText += '<br/>';
+          console.log(msgText);
         });
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
@@ -183,7 +185,8 @@ angular.module('myApp')
       pdfService.getPdfCollection(pdfSource, true)
         .then(function(pdfResult) {
           that.mail.attachments = pdfResult;
-          that.mail.text = '<div dir="rtl">' + that.msg + '</div>';
+          that.mail.text = '<div dir="rtl">' + msgText + '</div>';
+          console.log(that.mail.text);
           gmailClientLowLevel.sendEmail(that.mail)
             .then(function () {
               var newMail = api.initMail();
