@@ -124,7 +124,7 @@ angular.module('myApp')
           return (item.category.tId === catId);
         });
         this.categoryPrice = this.categoryItems.reduce(function(prev,currentItem) { //sum category item prices
-          return prev + currentItem.price;
+          return prev + (currentItem.isFreeItem?0:currentItem.price);
         },0)
       };
 
@@ -134,6 +134,11 @@ angular.module('myApp')
           return (item.category.isTransportation);
         });
       };
+
+      // set indication for bonus items
+      this.isBonusItems = this.currentQuote.items.filter(function(item) {
+        return item.isFreeItem;
+      }).length > 0;
 
 
       if (isPrintQuote) {

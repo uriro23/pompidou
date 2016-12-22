@@ -117,7 +117,7 @@
 		      <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
 		    </div>
 		   <div style="width:20%;display:inline-block;"
-		         ng-hide="quoteModel.currentQuote.isFixedPrice" >{{item.price | currency }}</div>
+		         ng-hide="item.isFreeItem || quoteModel.currentQuote.isFixedPrice" >{{item.price | currency }}</div>
 		  </div>
 		</div>
 
@@ -129,13 +129,16 @@
 		<div class="quoteTextBox purpleBG">
 
 			<div ng-hide="quoteModel.currentQuote.isFixedPrice">
-			  <div class="bold quoteItemDescription">סה"כ</div>
+        <div class="bold quoteItemDescription">
+          <span>סה"כ</span>
+          <span ng-show="quoteModel.isBonusItems">(כולל פריטי בונוס)</span>
+        </div>
 			  <div class="quoteQuantAndUnit">
 			    {{quoteModel.currentQuote.subTotal | currency}}
 			  </div>
 			</div>
 
-			<div>
+			<div ng-show="(quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus) && !quoteModel.currentQuote.isFixedPrice">
 			    <div class="bold quoteItemDescription">סה"כ זיכויים</div>
 			    <div class="quoteQuantAndUnit">
 			      {{quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus | currency}}
