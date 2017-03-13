@@ -32,7 +32,7 @@
     </thead>
       <tbody>
       <tr ng-repeat="catalogItem in catalogListModel.categoryItems" ng-class="catalogItem.isChanged?'bg-success':null">
-        <td>{{catalogItem.attributes.productDescription}}</td>
+        <td style="cursor: pointer" ng-click="catalogListModel.editItem(catalogItem.id)">{{catalogItem.attributes.productDescription}}</td>
         <td>{{catalogItem.view.measurementUnit.label}}</td>
         <td ng-show="catalogListModel.currentDomain.id===1">{{catalogItem.attributes.priceQuantity | number:0}}</td>
         <td ng-show="catalogListModel.currentDomain.id===1">{{catalogItem.attributes.price | currency}}</td>

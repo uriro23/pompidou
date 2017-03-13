@@ -1,0 +1,62 @@
+<h3>
+  <span ng-hide="catalogItemModel.isNewItem">עריכת</span>
+  <span>{{catalogItemModel.currentDomain.single}}</span>
+  <span ng-show="catalogItemModel.isNewItem">חדשה</span>
+  <span>בקטגוריה</span>
+  <span>{{catalogItemModel.item.view.category.label}}</span>
+</h3>
+<tabset>
+  <tab heading="כללי">
+    <table>
+      <tr>
+        <td><label>תיאור</label></td>
+        <td>
+        <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.productDescription"
+               ng-change="catalogModel.setProductDescription($index, true)"
+                  ng-class="catalogItemModel.item.isProductDescriptionError?'bg-danger':null"></textarea>
+        </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>תיאור לתפריט</label></td>
+        <td>
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.shortDescription"></textarea>
+        </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>האם לכלול בתפריט?</label></td>
+        <td><input type="checkbox" ng-model="catalogItemModel.item.attributes.isInMenu"></td>
+      </tr>
+      <tr>
+        <td><label>יח' מידה</label></td>
+        <td>
+        <select ng-model="catalogItemModel.item.view.measurementUnit" ng-change="catalogModel.itemChanged($index)"
+                ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
+        </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>כמות</label></td>
+        <td>
+        <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.priceQuantity"
+               ng-change="catalogModel.setPriceQuantity($index)"
+               ng-class="catalogItemModel.item.isPriceQuantityError?'bg-danger':null">
+        </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>מחיר</label></td>
+        <td>
+        <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.attributes.price"
+               ng-change="catalogModel.setPrice($index)"
+               ng-class="catalogItemModel.item.isPriceError?'bg-danger':null">
+        </td>
+      </tr>
+      <tr>
+        <td><label>כמות ייצור</label></td>
+        <td>
+        <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.productionQuantity"
+               ng-change="catalogModel.setProductionQuantity($index)"
+               ng-class="catalogItemModel.item.isProductionQuantityError?'bg-danger':null">
+        </td>
+      </tr>
+   </table>
+  </tab>
+</tabset>

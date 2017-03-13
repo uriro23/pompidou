@@ -320,15 +320,23 @@ angular.module('myApp')
     return new Catalog();
   };
 
-  this.queryCatalog = function (domain) {
-    var catalogQuery = new Parse.Query(Catalog);
-    if (domain) {
-      catalogQuery.equalTo('domain', domain);
-    }
-    return query(catalogQuery);
-  };
+    this.queryCatalog = function (domain) {
+      var catalogQuery = new Parse.Query(Catalog);
+      if (domain) {
+        catalogQuery.equalTo('domain', domain);
+      }
+      return query(catalogQuery);
+    };
 
-  this.queryCatalogByCategory = function (category) {
+    this.queryCatalogById = function (id) {
+      var catalogQuery = new Parse.Query(Catalog);
+      if (id) {
+        catalogQuery.equalTo('objectId', id);
+      }
+      return query(catalogQuery);
+    };
+
+    this.queryCatalogByCategory = function (category) {
     var catalogQuery = new Parse.Query(Catalog);
     catalogQuery.equalTo('category', category);
     return query(catalogQuery);

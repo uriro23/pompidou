@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('Catalog2Ctrl', function ($state, $modal, $rootScope, api, lov, measurementUnits) {
+  .controller('Catalog2Ctrl', function ($state, $rootScope, api, lov, measurementUnits) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -14,9 +14,13 @@ angular.module('myApp')
     $rootScope.title = lov.company + ' - קטלוג';
 
     this.addItem = function () {
-      //Todo: add item - call other state
+     $state.go('newCatalogItem', {'domain':this.currentDomain.id, 'category':this.currentCategory.tId});
      };
 
+    this.editItem = function (id) {
+      console.log(id);
+      $state.go('editCatalogItem', {'id':id});
+    };
 
     this.sortCatalog = function (catalog) {
       // sort results by category order and product description
