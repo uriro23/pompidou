@@ -1,8 +1,12 @@
   <h1>קטלוג</h1>
   <label>בחר תחום</label>
-  <select ng-model="catalog2.currentDomain" ng-change="catalog2Model.setDomain()"
+  <select ng-model="catalog2Model.currentDomain" ng-change="catalog2Model.setDomain()"
           ng-disabled="catalog2Model.isChanged"
           ng-options="domain.label for domain in catalog2Model.domains"></select>
+  <label>בחר קטגוריה</label>
+  <select ng-model="catalog2Model.currentCategory" ng-change="catalog2Model.setCategory()"
+          ng-disabled="catalog2Model.isChanged"
+          ng-options="category.label for category in catalog2Model.categories"></select>
   <button ng-click="catalog2Model.addItem()" class="btn btn-default">הוסף פריט</button>
   <span ng-show="catalog2Model.isChanged" class="bg-success">
     <span>     הקש על</span>
@@ -13,7 +17,6 @@
   </span>
   <table class="table table-hover" style="width:100%">
       <thead>
-        <th style="width:8%">קטגוריה</th>
         <th ng-show="catalog2Model.currentDomain.id===1" style="width:54%">תיאור</th>
         <th ng-show="catalog2Model.currentDomain.id>1" style="width:15%">תיאור</th>
         <th style="width:5%">יח' מידה</th>
@@ -30,18 +33,14 @@
         <th style="width:6%"></th>
       </thead>
     <thead  ng-show="catalog2Model.currentDomain.id===2">
-    <th></th><th></th><th></th><th></th>
+    <th></th><th></th><th></th>
     <th>זמן</th>
     <th>יחידה</th>
     <th>זמן</th>
     <th>יחידה</th>
     </thead>
       <tbody>
-      <tr ng-repeat="catalogItem in catalog2Model.catalog" ng-class="catalogItem.isChanged?'bg-success':null">
-        <td>
-          <select ng-model="catalogItem.view.category" ng-change="catalog2Model.itemChanged($index)"
-                ng-options="category.label for category in catalog2Model.categories"></select>
-        </td>
+      <tr ng-repeat="catalogItem in catalog2Model.categoryItems" ng-class="catalogItem.isChanged?'bg-success':null">
         <td ng-show="catalog2Model.currentDomain.id===1">
           <input type="text" size = 90 ng-model="catalogItem.attributes.productDescription"
                  ng-change="catalog2Model.setProductDescription($index, true)"

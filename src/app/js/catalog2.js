@@ -195,16 +195,23 @@ angular.module('myApp')
     };
 
 
+    this.setCategory = function () {
+      var that = this;
+      this.categoryItems = this.catalog.filter(function(cat) {
+        return cat.attributes.category===that.currentCategory.tId;
+      });
+    };
+
     this.setDomain = function () {
       var that = this;
       this.setChanged(false);
-      // if there have been changes in previous domain, save them
       return api.queryCategories(that.currentDomain.id)
         .then(function (results) {
           that.categories = results.map(function (cat) {
             return cat.attributes;
           });
-          that.catalog = [];
+          that.currentCategory = that.categories[0];
+         that.catalog = [];
           return api.queryCatalog(that.currentDomain.id)
             .then(function (results) {
             var tempCatalog = results.filter(function (cat) {
@@ -233,8 +240,9 @@ angular.module('myApp')
               that.catalog[i].isChanged = false;
             }
             that.setChanged(false);
+            that.setCategory();
           });
-        });
+       });
     };
 
     // insert / update / logical delete all changed / marked catalog items
