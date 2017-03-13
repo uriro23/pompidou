@@ -320,10 +320,10 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-    .state('catalog2', {
-      url: '/catalog2',
-      templateUrl: 'app/partials/catalog2.html',
-      controller: 'Catalog2Ctrl as catalog2Model',
+    .state('catalogList', {
+      url: '/catalogList',
+      templateUrl: 'app/partials/catalogList.html',
+      controller: 'Catalog2Ctrl as catalogListModel',
       resolve: {
         categories: ['api', function (api) {
           return api.queryCategories(1).then (function (res) {  // load by default categories of products domain
@@ -334,11 +334,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
-        }],
-        config: ['api', function (api) {
-          return api.queryConfig().then(function (res) {
-            return res[0].attributes;
-          });
         }]
       }
     })

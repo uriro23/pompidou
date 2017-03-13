@@ -1,0 +1,46 @@
+<h1>קטלוג חדש</h1>
+  <label>בחר תחום</label>
+  <select ng-model="catalogListModel.currentDomain" ng-change="catalogListModel.setDomain()"
+          ng-disabled="catalogListModel.isChanged"
+          ng-options="domain.label for domain in catalogListModel.domains"></select>
+  <label>בחר קטגוריה</label>
+  <select ng-model="catalogListModel.currentCategory" ng-change="catalogListModel.setCategory()"
+          ng-disabled="catalogListModel.isChanged"
+          ng-options="category.label for category in catalogListModel.categories"></select>
+  <label>סינון</label>
+  <input type="text" size="20" ng-model="catalogListModel.filterText" ng-change="catalogListModel.filterItems()">
+  <button ng-click="catalogListModel.addItem()" class="btn btn-default">הוסף פריט</button>
+  <table class="table table-hover" style="width:100%">
+      <thead>
+        <th ng-show="catalogListModel.currentDomain.id===1" style="width:54%">תיאור</th>
+        <th ng-show="catalogListModel.currentDomain.id>1" style="width:15%">תיאור</th>
+        <th style="width:5%">יח' מידה</th>
+        <th ng-show="catalogListModel.currentDomain.id===1" style="width:3%">כמות</th>
+        <th ng-show="catalogListModel.currentDomain.id===1" style="width:5%">מחיר</th>
+        <th style="width:10%">כ' יצור</th>
+        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 5%">מינימום</th>
+        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 5%"></th>
+        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 5%">מקסימום</th>
+        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 7%"></th>
+     </thead>
+    <thead  ng-show="catalogListModel.currentDomain.id===2">
+    <th></th><th></th><th></th>
+    <th>זמן</th>
+    <th>יחידה</th>
+    <th>זמן</th>
+    <th>יחידה</th>
+    </thead>
+      <tbody>
+      <tr ng-repeat="catalogItem in catalogListModel.categoryItems" ng-class="catalogItem.isChanged?'bg-success':null">
+        <td>{{catalogItem.attributes.productDescription}}</td>
+        <td>{{catalogItem.view.measurementUnit.label}}</td>
+        <td ng-show="catalogListModel.currentDomain.id===1">{{catalogItem.attributes.priceQuantity | number:0}}</td>
+        <td ng-show="catalogListModel.currentDomain.id===1">{{catalogItem.attributes.price | currency}}</td>
+        <td>{{catalogItem.attributes.productionQuantity | number:0}}</td>
+        <td ng-show="catalogListModel.currentDomain.id===2">{{catalogItem.attributes.minTime | number:0}}</td>
+        <td ng-show="catalogListModel.currentDomain.id===2">{{catalogItem.view.minTimeUnit.label}}</td>
+        <td ng-show="catalogListModel.currentDomain.id===2">{{catalogItem.attributes.maxTime | number:0}}</td>
+        <td ng-show="catalogListModel.currentDomain.id===2">{{catalogItem.view.maxTimeUnit.label}}</td>
+      </tr>
+      </tbody>
+    </table>
