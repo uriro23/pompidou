@@ -194,12 +194,17 @@ angular.module('myApp')
       });
     };
 
-
-    this.setCategory = function () {
+    this.filterItems = function(){
       var that = this;
       this.categoryItems = this.catalog.filter(function(cat) {
-        return cat.attributes.category===that.currentCategory.tId;
+        return cat.attributes.category===that.currentCategory.tId &&
+            cat.attributes.productDescription.indexOf(that.filterText)>-1;
       });
+    };
+
+    this.setCategory = function () {
+     this.filterText = '';
+     this.filterItems();
     };
 
     this.setDomain = function () {

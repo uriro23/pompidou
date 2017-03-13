@@ -1,4 +1,4 @@
-  <h1>קטלוג</h1>
+<h1>קטלוג חדש</h1>
   <label>בחר תחום</label>
   <select ng-model="catalog2Model.currentDomain" ng-change="catalog2Model.setDomain()"
           ng-disabled="catalog2Model.isChanged"
@@ -7,6 +7,8 @@
   <select ng-model="catalog2Model.currentCategory" ng-change="catalog2Model.setCategory()"
           ng-disabled="catalog2Model.isChanged"
           ng-options="category.label for category in catalog2Model.categories"></select>
+  <label>סינון</label>
+  <input type="text" size="20" ng-model="catalog2Model.filterText" ng-change="catalog2Model.filterItems()">
   <button ng-click="catalog2Model.addItem()" class="btn btn-default">הוסף פריט</button>
   <span ng-show="catalog2Model.isChanged" class="bg-success">
     <span>     הקש על</span>
@@ -27,11 +29,7 @@
         <th ng-show="catalog2Model.currentDomain.id===2" style="width: 5%"></th>
         <th ng-show="catalog2Model.currentDomain.id===2" style="width: 5%">מקסימום</th>
         <th ng-show="catalog2Model.currentDomain.id===2" style="width: 7%"></th>
-        <th style="width:2%">מחק</th>
-        <th style="width:6%"></th>
-        <th style="width:6%"></th>
-        <th style="width:6%"></th>
-      </thead>
+     </thead>
     <thead  ng-show="catalog2Model.currentDomain.id===2">
     <th></th><th></th><th></th>
     <th>זמן</th>
@@ -41,65 +39,15 @@
     </thead>
       <tbody>
       <tr ng-repeat="catalogItem in catalog2Model.categoryItems" ng-class="catalogItem.isChanged?'bg-success':null">
-        <td ng-show="catalog2Model.currentDomain.id===1">
-          <input type="text" size = 90 ng-model="catalogItem.attributes.productDescription"
-                 ng-change="catalog2Model.setProductDescription($index, true)"
-                 ng-class="catalogItem.isProductDescriptionError?'bg-danger':null">
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id>1">
-          <input type="text" size = 30 ng-model="catalogItem.attributes.productDescription"
-                 ng-change="catalog2Model.setProductDescription($index, true)"
-                 ng-class="catalogItem.isProductDescriptionError?'bg-danger':null">
-        </td>
-        <td>
-          <select ng-model="catalogItem.view.measurementUnit" ng-change="catalog2Model.itemChanged($index)"
-                  ng-options="measurementUnit.label for measurementUnit in catalog2Model.measurementUnits"></select>
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===1">
-          <input type="text" size = 4 ng-model="catalogItem.attributes.priceQuantity"
-                 ng-change="catalog2Model.setPriceQuantity($index)"
-                 ng-class="catalogItem.isPriceQuantityError?'bg-danger':null">
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===1">
-          <input type="text" money min=0 size = 5 ng-model="catalogItem.attributes.price"
-                 ng-change="catalog2Model.setPrice($index)"
-                 ng-class="catalogItem.isPriceError?'bg-danger':null">
-        </td>
-        <td>
-          <input type="text" size = 4 ng-model="catalogItem.attributes.productionQuantity"
-                 ng-change="catalog2Model.setProductionQuantity($index)"
-                 ng-class="catalogItem.isProductionQuantityError?'bg-danger':null">
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===2">
-          <input type="text" size = 4 ng-model="catalogItem.attributes.minTime"
-                 ng-change="catalog2Model.setMinTime($index)"
-                 ng-class="catalogItem.isMinTimeError?'bg-danger':null">
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===2">
-          <select ng-model="catalogItem.view.minTimeUnit" ng-change="catalog2Model.itemChanged($index)"
-                  ng-options="timeUnit.label for timeUnit in catalog2Model.timeUnits"></select>
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===2">
-          <input type="text" size = 4 ng-model="catalogItem.attributes.maxTime"
-                 ng-change="catalog2Model.setMaxTime($index)"
-                 ng-class="catalogItem.isMaxTimeError?'bg-danger':null">
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===2">
-          <select ng-model="catalogItem.view.maxTimeUnit" ng-change="catalog2Model.itemChanged($index)"
-                  ng-options="timeUnit.label for timeUnit in catalog2Model.timeUnits"></select>
-        </td>
-        <td>
-          <input type="checkbox" ng-model="catalogItem.view.isDeleted" ng-change="catalog2Model.itemChanged($index)">
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===1">
-          <button ng-click="catalog2Model.updateExitList($index)" class="btn btn-default btn-sm">עוד</button>
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id===1">
-          <button ng-click="catalog2Model.updateComponents($index,2)" class="btn btn-default btn-sm">הכנות</button>
-        </td>
-        <td ng-show="catalog2Model.currentDomain.id<3">
-          <button ng-click="catalog2Model.updateComponents($index,3)" class="btn btn-default btn-sm">קניות</button>
-        </td>
+        <td>{{catalogItem.attributes.productDescription}}</td>
+        <td>{{catalogItem.view.measurementUnit.label}}</td>
+        <td ng-show="catalog2Model.currentDomain.id===1">{{catalogItem.attributes.priceQuantity | number:0}}</td>
+        <td ng-show="catalog2Model.currentDomain.id===1">{{catalogItem.attributes.price | currency}}</td>
+        <td>{{catalogItem.attributes.productionQuantity | number:0}}</td>
+        <td ng-show="catalog2Model.currentDomain.id===2">{{catalogItem.attributes.minTime | number:0}}</td>
+        <td ng-show="catalog2Model.currentDomain.id===2">{{catalogItem.view.minTimeUnit.label}}</td>
+        <td ng-show="catalog2Model.currentDomain.id===2">{{catalogItem.attributes.maxTime | number:0}}</td>
+        <td ng-show="catalog2Model.currentDomain.id===2">{{catalogItem.view.maxTimeUnit.label}}</td>
       </tr>
       </tbody>
     </table>
