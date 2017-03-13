@@ -41,7 +41,8 @@ angular.module('myApp')
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       xhr.send(transformRequest({
         ApiKey: secrets.prod.web2pdfKey,
-        CUrl: sourceUrl
+        CUrl: sourceUrl,
+        MarginBottom: 30
       }));
       return q.promise;
     };
