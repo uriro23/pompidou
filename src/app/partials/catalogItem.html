@@ -4,32 +4,41 @@
   <span ng-show="catalogItemModel.isNewItem">חדשה</span>
   <span>בקטגוריה</span>
   <span>{{catalogItemModel.item.view.category.label}}</span>
+  <span ng-show="catalogItemModel.item.isChanged" class="bg-success">
+    <span>     הקש על</span>
+    <button ng-click="catalogItemModel.saveItem()" class="btn btn-success">שמור</button>
+    <span> לשמירת העדכונים שבוצעו, או על </span>
+    <button ng-click="catalogItemModel.cancel()" class="btn btn-warning">ביטול</button>
+    <span> כדי לבטלם</span>
+  </span>
 </h3>
 <tabset>
   <tab heading="כללי">
     <table>
-      <tr>
+      <tr ng-class="catalogItemModel.item.isProductDescriptionError?'bg-danger':null">
         <td><label>תיאור</label></td>
         <td>
         <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.productDescription"
-               ng-change="catalogModel.setProductDescription($index, true)"
-                  ng-class="catalogItemModel.item.isProductDescriptionError?'bg-danger':null"></textarea>
+               ng-change="catalogItemModel.setProductDescription()"></textarea>
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>תיאור לתפריט</label></td>
         <td>
-          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.shortDescription"></textarea>
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.shortDescription"
+                    ng-change="catalogItemModel.setShortDescription()"></textarea>
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>האם לכלול בתפריט?</label></td>
-        <td><input type="checkbox" ng-model="catalogItemModel.item.attributes.isInMenu"></td>
+        <td><input type="checkbox" ng-model="catalogItemModel.item.attributes.isInMenu"
+                    ng-change="catalogItemModel.setChanged(true)"></td>
       </tr>
       <tr>
         <td><label>יח' מידה</label></td>
         <td>
-        <select ng-model="catalogItemModel.item.view.measurementUnit" ng-change="catalogModel.itemChanged($index)"
+        <select ng-model="catalogItemModel.item.view.measurementUnit"
+                ng-change="catalogItemModel.setChanged(true)"
                 ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
         </td>
       </tr>

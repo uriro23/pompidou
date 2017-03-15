@@ -17,7 +17,7 @@ angular.module('myApp')
 
     this.setChanged = function (bool) {
       if (bool) {
-        this.isChanged = true;
+        this.item.isChanged = true;
         window.onbeforeunload = function () {   // force the user to commit or abort changes before moving
           return 'יש שינויים שלא נשמרו';
         };
@@ -28,7 +28,7 @@ angular.module('myApp')
         */
         $rootScope.menuStatus = 'empty';
       } else {
-        this.isChanged = false;
+        this.item.isChanged = false;
         window.onbeforeunload = function () {
         };
         window.onblur = function () {
@@ -63,13 +63,19 @@ angular.module('myApp')
     };
 
 
-    this.setProductDescription = function (ind, updateShortDesc) {
-      this.itemChanged(ind);
-      this.catalog[ind].isProductDescriptionError =
-        !this.catalog[ind].attributes.productDescription || this.catalog[ind].attributes.productDescription.length === 0;
-      if (this.currentDomain.id === 1 && updateShortDesc) {
-        this.catalog[ind].attributes.shortDescription = this.catalog[ind].attributes.productDescription;
+    this.setProductDescription = function () {
+      this.item.isProductDescriptionError =
+        !this.item.attributes.productDescription || this.item.attributes.productDescription.length === 0;
+      if (this.currentDomain.id === 1 && this.item.isCopyToShortDesc) {
+        this.item.attributes.shortDescription = this.item.attributes.productDescription;
       }
+      this.setChanged(true);
+    };
+
+    this.setShortDescription = function () {
+      this.item.isCopyToShortDesc =
+        this.item.attributes.productDescription === this.item.attributes.shortDescription;
+      this.setChanged(true);
     };
 
     this.setPriceQuantity = function (ind) {
@@ -247,6 +253,45 @@ angular.module('myApp')
       return true;
     };
 
+    this.setupItemView = function () {
+      if (this.isNewItem) { // todo: set to false on save
+        this.item.view = {};
+        this.item.view.category = this.categories.filter(function(cat) {
+          return cat.tId===currentCategory;
+        })[0];
+        this.item.isProductDescriptionError = true;
+        this.item.view.measurementUnit = measurementUnits[0];
+        this.item.view.minTimeUnit = lov.timeUnits[0];
+        this.item.view.maxTimeUnit = lov.timeUnits[0];
+        this.item.isCopyToShortDesc = true;
+      } else {
+        this.item.view = {};
+        this.item.view.category = that.categories.filter(function (cat) {
+          return cat.tId === that.item.attributes.category;
+        }) [0];
+        this.item.view.measurementUnit = that.measurementUnits.filter(function (mes) {
+          return mes.tId === that.item.attributes.measurementUnit;
+        }) [0];
+        if (typeof this.item.attributes.minTimeUnit === 'number') {
+          this.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
+            return tu.id === that.item.attributes.minTimeUnit;
+          }) [0];
+        }
+        if (typeof this.item.attributes.maxTimeUnit === 'number') {
+          this.item.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
+            return tu.id === that.item.attributes.maxTimeUnit;
+          }) [0];
+        }
+      }
+      this.backupItemAttr = angular.copy(this.item.attributes);
+    };
+
+    this.cancel = function () {
+      this.item.attributes = angular.copy(this.backupItemAttr);
+      this.setupItemView();
+      this.setChanged(false);
+    };
+
     // main block
     var that = this;
     this.currentDomain = lov.domains[currentDomain];
@@ -254,20 +299,11 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
     this.isNewItem = $state.current.name==='newCatalogItem' || $state.current.name==='dupCatalogItem';
-   if (this.isNewItem) {
+   if (this.isNewItem) { // todo: set to false on save
      this.item = api.initCatalog();
-     this.item.view = {};
-     this.item.isChanged = true;
      this.item.attributes.domain = lov.domains.filter(function(dom) {
        return dom.id===currentDomain;
      });
-     this.item.view.category = this.categories.filter(function(cat) {
-       return cat.tId===currentCategory;
-     })[0];
-     this.item.view.measurementUnit = measurementUnits[0];
-     this.item.view.minTimeUnit = lov.timeUnits[0];
-     this.item.view.maxTimeUnit = lov.timeUnits[0];
-
      this.item.attributes.priceQuantity = null;
      this.item.attributes.price = null;
      this.item.attributes.productionQuantity = null;
@@ -280,25 +316,11 @@ angular.module('myApp')
      this.item.attributes.components = [];
    } else {
      this.item = currentItem;
-     this.item.view = {};
-     this.item.view.category = that.categories.filter(function (cat) {
-       return cat.tId === that.item.attributes.category;
-     }) [0];
-     this.item.view.measurementUnit = that.measurementUnits.filter(function (mes) {
-       return mes.tId === that.item.attributes.measurementUnit;
-     }) [0];
-     if (typeof this.item.attributes.minTimeUnit === 'number') {
-       this.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-         return tu.id === that.item.attributes.minTimeUnit;
-       }) [0];
      }
-     if (typeof this.item.attributes.maxTimeUnit === 'number') {
-       this.item.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-         return tu.id === that.item.attributes.maxTimeUnit;
-       }) [0];
-     }
-   }
-    this.setChanged(false);
+     this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
+
+   this.setupItemView();
+   this.setChanged(false);
  });
 
 

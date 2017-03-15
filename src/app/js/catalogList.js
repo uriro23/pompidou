@@ -18,7 +18,6 @@ angular.module('myApp')
      };
 
     this.editItem = function (id) {
-      console.log(id);
       $state.go('editCatalogItem', {'id':id});
     };
 
