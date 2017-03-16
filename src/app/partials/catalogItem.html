@@ -11,9 +11,12 @@
     <button ng-click="catalogItemModel.cancel()" class="btn btn-warning">ביטול</button>
     <span> כדי לבטלם</span>
   </span>
+  &nbsp;&nbsp;
+  <button class="btn btn-default" ng-hide="catalogItemModel.item.isChanged"
+          ng-click="catalogItemModel.close()">סגור</button>
 </h3>
 <tabset>
-  <tab heading="כללי">
+  <tab heading="ראשי">
     <table>
       <tr ng-class="catalogItemModel.item.isProductDescriptionError?'bg-danger':null">
         <td><label>תיאור</label></td>

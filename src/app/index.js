@@ -324,7 +324,17 @@ config(function($stateProvider, $urlRouterProvider) {
       url: '/catalogList',
       templateUrl: 'app/partials/catalogList.html',
       controller: 'Catalog2Ctrl as catalogListModel',
+      params: {
+        domain: null,
+        category: null
+      },
       resolve: {
+        currentDomain: ['$stateParams', function ($stateParams) {
+          return $stateParams.domain;
+        }],
+        currentCategory: ['$stateParams', function ($stateParams) {
+          return $stateParams.category;
+        }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }]

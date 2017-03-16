@@ -292,6 +292,10 @@ angular.module('myApp')
       this.setChanged(false);
     };
 
+    this.close = function () {
+      $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
+    };
+
     // main block
     var that = this;
     this.currentDomain = lov.domains[currentDomain];

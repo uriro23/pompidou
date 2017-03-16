@@ -2,7 +2,8 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('Catalog2Ctrl', function ($state, $rootScope, api, lov, measurementUnits) {
+  .controller('Catalog2Ctrl', function ($state, $rootScope, api, lov,
+                                        currentDomain, currentCategory, measurementUnits) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -62,7 +63,13 @@ angular.module('myApp')
           that.categories = results.map(function (cat) {
             return cat.attributes;
           });
-          that.currentCategory = that.categories[0];
+          if (currentCategory && that.currentDomain.id===currentDomain) {
+            that.currentCategory = that.categories.filter(function(cat) {
+              return cat.tId === currentCategory;
+            })[0];
+          } else {
+            that.currentCategory = that.categories[0];
+          }
             return api.queryCatalog(that.currentDomain.id)
             .then(function (results) {
             var tempCatalog = results.filter(function (cat) {
@@ -99,7 +106,11 @@ angular.module('myApp')
     // main block
     this.domains = angular.copy(lov.domains);  // clone so that the splice won't affect the original lov
     this.domains.splice(0, 1);   // drop "events" domain
-    this.currentDomain = this.domains[0];
+    if (currentDomain) {
+      this.currentDomain = this.domains[currentDomain-1]
+    } else {
+      this.currentDomain = this.domains[0];
+    }
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
     this.setDomain();
