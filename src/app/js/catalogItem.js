@@ -78,27 +78,27 @@ angular.module('myApp')
       this.setChanged(true);
     };
 
-    this.setPriceQuantity = function (ind) {
-      this.itemChanged(ind);
-      this.catalog[ind].isPriceQuantityError =
-        (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.priceQuantity)) &&
-        ((this.catalog[ind].attributes.priceQuantity != Number(this.catalog[ind].attributes.priceQuantity) ||
-        Number(this.catalog[ind].attributes.priceQuantity) <= 0));
+    this.setPriceQuantity = function () {
+      this.item.isPriceQuantityError =
+        (this.currentDomain.id === 1 || Boolean(this.item.attributes.priceQuantity)) &&
+        ((this.item.attributes.priceQuantity != Number(this.item.attributes.priceQuantity) ||
+        Number(this.item.attributes.priceQuantity) <= 0));
+      this.setChanged(true);
     };
 
-    this.setPrice = function (ind) {
-      this.itemChanged(ind);
-      this.catalog[ind].isPriceError =
-        (this.currentDomain.id === 1 || Boolean(this.catalog[ind].attributes.price)) &&
-        ((this.catalog[ind].attributes.price != Number(this.catalog[ind].attributes.price) ||
-        Number(this.catalog[ind].attributes.price) <= 0));
+    this.setPrice = function () {
+      this.item.isPriceError =
+        (this.currentDomain.id === 1 || Boolean(this.item.attributes.price)) &&
+        ((this.item.attributes.price != Number(this.item.attributes.price) ||
+        Number(this.item.attributes.price) <= 0));
+      this.setChanged(true);
     };
 
-    this.setProductionQuantity = function (ind) {
-      this.itemChanged(ind);
-      this.catalog[ind].isProductionQuantityError =
-        this.catalog[ind].attributes.productionQuantity != Number(this.catalog[ind].attributes.productionQuantity) ||
-        Number(this.catalog[ind].attributes.productionQuantity) <= 0;
+    this.setProductionQuantity = function () {
+      this.item.isProductionQuantityError =
+        this.item.attributes.productionQuantity != Number(this.item.attributes.productionQuantity) ||
+        Number(this.item.attributes.productionQuantity) <= 0;
+      this.setChanged(true);
     };
 
     this.setMinTime = function (ind) {
@@ -260,6 +260,11 @@ angular.module('myApp')
           return cat.tId===currentCategory;
         })[0];
         this.item.isProductDescriptionError = true;
+        this.item.isProductionQuantityError = true;
+        if (this.currentDomain.id===1) {
+          this.item.isPriceQuantityError = true;
+          this.item.isPriceError = true;
+        }
         this.item.view.measurementUnit = measurementUnits[0];
         this.item.view.minTimeUnit = lov.timeUnits[0];
         this.item.view.maxTimeUnit = lov.timeUnits[0];

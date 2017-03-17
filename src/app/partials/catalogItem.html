@@ -45,28 +45,30 @@
                 ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
         </td>
       </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1">
+      <tr ng-show="catalogItemModel.currentDomain.id===1"
+          ng-class="catalogItemModel.item.isPriceQuantityError?'bg-danger':null">
         <td><label>כמות</label></td>
         <td>
         <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.priceQuantity"
-               ng-change="catalogModel.setPriceQuantity($index)"
-               ng-class="catalogItemModel.item.isPriceQuantityError?'bg-danger':null">
+               ng-change="catalogItemModel.setPriceQuantity()">
+
         </td>
       </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1">
+      <tr ng-show="catalogItemModel.currentDomain.id===1"
+          ng-class="catalogItemModel.item.isPriceError?'bg-danger':null">
         <td><label>מחיר</label></td>
         <td>
         <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.attributes.price"
-               ng-change="catalogModel.setPrice($index)"
-               ng-class="catalogItemModel.item.isPriceError?'bg-danger':null">
+               ng-change="catalogItemModel.setPrice()">
+
         </td>
       </tr>
-      <tr>
+      <tr ng-class="catalogItemModel.item.isProductionQuantityError?'bg-danger':null">
         <td><label>כמות ייצור</label></td>
         <td>
-        <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.productionQuantity"
-               ng-change="catalogModel.setProductionQuantity($index)"
-               ng-class="catalogItemModel.item.isProductionQuantityError?'bg-danger':null">
+        <input type="text" size = 4
+               ng-model="catalogItemModel.item.attributes.productionQuantity"
+               ng-change="catalogItemModel.setProductionQuantity()">
         </td>
       </tr>
    </table>
