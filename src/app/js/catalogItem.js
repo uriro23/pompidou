@@ -64,7 +64,7 @@ angular.module('myApp')
 
 
     this.setProductDescription = function () {
-      this.item.isProductDescriptionError =
+      this.item.errors.productDescription =
         !this.item.attributes.productDescription || this.item.attributes.productDescription.length === 0;
       if (this.currentDomain.id === 1 && this.item.isCopyToShortDesc) {
         this.item.attributes.shortDescription = this.item.attributes.productDescription;
@@ -79,7 +79,7 @@ angular.module('myApp')
     };
 
     this.setPriceQuantity = function () {
-      this.item.isPriceQuantityError =
+      this.item.errors.priceQuantity =
         (this.currentDomain.id === 1 || Boolean(this.item.attributes.priceQuantity)) &&
         ((this.item.attributes.priceQuantity != Number(this.item.attributes.priceQuantity) ||
         Number(this.item.attributes.priceQuantity) <= 0));
@@ -87,7 +87,7 @@ angular.module('myApp')
     };
 
     this.setPrice = function () {
-      this.item.isPriceError =
+      this.item.errors.price =
         (this.currentDomain.id === 1 || Boolean(this.item.attributes.price)) &&
         ((this.item.attributes.price != Number(this.item.attributes.price) ||
         Number(this.item.attributes.price) <= 0));
@@ -95,24 +95,24 @@ angular.module('myApp')
     };
 
     this.setProductionQuantity = function () {
-      this.item.isProductionQuantityError =
+      this.item.errors.productionQuantity =
         this.item.attributes.productionQuantity != Number(this.item.attributes.productionQuantity) ||
         Number(this.item.attributes.productionQuantity) <= 0;
       this.setChanged(true);
     };
 
     this.setMinTime = function (ind) {
-      this.itemChanged(ind);
-      this.catalog[ind].isMinTimeError =
-        this.catalog[ind].attributes.minTime != Number(this.catalog[ind].attributes.minTime) ||
-        Number(this.catalog[ind].attributes.minTime) < 0;
+      this.item.errors.minTime =
+        this.item.attributes.minTime != Number(this.item.attributes.minTime) ||
+        Number(this.item.attributes.minTime) < 0;
+      this.setChanged(true);
     };
 
     this.setMaxTime = function (ind) {
-      this.itemChanged(ind);
-      this.catalog[ind].isMaxTimeError =
-        this.catalog[ind].attributes.maxTime != Number(this.catalog[ind].attributes.maxTime) ||
-        Number(this.catalog[ind].attributes.maxTime) < 0;
+      this.item.errors.maxTime =
+        this.item.attributes.maxTime != Number(this.item.attributes.maxTime) ||
+        Number(this.item.attributes.maxTime) < 0;
+      this.setChanged(true);
     };
 
     this.updateExitList = function (ind) {
@@ -254,23 +254,23 @@ angular.module('myApp')
     };
 
     this.setupItemView = function () {
+      this.item.view = {};
+      this.item.errors = {};
       if (this.isNewItem) { // todo: set to false on save
-        this.item.view = {};
         this.item.view.category = this.categories.filter(function(cat) {
           return cat.tId===currentCategory;
         })[0];
-        this.item.isProductDescriptionError = true;
-        this.item.isProductionQuantityError = true;
+        this.item.errors.productDescription = true;
+        this.item.errors.productionQuantity = true;
         if (this.currentDomain.id===1) {
-          this.item.isPriceQuantityError = true;
-          this.item.isPriceError = true;
+          this.item.errors.priceQuantity = true;
+          this.item.errors.price = true;
         }
         this.item.view.measurementUnit = measurementUnits[0];
         this.item.view.minTimeUnit = lov.timeUnits[0];
         this.item.view.maxTimeUnit = lov.timeUnits[0];
         this.item.isCopyToShortDesc = true;
       } else {
-        this.item.view = {};
         this.item.view.category = that.categories.filter(function (cat) {
           return cat.tId === that.item.attributes.category;
         }) [0];

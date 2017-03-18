@@ -16,9 +16,9 @@
           ng-click="catalogItemModel.close()">סגור</button>
 </h3>
 <tabset>
-  <tab heading="ראשי">
+   <tab heading="ראשי">
     <table>
-      <tr ng-class="catalogItemModel.item.isProductDescriptionError?'bg-danger':null">
+      <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null">
         <td><label>תיאור</label></td>
         <td>
         <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.productDescription"
@@ -46,7 +46,7 @@
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
-          ng-class="catalogItemModel.item.isPriceQuantityError?'bg-danger':null">
+          ng-class="catalogItemModel.item.errors.priceQuantity?'bg-danger':null">
         <td><label>כמות</label></td>
         <td>
         <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.priceQuantity"
@@ -55,7 +55,7 @@
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
-          ng-class="catalogItemModel.item.isPriceError?'bg-danger':null">
+          ng-class="catalogItemModel.item.errors.price?'bg-danger':null">
         <td><label>מחיר</label></td>
         <td>
         <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.attributes.price"
@@ -63,7 +63,7 @@
 
         </td>
       </tr>
-      <tr ng-class="catalogItemModel.item.isProductionQuantityError?'bg-danger':null">
+      <tr ng-class="catalogItemModel.item.errors.productionQuantity?'bg-danger':null">
         <td><label>כמות ייצור</label></td>
         <td>
         <input type="text" size = 4
@@ -71,6 +71,30 @@
                ng-change="catalogItemModel.setProductionQuantity()">
         </td>
       </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===2"
+          ng-class="catalogItemModel.item.errors.minTime?'bg-danger':null">
+        <td><label>זמן מינימלי</label></td>
+        <td>
+          <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.minTime"
+                 ng-change="catalogItemModel.setMinTime()">
+          &nbsp;
+          <select ng-model="catalogItemModel.item.view.minTimeUnit"
+                  ng-change="catalogItemModel.setChanged(true)"
+                  ng-options="timeUnit.label for timeUnit in catalogItemModel.timeUnits"></select>
+        </td>
+    </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===2"
+          ng-class="catalogItemModel.item.errors.maxTime?'bg-danger':null">
+        <td><label>זמן מקסימלי</label></td>
+        <td>
+          <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.maxTime"
+                 ng-change="catalogItemModel.setMaxTime()">
+          &nbsp;
+          <select ng-model="catalogItemModel.item.view.maxTimeUnit"
+                  ng-change="catalogItemModel.setChanged(true)"
+                  ng-options="timeUnit.label for timeUnit in catalogItemModel.timeUnits"></select>
+        </td>
+    </tr>
    </table>
   </tab>
 </tabset>
