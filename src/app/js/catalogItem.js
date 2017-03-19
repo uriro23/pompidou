@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('CatalogItemCtrl', function ($state, $modal, $rootScope, api, lov,
                                            currentItem, currentDomain, currentCategory,
-                                           categories, measurementUnits, config) {
+                                           allCategories, measurementUnits, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -130,51 +130,67 @@ angular.module('myApp')
       this.setChanged(true);
     };
 
+    // Components Tab
 
-    this.updateComponents = function (ind, targetDomain) {
-      var that = this;
-      var componentsModal = $modal.open({
-        templateUrl: 'app/partials/components.html',
-        controller: 'ComponentsCtrl as componentsModel',
-        resolve: {
-          catalogItem: function () {
-            return that.catalog[ind];
-          },
-          targetDomain: function () {
-            return targetDomain;
-          },
-          targetCategories: function () {
-            return api.queryCategories(targetDomain)
-              .then(function (categories) {
-              return categories.map(function (cat) {
-                return cat.attributes;
-              });
-            });
-          },
-          targetItems: function () {
-            return api.queryCatalog(targetDomain)
-              .then(function (items) {
-              return items.filter(function (item) {
-                return !item.attributes.isDeleted;
-              });
-            });
-          },
-          config: ['api', function (api) {
-            return api.queryConfig().then(function (res) {
-              return res[0].attributes;
-            });
-          }],
-          measurementUnits: function () {
-            return measurementUnits;
-          }
-        },
-        size: 'lg'
-      });
+   this.setCompCategory = function(comDomain) {
+      api.queryCatalogByCategory(comDomain.currentCategory.tId)
+        .then(function(res) {
+          comDomain.itemNames = res.map(function(c) {
+            return {
+              id: c.id,
+              productDescription: c.attributes.productDescription
+            };
+          });
+        });
+   };
 
-      componentsModal.result.then(function () {
-        that.itemChanged(ind);
-      });
-    };
+    // loads catalog items for the components of the current item
+   this.loadComponentItems = function() {
+     var that = this;
+     this.compDomains = lov.domains.filter(function(dom) {
+       return dom.id > currentDomain;
+     });
+     this.compDomains.forEach(function(dom){
+       dom.categories = allCategories.filter(function(cat){
+         return cat.domain===dom.id;
+       });
+       dom.currentCategory = dom.categories[0];
+       dom.compItems = [];
+       api.queryCatalogByCategory(dom.currentCategory.tId)
+         .then(function(res) {
+           dom.itemNames = res.map(function(c) {
+             return {
+               id: c.id,
+               productDescription: c.attributes.productDescription
+             };
+           });
+         });
+     });
+      console.log('compDomains:');
+      console.log(this.compDomains);
+     var ids = this.item.attributes.components.map(function(comp) {
+       return comp.id;
+     });
+     api.queryCatalogByIds(ids)
+       .then(function(res) {
+         res.forEach(function(comp) {
+           comp.view = {};
+           comp.view.compQuantity = that.item.attributes.components.filter(function(comp2) {
+             return comp2.id===comp.id;
+           })[0].quantity;
+           comp.view.category = allCategories.filter(function(cat) {
+             return cat.tId===comp.attributes.category;
+           })[0];
+           comp.view.measurementUnit = measurementUnits.filter(function(mes) {
+             return mes.tId===comp.attributes.measurementUnit;
+           })[0];
+           var ourDomain = that.compDomains.filter(function(d) {
+             return d.id===comp.attributes.domain;
+           })[0];
+           ourDomain.compItems.push(comp);
+         });
+       });
+   };
 
     // insert / update / logical delete all changed / marked catalog items
     this.updateItems = function () {
@@ -303,7 +319,9 @@ angular.module('myApp')
     var that = this;
     this.isMainTabActive = true;
     this.currentDomain = lov.domains[currentDomain];
-    this.categories = categories;
+    this.categories = allCategories.filter(function(cat) {
+      return cat.domain===currentDomain;
+    });
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
     this.isNewItem = $state.current.name==='newCatalogItem' || $state.current.name==='dupCatalogItem';
@@ -324,11 +342,17 @@ angular.module('myApp')
      this.item.attributes.components = [];
    } else {
      this.item = currentItem;
+     if (currentItem.attributes.components.length) {
+       console.log('components:');
+       console.log(currentItem.attributes.components);
+     }
      }
      this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
 
    this.setupItemView();
    this.setChanged(false);
- });
+
+    that.loadComponentItems();
+  });
 
 

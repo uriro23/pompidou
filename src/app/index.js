@@ -359,8 +359,8 @@ config(function($stateProvider, $urlRouterProvider) {
         currentCategory: ['$stateParams', function ($stateParams) {
           return $stateParams.category;
         }],
-        categories: ['$stateParams', 'api', function ($stateParams, api) {
-         return api.queryCategories($stateParams.domain).then (function (res) {
+        allCategories: ['api', function (api) {
+         return api.queryCategories().then (function (res) {
             return res.map(function (obj) {
               return obj.attributes;
             });
@@ -397,15 +397,13 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs[0].attributes.category;
           });
         }],
-        categories: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCatalogById($stateParams.id).then(function (cats) {
-            return api.queryCategories(cats[0].attributes.domain).then (function (res) {
-              return res.map(function (obj) {
-                return obj.attributes;
-              });
+        allCategories: ['api', function (api) {
+          return api.queryCategories().then (function (res) {
+            return res.map(function (obj) {
+              return obj.attributes;
             });
           });
-       }],
+        }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
@@ -437,12 +435,10 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs[0].attributes.category;
           });
         }],
-        categories: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCatalogById($stateParams.basedOnId).then(function (cats) {
-            return api.queryCategories(cats[0].attributes.domain).then (function (res) {
-              return res.map(function (obj) {
-                return obj.attributes;
-              });
+        allCategories: ['api', function (api) {
+          return api.queryCategories().then (function (res) {
+            return res.map(function (obj) {
+              return obj.attributes;
             });
           });
         }],

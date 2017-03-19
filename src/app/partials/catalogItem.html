@@ -16,7 +16,47 @@
           ng-click="catalogItemModel.close()">סגור</button>
 </h3>
 <tabset>
-  <tab heading="רשימת יציאה">
+  <tab heading="עץ מוצר"
+       ng-show="catalogItemModel.currentDomain.id<3">
+    <table style="width: 95%">
+      <tr>
+        <td style="width: 50%; vertical-align: top"
+            ng-repeat="compDomain in catalogItemModel.compDomains">
+          <h4>{{compDomain.label}}</h4>
+          <span>הוסף:</span>&nbsp;
+           <select ng-model="compDomain.currentCategory"
+                    ng-change="catalogItemModel.setCompCategory(compDomain)"
+                    ng-options="category.label
+                                for category in compDomain.categories"></select>
+            <select ng-model="compDomain.currentItem"
+                    ng-change="catalogItemModel.setCompItem(compDomain)"
+                    ng-options="item.productDescription
+                              for item in compDomain.itemNames"></select>
+          <table class="table table-hover">
+            <thead>
+            <th><label>קטגוריה</label></th>
+            <th><label>מוצר</label></th>
+            <th><label>כמות</label></th>
+            <th><label>יח' מידה</label></th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="component in compDomain.compItems track by component.id">
+              <td>{{component.view.category.label}}</td>
+              <td>{{component.attributes.productDescription}}</td>
+              <td>
+                <input type="number" size="3" min=0 ng-model="component.view.compQuantity">
+              </td>
+              <td>{{component.view.measurementUnit.label}}</td>
+              <td>
+                <button class="btn btn-warning" ng-click="catalogItemModel.delItem($index)">מחק</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>        </td>
+       </tr>
+    </table>
+  </tab>
+  <tab heading="רשימת יציאה" ng-show="catalogItemModel.currentDomain.id===1">
     <button class="btn btn-default" ng-click="catalogItemModel.addExitListItem()">הוסף</button>
     <table class="table table-hover" style="width:40%">
       <tbody>
