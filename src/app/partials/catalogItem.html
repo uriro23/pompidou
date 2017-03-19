@@ -16,7 +16,23 @@
           ng-click="catalogItemModel.close()">סגור</button>
 </h3>
 <tabset>
-   <tab heading="ראשי">
+  <tab heading="רשימת יציאה">
+    <button class="btn btn-default" ng-click="catalogItemModel.addExitListItem()">הוסף</button>
+    <table class="table table-hover" style="width:40%">
+      <tbody>
+      <tr ng-repeat="listItem in catalogItemModel.item.attributes.exitList track by listItem.item">
+        <td>
+          <input type="text" size=60 ng-model="listItem.item"
+                 ng-change="catalogItemModel.setChanged(true)">
+        </td>
+        <td>
+          <button class="btn btn-default" ng-click="catalogItemModel.delExitListItem($index)">מחק</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </tab>
+   <tab heading="ראשי" active="catalogItemModel.isMainTabActive">
     <table>
       <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null">
         <td><label>תיאור</label></td>

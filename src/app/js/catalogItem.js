@@ -63,6 +63,8 @@ angular.module('myApp')
     };
 
 
+    // Main Tab
+
     this.setProductDescription = function () {
       this.item.errors.productDescription =
         !this.item.attributes.productDescription || this.item.attributes.productDescription.length === 0;
@@ -115,23 +117,19 @@ angular.module('myApp')
       this.setChanged(true);
     };
 
-    this.updateExitList = function (ind) {
-      var that = this;
-      var exitListModal = $modal.open({
-        templateUrl: 'app/partials/catalogExitList.html',
-        controller: 'CatalogExitListCtrl as catalogExitListModel',
-        resolve: {
-          catalogItem: function () {
-            return that.catalog[ind];
-          }
-        },
-        size: 'lg'
-      });
+    // Exit List Tab
 
-      exitListModal.result.then(function () {
-        that.itemChanged(ind);
-      });
+    //TODO: set focus on added item
+    this.addExitListItem = function () {
+      this.item.attributes.exitList.push({item: ''});
+      this.setChanged(true);
     };
+
+    this.delExitListItem = function (ind) {
+      this.item.attributes.exitList.splice(ind, 1);
+      this.setChanged(true);
+    };
+
 
     this.updateComponents = function (ind, targetDomain) {
       var that = this;
@@ -303,6 +301,7 @@ angular.module('myApp')
 
     // main block
     var that = this;
+    this.isMainTabActive = true;
     this.currentDomain = lov.domains[currentDomain];
     this.categories = categories;
     this.measurementUnits = measurementUnits;
