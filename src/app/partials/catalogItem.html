@@ -15,6 +15,11 @@
   <button class="btn btn-default" ng-hide="catalogItemModel.item.isChanged"
           ng-click="catalogItemModel.close()">סגור</button>
 </h3>
+<div ng-hide="catalogItemModel.isMainTabActive || catalogItemModel.isNewItem">
+  <span>{{catalogItemModel.item.attributes.productDescription}}</span>
+  <span>&nbsp;&nbsp;כמות ייצור:</span>
+  <span>{{catalogItemModel.item.attributes.productionQuantity}}</span>
+</div>
 <tabset>
   <tab heading="עץ מוצר"
        ng-show="catalogItemModel.currentDomain.id<3">
@@ -30,29 +35,34 @@
                                 for category in compDomain.categories"></select>
             <select ng-model="compDomain.currentItem"
                     ng-change="catalogItemModel.setCompItem(compDomain)"
-                    ng-options="item.productDescription
-                              for item in compDomain.itemNames"></select>
-          <table class="table table-hover">
+                    ng-options="item.attributes.productDescription
+                              for item in compDomain.categoryItems"></select>
+          <table class="table table-hover" style="width:90%">
             <thead>
-            <th><label>קטגוריה</label></th>
-            <th><label>מוצר</label></th>
-            <th><label>כמות</label></th>
-            <th><label>יח' מידה</label></th>
+            <th style="width:15%"><label>קטגוריה</label></th>
+            <th style="width:45%"><label>מוצר</label></th>
+            <th style="width:10%"><label>כמות</label></th>
+            <th style="width:20%"><label>יח' מידה</label></th>
+            <th style="width:10%"></th>
             </thead>
             <tbody>
-            <tr ng-repeat="component in compDomain.compItems track by component.id">
+            <tr ng-repeat="component in compDomain.compItems track by component.id"
+                ng-class="component.isError?'bg-danger':null">
               <td>{{component.view.category.label}}</td>
               <td>{{component.attributes.productDescription}}</td>
               <td>
-                <input type="number" size="3" min=0 ng-model="component.view.compQuantity">
+                <input type="number" min=0 max=99999
+                       ng-model="component.view.compQuantity"
+                       ng-change="catalogItemModel.setCompQuantity(component)">
               </td>
               <td>{{component.view.measurementUnit.label}}</td>
               <td>
-                <button class="btn btn-warning" ng-click="catalogItemModel.delItem($index)">מחק</button>
+                <button class="btn btn-default" ng-click="catalogItemModel.delItem(compDomain,$index)">מחק</button>
               </td>
             </tr>
             </tbody>
-          </table>        </td>
+          </table>
+        </td>
        </tr>
     </table>
   </tab>

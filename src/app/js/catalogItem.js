@@ -133,16 +133,38 @@ angular.module('myApp')
     // Components Tab
 
    this.setCompCategory = function(comDomain) {
-      api.queryCatalogByCategory(comDomain.currentCategory.tId)
-        .then(function(res) {
-          comDomain.itemNames = res.map(function(c) {
-            return {
-              id: c.id,
-              productDescription: c.attributes.productDescription
-            };
-          });
+    var that = this;
+    api.queryCatalogByCategory(comDomain.currentCategory.tId)
+      .then(function(res) {
+        comDomain.categoryItems = res.map(function(itm) {
+          itm.view = {};
+          itm.view.compQuantity = null;
+          itm.view.category = comDomain.currentCategory;
+          itm.view.measurementUnit = measurementUnits.filter(function(mes) {
+            return mes.tId===itm.attributes.measurementUnit;
+          })[0];
+          itm.isError = true;  // has to specify quantity
+          return itm;
         });
+      });
    };
+
+   this.setCompItem = function(compDomain) {
+     compDomain.compItems.push(compDomain.currentItem);
+     this.setChanged(true);
+   };
+
+   this.delItem = function(compDomain,ind) {
+     compDomain.compItems.splice(ind,1);
+     this.setChanged(true);
+   };
+
+   this.setCompQuantity = function(component) {
+     component.isError =
+       component.view.compQuantity != Number(component.view.compQuantity) ||
+       Number(component.view.compQuantity) <= 0;
+     this.setChanged(true);
+  };
 
     // loads catalog items for the components of the current item
    this.loadComponentItems = function() {
@@ -156,15 +178,7 @@ angular.module('myApp')
        });
        dom.currentCategory = dom.categories[0];
        dom.compItems = [];
-       api.queryCatalogByCategory(dom.currentCategory.tId)
-         .then(function(res) {
-           dom.itemNames = res.map(function(c) {
-             return {
-               id: c.id,
-               productDescription: c.attributes.productDescription
-             };
-           });
-         });
+       that.setCompCategory(dom);
      });
       console.log('compDomains:');
       console.log(this.compDomains);
@@ -184,6 +198,7 @@ angular.module('myApp')
            comp.view.measurementUnit = measurementUnits.filter(function(mes) {
              return mes.tId===comp.attributes.measurementUnit;
            })[0];
+           comp.isError = false;
            var ourDomain = that.compDomains.filter(function(d) {
              return d.id===comp.attributes.domain;
            })[0];
@@ -308,6 +323,7 @@ angular.module('myApp')
     this.cancel = function () {
       this.item.attributes = angular.copy(this.backupItemAttr);
       this.setupItemView();
+      this.loadComponentItems();
       this.setChanged(false);
     };
 
