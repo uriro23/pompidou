@@ -16,9 +16,12 @@
           ng-click="catalogItemModel.close()">סגור</button>
 </h3>
 <div ng-hide="catalogItemModel.isMainTabActive || catalogItemModel.isNewItem">
+  <span>{{catalogItemModel.currentDomain.single}}</span>
+  <span>:&nbsp;</span>
   <span>{{catalogItemModel.item.attributes.productDescription}}</span>
   <span>&nbsp;&nbsp;כמות ייצור:</span>
   <span>{{catalogItemModel.item.attributes.productionQuantity}}</span>
+  <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
 </div>
 <tabset>
   <tab heading="עץ מוצר"

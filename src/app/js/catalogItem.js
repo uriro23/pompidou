@@ -37,33 +37,7 @@ angular.module('myApp')
       }
     };
 
-    this.addItem = function () {
-      var newItem = api.initCatalog();
-      newItem.view = {};
-      newItem.isChanged = true;
-      newItem.attributes.domain = this.currentDomain.id;
-      newItem.view.category = this.categories[0];
-      newItem.view.measurementUnit = measurementUnits[0];
-      newItem.view.minTimeUnit = lov.timeUnits[0];
-      newItem.view.maxTimeUnit = lov.timeUnits[0];
-
-      newItem.attributes.priceQuantity = null;
-      newItem.attributes.price = null;
-      newItem.attributes.productionQuantity = null;
-      newItem.attributes.minTime = null;
-      newItem.attributes.maxTime = null;
-      if (this.currentDomain.id === 1) {
-        newItem.attributes.isInMenu = true;
-      }
-      newItem.attributes.exitList = [];
-      newItem.attributes.components = [];
-      newItem.isNewItem = true; // used to do validity checks on new items before storing them
-      this.catalog.splice(0, 0, newItem); // add new item at the front of the array
-      this.setChanged(true);
-    };
-
-
-    // Main Tab
+   // Main Tab
 
     this.setProductDescription = function () {
       this.item.errors.productDescription =
@@ -180,10 +154,11 @@ angular.module('myApp')
        dom.compItems = [];
        that.setCompCategory(dom);
      });
-      console.log('compDomains:');
-      console.log(this.compDomains);
      var ids = this.item.attributes.components.map(function(comp) {
        return comp.id;
+     }).filter(function(id) {
+       return id !== config.unhandledItemComponent && id !== config.unhandledItemMaterial;
+
      });
      api.queryCatalogByIds(ids)
        .then(function(res) {
@@ -207,85 +182,94 @@ angular.module('myApp')
        });
    };
 
-    // insert / update / logical delete all changed / marked catalog items
-    this.updateItems = function () {
-      var that = this;
-      // first check if any errors exist
-      for (var j = 0; j < this.catalog.length; j++) {
-        if (this.catalog[j].isNewItem) { // check that all invalid default values have been updated
-          this.setProductDescription(j, false);
-          this.setPriceQuantity(j);
-          this.setPrice(j);
-          this.setProductionQuantity(j);
-        }
-        if (this.catalog[j].isProductDescriptionError ||
-          this.catalog[j].isPriceQuantityError ||
-          this.catalog[j].isPriceError ||
-          this.catalog[j].isProductionQuantityError ||
-          this.catalog[j].isMinTimeError ||
-          this.catalog[j].isMaxTimeError) {
-          alert('לא ניתן לעדכן. תקן קודם את השגיאות המסומנות');
-          return false;
-        }
-      }
-      var itemsToUpdate = [];
-      for (var i = 0; i < this.catalog.length; i++) {
-        if (this.catalog[i].isChanged) {
-          if (!this.catalog[i].view.category.tId) {
-            alert('Missing category in line ' + i + 1);
-            return false;
-          } else {
-            this.catalog[i].attributes.category = this.catalog[i].view.category.tId;
-          }
-          if (!this.catalog[i].view.measurementUnit.tId) {
-            alert('Missing measurement unit in line ' + i + 1);
-            return false;
-          }
-          if (!this.catalog[i].view.minTimeUnit) {
-            this.catalog[i].view.minTimeUnit = lov.timeUnits[0];
-          }
-          if (!this.catalog[i].view.maxTimeUnit) {
-            this.catalog[i].view.maxTimeUnit = lov.timeUnits[0];
-          }
-           this.catalog[i].attributes.isDeleted = this.catalog[i].view.isDeleted;
-          this.catalog[i].attributes.measurementUnit = this.catalog[i].view.measurementUnit.tId;
-          this.catalog[i].attributes.minTimeUnit = this.catalog[i].view.minTimeUnit.id;
-          this.catalog[i].attributes.maxTimeUnit = this.catalog[i].view.maxTimeUnit.id;
-          this.catalog[i].attributes.priceQuantity = Number(this.catalog[i].attributes.priceQuantity);
-          this.catalog[i].attributes.price = Number(this.catalog[i].attributes.price);
-          this.catalog[i].attributes.productionQuantity = Number(this.catalog[i].attributes.productionQuantity);
-          this.catalog[i].attributes.minTime = Number(this.catalog[i].attributes.minTime);
-          this.catalog[i].attributes.maxTime = Number(this.catalog[i].attributes.maxTime);
-          // if no components/materials were specified insert dummy
-          if (this.currentDomain.id === 1 && this.catalog[i].attributes.components.length === 0) {
-            this.catalog[i].attributes.components.push({
-              id: config.unhandledItemComponent,
-              domain: 2,
-              quantity: 1
-            });
-            this.catalog[i].attributes.components.push({
-              id: config.unhandledItemMaterial,
-              domain: 3,
-              quantity: 1
-            });
-          }
-          itemsToUpdate.push(this.catalog[i]);
-          this.catalog[i].isChanged = false;
-        }
-      }
+   // General
 
-      this.catalog = [];
-      api.saveObjects(itemsToUpdate)
-        .then(function () {
-          that.setDomain();
-        });
-      return true;
-    };
+   this.saveItem = function() {
+     var that = this;
+     var hasErrors = false;
+     for (var e in this.item.errors) {
+       if (this.item.errors.hasOwnProperty(e)) {
+         if (this.item.errors[e]) {
+           hasErrors = true;
+         }
+       }
+     }
+     this.compDomains.forEach(function(d) {
+       d.compItems.forEach(function(i) {
+         if (i.isError) {
+           hasErrors = true;
+         }
+       });
+     });
+     if(hasErrors) {
+       alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
+       return;
+     }
+     if (!this.item.view.category.tId) {
+       alert('Missing category');
+       return;
+     } else {
+       this.item.attributes.category = this.item.view.category.tId;
+     }
+     if (!this.item.view.measurementUnit.tId) {
+       alert('Missing measurement unit');
+       return;
+     }
+     if (!this.item.view.minTimeUnit) {
+       this.item.view.minTimeUnit = lov.timeUnits[0];
+     }
+     if (!this.item.view.maxTimeUnit) {
+       this.item.view.maxTimeUnit = lov.timeUnits[0];
+     }
+     this.item.attributes.measurementUnit = this.item.view.measurementUnit.tId;
+     this.item.attributes.minTimeUnit = this.item.view.minTimeUnit.id;
+     this.item.attributes.maxTimeUnit = this.item.view.maxTimeUnit.id;
+     this.item.attributes.priceQuantity = Number(this.item.attributes.priceQuantity);
+     this.item.attributes.price = Number(this.item.attributes.price);
+     this.item.attributes.productionQuantity = Number(this.item.attributes.productionQuantity);
+     this.item.attributes.minTime = Number(this.item.attributes.minTime);
+     this.item.attributes.maxTime = Number(this.item.attributes.maxTime);
+     this.item.attributes.components = [];
+     this.compDomains.forEach(function(d) {
+       d.compItems.forEach(function(c) {
+         var comp = {
+           id: c.id,
+           domain: c.attributes.domain,
+           quantity: c.view.compQuantity
+         };
+         that.item.attributes.components.push(comp);
+       });
+     });
+     // if no components/materials were specified insert dummy
+     if (this.currentDomain.id === 1 && this.item.attributes.components.length === 0) {
+       this.item.attributes.components.push({
+         id: config.unhandledItemComponent,
+         domain: 2,
+         quantity: 1
+       });
+       this.item.attributes.components.push({
+         id: config.unhandledItemMaterial,
+         domain: 3,
+         quantity: 1
+       });
+     }
+
+     api.saveObj(this.item)
+       .then(function(obj) {
+         if (that.isNewItem) {
+           that.item = obj;
+           that.isNewItem = false;
+           that.setupItemView();
+           that.loadComponentItems();
+         }
+         that.setChanged(false);
+       });
+   };
 
     this.setupItemView = function () {
       this.item.view = {};
       this.item.errors = {};
-      if (this.isNewItem) { // todo: set to false on save
+      if (this.isNewItem) {
         this.item.view.category = this.categories.filter(function(cat) {
           return cat.tId===currentCategory;
         })[0];
@@ -345,7 +329,7 @@ angular.module('myApp')
      this.item = api.initCatalog();
      this.item.attributes.domain = lov.domains.filter(function(dom) {
        return dom.id===currentDomain;
-     });
+     })[0].id;
      this.item.attributes.priceQuantity = null;
      this.item.attributes.price = null;
      this.item.attributes.productionQuantity = null;
@@ -358,10 +342,6 @@ angular.module('myApp')
      this.item.attributes.components = [];
    } else {
      this.item = currentItem;
-     if (currentItem.attributes.components.length) {
-       console.log('components:');
-       console.log(currentItem.attributes.components);
-     }
      }
      this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
 
