@@ -266,7 +266,42 @@ angular.module('myApp')
        });
    };
 
-    this.setupItemView = function () {
+   this.dupItem = function() {
+     var tempItem = api.initCatalog();
+     tempItem.attributes = this.item.attributes;
+     this.item = tempItem;
+     this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
+     this.setupItemView();
+     this.setChanged(false);
+     this.loadComponentItems();
+     this.isNewItem = true;
+   };
+
+   this.delItem = function() {
+     var that = this;
+     var ackDelModal = $modal.open({
+       templateUrl: 'app/partials/catalogAckDelete.html',
+       controller: 'AckDelCatalogCtrl as ackDelCatalogModel',
+       resolve: {
+         item: function () {
+           return that.item;
+         }
+       },
+       size: 'sm'
+     });
+
+     ackDelModal.result.then(function (isDelete) {
+       if (isDelete) {
+         api.deleteObj(that.item)
+           .then(function() {
+             $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
+           });
+        }
+       });
+    };
+
+
+    this.setupItemView = function() {
       this.item.view = {};
       this.item.errors = {};
       if (this.isNewItem) {
@@ -325,7 +360,7 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
     this.isNewItem = $state.current.name==='newCatalogItem' || $state.current.name==='dupCatalogItem';
-   if (this.isNewItem) { // todo: set to false on save
+   if (this.isNewItem) {
      this.item = api.initCatalog();
      this.item.attributes.domain = lov.domains.filter(function(dom) {
        return dom.id===currentDomain;
@@ -343,12 +378,24 @@ angular.module('myApp')
    } else {
      this.item = currentItem;
      }
-     this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
 
+   this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
    this.setupItemView();
    this.setChanged(false);
+   this.loadComponentItems();
+  })
 
-    that.loadComponentItems();
+  .controller('AckDelCatalogCtrl', function ($modalInstance, item) {
+    this.item = item;
+
+    this.setYes = function () {
+      $modalInstance.close(true);
+    };
+
+    this.setNo = function () {
+      $modalInstance.close(false);
+    };
   });
+
 
 

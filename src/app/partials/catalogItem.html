@@ -24,6 +24,36 @@
   <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
 </div>
 <tabset>
+  <tab heading="שונות">
+    <table>
+      <tr>
+        <td><label>שינוי קטגוריה</label></td>
+        <td>
+          <select ng-model="catalogItemModel.item.view.category"
+                  ng-change="catalogItemModel.setChanged(true)"
+                  ng-options="category.label for category in catalogItemModel.categories"></select>
+        </td>
+      </tr>
+      <tr>
+        <td><label>שכפול פריט</label></td>
+        <td>
+          <button class="btn btn-warning"
+                  ng-click="catalogItemModel.dupItem()"
+                  ng-disabled="catalogItemModel.isNewItem || catalogItemModel.item.isChanged"
+          >שכפל</button>
+        </td>
+      </tr>
+      <tr>
+        <td><label>מחיקת פריט</label></td>
+        <td>
+          <button class="btn btn-warning"
+                  ng-click="catalogItemModel.delItem()"
+                  ng-disabled="catalogItemModel.isNewItem"
+          >מחק</button>
+        </td>
+      </tr>
+    </table>
+  </tab>
   <tab heading="עץ מוצר"
        ng-show="catalogItemModel.currentDomain.id<3">
     <table style="width: 95%">
