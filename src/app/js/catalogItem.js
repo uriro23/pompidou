@@ -6,6 +6,7 @@ angular.module('myApp')
                                            currentItem, currentDomain, currentCategory,
                                            allCategories, measurementUnits, config) {
 
+    var model = this;
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
@@ -15,9 +16,9 @@ angular.module('myApp')
     }
     $rootScope.title = lov.company + ' - קטלוג';
 
-    this.setChanged = function (bool) {
+    model.setChanged = function (bool) {
       if (bool) {
-        this.item.isChanged = true;
+        model.item.isChanged = true;
         window.onbeforeunload = function () {   // force the user to commit or abort changes before moving
           return 'יש שינויים שלא נשמרו';
         };
@@ -28,7 +29,7 @@ angular.module('myApp')
         */
         $rootScope.menuStatus = 'empty';
       } else {
-        this.item.isChanged = false;
+        model.item.isChanged = false;
         window.onbeforeunload = function () {
         };
         window.onblur = function () {
@@ -39,75 +40,74 @@ angular.module('myApp')
 
    // Main Tab
 
-    this.setProductDescription = function () {
-      this.item.errors.productDescription =
-        !this.item.attributes.productDescription || this.item.attributes.productDescription.length === 0;
-      if (this.currentDomain.id === 1 && this.item.isCopyToShortDesc) {
-        this.item.attributes.shortDescription = this.item.attributes.productDescription;
+    model.setProductDescription = function () {
+      model.item.errors.productDescription =
+        !model.item.attributes.productDescription || model.item.attributes.productDescription.length === 0;
+      if (model.currentDomain.id === 1 && model.item.isCopyToShortDesc) {
+        model.item.attributes.shortDescription = model.item.attributes.productDescription;
       }
-      this.setChanged(true);
+      model.setChanged(true);
     };
 
-    this.setShortDescription = function () {
-      this.item.isCopyToShortDesc =
-        this.item.attributes.productDescription === this.item.attributes.shortDescription;
-      this.setChanged(true);
+    model.setShortDescription = function () {
+      model.item.isCopyToShortDesc =
+        model.item.attributes.productDescription === model.item.attributes.shortDescription;
+      model.setChanged(true);
     };
 
-    this.setPriceQuantity = function () {
-      this.item.errors.priceQuantity =
-        (this.currentDomain.id === 1 || Boolean(this.item.attributes.priceQuantity)) &&
-        ((this.item.attributes.priceQuantity != Number(this.item.attributes.priceQuantity) ||
-        Number(this.item.attributes.priceQuantity) <= 0));
-      this.setChanged(true);
+    model.setPriceQuantity = function () {
+      model.item.errors.priceQuantity =
+        (model.currentDomain.id === 1 || Boolean(model.item.attributes.priceQuantity)) &&
+        ((model.item.attributes.priceQuantity != Number(model.item.attributes.priceQuantity) ||
+        Number(model.item.attributes.priceQuantity) <= 0));
+      model.setChanged(true);
     };
 
-    this.setPrice = function () {
-      this.item.errors.price =
-        (this.currentDomain.id === 1 || Boolean(this.item.attributes.price)) &&
-        ((this.item.attributes.price != Number(this.item.attributes.price) ||
-        Number(this.item.attributes.price) <= 0));
-      this.setChanged(true);
+    model.setPrice = function () {
+      model.item.errors.price =
+        (model.currentDomain.id === 1 || Boolean(model.item.attributes.price)) &&
+        ((model.item.attributes.price != Number(model.item.attributes.price) ||
+        Number(model.item.attributes.price) <= 0));
+      model.setChanged(true);
     };
 
-    this.setProductionQuantity = function () {
-      this.item.errors.productionQuantity =
-        this.item.attributes.productionQuantity != Number(this.item.attributes.productionQuantity) ||
-        Number(this.item.attributes.productionQuantity) <= 0;
-      this.setChanged(true);
+    model.setProductionQuantity = function () {
+      model.item.errors.productionQuantity =
+        model.item.attributes.productionQuantity != Number(model.item.attributes.productionQuantity) ||
+        Number(model.item.attributes.productionQuantity) <= 0;
+      model.setChanged(true);
     };
 
-    this.setMinTime = function (ind) {
-      this.item.errors.minTime =
-        this.item.attributes.minTime != Number(this.item.attributes.minTime) ||
-        Number(this.item.attributes.minTime) < 0;
-      this.setChanged(true);
+    model.setMinTime = function (ind) {
+      model.item.errors.minTime =
+        model.item.attributes.minTime != Number(model.item.attributes.minTime) ||
+        Number(model.item.attributes.minTime) < 0;
+      model.setChanged(true);
     };
 
-    this.setMaxTime = function (ind) {
-      this.item.errors.maxTime =
-        this.item.attributes.maxTime != Number(this.item.attributes.maxTime) ||
-        Number(this.item.attributes.maxTime) < 0;
-      this.setChanged(true);
+    model.setMaxTime = function (ind) {
+      model.item.errors.maxTime =
+        model.item.attributes.maxTime != Number(model.item.attributes.maxTime) ||
+        Number(model.item.attributes.maxTime) < 0;
+      model.setChanged(true);
     };
 
     // Exit List Tab
 
     //TODO: set focus on added item
-    this.addExitListItem = function () {
-      this.item.attributes.exitList.push({item: ''});
-      this.setChanged(true);
+    model.addExitListItem = function () {
+      model.item.attributes.exitList.push({item: ''});
+      model.setChanged(true);
     };
 
-    this.delExitListItem = function (ind) {
-      this.item.attributes.exitList.splice(ind, 1);
-      this.setChanged(true);
+    model.delExitListItem = function (ind) {
+      model.item.attributes.exitList.splice(ind, 1);
+      model.setChanged(true);
     };
 
     // Components Tab
 
-   this.setCompCategory = function(comDomain) {
-    var that = this;
+   model.setCompCategory = function(comDomain) {
     api.queryCatalogByCategory(comDomain.currentCategory.tId)
       .then(function(res) {
         comDomain.categoryItems = res.map(function(itm) {
@@ -123,38 +123,37 @@ angular.module('myApp')
       });
    };
 
-   this.setCompItem = function(compDomain) {
+   model.setCompItem = function(compDomain) {
      compDomain.compItems.push(compDomain.currentItem);
-     this.setChanged(true);
+     model.setChanged(true);
    };
 
-   this.delItem = function(compDomain,ind) {
+   model.delItem = function(compDomain,ind) {
      compDomain.compItems.splice(ind,1);
-     this.setChanged(true);
+     model.setChanged(true);
    };
 
-   this.setCompQuantity = function(component) {
+   model.setCompQuantity = function(component) {
      component.isError =
        component.view.compQuantity != Number(component.view.compQuantity) ||
        Number(component.view.compQuantity) <= 0;
-     this.setChanged(true);
+     model.setChanged(true);
   };
 
     // loads catalog items for the components of the current item
-   this.loadComponentItems = function() {
-     var that = this;
-     this.compDomains = lov.domains.filter(function(dom) {
+   model.loadComponentItems = function() {
+     model.compDomains = lov.domains.filter(function(dom) {
        return dom.id > currentDomain;
      });
-     this.compDomains.forEach(function(dom){
+     model.compDomains.forEach(function(dom){
        dom.categories = allCategories.filter(function(cat){
          return cat.domain===dom.id;
        });
        dom.currentCategory = dom.categories[0];
        dom.compItems = [];
-       that.setCompCategory(dom);
+       model.setCompCategory(dom);
      });
-     var ids = this.item.attributes.components.map(function(comp) {
+     var ids = model.item.attributes.components.map(function(comp) {
        return comp.id;
      }).filter(function(id) {
        return id !== config.unhandledItemComponent && id !== config.unhandledItemMaterial;
@@ -164,7 +163,7 @@ angular.module('myApp')
        .then(function(res) {
          res.forEach(function(comp) {
            comp.view = {};
-           comp.view.compQuantity = that.item.attributes.components.filter(function(comp2) {
+           comp.view.compQuantity = model.item.attributes.components.filter(function(comp2) {
              return comp2.id===comp.id;
            })[0].quantity;
            comp.view.category = allCategories.filter(function(cat) {
@@ -174,7 +173,7 @@ angular.module('myApp')
              return mes.tId===comp.attributes.measurementUnit;
            })[0];
            comp.isError = false;
-           var ourDomain = that.compDomains.filter(function(d) {
+           var ourDomain = model.compDomains.filter(function(d) {
              return d.id===comp.attributes.domain;
            })[0];
            ourDomain.compItems.push(comp);
@@ -184,17 +183,16 @@ angular.module('myApp')
 
    // General
 
-   this.saveItem = function() {
-     var that = this;
+   model.saveItem = function() {
      var hasErrors = false;
-     for (var e in this.item.errors) {
-       if (this.item.errors.hasOwnProperty(e)) {
-         if (this.item.errors[e]) {
+     for (var e in model.item.errors) {
+       if (model.item.errors.hasOwnProperty(e)) {
+         if (model.item.errors[e]) {
            hasErrors = true;
          }
        }
      }
-     this.compDomains.forEach(function(d) {
+     model.compDomains.forEach(function(d) {
        d.compItems.forEach(function(i) {
          if (i.isError) {
            hasErrors = true;
@@ -205,86 +203,85 @@ angular.module('myApp')
        alert('לא ניתן לשמור. תקן קודם את השגיאות המסומנות');
        return;
      }
-     if (!this.item.view.category.tId) {
+     if (!model.item.view.category.tId) {
        alert('Missing category');
        return;
      } else {
-       this.item.attributes.category = this.item.view.category.tId;
+       model.item.attributes.category = model.item.view.category.tId;
      }
-     if (!this.item.view.measurementUnit.tId) {
+     if (!model.item.view.measurementUnit.tId) {
        alert('Missing measurement unit');
        return;
      }
-     if (!this.item.view.minTimeUnit) {
-       this.item.view.minTimeUnit = lov.timeUnits[0];
+     if (!model.item.view.minTimeUnit) {
+       model.item.view.minTimeUnit = lov.timeUnits[0];
      }
-     if (!this.item.view.maxTimeUnit) {
-       this.item.view.maxTimeUnit = lov.timeUnits[0];
+     if (!model.item.view.maxTimeUnit) {
+       model.item.view.maxTimeUnit = lov.timeUnits[0];
      }
-     this.item.attributes.measurementUnit = this.item.view.measurementUnit.tId;
-     this.item.attributes.minTimeUnit = this.item.view.minTimeUnit.id;
-     this.item.attributes.maxTimeUnit = this.item.view.maxTimeUnit.id;
-     this.item.attributes.priceQuantity = Number(this.item.attributes.priceQuantity);
-     this.item.attributes.price = Number(this.item.attributes.price);
-     this.item.attributes.productionQuantity = Number(this.item.attributes.productionQuantity);
-     this.item.attributes.minTime = Number(this.item.attributes.minTime);
-     this.item.attributes.maxTime = Number(this.item.attributes.maxTime);
-     this.item.attributes.components = [];
-     this.compDomains.forEach(function(d) {
+     model.item.attributes.measurementUnit = model.item.view.measurementUnit.tId;
+     model.item.attributes.minTimeUnit = model.item.view.minTimeUnit.id;
+     model.item.attributes.maxTimeUnit = model.item.view.maxTimeUnit.id;
+     model.item.attributes.priceQuantity = Number(model.item.attributes.priceQuantity);
+     model.item.attributes.price = Number(model.item.attributes.price);
+     model.item.attributes.productionQuantity = Number(model.item.attributes.productionQuantity);
+     model.item.attributes.minTime = Number(model.item.attributes.minTime);
+     model.item.attributes.maxTime = Number(model.item.attributes.maxTime);
+     model.item.attributes.components = [];
+     model.compDomains.forEach(function(d) {
        d.compItems.forEach(function(c) {
          var comp = {
            id: c.id,
            domain: c.attributes.domain,
            quantity: c.view.compQuantity
          };
-         that.item.attributes.components.push(comp);
+         model.item.attributes.components.push(comp);
        });
      });
      // if no components/materials were specified insert dummy
-     if (this.currentDomain.id === 1 && this.item.attributes.components.length === 0) {
-       this.item.attributes.components.push({
+     if (model.currentDomain.id === 1 && model.item.attributes.components.length === 0) {
+       model.item.attributes.components.push({
          id: config.unhandledItemComponent,
          domain: 2,
          quantity: 1
        });
-       this.item.attributes.components.push({
+       model.item.attributes.components.push({
          id: config.unhandledItemMaterial,
          domain: 3,
          quantity: 1
        });
      }
 
-     api.saveObj(this.item)
+     api.saveObj(model.item)
        .then(function(obj) {
-         if (that.isNewItem) {
-           that.item = obj;
-           that.isNewItem = false;
-           that.setupItemView();
-           that.loadComponentItems();
+         if (model.isNewItem) {
+           model.item = obj;
+           model.isNewItem = false;
+           model.setupItemView();
+           model.loadComponentItems();
          }
-         that.setChanged(false);
+         model.setChanged(false);
        });
    };
 
-   this.dupItem = function() {
+   model.dupItem = function() {
      var tempItem = api.initCatalog();
-     tempItem.attributes = this.item.attributes;
-     this.item = tempItem;
-     this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
-     this.setupItemView();
-     this.setChanged(false);
-     this.loadComponentItems();
-     this.isNewItem = true;
+     tempItem.attributes = model.item.attributes;
+     model.item = tempItem;
+     model.item.isCopyToShortDesc = model.item.attributes.productDescription===model.item.attributes.shortDescription;
+     model.setupItemView();
+     model.setChanged(false);
+     model.loadComponentItems();
+     model.isNewItem = true;
    };
 
-   this.delItem = function() {
-     var that = this;
+   model.delItem = function() {
      var ackDelModal = $modal.open({
        templateUrl: 'app/partials/catalogAckDelete.html',
        controller: 'AckDelCatalogCtrl as ackDelCatalogModel',
        resolve: {
          item: function () {
-           return that.item;
+           return model.item;
          }
        },
        size: 'sm'
@@ -292,7 +289,7 @@ angular.module('myApp')
 
      ackDelModal.result.then(function (isDelete) {
        if (isDelete) {
-         api.deleteObj(that.item)
+         api.deleteObj(model.item)
            .then(function() {
              $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
            });
@@ -301,98 +298,97 @@ angular.module('myApp')
     };
 
 
-    this.setupItemView = function() {
-      this.item.view = {};
-      this.item.errors = {};
-      if (this.isNewItem) {
-        this.item.view.category = this.categories.filter(function(cat) {
+    model.setupItemView = function() {
+      model.item.view = {};
+      model.item.errors = {};
+      if (model.isNewItem) {
+        model.item.view.category = model.categories.filter(function(cat) {
           return cat.tId===currentCategory;
         })[0];
-        this.item.errors.productDescription = true;
-        this.item.errors.productionQuantity = true;
-        if (this.currentDomain.id===1) {
-          this.item.errors.priceQuantity = true;
-          this.item.errors.price = true;
+        model.item.errors.productDescription = true;
+        model.item.errors.productionQuantity = true;
+        if (model.currentDomain.id===1) {
+          model.item.errors.priceQuantity = true;
+          model.item.errors.price = true;
         }
-        this.item.view.measurementUnit = measurementUnits[0];
-        this.item.view.minTimeUnit = lov.timeUnits[0];
-        this.item.view.maxTimeUnit = lov.timeUnits[0];
-        this.item.isCopyToShortDesc = true;
+        model.item.view.measurementUnit = measurementUnits[0];
+        model.item.view.minTimeUnit = lov.timeUnits[0];
+        model.item.view.maxTimeUnit = lov.timeUnits[0];
+        model.item.isCopyToShortDesc = true;
       } else {
-        this.item.view.category = that.categories.filter(function (cat) {
-          return cat.tId === that.item.attributes.category;
+        model.item.view.category = model.categories.filter(function (cat) {
+          return cat.tId === model.item.attributes.category;
         }) [0];
-        this.item.view.measurementUnit = that.measurementUnits.filter(function (mes) {
-          return mes.tId === that.item.attributes.measurementUnit;
+        model.item.view.measurementUnit = model.measurementUnits.filter(function (mes) {
+          return mes.tId === model.item.attributes.measurementUnit;
         }) [0];
-        if (typeof this.item.attributes.minTimeUnit === 'number') {
-          this.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === that.item.attributes.minTimeUnit;
+        if (typeof model.item.attributes.minTimeUnit === 'number') {
+          model.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
+            return tu.id === model.item.attributes.minTimeUnit;
           }) [0];
         }
-        if (typeof this.item.attributes.maxTimeUnit === 'number') {
-          this.item.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === that.item.attributes.maxTimeUnit;
+        if (typeof model.item.attributes.maxTimeUnit === 'number') {
+          model.item.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
+            return tu.id === model.item.attributes.maxTimeUnit;
           }) [0];
         }
       }
-      this.backupItemAttr = angular.copy(this.item.attributes);
+      model.backupItemAttr = angular.copy(model.item.attributes);
     };
 
-    this.cancel = function () {
-      this.item.attributes = angular.copy(this.backupItemAttr);
-      this.setupItemView();
-      this.loadComponentItems();
-      this.setChanged(false);
+    model.cancel = function () {
+      model.item.attributes = angular.copy(model.backupItemAttr);
+      model.setupItemView();
+      model.loadComponentItems();
+      model.setChanged(false);
     };
 
-    this.close = function () {
+    model.close = function () {
       $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
     };
 
     // main block
-    var that = this;
-    this.isMainTabActive = true;
-    this.currentDomain = lov.domains[currentDomain];
-    this.categories = allCategories.filter(function(cat) {
+    model.isMainTabActive = true;
+    model.currentDomain = lov.domains[currentDomain];
+    model.categories = allCategories.filter(function(cat) {
       return cat.domain===currentDomain;
     });
-    this.measurementUnits = measurementUnits;
-    this.timeUnits = lov.timeUnits;
-    this.isNewItem = $state.current.name==='newCatalogItem' || $state.current.name==='dupCatalogItem';
-   if (this.isNewItem) {
-     this.item = api.initCatalog();
-     this.item.attributes.domain = lov.domains.filter(function(dom) {
+    model.measurementUnits = measurementUnits;
+    model.timeUnits = lov.timeUnits;
+    model.isNewItem = $state.current.name==='newCatalogItem' || $state.current.name==='dupCatalogItem';
+   if (model.isNewItem) {
+     model.item = api.initCatalog();
+     model.item.attributes.domain = lov.domains.filter(function(dom) {
        return dom.id===currentDomain;
      })[0].id;
-     this.item.attributes.priceQuantity = null;
-     this.item.attributes.price = null;
-     this.item.attributes.productionQuantity = null;
-     this.item.attributes.minTime = null;
-     this.item.attributes.maxTime = null;
-     if (this.currentDomain.id === 1) {
-       this.item.attributes.isInMenu = true;
+     model.item.attributes.priceQuantity = null;
+     model.item.attributes.price = null;
+     model.item.attributes.productionQuantity = null;
+     model.item.attributes.minTime = null;
+     model.item.attributes.maxTime = null;
+     if (model.currentDomain.id === 1) {
+       model.item.attributes.isInMenu = true;
      }
-     this.item.attributes.exitList = [];
-     this.item.attributes.components = [];
+     model.item.attributes.exitList = [];
+     model.item.attributes.components = [];
    } else {
-     this.item = currentItem;
+     model.item = currentItem;
      }
 
-   this.item.isCopyToShortDesc = this.item.attributes.productDescription===this.item.attributes.shortDescription;
-   this.setupItemView();
-   this.setChanged(false);
-   this.loadComponentItems();
+   model.item.isCopyToShortDesc = model.item.attributes.productDescription===model.item.attributes.shortDescription;
+   model.setupItemView();
+   model.setChanged(false);
+   model.loadComponentItems();
   })
 
   .controller('AckDelCatalogCtrl', function ($modalInstance, item) {
-    this.item = item;
+    model.item = item;
 
-    this.setYes = function () {
+    model.setYes = function () {
       $modalInstance.close(true);
     };
 
-    this.setNo = function () {
+    model.setNo = function () {
       $modalInstance.close(false);
     };
   });
