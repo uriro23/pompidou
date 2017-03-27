@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
-                                     lov, config, bidTextTypes, menuTypes, discountCauses, role) {
+                                     lov, config, bidTextTypes, menuTypes, categories, discountCauses, role) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -14,6 +14,7 @@ angular.module('myApp')
     }
     $rootScope.title = lov.company + ' - ניהול';
 
+  this.isEnvTabActive =true;
 
     // vat
     // ---
@@ -143,6 +144,62 @@ angular.module('myApp')
         api.setEnvironment('test');
       }
       $state.go('login');
+    };
+
+    this.catalogReport = function() {
+      var that = this;
+      api.queryCatalog(1)
+        .then(function(catItems) {
+          var noCompItems = catItems.filter(function(cat) {  // return only items with no components
+            var comps = cat.attributes.components.filter(function(comp) {
+              return comp.id !== config.attributes.unhandledItemComponent &&
+                     comp.id !== config.attributes.unhandledItemMaterial;
+            });
+            return !comps.length;
+          }).map(function(cat) {
+            cat.view = {};
+            cat.view.count = 0;
+            cat.view.category = categories.filter(function(c) {
+              return c.tId===cat.attributes.category;
+            })[0];
+            return cat;
+          });
+          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate);
+          var to = new Date(2099,11,31);
+          api.queryOrdersByRange('eventDate',from,to)
+            .then(function(ords) {
+              ords.forEach(function(ord) {
+                var ordItems = ord.attributes.quotes[ord.attributes.activeQuote].items;
+                ordItems.forEach(function(itm) {
+                  noCompItems.forEach(function(noComp) {
+                    if (noComp.id===itm.catalogId) {
+                      noComp.view.count++;
+                    }
+                  });
+                });
+              });
+              that.catalog = noCompItems.filter(function(cat) {
+                return cat.view.count;
+              }).sort(function(a,b) {
+                if (a.view.category.order<b.view.category.order) {
+                  return -1
+                } else {
+                  if (a.view.category.order>b.view.category.order) {
+                    return 1
+                } else {
+                    if (a.view.count<b.view.count) {
+                      return 1
+                    } else {
+                      return -1
+                    }
+                  }
+              }});
+            });
+        });
+    };
+
+    this.selectCatItem = function(id) {
+      $state.go('editCatalogItem', {'id':id});
     };
 
     // quote conversion  1/2016

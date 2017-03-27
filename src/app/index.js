@@ -466,8 +466,11 @@ config(function($stateProvider, $urlRouterProvider) {
       bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
         return bidTextTypesPromise;
       }],
-     discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
+      }],
+      categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
       }],
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
