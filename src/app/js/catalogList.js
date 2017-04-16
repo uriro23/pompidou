@@ -46,7 +46,8 @@ angular.module('myApp')
       var that = this;
       this.categoryItems = this.catalog.filter(function(cat) {
         return cat.attributes.category===that.currentCategory.tId &&
-            cat.attributes.productDescription.indexOf(that.filterText)>-1;
+            cat.attributes.productDescription.indexOf(that.filterText)>-1 &&
+            (that.includeDeleted || !cat.attributes.isDeleted);
       });
     };
 
@@ -72,10 +73,7 @@ angular.module('myApp')
           }
             return api.queryCatalog(that.currentDomain.id)
             .then(function (results) {
-            var tempCatalog = results.filter(function (cat) {
-              return !cat.attributes.isDeleted;
-            });
-            that.catalog = that.sortCatalog(tempCatalog);
+            that.catalog = that.sortCatalog(results);
             // enrich catalog data
             for (var i = 0; i < that.catalog.length; i++) {
               that.catalog[i].view = {};

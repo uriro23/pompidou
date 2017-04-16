@@ -44,12 +44,14 @@
         </td>
       </tr>
       <tr>
-        <td><label>מחיקת פריט</label></td>
+        <td><label>סמן פריט כמבוטל</label></td>
         <td>
-          <button class="btn btn-warning"
-                  ng-click="catalogItemModel.delItem()"
-                  ng-disabled="catalogItemModel.isNewItem"
-          >מחק</button>
+          <input type="checkbox"
+                 ng-model="catalogItemModel.item.attributes.isDeleted"
+                 ng-change="catalogItemModel.setChanged(true)">
+        </td>
+        <td ng-show="catalogItemModel.item.attributes.isDeleted">
+הפריט סומן במבוטל. ניתן לצפות בפריטים מבוטלים ולבטל את ביטולם ע"י סימון מבוטלים בחלון הקטלוג הראשי
         </td>
       </tr>
     </table>

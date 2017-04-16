@@ -275,29 +275,6 @@ angular.module('myApp')
      model.isNewItem = true;
    };
 
-   model.delItem = function() {
-     var ackDelModal = $modal.open({
-       templateUrl: 'app/partials/catalogAckDelete.html',
-       controller: 'AckDelCatalogCtrl as ackDelCatalogModel',
-       resolve: {
-         item: function () {
-           return model.item;
-         }
-       },
-       size: 'sm'
-     });
-
-     ackDelModal.result.then(function (isDelete) {
-       if (isDelete) {
-         api.deleteObj(model.item)
-           .then(function() {
-             $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
-           });
-        }
-       });
-    };
-
-
     model.setupItemView = function() {
       model.item.view = {};
       model.item.errors = {};

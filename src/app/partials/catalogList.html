@@ -9,6 +9,8 @@
           ng-options="category.label for category in catalogListModel.categories"></select>
   <label>סינון</label>
   <input type="text" size="20" ng-model="catalogListModel.filterText" ng-change="catalogListModel.filterItems()">
+<label>כולל מבוטלים</label>
+  <input type="checkbox" ng-model="catalogListModel.includeDeleted" ng-change="catalogListModel.filterItems()">
   <button ng-click="catalogListModel.addItem()" class="btn btn-default">הוסף פריט</button>
   <table class="table table-hover" style="width:100%">
       <thead>
@@ -31,7 +33,7 @@
     <th>יחידה</th>
     </thead>
       <tbody>
-      <tr ng-repeat="catalogItem in catalogListModel.categoryItems" ng-class="catalogItem.isChanged?'bg-success':null">
+      <tr ng-repeat="catalogItem in catalogListModel.categoryItems" ng-class="catalogItem.attributes.isDeleted?'myCanceledEvent':null">
         <td style="cursor: pointer" ng-click="catalogListModel.editItem(catalogItem.id)">{{catalogItem.attributes.productDescription}}</td>
         <td>{{catalogItem.view.measurementUnit.label}}</td>
         <td ng-show="catalogListModel.currentDomain.id===1">{{catalogItem.attributes.priceQuantity | number:0}}</td>
