@@ -1,0 +1,97 @@
+<div ng-controller="OrderTableCtrl as orderTableModel">
+  <div ng-hide="orderTableModel.queryType==='templates'">
+<table class="table table-hover table-responsive" style="width: 99%">
+  <thead ng-hide="orderTableModel.isProcessing">
+  <th style="width: 3%">מס'</th>
+  <th style="width: 11%">תאריך</th>
+  <th style="width: 4%">מסירה</th>
+  <th ng-show="orderTableModel.queryType==='future'" style="width: 4%">יציאה</th>
+  <th ng-hide="orderTableModel.queryType==='customer'" style="width: 8%">לקוח</th>
+  <th ng-hide="orderTableModel.queryType==='customer'" style="width:1%">טל'</th>
+  <th style="width: 5%">סועדים</th>
+  <th class="hidden-xs" style="width: 7%">סוג אירוע</th>
+  <th style="width: 7%">סטטוס</th>
+  <th style="width: 7%">סכום</th>
+  <th  ng-show="orderTableModel.queryType==='debts'" style="width: 7%">יתרה</th>
+  <th class="hidden-xs" style="width: 7%">משלוח</th>
+  <th style="width: 3%">הנחה</th>
+  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
+  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 22%">פעילות</th>
+  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'"style="width: 6%">הצעת מחיר</th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="order in orderTableModel.orders"
+      ng-class="order.view.orderStatus.id===1?'bg-active':
+                        order.view.orderStatus.id===2?'bg-warning':
+                        (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
+                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
+    <td>
+      <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
+    </td>
+    <td>{{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</td>
+    <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
+    <td ng-show="orderTableModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>
+    <td ng-hide="orderTableModel.queryType==='customer'">
+      {{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}
+    </td>
+    <td ng-show="!orderTableModel.queryType==='customer' && order.view.customer.anyPhone">
+      <a href="tel:{{order.view.customer.anyPhone}}">
+        <img src="app/img/phone.png">
+      </a>
+    </td>
+    <td ng-hide="orderTableModel.queryType==='customer' || order.view.customer.anyPhone"></td>
+    <td>{{order.attributes.noOfParticipants}}</td>
+    <td class="hidden-xs">{{order.view.eventType.label}}</td>
+    <td ng-show="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
+      <select ng-model="order.view.orderStatus"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
+      ></select>
+    </td>
+    <td ng-hide="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
+      {{order.view.orderStatus.name}}
+    </td>
+    <td>{{order.attributes.header.total | currency}}</td>
+    <td ng-show="orderTableModel.queryType==='debts'">
+      {{order.attributes.header.balance | currency}}
+    </td>
+    <td class="hidden-xs">{{order.attributes.header.transportationInclVat | currency}}</td>
+    <td>{{order.attributes.header.discountRate | number:0}}</td>
+    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityDate | date: 'dd/MM/yy'}}</td>
+    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityText}}</td>
+    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">
+      <button class="btn btn-default btn-sm" ng-click="orderTableModel.getLastBid(order)">הצג</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+  <div ng-show="orderTableModel.queryType==='templates'">
+    <table class="table table-hover" style="width: 99%">
+      <thead ng-hide="orderTableModel.isProcessing">
+      <th style="width: 3%">מס'</th>
+      <th style="width: 23%">תבנית</th>
+      <th style="width: 5%">סועדים</th>
+      <th style="width: 7%">סוג אירוע</th>
+      <th style="width: 7%">סכום</th>
+      <th style="width: 48%">הערות</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="order in orderTableModel.orders"
+          ng-class="order.view.orderStatus.id===1?'bg-active':
+                        order.view.orderStatus.id===2?'bg-warning':
+                        (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
+                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
+        <td>
+          <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
+        </td>
+        <td>{{order.attributes.template}}</td>
+        <td>{{order.attributes.noOfParticipants}}</td>
+        <td>{{order.view.eventType.label}}</td>
+        <td>{{order.attributes.header.total | currency}}</td>
+        <td>{{order.attributes.remarks}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

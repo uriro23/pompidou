@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CustomerListCtrl', function ($rootScope, $state, $modal, api,
+  .controller('CustomerListCtrl', function ($rootScope, $scope, $state, $modal, api,
                                             customerService, lov, customers, eventTypes) {
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -161,6 +161,7 @@ angular.module('myApp')
           that.customerOrders.sort (function(a,b) {
             return b.attributes.eventDate - a.attributes.eventDate;
           });
+          that.setOrderTableParams();
         });
      };
 
@@ -240,7 +241,22 @@ angular.module('myApp')
         });
     };
 
-      // main block
+    var tabThis;
+
+    this.setOrderTableParams = function () {
+      if (tabThis) {
+        tabThis.queryType = 'customer';
+        tabThis.isProcessing = false;
+        tabThis.orders = this.customerOrders;
+      }
+    };
+
+    $scope.initOrderTableParams = function (t) {
+      tabThis = t;
+    };
+
+
+    // main block
 
     // make customers array easy for filtering - no undefined fields
     this.customers = customers.map(function (cust) {

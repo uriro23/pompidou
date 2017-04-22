@@ -38,7 +38,11 @@
     </button>
 </div>
 <div ng-show="customerListModel.isShowOrders">
-  <ng-include src="'app/partials/customer/orderList.html'"></ng-include>
+  <h3>
+    <span>רשימת אירועים של </span>
+    {{customerListModel.currentCustomer.attributes.firstName+' '+ customerListModel.currentCustomer.attributes.lastName}}
+  </h3>
+  <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
 </div>
   <table class="table table-hover" style="width:99%">
     <thead>

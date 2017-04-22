@@ -2,8 +2,9 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderListCtrl', function ($rootScope, $state, $modal, api, lov, today, customers, eventTypes) {
-    $rootScope.menuStatus = 'show';
+   .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal, api, lov, today, customers, eventTypes) {
+      var that = this;
+     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
       $rootScope.username = user.attributes.username;
@@ -56,7 +57,7 @@ angular.module('myApp')
           }
           return that.queryType === 'future' ? a1 - b1 : b1 - a1;
          }
-      })
+      });
     };
 
 //  enrich order with info on customers etc.
@@ -81,6 +82,7 @@ angular.module('myApp')
       this.noOfFetchedOrders = fetchedOrders.length;
       this.filterOrders();
       this.isProcessing = false;
+      this.setOrderTableParams();
     };
 
     this.setQuery = function () {
@@ -94,6 +96,7 @@ angular.module('myApp')
         this.queryYear = undefined;
       }
       this.isProcessing = true;
+      this.setOrderTableParams();
       switch (this.queryType) {
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
@@ -184,24 +187,25 @@ angular.module('myApp')
       api.saveObj(order);
     };
 
-    this.getLastBid = function (order) {
-      api.queryBidsByOrder(order.id)
-        .then(function (bids) {
-          if (bids.length > 0) {
-            //                 $state.go("bid",{id:bids[0].attributes.uuid})
-            window.open("#/bid/" + bids[0].attributes.uuid, "_blank");
-          } else {
-            alert('אין הצעות מחיר לאירוע')
-          }
-        })
-
-    };
-
     this.newOrder = function () {
       $state.go('newOrder');
     };
 
+    var tabThis;
 
+    this.setOrderTableParams = function () {
+      if (tabThis) {
+        tabThis.queryType = this.queryType;
+        tabThis.isProcessing = this.isProcessing;
+        tabThis.orders = this.orders;
+      }
+    };
+
+    $scope.initOrderTableParams = function (t) {
+      tabThis = t;
+   };
+
+    // main block
     this.years = [];
     for (var y=new Date().getFullYear();y>=2012;y--) {
       this.years.push(y);
@@ -211,7 +215,20 @@ angular.module('myApp')
     this.queryType = 'future';
     this.setQuery();
     this.isProcessing = false;
+  })
 
+  .controller('OrderTableCtrl', function($scope, api) {
+    $scope.$parent.initOrderTableParams(this);
 
+    this.getLastBid = function (order) {
+      api.queryBidsByOrder(order.id)
+        .then(function (bids) {
+          if (bids.length > 0) {
+            window.open("#/bid/" + bids[0].attributes.uuid, "_blank");
+          } else {
+            alert('אין הצעות מחיר לאירוע')
+          }
+        })
+    };
   });
 
