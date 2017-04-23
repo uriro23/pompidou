@@ -1,5 +1,5 @@
 <div ng-controller="HeaderCtrl as headerModel">
-<table style="width: 95%">
+<table ng-hide="orderModel.order.attributes.template" style="width: 95%">
   <tbody>
     <tr ng-class="headerModel.order.view.changes.customer?'bg-success':null">
       <td style="width: 50%">
@@ -83,17 +83,17 @@
   </table>
 <table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
-    <td style="width: 17%">
+    <td  ng-hide="orderModel.order.attributes.template" style="width: 17%">
       <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.attributes.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'bg-danger':null">
     </td>
-    <td style="width: 14%">
-      <label>שעת מסירה:</label>&nbsp;<input type="time" ng-model="headerModel.order.attributes.eventTime"
+    <td  ng-hide="orderModel.order.attributes.template" style="width: 17%">
+    <label>שעת מסירה:</label>&nbsp;<input type="time" ng-model="headerModel.order.attributes.eventTime"
                                ng-disabled="headerModel.isReadOnly"
                                ng-change="headerModel.orderChanged('header')">
     </td>
-    <td style="width: 14%">
+    <td  ng-hide="orderModel.order.attributes.template" style="width: 14%">
       <label>שעת יציאה:</label>&nbsp;<input type="time" ng-model="headerModel.order.attributes.exitTime"
                                ng-disabled="headerModel.isReadOnly"
                                ng-change="headerModel.orderChanged('header')">
@@ -120,12 +120,13 @@
                                       ng-disabled="headerModel.isReadOnly"
             ></select>
     </td>
-    <td style="width: 15%">
+    <td  ng-hide="orderModel.order.attributes.template"style="width: 15%">
       <label>סטטוס:</label>&nbsp;<select ng-model="headerModel.order.view.orderStatus"
                                          ng-change="headerModel.orderChanged('header')"
                                          ng-options="orderStatus.name for orderStatus in headerModel.orderStatuses"
       ></select>
     </td>
+    <td  ng-show="orderModel.order.attributes.template"></td>
   </tr>
     <tr>
       <td>

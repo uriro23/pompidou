@@ -78,11 +78,7 @@
       <th style="width: 48%">הערות</th>
       </thead>
       <tbody>
-      <tr ng-repeat="order in orderTableModel.orders"
-          ng-class="order.view.orderStatus.id===1?'bg-active':
-                        order.view.orderStatus.id===2?'bg-warning':
-                        (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
-                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
+      <tr ng-repeat="order in orderTableModel.orders">
         <td>
           <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
         </td>

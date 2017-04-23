@@ -1,8 +1,11 @@
     <h3 style="display: inline">
       <span ng-show="orderModel.isNewOrder">אירוע חדש</span>
       <span ng-hide="orderModel.isNewOrder">
-        <span>אירוע מס' </span>
+        <span ng-hide="orderModel.order.attributes.template">אירוע מס' </span>
+        <span ng-show="orderModel.order.attributes.template">תבנית מס' </span>
         <span>{{orderModel.order.attributes.number}}</span>
+        <span ng-show="orderModel.order.attributes.template">:</span>
+        <span ng-show="orderModel.order.attributes.template">{{orderModel.order.attributes.template}}</span>
       </span>
       </h3>
     <div style="display: inline">
