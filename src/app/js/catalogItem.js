@@ -2,9 +2,9 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('CatalogItemCtrl', function ($state, $modal, $rootScope, api, lov,
+  .controller('CatalogItemCtrl', function ($state, $modal, $rootScope, $scope, api, lov,
                                            currentItem, currentDomain, currentCategory,
-                                           allCategories, measurementUnits, config) {
+                                           allCategories, measurementUnits, eventTypes, config) {
 
     var model = this;
     $rootScope.menuStatus = 'show';
@@ -58,7 +58,7 @@ angular.module('myApp')
     model.setPriceQuantity = function () {
       model.item.errors.priceQuantity =
         (model.currentDomain.id === 1 || Boolean(model.item.attributes.priceQuantity)) &&
-        ((model.item.attributes.priceQuantity != Number(model.item.attributes.priceQuantity) ||
+        ((model.item.attributes.priceQuantity !== Number(model.item.attributes.priceQuantity) ||
         Number(model.item.attributes.priceQuantity) <= 0));
       model.setChanged(true);
     };
@@ -66,28 +66,28 @@ angular.module('myApp')
     model.setPrice = function () {
       model.item.errors.price =
         (model.currentDomain.id === 1 || Boolean(model.item.attributes.price)) &&
-        ((model.item.attributes.price != Number(model.item.attributes.price) ||
+        ((model.item.attributes.price !== Number(model.item.attributes.price) ||
         Number(model.item.attributes.price) <= 0));
       model.setChanged(true);
     };
 
     model.setProductionQuantity = function () {
       model.item.errors.productionQuantity =
-        model.item.attributes.productionQuantity != Number(model.item.attributes.productionQuantity) ||
+        model.item.attributes.productionQuantity !== Number(model.item.attributes.productionQuantity) ||
         Number(model.item.attributes.productionQuantity) <= 0;
       model.setChanged(true);
     };
 
     model.setMinTime = function (ind) {
       model.item.errors.minTime =
-        model.item.attributes.minTime != Number(model.item.attributes.minTime) ||
+        model.item.attributes.minTime !== Number(model.item.attributes.minTime) ||
         Number(model.item.attributes.minTime) < 0;
       model.setChanged(true);
     };
 
     model.setMaxTime = function (ind) {
       model.item.errors.maxTime =
-        model.item.attributes.maxTime != Number(model.item.attributes.maxTime) ||
+        model.item.attributes.maxTime !== Number(model.item.attributes.maxTime) ||
         Number(model.item.attributes.maxTime) < 0;
       model.setChanged(true);
     };
@@ -135,7 +135,7 @@ angular.module('myApp')
 
    model.setCompQuantity = function(component) {
      component.isError =
-       component.view.compQuantity != Number(component.view.compQuantity) ||
+       component.view.compQuantity !== Number(component.view.compQuantity) ||
        Number(component.view.compQuantity) <= 0;
      model.setChanged(true);
   };
@@ -323,6 +323,91 @@ angular.module('myApp')
     model.close = function () {
       $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
     };
+
+    model.getOrders = function () {
+      var fieldList = [
+        'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus',
+        'customer','number','eventType','header','quotes'
+      ];
+      model.isProcessing = true;
+      model.setOrderTableParams();
+      api.queryCustomers()
+        .then(function(custs) {
+          var to = new Date(2099,11,31);
+          var from = new Date(new Date().getUTCFullYear()-1,new Date().getMonth(),new Date().getDate());
+          api.queryOrdersByRange('eventDate',from,to,fieldList)
+            .then(function (orders) {
+              model.orders = orders.filter(function (ord) {
+                if (ord.attributes.orderStatus===6) {
+                  return false;
+                } else {
+              var res= false;
+              ord.attributes.quotes.forEach(function(q) {
+                    q.items.forEach(function(itm) {
+                      if (itm.catalogId===model.item.id) {
+                        res = true;
+                      }
+                    });
+                  });
+                  return res;
+                }
+              });
+              model.orders.forEach(function(ord) {
+                ord.view = {
+                  'customer': custs.filter(function(cust) {
+                    return cust.id === ord.attributes.customer;
+                  })[0],
+                  'orderStatus': lov.orderStatuses.filter (function(st) {
+                    return st.id === ord.attributes.orderStatus;
+                  })[0],
+                  'eventType': ord.attributes.eventType ?
+                    eventTypes.filter(function (et) {
+                      return et.tId === ord.attributes.eventType;
+                    })[0]
+                    : undefined
+                };
+                ord.view.customer.anyPhone =
+                  ord.view.customer.attributes.mobilePhone?ord.view.customer.attributes.mobilePhone:
+                    ord.view.customer.attributes.homePhone?ord.view.customer.attributes.homePhone:
+                      ord.view.customer.attributes.workPhone?ord.view.customer.attributes.workPhone:undefined;
+              });
+              model.orders.sort(function(a,b) {
+                var ad = a.attributes.eventDate;
+                var at = a.attributes.eventTime;
+                var bd = b.attributes.eventDate;
+                var bt = b.attributes.eventTime;
+                var a1 = ad.getDate() - 1 + ad.getMonth()*31 + (ad.getFullYear()-2010)*372;
+                if (at) {
+                  a1 +=  at.getHours()/24 + at.getMinutes()/1440;
+                }
+                var b1 = bd.getDate() - 1 + bd.getMonth()*31 + (bd.getFullYear()-2010)*372;
+                if (bt) {
+                  b1 +=  bt.getHours()/24 + bt.getMinutes()/1440;
+                }
+                return b1 - a1;
+              });
+              model.isProcessing = false;
+              model.setOrderTableParams();
+            })
+        });
+     };
+
+    var tabThis;
+
+    model.setOrderTableParams = function () {
+      if (tabThis) {
+        tabThis.queryType = 'catalog';
+        tabThis.isProcessing = model.isProcessing;
+        tabThis.orders = model.orders;
+      }
+    };
+
+
+
+    $scope.initOrderTableParams = function (t) {
+      tabThis = t;
+    };
+
 
     // main block
     model.isMainTabActive = true;

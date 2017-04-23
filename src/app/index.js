@@ -369,6 +369,9 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
+        }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
             return res[0].attributes;
@@ -407,6 +410,9 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
+        }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
             return res[0].attributes;
@@ -444,6 +450,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
+        }],
+        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+          return eventTypesPromise;
         }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {

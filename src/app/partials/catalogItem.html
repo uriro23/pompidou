@@ -24,6 +24,13 @@
   <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
 </div>
 <tabset>
+  <tab heading="אירועים"
+       ng-show="catalogItemModel.currentDomain.id===1"
+       select="catalogItemModel.getOrders()">
+    <h4 ng-hide="catalogItemModel.isProcessing">אירועים בשנה האחרונה בהם הוצעה מנה זו</h4>
+    <h4 ng-show="catalogItemModel.isProcessing"">המתן...</h4>
+    <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
+  </tab>
   <tab heading="שונות">
     <table>
       <tr>
