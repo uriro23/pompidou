@@ -17,7 +17,8 @@
   <th style="width: 3%">הנחה</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 22%">פעילות</th>
-  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'"style="width: 6%">הצעת מחיר</th>
+  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'"
+      style="width: 6%">הצעת מחיר</th>
   </thead>
   <tbody>
   <tr ng-repeat="order in orderTableModel.orders"
@@ -34,7 +35,7 @@
     <td ng-hide="orderTableModel.queryType==='customer'">
       {{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}
     </td>
-    <td ng-show="!orderTableModel.queryType==='customer' && order.view.customer.anyPhone">
+    <td ng-show="orderTableModel.queryType!=='customer' && order.view.customer.anyPhone">
       <a href="tel:{{order.view.customer.anyPhone}}">
         <img src="app/img/phone.png">
       </a>
@@ -59,7 +60,7 @@
     <td>{{order.attributes.header.discountRate | number:0}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityDate | date: 'dd/MM/yy'}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityText}}</td>
-    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">
+    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'">
       <button class="btn btn-default btn-sm" ng-click="orderTableModel.getLastBid(order)">הצג</button>
     </td>
   </tr>

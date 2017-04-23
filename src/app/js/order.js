@@ -2,8 +2,8 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, orderService,
-                                     currentOrder, customer, lov, today, eventTypes,
+  .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
+                                     orderService, currentOrder, customer, lov, today, eventTypes,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, menuTypes, config) {
 
@@ -22,7 +22,7 @@ angular.module('myApp')
     };
 
     this.handleVatRateChange = function () {
-      if (this.order.attributes.vatRate != this.vatRate && !this.isReadOnly) {
+      if (this.order.attributes.vatRate !== this.vatRate && !this.isReadOnly) {
         var that = this;
         var vatChangeModal = $modal.open({
           templateUrl: 'app/partials/order/vatChange.html',
@@ -99,7 +99,8 @@ angular.module('myApp')
                 })[0]
                   : undefined
               }
-            })
+            });
+            that.setOrderTableParams();
           })
       }
     };
@@ -237,6 +238,21 @@ angular.module('myApp')
       this.order.attributes = angular.copy(this.order.backupOrderAttr);
       this.setupOrderView();
     };
+
+    var tabThis;
+
+    this.setOrderTableParams = function () {
+      if (tabThis) {
+        tabThis.queryType = 'customer';
+        tabThis.isProcessing = false;
+        tabThis.orders = this.prevOrders;
+      }
+    };
+
+    $scope.initOrderTableParams = function (t) {
+      tabThis = t;
+    };
+
 
 
     // main block
