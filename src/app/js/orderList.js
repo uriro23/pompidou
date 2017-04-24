@@ -58,6 +58,7 @@ angular.module('myApp')
           return that.queryType === 'future' ? a1 - b1 : b1 - a1;
          }
       });
+      this.setOrderTableParams();
     };
 
 //  enrich order with info on customers etc.
