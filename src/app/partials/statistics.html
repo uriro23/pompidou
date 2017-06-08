@@ -52,11 +52,16 @@
                ng-model="statisticsModel.toParticipants"
                ng-change="statisticsModel.filterOrders()">
       </td>
+      <td>
+        <label>ליצוא</label>
+        <input type="checkbox" ng-model="statisticsModel.isForExport">
+      </td>
     </tr>
      </tbody>
   </table>
   <tabset>
     <tab heading="חודשים">
+      <div ng-hide="statisticsModel.isForExport">
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.monthStats.length">
         <th><label>חודש</label></th>
@@ -109,6 +114,15 @@
         </tr>
         </tbody>
       </table>
+      </div>
+      <div ng-show="statisticsModel.isForExport">
+        <p></p>
+        <div ng-repeat="line in statisticsModel.monthStats track by line.label">
+          <span>{{line.label | date: 'MM/yy'}}</span>
+          <span>,</span>
+          <span>{{line.actTotal }}</span>
+        </div>
+      </div>
     </tab>
     <tab heading="משתתפים">
     <table class="table table-hover" style="width: 80%">
