@@ -4,6 +4,8 @@
           ng-disabled="catalogModel.isChanged"
           ng-options="domain.label for domain in catalogModel.domains"></select>
   <button ng-click="catalogModel.addItem()" class="btn btn-default">הוסף פריט</button>
+  <label>ליצוא</label>
+  <input type="checkbox" ng-model="catalogModel.isForExport">
   <span ng-show="catalogModel.isChanged" class="bg-success">
     <span>     הקש על</span>
     <button ng-click="catalogModel.updateItems()" class="btn btn-success">שמור</button>
@@ -11,6 +13,7 @@
     <button ng-click="catalogModel.setDomain()" class="btn btn-warning">ביטול</button>
     <span> כדי לבטלם</span>
   </span>
+  <div ng-hide="catalogModel.isForExport">
   <table class="table table-hover" style="width:100%">
       <thead>
         <th style="width:8%">קטגוריה</th>
@@ -104,3 +107,10 @@
       </tr>
       </tbody>
     </table>
+  </div>
+  <div ng-show="catalogModel.isForExport">
+    <p></p>
+    <div ng-repeat="catalogItem in catalogModel.catalog">
+      <span>{{catalogItem.attributes.productDescription}}</span>
+     </div>
+  </div>
