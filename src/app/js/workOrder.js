@@ -19,6 +19,13 @@ angular.module('myApp')
     var woId;
 
 
+    this.setShowAll = function(domain) {
+      var that = this;
+      this.workOrderByCategory[domain].forEach(function(cat) {
+        cat.isShow = that.workOrderByCategory[domain].isShowAll;
+      });
+    };
+
     this.destroyWorkOrderDomains = function (domain) {
       var that = this;
       var woItemsToDelete = this.workOrder.filter(function (wo) {
@@ -353,6 +360,7 @@ angular.module('myApp')
       this.workOrderByCategory = [];
       for (var d = 1; d < 4; d++) {
         this.workOrderByCategory[d] = []; // init array of categories per domain
+        this.workOrderByCategory[d]['isShowAll'] = true;
       }
       //for (var i = 0; i < this.workOrder.length; i++) {
       this.workOrder.forEach(function(woi) {
@@ -366,7 +374,11 @@ angular.module('myApp')
             }
           });
           if (!temp.length) {  // if category appears for 1st time, create it's object
-            that.workOrderByCategory[wo.domain].splice(0, 0, {category: wo.category, list: []});
+            that.workOrderByCategory[wo.domain].splice(0, 0, {
+              category: wo.category,
+              isShow: true,
+              list: []
+            });
             catInd = 0;
           }
           that.workOrderByCategory[wo.domain][catInd].list.push(woi); //add wo item to proper category list

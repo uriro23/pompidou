@@ -1,6 +1,12 @@
 <table style="width:70%">
   <tr>
-    <td style="width:90%;font-size: large">
+    <td style="width:10%">
+      <span>&nbsp;הצג</span>
+      <input type="checkbox"
+             ng-model="workOrderModel.workOrderByCategory[1].isShowAll"
+             ng-change="workOrderModel.setShowAll(1)">
+    </td>
+    <td style="width:80%;font-size: large">
   {{workOrderModel.domains[1].forWorkItem}}
       <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[1]">
         --- לא מעודכן ---
@@ -17,8 +23,9 @@
   </tr>
 </table>
 <div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
+  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
-  <table class="table table-hover" style="width:70%">
+  <table ng-show="cat.isShow" class="table table-hover" style="width:70%">
     <tbody>
     <tr ng-repeat="woItem in cat.list">
       <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
