@@ -100,6 +100,13 @@
     <td>יתרה:</td>
     <td>{{financialModel.order.view.quote.balance | currency}}</td>
   </tr>
+  <tr ng-class="financialModel.order.view.quote.changes.noQuantities?'bg-success':null">
+    <td><label>ללא כמויות</label></td>
+    <td><input type="checkbox"
+               ng-model="financialModel.order.view.quote.isNoQuantities"
+               ng-change="financialModel.setNoQuantities()">
+    </td>
+  </tr>
   </tbody>
 </table>
 </div>

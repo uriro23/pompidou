@@ -3,14 +3,18 @@
     <td style="width:10%">
       <span>&nbsp;הצג</span>
       <input type="checkbox"
-             ng-model="workOrderModel.workOrderByCategory[1].isShowAll"
+             ng-model="workOrderModel.hierarchicalWorkOrder[1].isShowAll"
              ng-change="workOrderModel.setShowAll(1)">
     </td>
-    <td style="width:80%;font-size: large">
+    <td style="width:40%;font-size: large">
   {{workOrderModel.domains[1].forWorkItem}}
       <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[1]">
         --- לא מעודכן ---
       </span>
+    </td>
+    <td style="width: 40%">
+      <span>פרוט אירועים</span>
+      <input type="checkbox" ng-model="workOrderModel.isShowMenuItemOrders">
     </td>
     <td style="width:10%">
   <button class="btn btn-default"
@@ -22,33 +26,51 @@
     </td>
   </tr>
 </table>
-<div ng-repeat="cat in workOrderModel.workOrderByCategory[1]">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:70%">
+    <thead ng-show="workOrderModel.isShowMenuItemOrders">
+    <th></th>
+    <th ng-repeat="order in workOrderModel.woOrders">
+      <span>{{order.attributes.customer.firstName}}</span>
+      <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
+    </th>
+    <th>ס"ה</th>
+    </thead>
     <tbody>
     <tr ng-repeat="woItem in cat.list">
       <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
-      <td>
+      <td ng-hide="workOrderModel.isShowMenuItemOrders">
         <input type="text" money size="5"
                ng-model="woItem.attributes.quantity"
                ng-change="workOrderModel.setQuantity(woItem,1)"
                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]">
       </td>
-      <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
-      <td>
+      <td ng-hide="workOrderModel.isShowMenuItemOrders"
+          style="width: 10%">
+        {{woItem.attributes.measurementUnit.label}}
+      </td>
+      <td ng-hide="workOrderModel.isShowMenuItemOrders">
         <button ng-click="workOrderModel.backInfo(woItem)"
                 ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
-      <td>
+      <td ng-hide="workOrderModel.isShowMenuItemOrders">
         <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
                 ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]"
                 class="btn btn-default btn-sm">
           מחק
         </button>
+      </td>
+       <td ng-show="workOrderModel.isShowMenuItemOrders" ng-repeat="order in woItem.attributes.orderQuant">
+         <span ng-show="order.quantity">{{order.quantity}}</span>
+         <span ng-hide="order.quantity">0</span>
+       </td>
+      <td ng-show="workOrderModel.isShowMenuItemOrders">
+        {{woItem.attributes.quantity}}
       </td>
     </tr>
     </tbody>

@@ -3,7 +3,7 @@
       <td style="width:15%">
         <span>&nbsp;הצג</span>
         <input type="checkbox"
-               ng-model="workOrderModel.workOrderByCategory[2].isShowAll"
+               ng-model="workOrderModel.hierarchicalWorkOrder[2].isShowAll"
                ng-change="workOrderModel.setShowAll(2)">
       </td>
       <td style="width: 25%">
@@ -43,7 +43,7 @@
     </tr>
   </table>
 
-<div ng-repeat="cat in workOrderModel.workOrderByCategory[2]">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:45%">

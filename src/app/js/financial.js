@@ -73,5 +73,8 @@ angular.module('myApp')
       orderService.quoteChanged(this.order,'advance');
     };
 
+    this.setNoQuantities = function() {
+      orderService.quoteChanged(this.order,'noQuantities');
+    };
 
   });

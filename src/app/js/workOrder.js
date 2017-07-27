@@ -18,11 +18,17 @@ angular.module('myApp')
 
     var woId;
 
+    this.dayName = function(dat) {
+      var dayNames = ['א','ב','ג','ד','ה','ו','ש'];
+      return dayNames[dat.getDay()]+"'";
+    };
+
+
 
     this.setShowAll = function(domain) {
       var that = this;
-      this.workOrderByCategory[domain].forEach(function(cat) {
-        cat.isShow = that.workOrderByCategory[domain].isShowAll;
+      this.hierarchicalWorkOrder[domain].categories.forEach(function(cat) {
+        cat.isShow = that.hierarchicalWorkOrder[domain].isShowAll;
       });
     };
 
@@ -46,12 +52,10 @@ angular.module('myApp')
       var workItem;
       var workItemInd;
       var that = this;
-      //for (var i = 0; i < this.workOrder.length; i++) {
       this.workOrder.forEach(function(inWorkOrderItem) {
         var inWorkItem = inWorkOrderItem.attributes;
         if (inWorkItem.domain === 0) {
           var items = inWorkItem.order.quotes[inWorkItem.order.activeQuote].items;
-          //for (var j = 0; j < items.length; j++) {
           items.forEach(function(item) {
             var temp = that.workOrder.filter(function (workItem, ind) {
               if (workItem.attributes.catalogId === item.catalogId) {
@@ -68,7 +72,13 @@ angular.module('myApp')
                 domain: 0,
                 quantity: item.quantity
               });
-            } else { // create new item
+              temp = that.woOrders.filter(function(o,i) {
+                if (o.id === inWorkOrderItem.id) {
+                  orderInd = i;
+                }
+              });
+              workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
+              } else { // create new item
               workItem = api.initWorkOrder();
               workItem.attributes.woId = woId;
               workItem.attributes.catalogId = item.catalogId;
@@ -88,18 +98,31 @@ angular.module('myApp')
                 domain: 0,
                 quantity: item.quantity
               }];
+              workItem.attributes.orderQuant = []; // create array of order quantities for detailed menu item view
+              for (var i=0;i<that.woOrders.length;i++) {  // initialize to all zero quantity
+                workItem.attributes.orderQuant[i] = {
+                  id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
+                  quantity: 0
+                };
+              }
+              var orderInd;
+              temp = that.woOrders.filter(function(o,i) {
+                if (o.id === inWorkOrderItem.id) {
+                  orderInd = i;
+                }
+              });
+              workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
               that.workOrder.push(workItem);
             }
           });
         }
       });
-    };
+   };
 
     this.createComponents = function (targetDomain) {
       var workItemInd;
       var workItem;
       var that = this;
-      //for (var i = 0; i < this.workOrder.length; i++) {
       this.workOrder.forEach(function(inWorkOrder) {
         var inWorkItem = inWorkOrder.attributes;
         if (inWorkItem.domain > 0) {  // skip orders
@@ -268,6 +291,7 @@ angular.module('myApp')
       }).sort(function(a,b) {
         return a.attributes.order.eventDate - b.attributes.order.eventDate;
       });
+      console.log(this.woOrders);
     };
 
     this.setOrderInWorkOrder = function (ind) {
@@ -326,7 +350,7 @@ angular.module('myApp')
           that.destroyWorkOrderDomains(0)
             .then(function () {
               that.workOrder = [];
-              that.workOrderByCategory = [];
+              that.hierarchicalWorkOrder = [];
               that.woOrders = [];
               if (!that.woIndex.attributes.isQuery) {
                 that.createOrderView();
@@ -357,41 +381,42 @@ angular.module('myApp')
     this.splitWorkOrder = function () {
       // split wo by domains and categories
       var that = this;
-      this.workOrderByCategory = [];
+      this.hierarchicalWorkOrder = [];
       for (var d = 1; d < 4; d++) {
-        this.workOrderByCategory[d] = []; // init array of categories per domain
-        this.workOrderByCategory[d]['isShowAll'] = true;
+        this.hierarchicalWorkOrder[d] = {
+          categories: [],
+          isShowAll: true
+        };
       }
-      //for (var i = 0; i < this.workOrder.length; i++) {
       this.workOrder.forEach(function(woi) {
         var wo = woi.attributes;
         if (wo.domain > 0) {
           var catInd;
-          var temp = that.workOrderByCategory[wo.domain].filter(function (c, ind) {
+          var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
             if (c.category.tId === wo.category.tId) {
               catInd = ind;
               return true;
             }
           });
           if (!temp.length) {  // if category appears for 1st time, create it's object
-            that.workOrderByCategory[wo.domain].splice(0, 0, {
+            that.hierarchicalWorkOrder[wo.domain].categories.splice(0, 0, {
               category: wo.category,
               isShow: true,
               list: []
             });
             catInd = 0;
           }
-          that.workOrderByCategory[wo.domain][catInd].list.push(woi); //add wo item to proper category list
+          that.hierarchicalWorkOrder[wo.domain].categories[catInd].list.push(woi); //add wo item to proper category list
         }
       });
 
       // sort categories of each domain and items within category
       for (d = 1; d < 4; d++) {
-        this.workOrderByCategory[d].sort(function (a, b) {
+        this.hierarchicalWorkOrder[d].categories.sort(function (a, b) {
           return a.category.order - b.category.order;
         });
-        for (var c = 0; c < this.workOrderByCategory[d].length; c++) {
-          this.workOrderByCategory[d][c].list.sort(function (a, b) {
+        for (var c = 0; c < this.hierarchicalWorkOrder[d].categories.length; c++) {
+          this.hierarchicalWorkOrder[d].categories[c].list.sort(function (a, b) {
             if (a.attributes.productDescription < b.attributes.productDescription) {
               return -1;
             } else {
@@ -400,6 +425,7 @@ angular.module('myApp')
           });
         }
       }
+      console.log(this.hierarchicalWorkOrder);
     };
 
     this.createWorkOrderDomain = function (targetDomain) {
@@ -462,12 +488,12 @@ angular.module('myApp')
 
       this.delItem = function (dom, cat, item) {
       var that = this;
-      api.deleteObj(this.workOrderByCategory[dom][cat].list[item])
+      api.deleteObj(this.hierarchicalWorkOrder[dom].categories[cat].list[item])
         .then(function (obj) {
         that.workOrder = that.workOrder.filter(function (wo) {
           return wo.id !== obj.id;
         });
-        that.workOrderByCategory[dom][cat].list.splice(item, 1);
+        that.hierarchicalWorkOrder[dom].categories[cat].list.splice(item, 1);
         for (var dd = dom + 1; dd < 4; dd++) {                     // set all further domains as invalid
           that.woIndex.attributes.domainStatus[dd] = false;
         }
