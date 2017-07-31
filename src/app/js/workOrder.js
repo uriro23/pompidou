@@ -187,6 +187,44 @@ angular.module('myApp')
       });
     };
 
+    // for each preparation, create an array of menu items in which it appears for detailed listing
+    this.createMenuItemView = function() {
+      var that = this;
+      this.workOrder.forEach(function(currentPrep) {
+        if(currentPrep.attributes.domain === 2) {
+          currentPrep.attributes.menuItems = [];
+          currentPrep.attributes.backTrace.forEach(function (currentBackTrace) {
+            var currentMenuItem = {};
+            currentMenuItem.id = currentBackTrace.id;
+            currentMenuItem.quantity = currentBackTrace.quantity;
+            var originalMenuItem = that.workOrder.filter(function (wo) {
+              return wo.id === currentBackTrace.id;
+            })[0];
+            var match = originalMenuItem.attributes.productDescription.match(/^\s*\S+\s+\S+\s+\S+/); // extract first 3 words of desc
+            currentMenuItem.productDescription = match ? match[0] : originalMenuItem.productDescription;
+            currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
+            for (var n = 0; n < that.woOrders.length; n++) {
+              currentMenuItem.orders[n] = {seq: n, quantity: 0};
+            }
+            var totalQuantity = 0;
+            originalMenuItem.attributes.backTrace.forEach(function (ord) {
+              totalQuantity += ord.quantity;
+            });
+            var m;
+            originalMenuItem.attributes.backTrace.forEach(function (currentOrder) {
+              var temp = that.woOrders.filter(function (ord, ind) {
+                if (ord.id === currentOrder.id) {
+                  m = ind;
+                }
+              });
+              currentMenuItem.orders[m].quantity += currentBackTrace.quantity * currentOrder.quantity / totalQuantity;
+            });
+            currentPrep.attributes.menuItems.push(currentMenuItem);
+          });
+        }
+      });
+    };
+
     this.createOrderView = function () {
       var that = this;
       this.orderView = [];
@@ -291,7 +329,6 @@ angular.module('myApp')
       }).sort(function(a,b) {
         return a.attributes.order.eventDate - b.attributes.order.eventDate;
       });
-      console.log(this.woOrders);
     };
 
     this.setOrderInWorkOrder = function (ind) {
@@ -442,8 +479,11 @@ angular.module('myApp')
         });
         if (targetDomain === 1) {
           that.createOrderItems();
+        } else if (targetDomain === 2) {
+          that.createComponents(2);
+          that.createMenuItemView();
         } else {
-          that.createComponents(targetDomain);
+          that.createComponents(3);
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {

@@ -6,6 +6,8 @@ angular.module('myApp')
                                          lov, catalog, allCategories, measurementUnits, today,
                                          workOrder) {
 
+    var that = this;
+
     this.allOrders = workOrder.filter(function(wo) { // create array of all orders in wo
       return wo.domain===0;
     });
@@ -20,11 +22,9 @@ angular.module('myApp')
     this.todaysPreps = workOrder.filter(function (wi) {
         return wi.domain===2 && wi.isForToday;
     });
-    for (var i=0;i<this.todaysPreps.length;i++) {
-      var currentPrep = this.todaysPreps[i];
+    this.todaysPreps.forEach(function(currentPrep) {
       currentPrep.menuItems = [];
-      for (var j=0;j<currentPrep.backTrace.length;j++) {
-        var currentBackTrace = currentPrep.backTrace[j];
+      currentPrep.backTrace.forEach(function(currentBackTrace) {
         var currentMenuItem = {};
         currentMenuItem.id = currentBackTrace.id;
         currentMenuItem.quantity = currentBackTrace.quantity;
@@ -34,23 +34,27 @@ angular.module('myApp')
         var match = originalMenuItem.productDescription.match(/^\s*\S+\s+\S+\s+\S+/); // extract first 3 words of desc
         currentMenuItem.productDescription = match ? match[0] : originalMenuItem.productDescription;
         currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
-        for (var n=0;n<this.allOrders.length;n++) {
+        for (var n=0;n<that.allOrders.length;n++) {
           currentMenuItem.orders[n] = {seq:n, quantity:0};
         }
+        var totalQuantity = 0;
+        originalMenuItem.backTrace.forEach(function(ord) {
+          totalQuantity += ord.quantity;
+        });
         var m;
-        for (var k=0;k<originalMenuItem.backTrace.length;k++) {
-         var temp = this.allOrders.filter(function(ord, ind) {
-            if (ord.id===originalMenuItem.backTrace[k].id) {
+        originalMenuItem.backTrace.forEach(function(currentOrder) {
+         var temp = that.allOrders.filter(function(ord, ind) {
+            if (ord.id===currentOrder.id) {
               m = ind;
             }
           });
-           currentMenuItem.orders[m].quantity += originalMenuItem.backTrace[k].quantity;
-          }
+           currentMenuItem.orders[m].quantity += currentBackTrace.quantity * currentOrder.quantity / totalQuantity;
+          });
         currentPrep.menuItems.push(currentMenuItem);
-      }
-    }
+      });
+  });
 
-    this.dayName = function(dat) {
+this.dayName = function(dat) {
       var dayNames = ['א','ב','ג','ד','ה','ו','ש'];
       return dayNames[dat.getDay()]+"'";
     }
