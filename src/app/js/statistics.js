@@ -14,10 +14,11 @@ angular.module('myApp')
     $rootScope.title = lov.company + ' - סטטיסטיקות';
 
     this.toDate = today;
+    this.toDate.setDate(this.toDate.getDate()+1); // do until tomorrow, to include events of today
     this.fromDate = angular.copy(this.toDate);
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
-    var filterField = 'eventDate';
+    this.filterBy = 'eventDate';
     var dateBias;
     var fetchedOrders = [];
     var filteredOrders = [];
@@ -50,7 +51,7 @@ angular.module('myApp')
       fetchedOrders = filteredOrders = [];
 
       dateBias = this.fromDate.getFullYear()*12 + this.fromDate.getMonth(); // this is index 0 of months array
-      api.queryOrdersByRange(filterField, this.fromDate, this.toDate)
+      api.queryOrdersByRange(this.filterBy, this.fromDate, this.toDate)
         .then(function(orders) {
           fetchedOrders = orders.filter(function(ord) {
             return !ord.attributes.template;    // ignore templates
@@ -58,10 +59,6 @@ angular.module('myApp')
           that.filterOrders();
        })
           };
-
-    this.setFilterField = function () {
-      filterField = this.filterBy;
-    };
 
     this.filterOrders = function () {
         var that = this;
@@ -111,12 +108,14 @@ angular.module('myApp')
             tempVec[segIndex].actCount = 1;
             tempVec[segIndex].actTotal = currentQuote.total;
             tempVec[segIndex].actParticipants = currentOrder.noOfParticipants;
+            tempVec[segIndex].actTransportation = currentQuote.transportationInclVat;
 
           } else {
             tempVec[segIndex].actCount = 0;
             tempVec[segIndex].actTotal = 0;
             tempVec[segIndex].actParticipants = 0;
-          }
+            tempVec[segIndex].actTransportation = 0;
+           }
         }  else {
          tempVec[segIndex].potCount++;
           tempVec[segIndex].potTotal += currentQuote.total;
@@ -124,6 +123,7 @@ angular.module('myApp')
             tempVec[segIndex].actCount++;
             tempVec[segIndex].actTotal += currentQuote.total;
             tempVec[segIndex].actParticipants += currentOrder.noOfParticipants;
+            tempVec[segIndex].actTransportation += currentQuote.transportationInclVat;
           }
         }
       }
@@ -133,6 +133,7 @@ angular.module('myApp')
       tot.actCount = 0;
       tot.actTotal = 0;
       tot.actParticipants = 0;
+      tot.actTransportation = 0;
       for (var j=0;j<tempVec.length;j++) {
         if (tempVec[j]) {
           segArray.push(tempVec[j]);
@@ -141,6 +142,7 @@ angular.module('myApp')
           tot.actCount += tempVec[j].actCount;
           tot.actTotal += tempVec[j].actTotal;
           tot.actParticipants += tempVec[j].actParticipants;
+          tot.actTransportation += tempVec[j].actTransportation;
         }
       }
 
@@ -149,6 +151,7 @@ angular.module('myApp')
       avg.actCount = tot.actCount / segArray.length;
       avg.actTotal = tot.actTotal / segArray.length;
       avg.actParticipants = tot.actParticipants / segArray.length;
+      avg.actTransportation = tot.actTransportation / segArray.length;
   }
 
     this.doStat = function () {
@@ -156,7 +159,7 @@ angular.module('myApp')
 
       // segmentation by months
       doSegmentation(this.monthStats, this.monthTot, this.monthAvg, function (ord) {
-        var orderDate = filterField === 'eventDate' ? ord.attributes.eventDate : ord.createdAt;
+        var orderDate = that.filterBy === 'eventDate' ? ord.attributes.eventDate : ord.createdAt;
         return orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
       },function (ind) {
         var dateLabel =  angular.copy(that.fromDate);
@@ -187,7 +190,6 @@ angular.module('myApp')
         }
       });
     };
-
 
       this.loadOrders();
 

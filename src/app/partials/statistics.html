@@ -8,11 +8,11 @@
       </td>
       <td>
         <label>תאריך יצירה</label>
-        <input type="radio" ng-model="statisticsModel.filterBy" value="createdAt" ng-change="statisticsModel.setFilterField()">
+        <input type="radio" ng-model="statisticsModel.filterBy" value="createdAt">
       </td>
       <td>
         <label>תאריך אירוע</label>
-        <input type="radio" ng-model="statisticsModel.filterBy" value="eventDate" ng-change="statisticsModel.setFilterField()">
+        <input type="radio" ng-model="statisticsModel.filterBy" value="eventDate">
       </td>
       <td>
         <label>מתאריך</label>
@@ -74,6 +74,7 @@
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.monthStats track by line.label">
@@ -87,6 +88,7 @@
           <td>{{line.actTotal / line.actCount | currency}}</td>
           <td>{{line.actParticipants / line.actCount | number:1}}</td>
           <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
         </tr>
         <tr><td></td></tr>
         <tr ng-show="statisticsModel.monthStats.length">
@@ -99,6 +101,8 @@
           <td>{{statisticsModel.monthTot.actTotal | currency}}</td>
           <td></td>
           <td></td>
+          <td></td>
+          <td>{{statisticsModel.monthTot.actTransportation | currency}}</td>
         </tr>
         <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
@@ -111,6 +115,7 @@
           <td>{{statisticsModel.monthAvg.actTotal / statisticsModel.monthAvg.actCount | currency}}</td>
           <td>{{statisticsModel.monthAvg.actParticipants / statisticsModel.monthAvg.actCount | number:1}}</td>
           <td>{{statisticsModel.monthTot.actTotal / statisticsModel.monthTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.monthAvg.actTransportation | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -137,6 +142,7 @@
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.participantStats track by line.label">
@@ -150,6 +156,7 @@
           <td>{{line.actTotal / line.actCount | currency}}</td>
           <td>{{line.actParticipants / line.actCount | number:1}}</td>
           <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
         </tr>
         <tr><td></td></tr>
         <tr ng-show="statisticsModel.participantStats.length">
@@ -162,6 +169,8 @@
           <td>{{statisticsModel.participantTot.actTotal | currency}}</td>
           <td></td>
           <td></td>
+          <td></td>
+          <td>{{statisticsModel.participantTot.actTransportation | currency}}</td>
         </tr>
         <tr ng-show="statisticsModel.participantStats.length">
           <td><label>ממוצע</label></td>
@@ -174,6 +183,7 @@
           <td>{{statisticsModel.participantAvg.actTotal / statisticsModel.participantAvg.actCount | currency}}</td>
           <td>{{statisticsModel.participantAvg.actParticipants / statisticsModel.participantAvg.actCount | number:1}}</td>
           <td>{{statisticsModel.participantTot.actTotal / statisticsModel.participantTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.participantTot.actTransportation | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -191,6 +201,7 @@
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.totalStats track by line.label">
@@ -204,6 +215,7 @@
           <td>{{line.actTotal / line.actCount | currency}}</td>
           <td>{{line.actParticipants / line.actCount | number:1}}</td>
           <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
         </tr>
         <tr><td></td></tr>
         <tr ng-show="statisticsModel.totalStats.length">
@@ -216,6 +228,8 @@
           <td>{{statisticsModel.totalTot.actTotal | currency}}</td>
           <td></td>
           <td></td>
+          <td></td>
+          <td>{{statisticsModel.totalTot.actTransportation | currency}}</td>
         </tr>
         <tr ng-show="statisticsModel.totalStats.length">
           <td><label>ממוצע</label></td>
@@ -228,6 +242,7 @@
           <td>{{statisticsModel.totalAvg.actTotal / statisticsModel.totalAvg.actCount | currency}}</td>
           <td>{{statisticsModel.totalAvg.actParticipants / statisticsModel.totalAvg.actCount | number:1}}</td>
           <td>{{statisticsModel.totalTot.actTotal / statisticsModel.totalTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.totalTot.actTransportation | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -246,6 +261,7 @@
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.referralSourceStats track by line.label">
@@ -259,6 +275,7 @@
           <td>{{line.actTotal / line.actCount | currency}}</td>
           <td>{{line.actParticipants / line.actCount | number:1}}</td>
           <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
         </tr>
         <tr><td></td></tr>
         <tr ng-show="statisticsModel.referralSourceStats.length">
@@ -271,6 +288,8 @@
           <td>{{statisticsModel.referralSourceTot.actTotal | currency}}</td>
           <td></td>
           <td></td>
+          <td></td>
+          <td>{{statisticsModel.referralSourceTot.actTransportation | currency}}</td>
         </tr>
         <tr ng-show="statisticsModel.referralSourceStats.length">
           <td><label>ממוצע</label></td>
@@ -283,6 +302,7 @@
           <td>{{statisticsModel.referralSourceAvg.actTotal / statisticsModel.referralSourceAvg.actCount | currency}}</td>
           <td>{{statisticsModel.referralSourceAvg.actParticipants / statisticsModel.referralSourceAvg.actCount | number:1}}</td>
           <td>{{statisticsModel.referralSourceTot.actTotal / statisticsModel.referralSourceTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.referralSourceTot.actTransportation | currency}}</td>
         </tr>
         </tbody>
       </table>
