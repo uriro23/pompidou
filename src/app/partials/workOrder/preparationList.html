@@ -6,10 +6,9 @@
                ng-model="workOrderModel.hierarchicalWorkOrder[2].isShowAll"
                ng-change="workOrderModel.setShowAll(2)">
       </td>
-      <td style="width:35%">
+      <td style="width:20%">
   <span style="font-size: large">{{workOrderModel.domains[2].forWorkItem}}</span>
     </td>
-      <!--
       <td style="width: 15%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
@@ -24,15 +23,16 @@
         --- לא מעודכן ---
       </span>
       </td>
-     <td style="width: 10%">
-        <button class="btn btn-default"
-                ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
-                ng-click="workOrderModel.preparationsEndDay()">
-          סוף יום
-        </button>
-      </td>
-      -->
+      <!--
+   <td style="width: 10%">
+       <button class="btn btn-default"
+               ng-disabled="workOrderModel.isProcessing"
+               ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
+               ng-click="workOrderModel.preparationsEndDay()">
+         סוף יום
+       </button>
+     </td>
+     -->
       <td style="width: 35%">
         <span>פרוט מנות ואירועים</span>
         <input type="checkbox" ng-model="workOrderModel.isShowPreparationsMenuItems">
@@ -70,13 +70,13 @@
           פרטים
         </button>
       </td>
-      <!--
       <td style="width: 13%"
           ng-hide= "!workOrderModel.woIndex.attributes.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
         <span>להיום: </span>
         <input type="checkbox" ng-model="woItem.attributes.isForToday"
                ng-change="workOrderModel.setIsForToday(woItem)">
       </td>
+      <!--
       <td style="width: 11%"
           ng-hide= "!workOrderModel.woIndex.attributes.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
         <input type="text" money size="5"

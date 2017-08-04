@@ -3,7 +3,8 @@
 /* Controllers */
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
-                                     lov, config, bidTextTypes, menuTypes, categories, discountCauses, role) {
+                                     lov, config, bidTextTypes, menuTypes,
+                                     measurementUnits, categories, discountCauses, role) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -15,6 +16,8 @@ angular.module('myApp')
     $rootScope.title = lov.company + ' - ניהול';
 
   this.isEnvTabActive =true;
+
+  this.categories = categories;
 
     // vat
     // ---
@@ -200,6 +203,68 @@ angular.module('myApp')
 
     this.selectCatItem = function(id) {
       $state.go('editCatalogItem', {'id':id});
+    };
+
+    this.productTreeInit = function() {
+      this.isCatalogLoading = true;
+      var that = this;
+      api.queryCatalog()
+        .then(function(cat) {
+          that.catalog = cat;
+          that.isCatalogLoading = false;
+        });
+    };
+
+    this.productTree = function() {
+      var that = this;
+      api.queryCatalogByCategory(this.productTreeCategory.tId)
+        .then(function(res) {
+          that.menuItems = res.filter(function(cat) {  // return only items with components
+            var comps = cat.attributes.components.filter(function(comp) {
+              return comp.id !== config.attributes.unhandledItemComponent &&
+                comp.id !== config.attributes.unhandledItemMaterial;
+            });
+            return comps.length && !cat.attributes.isDeleted;
+          }).sort(function(a,b) {
+            if (a.attributes.productDescription > b.attributes.productDescription) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          that.menuItems.forEach(function(menuItem) {
+            menuItem.preparations = [];
+            menuItem.materials = [];
+            menuItem.measurementUnit = measurementUnits.filter(function(mu) {
+              return mu.tId === menuItem.attributes.measurementUnit;
+            })[0];
+            menuItem.attributes.components.forEach(function(component) {
+              var compCatalog = that.catalog.filter(function(cat) {
+                return cat.id === component.id;
+              })[0];
+              compCatalog.quantity = component.quantity;
+              compCatalog.measurementUnit = measurementUnits.filter(function(mu) {
+                return mu.tId === compCatalog.attributes.measurementUnit;
+              })[0];
+              if (component.domain === 2) {
+                compCatalog.materials = [];
+                compCatalog.attributes.components.forEach(function(prepMaterial) {
+                  var materialCatalog = that.catalog.filter(function(cat) {
+                    return cat.id === prepMaterial.id;
+                  })[0];
+                  materialCatalog.quantity = prepMaterial.quantity;
+                  materialCatalog.measurementUnit = measurementUnits.filter(function(mu) {
+                    return mu.tId === materialCatalog.attributes.measurementUnit;
+                  })[0];
+                  compCatalog.materials.push(materialCatalog);
+                });
+                menuItem.preparations.push(compCatalog);
+              } else {
+                menuItem.materials.push(compCatalog);
+              }
+            })
+          });
+        });
     };
 
     // quote conversion  1/2016

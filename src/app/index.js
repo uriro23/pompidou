@@ -484,6 +484,9 @@ config(function($stateProvider, $urlRouterProvider) {
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
       }],
+      measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+        return measurementUnitsPromise;
+      }],
       role: ['api', function (api) {
         return api.queryRoles('everyone').then(function (res) {
           return res[0];

@@ -1,3 +1,4 @@
+<div style="margin-right: 1%">
 <h2>ניהול</h2>
 <div>
   <!--
@@ -83,7 +84,79 @@
     </div>
     -->
   </tab>
- <tab heading="קטלוג" select="adminModel.catalogReport()">
+  <tab heading="עץ מוצר" select="adminModel.productTreeInit()">
+    <div ng-hide="adminModel.isCatalogLoading">
+    <label>בחר קטגוריה</label>
+    <select ng-model="adminModel.productTreeCategory"
+            ng-change="adminModel.productTree()"
+            ng-options="category.label for category in adminModel.categories"></select>
+    <div>
+      <div ng-repeat="menuItem in adminModel.menuItems">
+        <div style="font-weight: bold;height: 0.6cm ; vertical-align: middle">
+        <div style="cursor: pointer;width: 60%; display: inline-block"
+             ng-click="adminModel.selectCatItem(menuItem.id)">
+        <span>מנה:</span>
+        <span>{{menuItem.attributes.productDescription}}</span>
+        </div>
+        <div style="width: 30%; display: inline-block">
+          <span>כמות ייצור</span>
+          <span>{{menuItem.attributes.productionQuantity}}</span>
+          <span>{{menuItem.measurementUnit.label}}</span>
+        </div>
+        </div>
+        <div ng-repeat="prep in menuItem.preparations" style="margin-right: 2%">
+          <div style="color: red;height: 0.6cm ; vertical-align: middle">
+          <div style="cursor: pointer;width: 40%; display: inline-block"
+               ng-click="adminModel.selectCatItem(prep.id)">
+          <span>הכנה:</span>
+          <span>{{prep.attributes.productDescription}}</span>
+          </div>
+          <div style="width: 18.4%;display: inline-block">
+            <span>כמות במנה:</span>
+            <span>{{prep.quantity}}</span>
+            <span>{{prep.measurementUnit.label}}</span>
+          </div>
+          <div style="width: 20%;display: inline-block">
+            <span>כמות יצור:</span>
+            <span>{{prep.attributes.productionQuantity}}</span>
+            <span>{{prep.measurementUnit.label}}</span>
+          </div>
+          </div>
+          <div ng-repeat="prepMaterial in prep.materials" style="margin-right: 3%">
+            <div style="height: 0.6cm ; vertical-align: middle">
+            <div style="cursor: pointer;width: 37.5%; display: inline-block"
+                 ng-click="adminModel.selectCatItem(prepMaterial.id)">
+            <span>חומר:</span>
+            <span>{{prepMaterial.attributes.productDescription}}</span>
+            </div>
+            <div style="width: 18.9%;display: inline-block">
+              <span>כמות בהכנה:</span>
+              <span>{{prepMaterial.quantity}}</span>
+              <span>{{prepMaterial.measurementUnit.label}}</span>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div ng-repeat="material in menuItem.materials" style="margin-right: 2%">
+          <div style="height: 0.6cm ; vertical-align: middle">
+          <div style="cursor: pointer;width: 40%; display: inline-block"
+               ng-click="adminModel.selectCatItem(material.id)">
+          <span>חומר:</span>
+          <span>{{material.attributes.productDescription}}</span>
+          </div>
+          <div style="width: 18.4%;display: inline-block">
+            <span>כמות במנה:</span>
+            <span>{{material.quantity}}</span>
+            <span>{{material.measurementUnit.label}}</span>
+          </div>
+          </div>
+        </div>
+        <div>&nbsp;</div>
+      </div>
+    </div>
+    </div>
+  </tab>
+ <tab heading="מנות ללא פירוק" select="adminModel.catalogReport()">
    <h3>רשימת מנות שהיו באירועים בשנה האחרונה ושאין להם פירוק להכנות ומצרכים</h3>
     <table class="table table-hover" style="width: 70%">
       <th>קטגוריה</th>
@@ -106,3 +179,4 @@
     </div>
   </tab>
 </tabset>
+</div>
