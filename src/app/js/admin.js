@@ -156,7 +156,8 @@ angular.module('myApp')
           var noCompItems = catItems.filter(function(cat) {  // return only items with no components
             var comps = cat.attributes.components.filter(function(comp) {
               return comp.id !== config.attributes.unhandledItemComponent &&
-                     comp.id !== config.attributes.unhandledItemMaterial;
+                     comp.id !== config.attributes.unhandledItemMaterial  &&
+                      comp.id !== config.attributes.satietyIndexItem;
             });
             return !comps.length;
           }).map(function(cat) {
@@ -222,7 +223,8 @@ angular.module('myApp')
           that.menuItems = res.filter(function(cat) {  // return only items with components
             var comps = cat.attributes.components.filter(function(comp) {
               return comp.id !== config.attributes.unhandledItemComponent &&
-                comp.id !== config.attributes.unhandledItemMaterial;
+                comp.id !== config.attributes.unhandledItemMaterial  &&
+                comp.id !== config.attributes.satietyIndexItem;
             });
             return comps.length && !cat.attributes.isDeleted;
           }).sort(function(a,b) {
@@ -238,7 +240,11 @@ angular.module('myApp')
             menuItem.measurementUnit = measurementUnits.filter(function(mu) {
               return mu.tId === menuItem.attributes.measurementUnit;
             })[0];
-            menuItem.attributes.components.forEach(function(component) {
+            menuItem.attributes.components.filter(function(comp) {
+              return comp.id !== config.attributes.unhandledItemComponent &&
+                comp.id !== config.attributes.unhandledItemMaterial  &&
+                comp.id !== config.attributes.satietyIndexItem;
+            }).forEach(function(component) {
               var compCatalog = that.catalog.filter(function(cat) {
                 return cat.id === component.id;
               })[0];

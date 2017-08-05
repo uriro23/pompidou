@@ -96,7 +96,7 @@
         <div style="cursor: pointer;width: 60%; display: inline-block"
              ng-click="adminModel.selectCatItem(menuItem.id)">
         <span>מנה:</span>
-        <span>{{menuItem.attributes.productDescription}}</span>
+        <span>{{menuItem.attributes.productDescription.substr(0,85)}}</span>
         </div>
         <div style="width: 30%; display: inline-block">
           <span>כמות ייצור</span>
