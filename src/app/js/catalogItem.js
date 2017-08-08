@@ -58,7 +58,7 @@ angular.module('myApp')
     model.setPriceQuantity = function () {
       model.item.errors.priceQuantity =
         (model.currentDomain.id === 1 || Boolean(model.item.attributes.priceQuantity)) &&
-        ((model.item.attributes.priceQuantity !== Number(model.item.attributes.priceQuantity) ||
+        ((model.item.attributes.priceQuantity != Number(model.item.attributes.priceQuantity) ||
         Number(model.item.attributes.priceQuantity) <= 0));
       model.setChanged(true);
     };
@@ -66,28 +66,28 @@ angular.module('myApp')
     model.setPrice = function () {
       model.item.errors.price =
         (model.currentDomain.id === 1 || Boolean(model.item.attributes.price)) &&
-        ((model.item.attributes.price !== Number(model.item.attributes.price) ||
+        ((model.item.attributes.price != Number(model.item.attributes.price) ||
         Number(model.item.attributes.price) <= 0));
       model.setChanged(true);
     };
 
     model.setProductionQuantity = function () {
       model.item.errors.productionQuantity =
-        model.item.attributes.productionQuantity !== Number(model.item.attributes.productionQuantity) ||
+        model.item.attributes.productionQuantity != Number(model.item.attributes.productionQuantity) ||
         Number(model.item.attributes.productionQuantity) <= 0;
-      model.setChanged(true);
+       model.setChanged(true);
     };
 
     model.setMinTime = function (ind) {
       model.item.errors.minTime =
-        model.item.attributes.minTime !== Number(model.item.attributes.minTime) ||
+        model.item.attributes.minTime != Number(model.item.attributes.minTime) ||
         Number(model.item.attributes.minTime) < 0;
       model.setChanged(true);
     };
 
     model.setMaxTime = function (ind) {
       model.item.errors.maxTime =
-        model.item.attributes.maxTime !== Number(model.item.attributes.maxTime) ||
+        model.item.attributes.maxTime != Number(model.item.attributes.maxTime) ||
         Number(model.item.attributes.maxTime) < 0;
       model.setChanged(true);
     };
@@ -119,6 +119,12 @@ angular.module('myApp')
           })[0];
           itm.isError = true;  // has to specify quantity
           return itm;
+        }).sort(function(a,b) {
+          if (a.attributes.productDescription > b.attributes.productDescription) {
+            return 1;
+          } else {
+            return -1;
+          }
         });
       });
    };
@@ -135,7 +141,7 @@ angular.module('myApp')
 
    model.setCompQuantity = function(component) {
      component.isError =
-       component.view.compQuantity !== Number(component.view.compQuantity) ||
+       component.view.compQuantity != Number(component.view.compQuantity) ||
        Number(component.view.compQuantity) <= 0;
      model.setChanged(true);
   };
