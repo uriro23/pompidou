@@ -110,7 +110,9 @@ angular.module('myApp')
    model.setCompCategory = function(comDomain) {
     api.queryCatalogByCategory(comDomain.currentCategory.tId)
       .then(function(res) {
-        comDomain.categoryItems = res.map(function(itm) {
+        comDomain.categoryItems = res.filter(function(itm) {
+          return !itm.attributes.isDeleted;
+        }).map(function(itm) {
           itm.view = {};
           itm.view.compQuantity = null;
           itm.view.category = comDomain.currentCategory;
@@ -186,6 +188,33 @@ angular.module('myApp')
          });
        });
    };
+
+   // usage tab
+
+    model.findUsage = function() {
+      api.queryCatalog()
+        .then(function(catalog) {
+          model.usages = catalog.filter(function(cat) {
+            var isUsage = false;
+            cat.attributes.components.forEach(function(comp) {
+              if (comp.id === model.item.id) {
+                cat.quantity = comp.quantity;   // extract quantity of usage
+                isUsage = true;
+              }
+            });
+            return isUsage;
+          });
+          model.usages.forEach(function(usage) {
+            usage.domain = usage.attributes.domain;   // for view ng-repeat filtering by domain
+            usage.category = allCategories.filter(function(category) {
+              return category.tId === usage.attributes.category;
+            })[0];
+            usage.measurementUnit = measurementUnits.filter(function(mu) {
+              return mu.tId === usage.attributes.measurementUnit;
+            })[0];
+          });
+        });
+    };
 
    // General
 
@@ -281,6 +310,12 @@ angular.module('myApp')
      model.isNewItem = true;
    };
 
+    model.editItem = function (id) {
+      $state.go('editCatalogItem', {'id':id});
+    };
+
+
+
     model.setupItemView = function() {
       model.item.view = {};
       model.item.errors = {};
@@ -326,8 +361,8 @@ angular.module('myApp')
       model.setChanged(false);
     };
 
-    model.close = function () {
-      $state.go('catalogList', {'domain':currentDomain, 'category': currentCategory});
+    model.back = function () {
+      history.back();
     };
 
     model.getOrders = function () {

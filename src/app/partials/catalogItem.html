@@ -13,7 +13,7 @@
   </span>
   &nbsp;&nbsp;
   <button class="btn btn-default" ng-hide="catalogItemModel.item.isChanged"
-          ng-click="catalogItemModel.close()">סגור</button>
+          ng-click="catalogItemModel.back()">חזור</button>
 </h3>
 <div ng-hide="catalogItemModel.isMainTabActive || catalogItemModel.isNewItem">
   <span>{{catalogItemModel.currentDomain.single}}</span>
@@ -28,8 +28,63 @@
        ng-show="catalogItemModel.currentDomain.id===1"
        select="catalogItemModel.getOrders()">
     <h4 ng-hide="catalogItemModel.isProcessing">אירועים בשנה האחרונה בהם הוצעה מנה זו</h4>
-    <h4 ng-show="catalogItemModel.isProcessing"">המתן...</h4>
+    <h4 ng-show="catalogItemModel.isProcessing">"המתן...</h4>
     <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
+  </tab>
+  <tab heading="שימושים"
+       ng-show="catalogItemModel.currentDomain.id>1" select="catalogItemModel.findUsage()">
+    <table>
+      <tr>
+        <td>
+          <h3>מנות</h3>
+          <table class="table table-hover" style="width:90%">
+            <thead>
+            <th><label>קטגוריה</label></th>
+            <th><label>מנה</label></th>
+            <th><label>כמות</label></th>
+            <th><label>ייצור</label></th>
+            <th><label>כמות</label></th>
+            <th><label>במנה</label></th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="usage in catalogItemModel.usages | filter:{domain:1}">
+              <td>{{usage.category.label}}</td>
+              <td style="cursor: pointer" ng-click="catalogItemModel.editItem(usage.id)">
+                {{usage.attributes.productDescription}}</td>
+              <td>{{usage.attributes.productionQuantity}}</td>
+              <td>{{usage.measurementUnit.label}}</td>
+              <td>{{usage.quantity}}</td>
+              <td>{{catalogItemModel.item.view.measurementUnit.label}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </td>
+        <td ng-show="catalogItemModel.currentDomain.id===3">
+          <h3>הכנות</h3>
+          <table class="table table-hover" style="width:90%">
+            <thead>
+            <th><label>קטגוריה</label></th>
+            <th><label>מנה</label></th>
+            <th><label>כמות</label></th>
+            <th><label>ייצור</label></th>
+            <th><label>כמות</label></th>
+            <th><label>במנה</label></th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="usage in catalogItemModel.usages | filter:{domain:2}">
+              <td>{{usage.category.label}}</td>
+              <td style="cursor: pointer" ng-click="catalogItemModel.editItem(usage.id)">
+                {{usage.attributes.productDescription}}</td>
+              <td>{{usage.attributes.productionQuantity}}</td>
+              <td>{{usage.measurementUnit.label}}</td>
+              <td>{{usage.quantity}}</td>
+              <td>{{catalogItemModel.item.view.measurementUnit.label}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
   </tab>
   <tab heading="שונות">
     <table>
@@ -91,7 +146,8 @@
             <tr ng-repeat="component in compDomain.compItems track by component.id"
                 ng-class="component.isError?'bg-danger':null">
               <td>{{component.view.category.label}}</td>
-              <td>{{component.attributes.productDescription}}</td>
+              <td style="cursor: pointer" ng-click="catalogItemModel.editItem(component.id)">
+                {{component.attributes.productDescription}}</td>
               <td>
                 <input type="number" min=0 max=99999
                        ng-model="component.view.compQuantity"
