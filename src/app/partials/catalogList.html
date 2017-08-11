@@ -1,10 +1,12 @@
 <h1>קטלוג חדש</h1>
   <label>בחר תחום</label>
-  <select ng-model="catalogListModel.currentDomain" ng-change="catalogListModel.setDomain()"
+  <select ng-model="catalogListModel.currentDomain"
+          ng-change="catalogListModel.setDomain()"
           ng-disabled="catalogListModel.isChanged"
           ng-options="domain.label for domain in catalogListModel.domains"></select>
   <label>בחר קטגוריה</label>
-  <select ng-model="catalogListModel.currentCategory" ng-change="catalogListModel.setCategory()"
+  <select ng-model="catalogListModel.currentCategory"
+          ng-change="catalogListModel.setCategory()"
           ng-disabled="catalogListModel.isChanged"
           ng-options="category.label for category in catalogListModel.categories"></select>
   <label>סינון</label>

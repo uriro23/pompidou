@@ -52,66 +52,71 @@ angular.module('myApp')
     };
 
     this.setCategory = function () {
-     this.filterText = '';
-     this.filterItems();
-    };
+      $state.go('catalogList',{'domain':this.currentDomain.id,'category':this.currentCategory.tId});
+     };
 
     this.setDomain = function () {
       var that = this;
       this.categoryItems = [];
-     return api.queryCategories(that.currentDomain.id)
+      return api.queryCategories(that.currentDomain.id)
         .then(function (results) {
           that.categories = results.map(function (cat) {
             return cat.attributes;
           });
-          if (currentCategory && that.currentDomain.id===currentDomain) {
+          that.currentCategory = that.categories[0];
+          that.setCategory();
+        });
+    };
+
+    this.initDomain = function () {
+      var that = this;
+      this.categoryItems = [];
+      return api.queryCategories(that.currentDomain.id)
+        .then(function (results) {
+          that.categories = results.map(function (cat) {
+            return cat.attributes;
+          });
             that.currentCategory = that.categories.filter(function(cat) {
               return cat.tId === currentCategory;
             })[0];
-          } else {
-            that.currentCategory = that.categories[0];
-          }
-            return api.queryCatalog(that.currentDomain.id)
+          return api.queryCatalog(that.currentDomain.id)
             .then(function (results) {
-            that.catalog = that.sortCatalog(results);
-            // enrich catalog data
-            for (var i = 0; i < that.catalog.length; i++) {
-              that.catalog[i].view = {};
-              that.catalog[i].view.category = that.categories.filter(function (cat) {
-                return cat.tId === that.catalog[i].attributes.category;
-              }) [0];
-              that.catalog[i].view.measurementUnit = that.measurementUnits.filter(function (mes) {
-                return mes.tId === that.catalog[i].attributes.measurementUnit;
-              }) [0];
-              if (typeof that.catalog[i].attributes.minTimeUnit === 'number') {
-                that.catalog[i].view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-                  return tu.id === that.catalog[i].attributes.minTimeUnit;
+              that.catalog = that.sortCatalog(results);
+              // enrich catalog data
+              for (var i = 0; i < that.catalog.length; i++) {
+                that.catalog[i].view = {};
+                that.catalog[i].view.category = that.categories.filter(function (cat) {
+                  return cat.tId === that.catalog[i].attributes.category;
                 }) [0];
-              }
-              if (typeof that.catalog[i].attributes.maxTimeUnit === 'number') {
-                that.catalog[i].view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-                  return tu.id === that.catalog[i].attributes.maxTimeUnit;
+                that.catalog[i].view.measurementUnit = that.measurementUnits.filter(function (mes) {
+                  return mes.tId === that.catalog[i].attributes.measurementUnit;
                 }) [0];
+                if (typeof that.catalog[i].attributes.minTimeUnit === 'number') {
+                  that.catalog[i].view.minTimeUnit = lov.timeUnits.filter(function (tu) {
+                    return tu.id === that.catalog[i].attributes.minTimeUnit;
+                  }) [0];
+                }
+                if (typeof that.catalog[i].attributes.maxTimeUnit === 'number') {
+                  that.catalog[i].view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
+                    return tu.id === that.catalog[i].attributes.maxTimeUnit;
+                  }) [0];
+                }
+                that.catalog[i].isChanged = false;
               }
-              that.catalog[i].isChanged = false;
-            }
-            that.setCategory();
-          });
-       });
+              that.filterText = '';
+              that.filterItems();
+            });
+        });
     };
 
 
     // main block
     this.domains = angular.copy(lov.domains);  // clone so that the splice won't affect the original lov
     this.domains.splice(0, 1);   // drop "events" domain
-    if (currentDomain) {
-      this.currentDomain = this.domains[currentDomain-1]
-    } else {
-      this.currentDomain = this.domains[0];
-    }
+    this.currentDomain = this.domains[currentDomain-1];
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
-    this.setDomain();
+    this.initDomain();
   });
 
 

@@ -24,6 +24,7 @@ config(function($stateProvider, $urlRouterProvider) {
     } else {
       $state.go('default', {badUrl: $location.$$url});
     } */
+    console.log($location.$$url);
     $state.go('default', {badUrl: $location.$$url});
   });
   $stateProvider
@@ -321,19 +322,15 @@ config(function($stateProvider, $urlRouterProvider) {
     })
 
     .state('catalogList', {
-      url: '/catalogList',
+      url: '/catalogList/:domain/:category',
       templateUrl: 'app/partials/catalogList.html',
       controller: 'Catalog2Ctrl as catalogListModel',
-      params: {
-        domain: null,
-        category: null
-      },
       resolve: {
         currentDomain: ['$stateParams', function ($stateParams) {
-          return $stateParams.domain;
+          return Number($stateParams.domain);
         }],
         currentCategory: ['$stateParams', function ($stateParams) {
-          return $stateParams.category;
+          return Number($stateParams.category);
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
