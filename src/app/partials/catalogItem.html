@@ -49,8 +49,10 @@
             <tbody>
             <tr ng-repeat="usage in catalogItemModel.usages | filter:{domain:1}">
               <td>{{usage.category.label}}</td>
-              <td style="cursor: pointer" ng-click="catalogItemModel.editItem(usage.id)">
+              <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
+                  ng-click="catalogItemModel.editItem(usage.id)">
                 {{usage.attributes.productDescription}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productDescription}}</td>
               <td>{{usage.attributes.productionQuantity}}</td>
               <td>{{usage.measurementUnit.label}}</td>
               <td>{{usage.quantity}}</td>
@@ -73,8 +75,10 @@
             <tbody>
             <tr ng-repeat="usage in catalogItemModel.usages | filter:{domain:2}">
               <td>{{usage.category.label}}</td>
-              <td style="cursor: pointer" ng-click="catalogItemModel.editItem(usage.id)">
+              <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
+                  ng-click="catalogItemModel.editItem(usage.id)">
                 {{usage.attributes.productDescription}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productDescription}}</td>
               <td>{{usage.attributes.productionQuantity}}</td>
               <td>{{usage.measurementUnit.label}}</td>
               <td>{{usage.quantity}}</td>
@@ -146,10 +150,12 @@
             <tr ng-repeat="component in compDomain.compItems track by component.id"
                 ng-class="component.isError?'bg-danger':null">
               <td>{{component.view.category.label}}</td>
-              <td style="cursor: pointer" ng-click="catalogItemModel.editItem(component.id)">
+              <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
+                  ng-click="catalogItemModel.editItem(component.id)">
                 {{component.attributes.productDescription}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{component.attributes.productDescription}}</td>
               <td>
-                <input type="number" min=0 max=99999
+              <input type="number" min=0 max=99999
                        ng-model="component.view.compQuantity"
                        ng-change="catalogItemModel.setCompQuantity(component)">
               </td>
