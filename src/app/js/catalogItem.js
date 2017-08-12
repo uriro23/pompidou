@@ -440,6 +440,7 @@ angular.module('myApp')
         tabThis.queryType = 'catalog';
         tabThis.isProcessing = model.isProcessing;
         tabThis.orders = model.orders;
+        tabThis.isDisableLink = model.item.isChanged;
       }
     };
 

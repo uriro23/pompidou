@@ -26,9 +26,10 @@
                         order.view.orderStatus.id===2?'bg-warning':
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
                         order.view.orderStatus.id===6?'active myCanceledEvent':null">
-    <td>
-      <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
+    <td ng-hide="orderTableModel.isDisableLink">
+      <a  ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
     </td>
+    <td ng-show="orderTableModel.isDisableLink">{{order.attributes.number}}</td>
     <td>{{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</td>
     <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
     <td ng-show="orderTableModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>

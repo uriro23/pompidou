@@ -203,6 +203,7 @@ angular.module('myApp')
         tabThis.queryType = this.queryType;
         tabThis.isProcessing = this.isProcessing;
         tabThis.orders = this.orders;
+        tabThis.isDisableLink = false;
       }
     };
 

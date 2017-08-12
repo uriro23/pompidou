@@ -250,6 +250,7 @@ angular.module('myApp')
         tabThis.queryType = 'customer';
         tabThis.isProcessing = false;
         tabThis.orders = this.prevOrders;
+        tabThis.isDisableLink = this.order.view.isChanged;
       }
     };
 
