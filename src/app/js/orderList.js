@@ -2,7 +2,8 @@
 
 /* Controllers */
 angular.module('myApp')
-   .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal, api, lov, today, customers, eventTypes) {
+   .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
+                                          api, lov, today, queryType, customers, eventTypes) {
       var that = this;
      $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -86,7 +87,15 @@ angular.module('myApp')
       this.setOrderTableParams();
     };
 
-    this.setQuery = function () {
+    this.setQuery = function() {
+      $state.go('orderList',{'queryType':this.queryType});
+    };
+
+     this.setQueryYear = function () {
+       $state.go('orderList',{'queryType':String(this.queryYear)});
+     };
+
+     this.doQuery = function () {
       var that = this;
       this.orders = [];
       var fieldList = [
@@ -143,12 +152,7 @@ angular.module('myApp')
       }
      };
 
-    this.setQueryYear = function () {
-      this.queryType = 'year';
-      this.setQuery();
-    };
-
-    this.setCustomerFilter = function () {
+     this.setCustomerFilter = function () {
       var that = this;
 
       var selectCustomer = $modal.open({
@@ -213,8 +217,13 @@ angular.module('myApp')
     }
     this.filterByCustomer = {};
     this.orderStatuses = lov.orderStatuses;
-    this.queryType = 'future';
-    this.setQuery();
+    if (queryType > '2000' && queryType < '3000') {
+      this.queryType = 'year';
+      this.queryYear = Number(queryType);
+    }  else {
+      this.queryType = queryType;
+    }
+    this.doQuery();
     this.isProcessing = false;
   })
 

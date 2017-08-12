@@ -15,6 +15,10 @@
         <label> לביטול הקש על </label>
         <button ng-click="orderModel.cancel()" class="btn btn-warning">ביטול</button>
       </span>
+      <span>&nbsp;&nbsp;</span>
+      <span ng-hide="orderModel.order.view.isChanged">
+        <button class="btn btn-default" ng-click="orderModel.close()">סגור</button>
+      </span>
     </div>
     <p></p>
        <div>

@@ -239,6 +239,10 @@ angular.module('myApp')
       this.setupOrderView();
     };
 
+    this.close = function() {
+      history.back();
+    };
+
     var tabThis;
 
     this.setOrderTableParams = function () {

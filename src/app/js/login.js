@@ -12,7 +12,7 @@ angular.module('myApp')
     this.doLogin = function () {
       api.userLogin(this.username, this.password)
         .then(function () {
-          $state.go('orderList');
+          $state.go('orderList',{'queryType':'future'});
         })
     }
   })

@@ -44,16 +44,19 @@ config(function($stateProvider, $urlRouterProvider) {
       controller: 'LoginCtrl as loginModel'
     })
     .state('orderList', {
-      url: '/orderListView',
+      url: '/orderListView/:queryType',
       templateUrl: 'app/partials/orderList.html',
       controller: 'OrderListCtrl as orderListModel',
       resolve: {
+        queryType: ['$stateParams', function ($stateParams) {
+          return $stateParams.queryType;
+        }],
         customers: ['api', function (api) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           });
         }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
+       eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
           return eventTypesPromise;
         }]
       }

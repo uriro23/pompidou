@@ -56,7 +56,7 @@ angular.module('myApp')
                         .then(function (mails) {
                           api.deleteObjects(mails)
                             .then(function () {
-                              $state.go('orderList');
+                              history.back();
                             })
                         })
                     })

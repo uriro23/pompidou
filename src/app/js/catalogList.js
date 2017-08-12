@@ -48,7 +48,7 @@ angular.module('myApp')
         });
     };
 
-    this.initDomain = function () {
+    this.fetchCategoryItems = function () {
       var that = this;
       this.categoryItems = [];
       return api.queryCategories(that.currentDomain.id)
@@ -102,7 +102,7 @@ angular.module('myApp')
     this.currentDomain = this.domains[currentDomain-1];
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
-    this.initDomain();
+    this.fetchCategoryItems();
   });
 
 
