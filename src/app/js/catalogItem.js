@@ -189,6 +189,10 @@ angular.module('myApp')
        });
    };
 
+   model.addItem = function (domain,category) {
+     $state.go('newCatalogItem',{'domain':domain, 'category':category});
+   };
+
    // usage tab
 
     model.findUsage = function() {
