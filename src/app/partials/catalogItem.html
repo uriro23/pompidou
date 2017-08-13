@@ -138,7 +138,7 @@
                     ng-change="catalogItemModel.setCompItem(compDomain)"
                     ng-options="item.attributes.productDescription
                               for item in compDomain.categoryItems"></select>
-          <button class="btn btn-small btn-default"
+          <button class="btn btn-sm btn-default"
                   ng-click="catalogItemModel.addItem(compDomain.id,compDomain.currentCategory.tId)">
             {{compDomain.single}}&nbsp;חדשה
           </button>
@@ -165,7 +165,7 @@
               </td>
               <td>{{component.view.measurementUnit.label}}</td>
               <td>
-                <button class="btn btn-default" ng-click="catalogItemModel.delItem(compDomain,$index)">מחק</button>
+                <button class="btn btn-sm btn-default" ng-click="catalogItemModel.delItem(compDomain,$index)">מחק</button>
               </td>
             </tr>
             </tbody>
