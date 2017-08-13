@@ -308,6 +308,7 @@ angular.module('myApp')
      model.setChanged(false);
      model.loadComponentItems();
      model.isNewItem = true;
+     model.isMainTabActive = true;
    };
 
     model.editItem = function (id) {

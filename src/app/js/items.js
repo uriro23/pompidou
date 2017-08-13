@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('ItemsCtrl', function ($scope, api, orderService) {
+  .controller('ItemsCtrl', function ($scope, $state, api, orderService) {
 
     // references to members of parent order controller
     //objects
@@ -63,6 +63,11 @@ angular.module('myApp')
       thisQuote.items.splice(ind, 1);
       orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
       orderService.quoteChanged(this.order);
+    };
+
+    this.editCatalogItem = function (ind) {
+      var thisItem = this.order.view.quote.items[ind];
+      $state.go('editCatalogItem',{'id':thisItem.catalogId});
     };
 
     this.itemChanged = function (ind) {

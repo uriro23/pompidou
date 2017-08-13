@@ -103,11 +103,17 @@
              ng-disabled="itemsModel.isReadOnly"
           >
     </td>
+   <td>
+      <button ng-click="itemsModel.editCatalogItem($index)"
+              ng-disabled="itemsModel.order.view.isChanged"
+              class="btn btn-default btn-sm"
+      >קטלוג</button>
+    </td>
     <td>
       <button ng-click="itemsModel.deleteItem($index)"
               ng-disabled="itemsModel.isReadOnly"
               class="btn btn-warning btn-sm"
-          >מחק</button>
+      >מחק</button>
     </td>
   </tr>
   </tbody>
