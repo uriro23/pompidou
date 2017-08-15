@@ -136,6 +136,9 @@ a:link, a:visited  {
 .myCanceledEvent {
     text-decoration: line-through;
 }
+.myAlertEvent {
+  color: red
+}
 
 .bold
 {

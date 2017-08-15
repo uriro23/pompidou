@@ -228,8 +228,10 @@ angular.module('myApp')
     this.isProcessing = false;
   })
 
-  .controller('OrderTableCtrl', function($scope, api) {
+  .controller('OrderTableCtrl', function($scope, api, today) {
     $scope.$parent.initOrderTableParams(this);
+
+    this.today = today;
 
     this.getLastBid = function (order) {
       api.queryBidsByOrder(order.id)

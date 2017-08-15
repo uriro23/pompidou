@@ -138,7 +138,7 @@
                     ng-change="catalogItemModel.setCompItem(compDomain)"
                     ng-options="item.attributes.productDescription
                               for item in compDomain.categoryItems"></select>
-          <button class="btn btn-sm btn-default"
+          <button class="btn btn-sm btn-default"ng-disabled="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.addItem(compDomain.id,compDomain.currentCategory.tId)">
             {{compDomain.single}}&nbsp;חדשה
           </button>

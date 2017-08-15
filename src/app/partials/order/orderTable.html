@@ -22,7 +22,10 @@
   </thead>
   <tbody>
   <tr ng-repeat="order in orderTableModel.orders"
-      ng-class="order.view.orderStatus.id===1?'bg-active':
+      ng-class="order.view.orderStatus.id===1 && order.attributes.header.activityDate &&
+                            (orderTableModel.today - order.attributes.header.activityDate)/(24*3600000)>2
+                              ? 'myAlertEvent' :
+                        order.view.orderStatus.id===1?'bg-active':
                         order.view.orderStatus.id===2?'bg-warning':
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
                         order.view.orderStatus.id===6?'active myCanceledEvent':null">
