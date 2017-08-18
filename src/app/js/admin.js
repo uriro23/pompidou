@@ -273,6 +273,73 @@ angular.module('myApp')
         });
     };
 
+    this.loadProductNameData = function () {
+      var that = this;
+      this.isProcessing = true;
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          console.log(catalog.length+' menu items loaded');
+          catalog.forEach(function(cat) {
+            cat.orderCnt = 0;
+            cat.category = cat.attributes.category; // for ng-repeat filter
+          });
+          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate);
+          var to = new Date(2099,11,31);
+          api.queryOrdersByRange('eventDate',from,to)
+            .then(function(orders) {
+              console.log(orders.length+' orders loaded');
+              orders.forEach(function(order) {
+                order.attributes.quotes.forEach(function(quote) {
+                  quote.items.forEach(function(item) {
+                    var tmp = catalog.filter(function(cat) {
+                     return cat.id === item.catalogId;
+                    });
+                    if (tmp.length === 0) {
+                      console.log('item '+item.productDescription+' not found in catalog');
+                    } else {
+                      tmp[0].orderCnt++;
+                    }
+                  });
+                });
+              });
+              that.productNameItems = catalog;
+              that.isProcessing = false;
+            });
+        });
+    };
+
+    this.filterProductNameCategory = function() {
+      var that = this;
+      this.productNameCategoryItems = this.productNameItems.filter(function(cat) {
+        return cat.attributes.category === that.productNamesCategory.tId;
+      }).sort(function(a,b) {
+        if (a.attributes.productName > b.attributes.productName) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    };
+
+    this.productNameItemChanged = function(cat) {
+      cat.errors = !cat.attributes.productName || cat.attributes.productName.length===0;
+      if (!cat.errors && !cat.attributes.isDeleted) {
+        var tmp = this.productNameItems.filter(function(cat2) {
+          return (cat2.attributes.productName === cat.attributes.productName) &&
+            (cat2.id !== cat.id) && !cat2.attributes.isDeleted;
+        });
+        cat.errors = (tmp.length>0);
+      }
+      cat.isChanged = !cat.errors;
+    };
+
+    this.saveProductNameitem = function(cat) {
+      api.saveObj(cat);
+      cat.isChanged = false;
+    };
+
+
+
     // quote conversion  1/2016
 
     this.createNewQuoteData = function () {

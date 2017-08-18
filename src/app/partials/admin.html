@@ -161,7 +161,7 @@
    <h3>רשימת מנות שהיו באירועים בשנה האחרונה ושאין להם פירוק להכנות ומצרכים</h3>
     <table class="table table-hover" style="width: 70%">
       <th>קטגוריה</th>
-      <th>תיאור</th>
+      <th>שם</th>
       <th>אירועים</th>
       <tr ng-repeat="catItem in adminModel.catalog">
         <td>{{catItem.view.category.label}}</td>
@@ -170,6 +170,46 @@
         <td>{{catItem.view.count}}</td>
       </tr>
     </table>
+  </tab>
+  <tab heading="עדכון שמות מנות" select="adminModel.loadProductNameData()">
+    <div ng-hide="adminModel.isProcessing">
+      <label>בחר קטגוריה</label>
+      <select ng-model="adminModel.productNamesCategory"
+              ng-change="adminModel.filterProductNameCategory()"
+              ng-options="category.label for category in adminModel.categories"></select>
+      <table class="table table-hover" style="width: 90%">
+        <thead>
+        <th>שם</th>
+        <th>תיאור</th>
+        <th>ביטול</th>
+        <th>אירועים</th>
+        <th></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems"
+            ng-class="productNameItem.errors ? 'bg-danger' : null">
+          <td>
+          <input type="text" size="40"
+                 ng-model="productNameItem.attributes.productName"
+                 ng-change="adminModel.productNameItemChanged(productNameItem)">
+          </td>
+          <td>{{productNameItem.attributes.productDescription}}</td>
+          <td>
+          <input type="checkbox"
+                 ng-model="productNameItem.attributes.isDeleted"
+                 ng-change="adminModel.productNameItemChanged(productNameItem)">
+          </td>
+          <td>{{productNameItem.orderCnt}}</td>
+          <td>
+            <button ng-show="productNameItem.isChanged"
+                    ng-click="adminModel.saveProductNameitem(productNameItem)">
+              עדכן
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </tab>
   <tab heading="סביבה" active="adminModel.isEnvTabActive">
     <div>
