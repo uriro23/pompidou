@@ -38,7 +38,7 @@ angular.module('myApp')
             return cc;
           });
           that.baseCatalog.sort(function (a, b) {
-            if (a.productDescription > b.productDescription) {
+            if (a.productName > b.productName) {
               return 1
             } else {
               return -1
@@ -79,7 +79,7 @@ angular.module('myApp')
     this.filterProducts = function () {
       var that = this;
       this.filteredCatalog = this.baseCatalog.filter(function (cat) {
-        return cat.productDescription.indexOf(that.filterText) > -1;
+        return cat.productName.indexOf(that.filterText) > -1;
       })
     };
 
@@ -100,6 +100,7 @@ angular.module('myApp')
         return cat.tId === catalogEntry.category;
       })[0];
       thisItem.catalogId = catalogEntry.id;
+      thisItem.productName = catalogEntry.productName;
       thisItem.productDescription = catalogEntry.productDescription;
       thisItem.shortDescription = catalogEntry.shortDescription;
       thisItem.isInMenu = catalogEntry.isInMenu;
@@ -246,7 +247,7 @@ angular.module('myApp')
                   return cat.id === templateItem.catalogId
                 })[0];
                 if (!templateCatalogItem) {
-                  alert('מנה ' + templateItem.productDescription + ' לא נמצאת בקטלוג. מדלג עליה')
+                  alert('מנה ' + templateItem.productName + ' לא נמצאת בקטלוג. מדלג עליה')
                 } else {   // fetch up to date price from catalog
                   templateItem.catalogPrice = templateCatalogItem.price;
                   templateItem.catalogQuantity = templateCatalogItem.priceQuantity;

@@ -40,7 +40,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="woItem in cat.list">
-      <td style="width: 80%">{{woItem.attributes.productDescription}}</td>
+      <td style="width: 80%">{{woItem.attributes.productName}}</td>
       <td ng-hide="workOrderModel.isShowMenuItemOrders">
         <input type="text" money size="5"
                ng-model="woItem.attributes.quantity"

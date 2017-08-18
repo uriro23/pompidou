@@ -55,7 +55,7 @@
   <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
     <tbody>
     <tr ng-repeat="woItem in cat.list">
-      <td style="width: 20%">{{woItem.attributes.productDescription}}</td>
+      <td style="width: 20%">{{woItem.attributes.productName}}</td>
       <td style="width: 5%">
         <input type="text" money size="5"
                ng-model="woItem.attributes.quantity"
@@ -103,7 +103,7 @@
           </th>
           </thead>
           <tr ng-repeat="menuItem in woItem.attributes.menuItems">
-            <td>{{menuItem.productDescription}}</td>
+            <td>{{menuItem.productName}}</td>
             <td>{{menuItem.quantity | number:2}}</td>
             <td ng-repeat="order in menuItem.orders">
               <span ng-show="order.quantity">{{order.quantity | number:2}}</span>

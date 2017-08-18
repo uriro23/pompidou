@@ -22,7 +22,7 @@
       </thead>
       <tbody>
       <tr ng-repeat="product in itemsModel.filteredCatalog">
-        <td style="cursor: pointer" ng-click="itemsModel.setProduct(product)">{{product.productDescription}}</td>
+        <td style="cursor: pointer" ng-click="itemsModel.setProduct(product)">{{product.productName}}</td>
         <td>{{product.isInOrder | checkMark}}</td>
       </tr>
       </tbody>

@@ -18,7 +18,7 @@
 <div ng-hide="catalogItemModel.isMainTabActive || catalogItemModel.isNewItem">
   <span>{{catalogItemModel.currentDomain.single}}</span>
   <span>:&nbsp;</span>
-  <span>{{catalogItemModel.item.attributes.productDescription}}</span>
+  <span>{{catalogItemModel.item.attributes.productName}}</span>
   <span>&nbsp;&nbsp;כמות ייצור:</span>
   <span>{{catalogItemModel.item.attributes.productionQuantity}}</span>
   <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
@@ -51,8 +51,8 @@
               <td>{{usage.category.label}}</td>
               <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.editItem(usage.id)">
-                {{usage.attributes.productDescription}}</td>
-              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productDescription}}</td>
+                {{usage.attributes.productName}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productName}}</td>
               <td>{{usage.attributes.productionQuantity}}</td>
               <td>{{usage.measurementUnit.label}}</td>
               <td>{{usage.quantity}}</td>
@@ -77,8 +77,8 @@
               <td>{{usage.category.label}}</td>
               <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.editItem(usage.id)">
-                {{usage.attributes.productDescription}}</td>
-              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productDescription}}</td>
+                {{usage.attributes.productName}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productName}}</td>
               <td>{{usage.attributes.productionQuantity}}</td>
               <td>{{usage.measurementUnit.label}}</td>
               <td>{{usage.quantity}}</td>
@@ -136,7 +136,7 @@
                                 for category in compDomain.categories"></select>
             <select ng-model="compDomain.currentItem"
                     ng-change="catalogItemModel.setCompItem(compDomain)"
-                    ng-options="item.attributes.productDescription
+                    ng-options="item.attributes.productName
                               for item in compDomain.categoryItems"></select>
           <button class="btn btn-sm btn-default"ng-disabled="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.addItem(compDomain.id,compDomain.currentCategory.tId)">
@@ -156,8 +156,8 @@
               <td>{{component.view.category.label}}</td>
               <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.editItem(component.id)">
-                {{component.attributes.productDescription}}</td>
-              <td ng-show="catalogItemModel.item.isChanged">{{component.attributes.productDescription}}</td>
+                {{component.attributes.productName}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{component.attributes.productName}}</td>
               <td>
               <input type="number" min=0 max=99999
                        ng-model="component.view.compQuantity"
@@ -192,11 +192,19 @@
   </tab>
    <tab heading="ראשי" active="catalogItemModel.isMainTabActive">
     <table>
+      <tr ng-class="catalogItemModel.item.errors.productName?'bg-danger':null">
+        <td><label>שם</label></td>
+        <td>
+        <input  type="text" size = 40 ng-model="catalogItemModel.item.attributes.productName"
+                  ng-change="catalogItemModel.setProductName()">
+          <span ng-show="catalogItemModel.item.errors.productName==='dup'">&nbsp;שם פריט כפול</span>
+        </td>
+      </tr>
       <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null">
         <td><label>תיאור</label></td>
         <td>
         <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.productDescription"
-               ng-change="catalogItemModel.setProductDescription()"></textarea>
+                  ng-change="catalogItemModel.setProductDescription()"></textarea>
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
@@ -221,7 +229,7 @@
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
           ng-class="catalogItemModel.item.errors.priceQuantity?'bg-danger':null">
-        <td><label>כמות</label></td>
+        <td><label>כמות להצעת מחיר</label></td>
         <td>
         <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.priceQuantity"
                ng-change="catalogItemModel.setPriceQuantity()">
@@ -230,14 +238,15 @@
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
           ng-class="catalogItemModel.item.errors.price?'bg-danger':null">
-        <td><label>מחיר</label></td>
+        <td><label>מחיר הכמות</label></td>
         <td>
         <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.attributes.price"
                ng-change="catalogItemModel.setPrice()">
 
         </td>
       </tr>
-      <tr ng-class="catalogItemModel.item.errors.productionQuantity?'bg-danger':null">
+      <tr ng-hide="catalogItemModel.currentDomain.id===3"
+          ng-class="catalogItemModel.item.errors.productionQuantity?'bg-danger':null">
         <td><label>כמות ייצור</label></td>
         <td>
         <input type="text" size = 4

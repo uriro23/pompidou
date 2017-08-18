@@ -342,22 +342,18 @@ config(function($stateProvider, $urlRouterProvider) {
     })
 
     .state('newCatalogItem', {
-      url: '/newCatalogItem',
+      url: '/newCatalogItem/:domain/:category',
       templateUrl: 'app/partials/catalogItem.html',
       controller: 'CatalogItemCtrl as catalogItemModel',
-      params: {
-        domain: null,
-        category: null
-      },
       resolve: {
         currentItem: [function () {
           return null;
         }],
         currentDomain: ['$stateParams', function ($stateParams) {
-          return $stateParams.domain;
+          return Number($stateParams.domain);
         }],
         currentCategory: ['$stateParams', function ($stateParams) {
-          return $stateParams.category;
+          return Number($stateParams.category);
         }],
         allCategories: ['api', function (api) {
          return api.queryCategories().then (function (res) {
@@ -365,6 +361,16 @@ config(function($stateProvider, $urlRouterProvider) {
               return obj.attributes;
             });
           });
+        }],
+        productNames: ['$stateParams','api', function ($stateParams, api) {
+            return api.queryCatalog(Number($stateParams.domain),['productName']).then(function(names) {
+              return names.map(function(name) {
+                return {
+                  id:   name.id,
+                  name: name.attributes.productName
+                };
+              });
+            });
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
@@ -407,44 +413,15 @@ config(function($stateProvider, $urlRouterProvider) {
             });
           });
         }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-          return measurementUnitsPromise;
-        }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
-        }],
-        config: ['api', function (api) {
-          return api.queryConfig().then(function (res) {
-            return res[0].attributes;
-          });
-        }]
-      }
-    })
-
-    .state('dupCatalogItem', {
-      url: '/dupCatalogItem/:basedOnId',
-      templateUrl: 'app/partials/catalogItem.html',
-      controller: 'CatalogItemCtrl as catalogItemModel',
-      resolve: {
-        currentItem: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCatalogById($stateParams.basedOnId).then(function (objs) {
-            return objs[0];
-          });
-        }],
-        currentDomain: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCatalogById($stateParams.basedOnId).then(function (objs) {
-            return objs[0].attributes.domain;
-          });
-        }],
-        currentCategory: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCatalogById($stateParams.basedOnId).then(function (objs) {
-            return objs[0].attributes.category;
-          });
-        }],
-        allCategories: ['api', function (api) {
-          return api.queryCategories().then (function (res) {
-            return res.map(function (obj) {
-              return obj.attributes;
+        productNames: ['$stateParams','api', function ($stateParams, api) {
+          return api.queryCatalogById($stateParams.id).then(function (objs) {
+            return api.queryCatalog(objs[0].attributes.domain,['productName']).then(function(names) {
+              return names.map(function(name) {
+                return {
+                  id:   name.id,
+                  name: name.attributes.productName
+                };
+              });
             });
           });
         }],

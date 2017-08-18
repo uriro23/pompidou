@@ -7,6 +7,7 @@
   <button class="btn btn-default" ng-click="adminModel.createOrderHeaders()">צור כותרת אירוע</button>
   <button class="btn btn-default" ng-click="adminModel.prepareMultipleQuotes()">הכן ריבוי ציטוטים</button>
   -->
+  <button class="btn btn-default" ng-click="adminModel.generateProductNames()">צור שמות מוצרים</button>
 </div>
 <tabset>
   <tab heading='מע"מ'>
@@ -96,7 +97,7 @@
         <div style="cursor: pointer;width: 60%; display: inline-block"
              ng-click="adminModel.selectCatItem(menuItem.id)">
         <span>מנה:</span>
-        <span>{{menuItem.attributes.productDescription.substr(0,85)}}</span>
+        <span>{{menuItem.attributes.productName.substr(0,85)}}</span>
         </div>
         <div style="width: 30%; display: inline-block">
           <span>כמות ייצור</span>
@@ -109,7 +110,7 @@
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(prep.id)">
           <span>הכנה:</span>
-          <span>{{prep.attributes.productDescription}}</span>
+          <span>{{prep.attributes.productName}}</span>
           </div>
           <div style="width: 18.4%;display: inline-block">
             <span>כמות במנה:</span>
@@ -127,7 +128,7 @@
             <div style="cursor: pointer;width: 37.5%; display: inline-block"
                  ng-click="adminModel.selectCatItem(prepMaterial.id)">
             <span>חומר:</span>
-            <span>{{prepMaterial.attributes.productDescription}}</span>
+            <span>{{prepMaterial.attributes.productName}}</span>
             </div>
             <div style="width: 18.9%;display: inline-block">
               <span>כמות בהכנה:</span>
@@ -142,7 +143,7 @@
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(material.id)">
           <span>חומר:</span>
-          <span>{{material.attributes.productDescription}}</span>
+          <span>{{material.attributes.productName}}</span>
           </div>
           <div style="width: 18.4%;display: inline-block">
             <span>כמות במנה:</span>
@@ -164,7 +165,8 @@
       <th>אירועים</th>
       <tr ng-repeat="catItem in adminModel.catalog">
         <td>{{catItem.view.category.label}}</td>
-        <td style="cursor: pointer" ng-click="adminModel.selectCatItem(catItem.id)">{{catItem.attributes.productDescription}}</td>
+        <td style="cursor: pointer" ng-click="adminModel.selectCatItem(catItem.id)">
+          {{catItem.attributes.productName}}</td>
         <td>{{catItem.view.count}}</td>
       </tr>
     </table>

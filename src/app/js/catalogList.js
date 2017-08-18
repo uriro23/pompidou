@@ -26,7 +26,7 @@ angular.module('myApp')
       var that = this;
       this.categoryItems = this.catalog.filter(function(cat) {
         return cat.attributes.category===that.currentCategory.tId &&
-            cat.attributes.productDescription.indexOf(that.filterText)>-1 &&
+          (cat.attributes.productName+' '+cat.attributes.productDescription).indexOf(that.filterText)>-1 &&
             (that.includeDeleted || !cat.attributes.isDeleted);
       });
     };
@@ -62,7 +62,7 @@ angular.module('myApp')
           return api.queryCatalogByCategory(that.currentCategory.tId)
             .then(function (results) {
               that.catalog = results.sort(function (a, b) {
-                if (a.attributes.productDescription > b.attributes.productDescription) {
+                if (a.attributes.productName > b.attributes.productName) {
                   return 1;
                 } else {
                   return -1;

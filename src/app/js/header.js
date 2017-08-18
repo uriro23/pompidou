@@ -13,6 +13,7 @@ angular.module('myApp')
     // functions
     this.getPrevOrders =  $scope.orderModel.getPrevOrders;
     this.setReadOnly =  $scope.orderModel.setReadOnly;
+    this.setOrderTableParams = $scope.orderModel.setOrderTableParams;  // used in getPrevOrders
 
     this.orderChanged = function (field) {
       orderService.orderChanged (this.order,field);

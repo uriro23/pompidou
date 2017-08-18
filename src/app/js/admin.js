@@ -413,5 +413,49 @@ angular.module('myApp')
         })
     };
 
+
+    // generate product name from product description
+    this.generateProductNames = function () {
+      api.queryCatalog()
+        .then(function(catalog) {
+          catalog.forEach(function(cat) { // generate names
+            if (cat.attributes.domain === 1) {
+              var match = cat.attributes.productDescription.match(/^\s*\S+\s+\S+\s+\S+\s*\S+/); // extract first 4 words of desc
+              cat.attributes.productName = match ? match[0] : cat.attributes.productDescription;
+            } else {
+              cat.attributes.productName = cat.attributes.productDescription;
+            }
+          });
+          catalog.sort(function(a,b) {  // sort to look for duplicates
+            if (a.attributes.domain < b.attributes.domain) {
+              return -1;
+            } else if (a.attributes.domain > b.attributes.domain) {
+              return 1;
+            } else if(a.attributes.productName < b.attributes.productName) {
+              return -1;
+            } else if (a.attributes.productName > b.attributes.productName) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+          var cnt = 0;
+          for (var i=0;i<catalog.length;i++) {  // eliminate duplicates
+            for (var j=i+1;j<catalog.length;j++) {
+              if (catalog[i].attributes.domain === catalog[j].attributes.domain &&
+                catalog[i].attributes.productName === catalog[j].attributes.productName) {
+                catalog[j].attributes.productName += String(j-i);
+                cnt++;
+              }
+            }
+          }
+          console.log(cnt+' duplicates found');
+          api.saveObjects(catalog)
+            .then(function() {
+              console.log('catalog updated');
+            });
+        });
+    };
+
         });
 

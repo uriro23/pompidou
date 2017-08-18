@@ -320,10 +320,13 @@ angular.module('myApp')
     return new Catalog();
   };
 
-    this.queryCatalog = function (domain) {
+    this.queryCatalog = function (domain,fields) {
       var catalogQuery = new Parse.Query(Catalog);
       if (domain) {
         catalogQuery.equalTo('domain', domain);
+      }
+      if (fields) {
+        catalogQuery.select(fields);
       }
       return query(catalogQuery);
     };

@@ -46,7 +46,7 @@ angular.module('myApp')
     root.quantity = quantity;
     root.domain = domains[root.attributes.domain];
     if (root.attributes.domain === 0) {
-      root.attributes.productDescription =
+      root.attributes.productName =
         root.attributes.customer.firstName + ' ' + dayName(root.attributes.order.eventDate);
     }
     backTrace.push(root);

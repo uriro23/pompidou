@@ -13,7 +13,7 @@
   <tbody>
   <tr ng-repeat="prep in todaysPrepModel.todaysPreps">
     <td></td>
-    <td>{{prep.productDescription}}</td>
+    <td>{{prep.productName}}</td>
     <td>{{(prep.quantity | number:2) + ' ' + prep.measurementUnit.label}}</td>
     <td>{{(prep.quantityForToday | number:2) + ' ' + prep.measurementUnit.label}}</td>
     <td>
@@ -26,7 +26,7 @@
           </th>
         </thead>
         <tr ng-repeat="menuItem in prep.menuItems">
-          <td>{{menuItem.productDescription}}</td>
+          <td>{{menuItem.productName}}</td>
           <td>{{menuItem.quantity | number:2}}</td>
           <td ng-repeat="order in menuItem.orders">
             <span ng-show="order.quantity">{{order.quantity | number:2}}</span>

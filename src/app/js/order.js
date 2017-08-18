@@ -15,6 +15,21 @@ angular.module('myApp')
       $state.go('login');
     }
 
+    var tabThis;
+
+    this.setOrderTableParams = function () {
+      if (tabThis) {
+        tabThis.queryType = 'customer';
+        tabThis.isProcessing = false;
+        tabThis.orders = this.prevOrders;
+        tabThis.isDisableLink = this.order.view.isChanged;
+      }
+    };
+
+    $scope.initOrderTableParams = function (t) {
+      tabThis = t;
+    };
+
     this.setReadOnly = function () {
       this.isReadOnly = this.order.attributes.eventDate &&
                         this.order.attributes.eventDate < today &&
@@ -243,20 +258,6 @@ angular.module('myApp')
       history.back();
     };
 
-    var tabThis;
-
-    this.setOrderTableParams = function () {
-      if (tabThis) {
-        tabThis.queryType = 'customer';
-        tabThis.isProcessing = false;
-        tabThis.orders = this.prevOrders;
-        tabThis.isDisableLink = this.order.view.isChanged;
-      }
-    };
-
-    $scope.initOrderTableParams = function (t) {
-      tabThis = t;
-    };
 
 
 

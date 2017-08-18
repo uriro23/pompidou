@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('CatalogItemCtrl', function ($state, $modal, $rootScope, $scope, api, lov,
                                            currentItem, currentDomain, currentCategory,
-                                           allCategories, measurementUnits, eventTypes, config) {
+                                           allCategories, productNames,measurementUnits, eventTypes, config) {
 
     var model = this;
     $rootScope.menuStatus = 'show';
@@ -39,6 +39,19 @@ angular.module('myApp')
     };
 
    // Main Tab
+
+    model.setProductName = function () {
+      var productName = model.item.attributes.productName;
+      var id = model.item.id;
+      model.item.errors.productName =
+        !productName || productName.length === 0;
+      productNames.forEach(function(name) {
+        if (name.name === productName && name.id !== id) {
+          model.item.errors.productName = 'dup'
+        }
+      });
+      model.setChanged(true);
+    };
 
     model.setProductDescription = function () {
       model.item.errors.productDescription =
@@ -122,7 +135,7 @@ angular.module('myApp')
           itm.isError = true;  // has to specify quantity
           return itm;
         }).sort(function(a,b) {
-          if (a.attributes.productDescription > b.attributes.productDescription) {
+          if (a.attributes.productName > b.attributes.productName) {
             return 1;
           } else {
             return -1;
@@ -328,6 +341,7 @@ angular.module('myApp')
         model.item.view.category = model.categories.filter(function(cat) {
           return cat.tId===currentCategory;
         })[0];
+        model.item.errors.productName = true;
         model.item.errors.productDescription = true;
         model.item.errors.productionQuantity = true;
         if (model.currentDomain.id===1) {
@@ -464,7 +478,7 @@ angular.module('myApp')
     });
     model.measurementUnits = measurementUnits;
     model.timeUnits = lov.timeUnits;
-    model.isNewItem = $state.current.name==='newCatalogItem' || $state.current.name==='dupCatalogItem';
+    model.isNewItem = $state.current.name==='newCatalogItem';
    if (model.isNewItem) {
      model.item = api.initCatalog();
      model.item.attributes.domain = lov.domains.filter(function(dom) {

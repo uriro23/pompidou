@@ -33,7 +33,7 @@
   <span>עד תאריך</span>
   <span>{{workOrderModel.toDate | date:'dd/MM/yy'}}</span>
 </div>
-<tabset>
+<tabset ng-hide="workOrderModel.isProcessing">
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
        active="workOrderModel.isActiveTab[3]">
     <ng-include src="'app/partials/workOrder/shoppingList.html'"></ng-include>

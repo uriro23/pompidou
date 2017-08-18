@@ -85,9 +85,9 @@ angular.module('myApp')
               var catItem = catalog.filter(function (cat) {
                 return cat.id === item.catalogId;
               })[0];
-              // if catalog item was deleted, use product description from first occurrence of menu item
-              workItem.attributes.productDescription =
-                catItem ? catItem.attributes.productDescription : item.productDescription;
+              // if catalog item was deleted, use product name from first occurrence of menu item
+              workItem.attributes.productName =
+                catItem ? catItem.attributes.productName : item.productName;
               workItem.attributes.quantity = item.quantity;
               workItem.attributes.originalQuantity = workItem.attributes.quantity;
               workItem.attributes.category = item.category;
@@ -158,7 +158,7 @@ angular.module('myApp')
                     workItem = api.initWorkOrder();
                     workItem.attributes.woId = woId;
                     workItem.attributes.catalogId = component.id;
-                    workItem.attributes.productDescription = outCatItem.productDescription;
+                    workItem.attributes.productName = outCatItem.productName;
                     workItem.attributes.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                     workItem.attributes.originalQuantity = workItem.attributes.quantity;
                     workItem.attributes.category = allCategories.filter(function (cat) {
@@ -200,8 +200,7 @@ angular.module('myApp')
             var originalMenuItem = that.workOrder.filter(function (wo) {
               return wo.id === currentBackTrace.id;
             })[0];
-            var match = originalMenuItem.attributes.productDescription.match(/^\s*\S+\s+\S+\s+\S+/); // extract first 3 words of desc
-            currentMenuItem.productDescription = match ? match[0] : originalMenuItem.productDescription;
+            currentMenuItem.productName = originalMenuItem.attributes.productName;
             currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
             for (var n = 0; n < that.woOrders.length; n++) {
               currentMenuItem.orders[n] = {seq: n, quantity: 0};
@@ -454,7 +453,7 @@ angular.module('myApp')
         });
         for (var c = 0; c < this.hierarchicalWorkOrder[d].categories.length; c++) {
           this.hierarchicalWorkOrder[d].categories[c].list.sort(function (a, b) {
-            if (a.attributes.productDescription < b.attributes.productDescription) {
+            if (a.attributes.productName < b.attributes.productName) {
               return -1;
             } else {
               return 1;
@@ -462,7 +461,6 @@ angular.module('myApp')
           });
         }
       }
-      console.log(this.hierarchicalWorkOrder);
     };
 
     this.createWorkOrderDomain = function (targetDomain) {
