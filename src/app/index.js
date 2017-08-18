@@ -367,7 +367,8 @@ config(function($stateProvider, $urlRouterProvider) {
               return names.map(function(name) {
                 return {
                   id:   name.id,
-                  name: name.attributes.productName
+                  name: name.attributes.productName,
+                  isDeleted: name.attributes.isDeleted
                 };
               });
             });
@@ -419,7 +420,8 @@ config(function($stateProvider, $urlRouterProvider) {
               return names.map(function(name) {
                 return {
                   id:   name.id,
-                  name: name.attributes.productName
+                  name: name.attributes.productName,
+                  isDeleted: name.attributes.isDeleted
                 };
               });
             });

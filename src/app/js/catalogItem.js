@@ -38,19 +38,27 @@ angular.module('myApp')
       }
     };
 
+    function isNameInUse (productName,id) {
+      var res = false;
+      productNames.forEach(function(name) {
+        if (name.name === productName && name.id !== id && !name.isDeleted) {
+          res = true;
+        }
+      });
+      return res;
+    }
+
    // Main Tab
 
     model.setProductName = function () {
-      var productName = model.item.attributes.productName;
-      var id = model.item.id;
-      model.item.errors.productName =
-        !productName || productName.length === 0;
-      productNames.forEach(function(name) {
-        if (name.name === productName && name.id !== id) {
-          model.item.errors.productName = 'dup'
+       model.item.errors.productName =
+        !model.item.attributes.productName || model.item.attributes.productName.length === 0;
+      if (!model.item.errors.productName) {
+        if (isNameInUse(model.item.attributes.productName,model.item.id)) {
+          model.item.errors.productName = 'dup';
         }
-      });
-      model.setChanged(true);
+      }
+       model.setChanged(true);
     };
 
     model.setProductDescription = function () {
@@ -326,6 +334,19 @@ angular.module('myApp')
      model.loadComponentItems();
      model.isNewItem = true;
      model.isMainTabActive = true;
+   };
+
+   model.setIsDeleted = function() {
+     model.setChanged(true);
+     if (model.item.attributes.isDeleted) {
+       if (model.item.errors.productName === 'dup') { // if its deleted, never mind its being duplicate
+         model.item.errors.productName = false;
+       }
+     } else {  // if it isn't deleted any more, productName must be unique in domain
+       if (isNameInUse(model.item.attributes.productName,model.item.id)) {
+         model.item.errors.productName = 'dup';
+       }
+     }
    };
 
     model.editItem = function (id) {
