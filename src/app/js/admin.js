@@ -168,7 +168,7 @@ angular.module('myApp')
             })[0];
             return cat;
           });
-          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate);
+          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate());
           var to = new Date(2099,11,31);
           api.queryOrdersByRange('eventDate',from,to)
             .then(function(ords) {
@@ -283,7 +283,7 @@ angular.module('myApp')
             cat.orderCnt = 0;
             cat.category = cat.attributes.category; // for ng-repeat filter
           });
-          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate);
+          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate());
           var to = new Date(2099,11,31);
           api.queryOrdersByRange('eventDate',from,to)
             .then(function(orders) {

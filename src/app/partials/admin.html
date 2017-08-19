@@ -188,7 +188,10 @@
         </thead>
         <tbody>
         <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems"
-            ng-class="productNameItem.errors ? 'bg-danger' : null">
+            ng-class="productNameItem.errors ? 'bg-danger' :
+                       productNameItem.isChanged ? 'bg-success' :
+                       productNameItem.attributes.isDeleted ? 'active myCanceledEvent' :
+                       (productNameItem.orderCnt===0) ? 'bg-warning' : bg-active">
           <td>
           <input type="text" size="40"
                  ng-model="productNameItem.attributes.productName"
