@@ -81,6 +81,9 @@ config(function($stateProvider, $urlRouterProvider) {
         currentOrder: [function () {
           return null;
         }],
+        isFromNew: [function () {
+          return 0;
+        }],
         customer: [function () {
           return null;
         }],
@@ -117,6 +120,9 @@ config(function($stateProvider, $urlRouterProvider) {
       resolve: {
         currentOrder: [function () {
           return null;
+        }],
+        isFromNew: [function () {
+          return 0;
         }],
         customer: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryCustomers($stateParams.customerId).then(function (objs) {
@@ -159,6 +165,9 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs[0];
           });
         }],
+        isFromNew: [function () {
+          return 0;
+        }],
         customer: [function () {
           return null;
         }],
@@ -189,7 +198,7 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
     .state('editOrder', {
-      url: '/editOrderView/:id',
+      url: '/editOrderView/:id/:isFromNew',
       templateUrl: 'app/partials/order.html',
       controller: 'OrderCtrl as orderModel',
       resolve: {
@@ -197,6 +206,9 @@ config(function($stateProvider, $urlRouterProvider) {
           return api.queryOrder($stateParams.id).then(function (objs) {
             return objs[0];
           });
+        }],
+        isFromNew: ['$stateParams', function ($stateParams) {
+          return Number($stateParams.isFromNew);
         }],
         customer: [function () {
           return null;

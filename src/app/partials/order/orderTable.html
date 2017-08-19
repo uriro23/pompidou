@@ -30,7 +30,7 @@
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
                         order.view.orderStatus.id===6?'active myCanceledEvent':null">
     <td ng-hide="orderTableModel.isDisableLink">
-      <a  ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
+      <a  ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.number}}</a>
     </td>
     <td ng-show="orderTableModel.isDisableLink">{{order.attributes.number}}</td>
     <td>{{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</td>
@@ -84,7 +84,7 @@
       <tbody>
       <tr ng-repeat="order in orderTableModel.orders">
         <td>
-          <a ng-href="#/editOrderView/{{order.id}}">{{order.attributes.number}}</a>
+          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.number}}</a>
         </td>
         <td>{{order.attributes.template}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>

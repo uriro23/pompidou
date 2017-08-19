@@ -90,7 +90,7 @@ angular.module('myApp')
 
     model.eventClicked = function(calendarEvent) {
       if (calendarEvent.orderId) {
-        $state.go('editOrder', {'id': calendarEvent.orderId});
+        $state.go('editOrder', {'id': calendarEvent.orderId, isFromNew: 0});
       }
     };
 

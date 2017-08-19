@@ -144,6 +144,7 @@ angular.module('myApp')
       var bidCnt = 0;
       var pdfSource = [];
       var baseUrl = $location.absUrl();
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim isFromNew flag
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
       baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
       var msgText = this.msg;

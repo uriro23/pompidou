@@ -46,7 +46,7 @@
                         (woItem.attributes.orderStatus.id>=3 && woItem.attributes.orderStatus.id<=5)?'bg-success':
                         woItem.attributes.orderStatus.id===6?'active myCanceledEvent':null">
     <td>
-      <a ng-href="#/editOrderView/{{woItem.attributes.order.id}}">{{woItem.attributes.order.number}}</a>
+      <a ng-href="#/editOrderView/{{woItem.attributes.order.id}}/0">{{woItem.attributes.order.number}}</a>
     </td>
     <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
     <td>{{woItem.attributes.order.eventTime | date: 'HH:mm'}}</td>

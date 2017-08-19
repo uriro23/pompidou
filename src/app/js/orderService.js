@@ -277,7 +277,7 @@ angular.module('myApp')
             $rootScope.menuStatus = 'show';
             //  backup order for future cancel
             order.backupOrderAttr = angular.copy(order.attributes);
-            $state.go('editOrder', {id: ord.id});
+            $state.go('editOrder', {id: ord.id, isFromNew: 1});
           });
       } else {  // not new order
         this.setupOrderHeader(order.attributes);

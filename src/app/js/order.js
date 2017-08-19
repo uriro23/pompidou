@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
-                                     orderService, currentOrder, customer, lov, today, eventTypes,
+                                     orderService, currentOrder, isFromNew, customer, lov, today, eventTypes,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, menuTypes, config) {
 
@@ -255,7 +255,11 @@ angular.module('myApp')
     };
 
     this.close = function() {
-      history.back();
+      if (isFromNew===1) {
+        history.go(-2);
+      } else {
+        history.back();
+      }
     };
 
 
