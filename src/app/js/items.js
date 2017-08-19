@@ -96,9 +96,15 @@ angular.module('myApp')
       orderItems.splice(0, 0, {});
       var thisItem = orderItems[0];
       thisItem.index = maxIndex;
-      thisItem.category = this.categories.filter(function (cat) {
+      var c = this.categories.filter(function (cat) {
         return cat.tId === catalogEntry.category;
       })[0];
+      thisItem.category = {   // take only required properties of category
+        tId: c.tId,
+        label: c.label,
+        isTransportation: c.isTransportation,
+        order: c.order
+      };
       thisItem.catalogId = catalogEntry.id;
       thisItem.productName = catalogEntry.productName;
       thisItem.productDescription = catalogEntry.productDescription;

@@ -524,5 +524,59 @@ angular.module('myApp')
         });
     };
 
+    function handleUpToYear (year,catalog) {
+      console.log('doing '+year);
+      var from = new Date(year,0,1,0,0,0,0);
+      var to = new Date(year,11,31,23,59,59,999);
+      return api.queryOrdersByRange('createdAt',from,to)
+        .then(function(orders) {
+          if (orders.length > 0) {
+            console.log('read '+orders.length+' orders');
+            var found = 0;
+            var notFound = 0;
+            orders.forEach(function(order) {
+              order.attributes.quotes.forEach(function(quote) {
+                quote.items.forEach(function(item) {
+                  var tmp = catalog.filter(function(cat) {
+                    return cat.id === item.catalogId;
+                  });
+                  if (tmp.length > 0) {
+                    item.productName = tmp[0].attributes.productName;
+                    found++;
+                  } else {
+                    notFound++;
+                  }
+                  // use this opportunity to refresh and condense category in item
+                  var c = categories.filter(function(cat) {
+                    return cat.tId === item.category.tId;
+                  })[0];
+                  item.category = {
+                    tId: c.tId,
+                    label: c.label,
+                    isTransportation: c.isTransportation,
+                    order: c.order
+                  };
+                });
+              });
+            });
+            console.log('saving orders. '+found+' items found in catalog, '+notFound+' not found');
+            api.saveObjects(orders)
+              .then(function() {
+                console.log('saved');
+                handleUpToYear(year-1,catalog); // handle previous years
+              });
+          } else {
+            console.log('no orders for '+year);
+          }
+        });
+    }
+
+    this.productNamesInItems = function() {
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          handleUpToYear(2017,catalog);
+        });
+    };
+
         });
 
