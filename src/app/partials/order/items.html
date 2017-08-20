@@ -1,6 +1,6 @@
 <div ng-controller="ItemsCtrl as itemsModel">
 <button ng-click="itemsModel.addItem(true)"
-        ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem"
+        ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
         ng-disabled="itemsModel.isReadOnly"
         class="btn btn-default"
         >הוסף פריט</button>
@@ -28,13 +28,13 @@
       </tbody>
     </table>
 </span>
-<button ng-click="itemsModel.addTemplate(true)"
-        ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem"
-        ng-disabled="itemsModel.isReadOnly"
-        class="btn btn-default">
+  <button ng-click="itemsModel.addTemplate(true)"
+          ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
+          ng-disabled="itemsModel.isReadOnly"
+          class="btn btn-default">
     הוסף תבנית
-</button>
-<span ng-show="itemsModel.isAddTemplate">
+  </button>
+  <span ng-show="itemsModel.isAddTemplate">
   <button ng-click="itemsModel.addTemplate(false)"
           ng-disabled="itemsModel.isReadOnly"
           class="btn btn-warning">
@@ -59,6 +59,31 @@
           {{template.attributes.noOfParticipants}}
         </td>
       </tr>
+      </tbody>
+  </table>
+</span><button ng-click="itemsModel.addQuote(true)"
+               ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
+               ng-disabled="itemsModel.isReadOnly"
+               class="btn btn-default">
+  הוסף תפריט אחר
+</button>
+  <span ng-show="itemsModel.isAddQuote">
+  <button ng-click="itemsModel.addQuote(false)"
+          ng-disabled="itemsModel.isReadOnly"
+          class="btn btn-warning">
+      בטל
+  </button>
+  &nbsp;
+  <table style="width: 40%" class="table table-hover">
+    <thead>
+    <th>שם תפריט</th>
+    </thead>
+      <tbody>
+      <tr ng-repeat="quote in itemsModel.quotes">
+        <td style="cursor: pointer" ng-click="itemsModel.setQuote(quote)">
+          {{quote.title}}
+        </td>
+     </tr>
       </tbody>
   </table>
 </span>

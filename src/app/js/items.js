@@ -228,78 +228,98 @@ angular.module('myApp')
 
     this.setTemplate = function (template) {
       var that = this;
-      var thisOrder = this.order.attributes;
-      var thisQuote = this.order.view.quote;
-      var orderItems = thisQuote.items;
-      api.queryOrder (template.id)
-        .then(function (tmpl) {
-          var templateItems = tmpl[0].attributes.quotes[tmpl[0].attributes.activeQuote].items;
-          var templateCatalogIds = templateItems.map(function (itm) {
-            return itm.catalogId
-          });
-          api.queryCatalogByIds(templateCatalogIds)
-            .then(function (cat) {
-              var templateCatalogItems = cat.filter(function (c) {
-                return !c.attributes.isDeleted
-              });
-              templateCatalogItems = templateCatalogItems.map(function (c) {
-                var ct = c.attributes;
-                ct.id = c.id;
-                return ct
-              });
-              for (var j = 0; j < templateItems.length; j++) {
-                var templateItem = templateItems[j];
-                var templateCatalogItem = templateCatalogItems.filter(function (cat) {
-                  return cat.id === templateItem.catalogId
-                })[0];
-                if (!templateCatalogItem) {
-                  alert('מנה ' + templateItem.productName + ' לא נמצאת בקטלוג. מדלג עליה')
-                } else {   // fetch up to date price from catalog
-                  templateItem.catalogPrice = templateCatalogItem.price;
-                  templateItem.catalogQuantity = templateCatalogItem.priceQuantity;
-                  if (that.isAdjustQuantity) {
-                    templateItem.quantity = templateItem.quantity /
-                    tmpl[0].attributes.noOfParticipants *
-                    thisOrder.noOfParticipants;
-                    var r = templateItem.measurementUnit.rounding;
-                    if (!r) {
-                      r = 1
-                    }
-                    templateItem.quantity = Math.ceil(templateItem.quantity / r) * r;  // round up
-                  }
-                  var thisItem = orderItems.filter(function (itm) {    // check if product exists in order
-                    return itm.catalogId === templateItem.catalogId;
-                  })[0];
-                  if (thisItem) {
-                    thisItem.quantity += templateItem.quantity;   // exists, just update quantity
-                  } else {
-                    var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
-                      return itm.index
-                    })) + 1;
-                    orderItems.splice(0, 0, templateItem); // initialize new item as copied one
-                    thisItem = orderItems[0];
-                    thisItem.index = maxIndex;  // override original index
-                  }
-                  // now adjust price
-                  thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
-                  thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
-                  if (thisOrder.isBusinessEvent) {
-                    thisItem.price = thisItem.priceBeforeVat;
-                  } else {
-                    thisItem.price = thisItem.priceInclVat;
-                  }
-                  thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
-                  thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
-                  thisItem.isChanged = true;
-                }
-              }
-              orderService.calcSubTotal(thisQuote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
-              orderService.quoteChanged(that.order);
-              that.isAddTemplate = false;
-            });
+      return api.queryOrder (template.id)
+       .then(function (tmpl) {
+          that.addQuoteItems(tmpl[0].attributes.quotes[tmpl[0].attributes.activeQuote],
+            false,tmpl[0].attributes.noOfParticipants)
+            .then(function() {
+               that.isAddTemplate = false;
+         });
+       });
+     };
 
+
+    this.addQuote = function (set) {
+      if (set) {
+        this.isAddQuote = true;
+        var thisQuote = this.order.view.quote;
+        this.quotes = this.order.attributes.quotes.filter(function(quote) {  // exclude selected quote
+          return quote.menuType.tId !== thisQuote.menuType.tId;
         });
-   };
+      } else {
+        this.isAddQuote = false;
+      }
+    };
+
+    this.setQuote = function(quote) {
+      var that = this;
+      this.addQuoteItems(quote,true,0)
+        .then(function() {
+          that.isAddQuote = false;
+        });
+    };
+
+    this.addQuoteItems = function (sourceQuote,isSameOrder,sourceNoOfParticipants) {
+      var that = this;
+      var targetOrder = this.order.attributes;
+      var targetQuote = this.order.view.quote;
+      var targetItems = targetQuote.items;
+      var sourceCatalogIds = sourceQuote.items.map(function (itm) {
+        return itm.catalogId
+      });
+      return api.queryCatalogByIds(sourceCatalogIds)
+        .then(function (cat) {
+          var sourceCatalogItems = cat.map(function (c) {
+            var ct = c.attributes;
+            ct.id = c.id;
+            return ct
+          });
+          sourceQuote.items.forEach(function(sourceItem) {
+            var sourceCatalogItem = sourceCatalogItems.filter(function (cat) {
+              return cat.id === sourceItem.catalogId
+            })[0];
+            // fetch up to date price from catalog
+            if (!isSameOrder) {
+              sourceItem.catalogPrice = sourceCatalogItem.price;
+              sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
+              if (that.isAdjustQuantity) {
+                sourceItem.quantity = sourceItem.quantity / sourceNoOfParticipants * targetOrder.noOfParticipants;
+                var r = sourceItem.measurementUnit.rounding;
+                if (!r) {
+                  r = 1
+                }
+                sourceItem.quantity = Math.ceil(sourceItem.quantity / r) * r;  // round up
+              }
+            }
+            var targetItem = targetItems.filter(function (itm) {    // check if product exists in order
+              return itm.catalogId === sourceItem.catalogId;
+            })[0];
+            if (targetItem) {
+              targetItem.quantity += sourceItem.quantity;   // exists, just update quantity
+            } else {
+              var maxIndex = targetItems.length === 0 ? 0 : Math.max.apply(null, targetItems.map(function (itm) {
+                return itm.index
+              })) + 1;
+              targetItems.splice(0, 0, angular.copy(sourceItem)); // initialize new item as copied one
+              targetItem = targetItems[0];
+              targetItem.index = maxIndex;  // override original index
+            }
+            // now adjust price
+            targetItem.priceInclVat = targetItem.quantity * targetItem.catalogPrice / targetItem.catalogQuantity;
+            targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
+            if (targetOrder.isBusinessEvent) {
+              targetItem.price = targetItem.priceBeforeVat;
+            } else {
+              targetItem.price = targetItem.priceInclVat;
+            }
+            targetItem.boxCount = targetItem.quantity * targetItem.productionBoxCount / targetItem.productionQuantity;
+            targetItem.satietyIndex = targetItem.quantity * targetItem.productionSatietyIndex / targetItem.productionQuantity;
+            targetItem.isChanged = true;
+          });
+          orderService.calcSubTotal(targetQuote, targetOrder.isBusinessEvent, targetOrder.vatRate);
+          orderService.quoteChanged(that.order);
+        });
+    };
 
 
 
