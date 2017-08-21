@@ -154,10 +154,19 @@ angular.module('myApp')
 
     this.setProductDescription = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
-
+      thisItem.isDescChanged = true;
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
+    };
+
+    this.resetDescChange = function (ind) {
+      var thisItem = this.order.view.quote.items[ind];
+      api.queryCatalogById(thisItem.catalogId)
+        .then(function(cat) {
+          thisItem.productDescription = cat[0].attributes.productDescription;
+          thisItem.isDescChanged = false;
+        });
     };
 
     this.setQuantity = function (ind) {

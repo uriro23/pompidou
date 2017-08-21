@@ -101,11 +101,18 @@
   <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
       ng-class="item.isChanged?'bg-success':null">
     <td class="hidden-xs">{{item.category.label}}</td>
-    <td>
+    <td ng-hide="item.isDescChanged">
       <input type="text" size="100" ng-model="item.productDescription"
              ng-change="itemsModel.setProductDescription($index)"
              ng-disabled="itemsModel.isReadOnly"
              ng-class="item.errors.productDescription?'bg-danger':null">
+    </td>
+    <td ng-show="item.isDescChanged">
+      <input type="text" size="92" ng-model="item.productDescription"
+             ng-change="itemsModel.setProductDescription($index)"
+             ng-disabled="itemsModel.isReadOnly"
+             ng-class="item.errors.productDescription?'bg-danger':null">
+      <button class="btn btn-default btn-sm bg-success" ng-click="itemsModel.resetDescChange($index)">מקור</button>
     </td>
     <td class="hidden-xs">{{item.measurementUnit.label}}</td>
     <td>
@@ -128,7 +135,7 @@
              ng-disabled="itemsModel.isReadOnly"
           >
     </td>
-   <td>
+       <td>
       <button ng-click="itemsModel.editCatalogItem($index)"
               ng-disabled="itemsModel.order.view.isChanged"
               class="btn btn-default btn-sm"
