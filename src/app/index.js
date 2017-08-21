@@ -313,29 +313,6 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-    .state('catalog', {
-      url: '/catalog',
-      templateUrl: 'app/partials/catalog.html',
-      controller: 'CatalogCtrl as catalogModel',
-      resolve: {
-        categories: ['api', function (api) {
-          return api.queryCategories(1).then (function (res) {  // load by default categories of products domain
-            return res.map(function (obj) {
-              return obj.attributes;
-            });
-          });
-        }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-          return measurementUnitsPromise;
-        }],
-        config: ['api', function (api) {
-          return api.queryConfig().then(function (res) {
-            return res[0].attributes;
-          });
-        }]
-      }
-    })
-
     .state('catalogList', {
       url: '/catalogList/:domain/:category',
       templateUrl: 'app/partials/catalogList.html',
