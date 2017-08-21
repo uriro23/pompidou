@@ -51,6 +51,7 @@ angular.module('myApp')
     this.createOrderItems = function () {
       var workItem;
       var workItemInd;
+      var orderInd;
       var that = this;
       this.workOrder.forEach(function(inWorkOrderItem) {
         var inWorkItem = inWorkOrderItem.attributes;
@@ -72,12 +73,13 @@ angular.module('myApp')
                 domain: 0,
                 quantity: item.quantity
               });
-              temp = that.woOrders.filter(function(o,i) {
+              that.woOrders.forEach(function(o,i) {
                 if (o.id === inWorkOrderItem.id) {
                   orderInd = i;
                 }
               });
               workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
+              workItem.attributes.orderQuant[orderInd].isDescChanged = item.isDescChanged;
               } else { // create new item
               workItem = api.initWorkOrder();
               workItem.attributes.woId = woId;
@@ -85,9 +87,7 @@ angular.module('myApp')
               var catItem = catalog.filter(function (cat) {
                 return cat.id === item.catalogId;
               })[0];
-              // if catalog item was deleted, use product name from first occurrence of menu item
-              workItem.attributes.productName =
-                catItem ? catItem.attributes.productName : item.productName;
+              workItem.attributes.productName = catItem.attributes.productName;
               workItem.attributes.quantity = item.quantity;
               workItem.attributes.originalQuantity = workItem.attributes.quantity;
               workItem.attributes.category = item.category;
@@ -105,13 +105,13 @@ angular.module('myApp')
                   quantity: 0
                 };
               }
-              var orderInd;
               temp = that.woOrders.filter(function(o,i) {
                 if (o.id === inWorkOrderItem.id) {
                   orderInd = i;
                 }
               });
               workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
+              workItem.attributes.orderQuant[orderInd].isDescChanged = item.isDescChanged;
               that.workOrder.push(workItem);
             }
           });

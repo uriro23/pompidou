@@ -66,8 +66,8 @@
         </button>
       </td>
        <td ng-show="workOrderModel.isShowMenuItemOrders" ng-repeat="order in woItem.attributes.orderQuant">
-         <span ng-show="order.quantity">{{order.quantity}}</span>
-         <span ng-hide="order.quantity">0</span>
+         <span ng-show="order.quantity" ng-class="order.isDescChanged ? 'descChanged' : null">{{order.quantity}}</span>
+         <span ng-hide="order.quantity" ng-class="order.isDescChanged ? 'descChanged' : null">0</span>
        </td>
       <td ng-show="workOrderModel.isShowMenuItemOrders">
         {{woItem.attributes.quantity}}

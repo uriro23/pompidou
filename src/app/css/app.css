@@ -139,6 +139,10 @@ a:link, a:visited  {
 .myAlertEvent {
   color: red
 }
+.descChanged {
+  font-weight: bold;
+  color: red
+}
 
 .bold
 {
