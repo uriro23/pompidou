@@ -79,8 +79,10 @@ angular.module('myApp')
                 }
               });
               workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
-              workItem.attributes.orderQuant[orderInd].isDescChanged = item.isDescChanged;
-              } else { // create new item
+              if (item.isDescChanged) {
+                workItem.attributes.orderQuant[orderInd].productDescription = item.productDescription;
+            }
+            } else { // create new item
               workItem = api.initWorkOrder();
               workItem.attributes.woId = woId;
               workItem.attributes.catalogId = item.catalogId;
@@ -111,7 +113,9 @@ angular.module('myApp')
                 }
               });
               workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
-              workItem.attributes.orderQuant[orderInd].isDescChanged = item.isDescChanged;
+              if (item.isDescChanged) {
+                workItem.attributes.orderQuant[orderInd].productDescription = item.productDescription;
+              }
               that.workOrder.push(workItem);
             }
           });
@@ -119,7 +123,7 @@ angular.module('myApp')
       });
    };
 
-    this.createComponents = function (targetDomain) {
+  this.createComponents = function (targetDomain) {
       var workItemInd;
       var workItem;
       var that = this;
@@ -461,6 +465,22 @@ angular.module('myApp')
           });
         }
       }
+
+      // for order items domain only, add list of changed product descriptions per category
+      this.hierarchicalWorkOrder[1].categories.forEach(function(cat) {
+        cat.changedDescriptions = [];
+        cat.list.forEach(function(woItem) {
+          woItem.attributes.orderQuant.forEach(function(order,i) {
+            if (order.productDescription){
+              cat.changedDescriptions.push({
+                event: that.woOrders[i].attributes.customer.firstName + ' ' +
+                that.dayName(that.woOrders[i].attributes.order.eventDate),
+                desc: order.productDescription
+              });
+            }
+          });
+        });
+      });
     };
 
     this.createWorkOrderDomain = function (targetDomain) {

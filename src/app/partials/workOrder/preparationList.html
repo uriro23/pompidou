@@ -57,10 +57,13 @@
     <tr ng-repeat="woItem in cat.list">
       <td style="width: 20%">{{woItem.attributes.productName}}</td>
       <td style="width: 5%">
+        <!--
         <input type="text" money size="5"
                ng-model="woItem.attributes.quantity"
                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
                ng-change="workOrderModel.setQuantity(woItem,2)">
+               -->
+        {{woItem.attributes.quantity | number:2}}
       </td>
       <td style="width: 7%">{{woItem.attributes.measurementUnit.label}}</td>
       <td style="width: 10%" ng-hide="workOrderModel.isShowPreparationsMenuItems">
