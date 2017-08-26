@@ -40,7 +40,7 @@ angular.module('myApp')
       console.log('isYuvalTest='+this.isYuvalTest);
 
       $rootScope.title = lov.company  +  // set title so PDF file will be named correctly
-      this.bid.attributes.documentType === 1 ? ' - הצעת מחיר ' : ' - הזמנה ' +
+        ' - הצעת מחיר ' +
       (this.customer.firstName ? this.customer.firstName : '') +
        ' ' + (this.customer.lastName ? this.customer.lastName : '') +
        ' ' + this.bid.attributes.desc;
