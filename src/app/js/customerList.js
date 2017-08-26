@@ -11,7 +11,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - רשימת לקוחות';
+    $rootScope.title = 'לקוחות';
 
     // state diagram
     //--------------

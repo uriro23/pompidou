@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('MenuCtrl', function (api, $state, $filter, $rootScope, lov, order, categories) {
     $rootScope.menuStatus = 'hide';
-    $rootScope.title = lov.company + ' - תפריט';
+    $rootScope.title = 'תפריט';
 
     var user = api.getCurrentUser();
     if (user) {

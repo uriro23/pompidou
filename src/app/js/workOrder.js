@@ -14,7 +14,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - פקודת עבודה';
+    $rootScope.title = 'פקודת עבודה';
 
     var woId;
 

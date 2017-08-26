@@ -178,6 +178,10 @@ angular.module('myApp')
             }
             that.order.view.customer = custs[0].attributes;
             that.order.view.customer.id = custs[0].id;
+            $rootScope.title = ' - אירוע ' +
+              that.order.view.customer.firstName + ' ' +
+              that.order.view.customer.lastName + ' ' +
+              that.order.attributes.eventDate.getDate() +'/' + (that.order.attributes.eventDate.getMonth()+1);
             // that.getPrevOrders();
           });
         if (that.order.attributes.contact) {
@@ -288,15 +292,14 @@ angular.module('myApp')
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
-      $rootScope.title = lov.company + ' - אירוע ' + this.order.attributes.number;
       this.setupOrderView();
-      this.setReadOnly();
+       this.setReadOnly();
       this.handleVatRateChange();
       if(!this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
     } else if ($state.current.name === 'dupOrder') {
-      $rootScope.title = lov.company + ' - אירוע חדש';
+      $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
       this.order.attributes = currentOrder.attributes;
       this.order.attributes.eventDate = undefined;
@@ -310,7 +313,7 @@ angular.module('myApp')
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
     } else {  // new order or new order by customer
-      $rootScope.title = lov.company + ' - אירוע חדש';
+      $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
       if ($state.current.name === 'newOrderByCustomer') {
         this.order.attributes.customer = customer.id;

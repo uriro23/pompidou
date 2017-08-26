@@ -12,7 +12,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - רשימת אירועים';
+    $rootScope.title = 'אירועים';
 
     var fetchedOrders = [];
 

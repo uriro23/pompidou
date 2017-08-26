@@ -11,7 +11,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - סטטיסטיקות';
+    $rootScope.title = 'סטטיסטיקות';
 
     this.toDate = today;
     this.toDate.setDate(this.toDate.getDate()+1); // do until tomorrow, to include events of today

@@ -12,7 +12,6 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - קטלוג';
 
     this.addItem = function () {
      $state.go('newCatalogItem', {'domain':this.currentDomain.id, 'category':this.currentCategory.tId});
@@ -59,6 +58,7 @@ angular.module('myApp')
             that.currentCategory = that.categories.filter(function(cat) {
               return cat.tId === currentCategory;
             })[0];
+            $rootScope.title = 'קטלוג - ' + that.currentCategory.label;
           return api.queryCatalogByCategory(that.currentCategory.tId)
             .then(function (results) {
               that.catalog = results.sort(function (a, b) {

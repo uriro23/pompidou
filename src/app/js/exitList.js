@@ -8,7 +8,7 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.categories = categories;
     $rootScope.menuStatus = 'hide';
-    $rootScope.title = lov.company + ' - רשימת יציאה';
+    $rootScope.title = 'רשימת יציאה';
 
     this.currentOrder = order.attributes;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];

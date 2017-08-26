@@ -13,7 +13,7 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - ניהול';
+    $rootScope.title = 'ניהול';
 
   this.isEnvTabActive =true;
 

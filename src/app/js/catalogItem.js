@@ -14,7 +14,6 @@ angular.module('myApp')
     } else {
       $state.go('login');
     }
-    $rootScope.title = lov.company + ' - קטלוג';
 
     model.setChanged = function (bool) {
       if (bool) {
@@ -501,6 +500,7 @@ angular.module('myApp')
     model.timeUnits = lov.timeUnits;
     model.isNewItem = $state.current.name==='newCatalogItem';
    if (model.isNewItem) {
+     $rootScope.title = 'קטלוג - פריט חדש';
      model.item = api.initCatalog();
      model.item.attributes.domain = lov.domains.filter(function(dom) {
        return dom.id===currentDomain;
@@ -516,6 +516,7 @@ angular.module('myApp')
      model.item.attributes.exitList = [];
      model.item.attributes.components = [];
    } else {
+     $rootScope.title = 'קטלוג - ' + currentItem.attributes.productName;
      model.item = currentItem;
      }
 
