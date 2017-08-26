@@ -22,6 +22,9 @@
     </td>
   </tr>
 </table>
+<div ng-show="workOrderModel.woOrders.length>15">
+  יותר מ 15 אירועים בפקודה - לא מוצג פירוט אירועים
+</div>
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
@@ -30,7 +33,7 @@
     <th>מנה</th>
     <th>כמות</th>
     <th></th>
-    <th ng-repeat="order in workOrderModel.woOrders">
+    <th ng-repeat="order in workOrderModel.woOrders" ng-hide="workOrderModel.woOrders.length>15">
       <span>{{order.attributes.customer.firstName}}</span>
       <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
     </th>
@@ -48,9 +51,9 @@
                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]">
       </td>
       -->
-      <td ng-repeat="order in woItem.attributes.orderQuant">
-         <span ng-show="order.quantity" ng-class="order.productDescription ? 'descChanged' : null">{{order.quantity}}</span>
-         <span ng-hide="order.quantity" ng-class="order.productDescription ? 'descChanged' : null">0</span>
+      <td ng-repeat="order in woItem.attributes.orderQuant" ng-hide="woItem.attributes.orderQuant.length>15">
+         <span ng-class="order.productDescription ? 'descChanged' : null">
+           {{order.quantity ? order.quantity : 0}}</span>
        </td>
       <td>
         <button ng-click="workOrderModel.backInfo(woItem)"

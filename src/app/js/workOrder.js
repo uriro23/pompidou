@@ -330,7 +330,15 @@ angular.module('myApp')
       this.woOrders = this.workOrder.filter(function (wo) {
         return wo.attributes.domain === 0;
       }).sort(function(a,b) {
-        return a.attributes.order.eventDate - b.attributes.order.eventDate;
+        if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
+          return 1;
+        } else if (a.attributes.order.eventDate < b.attributes.order.eventDate) {
+          return -1;
+        } else if (a.id > b.id) {   // just that sort resultswill be deterministic
+          return 1;
+        } else {
+          return -1;
+        }
       });
     };
 
