@@ -643,9 +643,7 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       catalog: ['api', function(api) {
         return api.queryCatalog(1). then (function(catalog) {
-          return catalog.filter(function (cat) {
-            return !cat.attributes.isDeleted;
-          });
+          return catalog;
         });
       }],
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
