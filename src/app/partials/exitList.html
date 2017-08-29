@@ -146,12 +146,11 @@
 
 		<div ng-repeat="category in exitListModel.filteredCategories">
 		  <label>{{category.label}}</label>
-		  {{exitListModel.setupCategoryItems(category.tId)}}
-		  <table style="width:90%">
+		  <table style="width:60%">
 		    <tbody>
-		    <tr ng-repeat="item in exitListModel.categoryItems">
+		    <tr ng-repeat="item in category.items">
 		      <td style="width:85%">
-		        &#9634;
+            &#128440;
 		        {{item.productName}}
             <div ng-show="item.isDescChanged">
               &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
@@ -161,7 +160,7 @@
 		        <table>
 		          <tr ng-repeat="listItem in exitListModel.exitList">
 		            <td>
-		              &nbsp;&nbsp;&#9634;
+		              &nbsp;&nbsp;&#128410;
 		              {{listItem.item}}
 		            </td>
 		          </tr>

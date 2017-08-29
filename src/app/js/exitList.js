@@ -28,13 +28,40 @@ angular.module('myApp')
       return categoryItems.length;
     });
 
+    this.filteredCategories.forEach(function(category) {
+      var tmp = that.currentQuote.items.filter(function (item) {
+        return (item.category.tId === category.tId);
+      }).sort(function(a,b) {
+        if (a.productName > b.productName) {
+          return 1;
+        } else if (a.productName < b.productName) {
+          return -1;
+        } else if (a.isDescChanged && !b.isDescChanged) {
+          return 1;
+        } else if (!a.isDescChanged && b.isDescChanged) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+      category.items = [];
+      if (tmp.length) {       // group items by productName, provided productDescription was not changed
+        var j=0;
+        category.items[j] = tmp[0];
+        for (var i=1;i<tmp.length;i++) {
+          if (tmp[i].productName===category.items[j].productName &&
+            !tmp[i].isDescChanged && !category.items.isDescChanged) {
+             category.items[j].quantity += tmp[i].quantity;
+          } else {
+            category.items[++j] = tmp[i];
+          }
+        }
+      }
+    });
 
     // filter items for current category
     this.setupCategoryItems = function (catId) {
-      this.categoryItems = that.currentQuote.items.filter(function (item) {
-        return (item.category.tId === catId);
-      })
-    };
+     };
 
     // fetch item's exit list
     this.setupItemExitList = function (catId) {
