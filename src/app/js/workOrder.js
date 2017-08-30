@@ -50,21 +50,23 @@ angular.module('myApp')
 
     this.createOrderItems = function () {
       var workItem;
-      var workItemInd;
       var orderInd;
+      var workItemInd;
       var that = this;
       this.workOrder.forEach(function(inWorkOrderItem) {
         var inWorkItem = inWorkOrderItem.attributes;
         if (inWorkItem.domain === 0) {
           var items = inWorkItem.order.quotes[inWorkItem.order.activeQuote].items;
           items.forEach(function(item) {
-            var temp = that.workOrder.filter(function (workItem, ind) {
-              if (workItem.attributes.catalogId === item.catalogId) {
+            workItemInd = undefined;
+            that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
+              if (workItem.attributes.domain === 1 && // unless their description is changed
+                !item.isDescChanged &&  !workItem.attributes.isDescChanged &&
+                workItem.attributes.catalogId === item.catalogId) {
                 workItemInd = ind;
-                return true;
               }
             });
-            if (temp.length > 0) {  // item already in list, just add quantity
+            if (workItemInd) {  // item already in list, just add quantity
               workItem = that.workOrder[workItemInd];
               workItem.attributes.quantity += item.quantity;
               workItem.attributes.originalQuantity = workItem.attributes.quantity;
@@ -78,20 +80,17 @@ angular.module('myApp')
                   orderInd = i;
                 }
               });
-              workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
-              if (item.isDescChanged) {
-                workItem.attributes.orderQuant[orderInd].productDescription = item.productDescription;
-            }
-            } else { // create new item
+              workItem.attributes.orderQuant[orderInd].quantity += item.quantity;
+               } else { // create new item
               workItem = api.initWorkOrder();
               workItem.attributes.woId = woId;
               workItem.attributes.catalogId = item.catalogId;
-              var catItem = catalog.filter(function (cat) {
-                return cat.id === item.catalogId;
-              })[0];
-              workItem.attributes.productName = catItem.attributes.productName;
-              workItem.attributes.quantity = item.quantity;
-              workItem.attributes.originalQuantity = workItem.attributes.quantity;
+              workItem.attributes.productName = item.productName;
+              workItem.attributes.isDescChanged = item.isDescChanged;
+              if (item.isDescChanged) {
+                workItem.attributes.productDescription = item.productDescription;
+              }
+              workItem.attributes.quantity = workItem.attributes.originalQuantity = item.quantity;
               workItem.attributes.category = item.category;
               workItem.attributes.domain = 1;
               workItem.attributes.measurementUnit = item.measurementUnit;
@@ -107,7 +106,7 @@ angular.module('myApp')
                   quantity: 0
                 };
               }
-              temp = that.woOrders.filter(function(o,i) {
+              that.woOrders.forEach(function(o,i) {
                 if (o.id === inWorkOrderItem.id) {
                   orderInd = i;
                 }
@@ -465,10 +464,16 @@ angular.module('myApp')
         });
         for (var c = 0; c < this.hierarchicalWorkOrder[d].categories.length; c++) {
           this.hierarchicalWorkOrder[d].categories[c].list.sort(function (a, b) {
-            if (a.attributes.productName < b.attributes.productName) {
-              return -1;
-            } else {
+            if (a.attributes.productName > b.attributes.productName) {
               return 1;
+            } else if (a.attributes.productName < b.attributes.productName){
+              return -1;
+            } else if (!a.attributes.isDescChanged && b.attributes.isDescChanged) {
+              return -1;
+            }else if (a.attributes.isDescChanged && !b.attributes.isDescChanged) {
+              return 1;
+            } else {
+              return 0;
             }
           });
         }
@@ -477,16 +482,15 @@ angular.module('myApp')
       // for order items domain only, add list of changed product descriptions per category
       this.hierarchicalWorkOrder[1].categories.forEach(function(cat) {
         cat.changedDescriptions = [];
+        var descCnt = 0;
         cat.list.forEach(function(woItem) {
-          woItem.attributes.orderQuant.forEach(function(order,i) {
-            if (order.productDescription){
-              cat.changedDescriptions.push({
-                event: that.woOrders[i].attributes.customer.firstName + ' ' +
-                that.dayName(that.woOrders[i].attributes.order.eventDate),
-                desc: order.productDescription
-              });
-            }
-          });
+          if (woItem.attributes.isDescChanged){
+            cat.changedDescriptions.push({
+              desc: woItem.attributes.productDescription,
+              cnt: ++descCnt
+            });
+            woItem.descCnt = descCnt;
+          }
         });
       });
     };

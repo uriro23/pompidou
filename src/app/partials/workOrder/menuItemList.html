@@ -40,7 +40,12 @@
     </thead>
     <tbody>
     <tr ng-repeat="woItem in cat.list">
-      <td style="width: 60%">{{woItem.attributes.productName}}</td>
+      <td style="width: 60%">
+        {{woItem.attributes.productName}}
+        <div ng-show="woItem.attributes.isDescChanged">
+          <label>התאמה אישית מס' {{woItem.descCnt}}</label>
+        </div>
+      </td>
       <td>{{woItem.attributes.quantity}}</td>
       <td style="width: 20%">{{woItem.attributes.measurementUnit.label}}</td>
       <!--
@@ -52,8 +57,7 @@
       </td>
       -->
       <td ng-repeat="order in woItem.attributes.orderQuant" ng-hide="woItem.attributes.orderQuant.length>15">
-         <span ng-class="order.productDescription ? 'descChanged' : null">
-           {{order.quantity ? order.quantity : 0}}</span>
+         <span>{{order.quantity ? order.quantity : 0}}</span>
        </td>
       <td>
         <button ng-click="workOrderModel.backInfo(woItem)"
@@ -72,10 +76,10 @@
     </tr>
     </tbody>
   </table>
+
   <div ng-repeat="changed in cat.changedDescriptions" ng-show="cat.isShow">
-      <label>התאמה אישית באירוע</label>
-      <label>{{changed.event}}:</label>
-      <span>{{changed.desc}}</span>
+      <label>התאמה אישית מס' {{changed.cnt}}:</label>
+      <label>{{changed.desc}}</label>
   </div>
   <p ng-show="cat.isShow && cat.changedDescriptions.length"></p>
 </div>
