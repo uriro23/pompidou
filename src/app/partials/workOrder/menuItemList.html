@@ -33,7 +33,9 @@
     <th>מנה</th>
     <th>כמות</th>
     <th></th>
-    <th ng-repeat="order in workOrderModel.woOrders" ng-hide="workOrderModel.woOrders.length>15">
+    <th ng-repeat="order in workOrderModel.woOrders"
+        ng-style="order.attributes.color.style"
+        ng-hide="workOrderModel.woOrders.length>15">
       <span>{{order.attributes.customer.firstName}}</span>
       <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
     </th>

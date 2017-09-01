@@ -449,6 +449,17 @@ angular.module('myApp')
     };
 
 
+    // color
+    // ---------------
+
+    var Color = Parse.Object.extend("Color");
+
+    this.queryColors = function () {
+      var colorsQuery = new Parse.Query(Color);
+      colorsQuery.ascending("tId");
+      return query(colorsQuery);
+    };
+
     // config
   // ------
 

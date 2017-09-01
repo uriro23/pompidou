@@ -24,6 +24,9 @@
   <th>
     סטטוס
   </th>
+  <th>
+    צבע
+  </th>
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.woOrders"
@@ -40,6 +43,7 @@
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
     <td>{{woItem.attributes.orderStatus.name}}</td>
+    <td>{{woItem.attributes.color.label}}</td>
   </tr>
   </tbody>
 </table>

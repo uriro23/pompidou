@@ -88,6 +88,14 @@ angular.module('myApp')
     });
   })
 
+  .factory('colorsPromise', function (api) {
+    return api.queryColors().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('configPromise', function (api) {
     return api.queryConfig().then(function (res) {
       return res.map(function (obj) {

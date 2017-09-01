@@ -38,6 +38,9 @@
   <th>
     פק' עבודה
   </th>
+  <th>
+    צבע
+  </th>
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.orderView"
@@ -58,6 +61,13 @@
       <input type="checkbox"
              ng-model="woItem.isInWorkOrder"
              ng-change="workOrderModel.setOrderInWorkOrder($index)">
+    </td>
+    <td>
+      <select ng-model="woItem.attributes.color"
+              ng-change="workOrderModel.setOrderColor($index)"
+              ng-options="color.label for color in workOrderModel.colors"
+              ng-disabled="!woItem.isInWorkOrder"
+      ></select>
     </td>
   </tr>
   </tbody>

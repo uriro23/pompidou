@@ -271,6 +271,9 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }],
         customers: ['api', function (api) {
           return api.queryCustomers()
             .then(function (objs) {

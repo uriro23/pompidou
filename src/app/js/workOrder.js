@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('WorkOrderCtrl', function (api, $state, $filter, $modal, $q, $rootScope,
-                                         lov, catalog, allCategories, measurementUnits, today,
+                                         lov, catalog, allCategories, measurementUnits, colors, today,
                                          customers, woIndexes) {
 
 
@@ -247,12 +247,20 @@ angular.module('myApp')
             viewItem.attributes.orderStatus = lov.orderStatuses.filter(function(st) {
               return st.id === order.attributes.orderStatus;
             })[0];
+            viewItem.attributes.color = that.colors.filter(function(color) {  // set default color
+              return color.tId === 0;
+            })[0];
+            var tmp = that.prevOrdersInWo.filter(function (po) {    // if order was in wo, copy its color
+              return po.attributes.order.number === viewItem.attributes.order.number;
+            });
+            if (tmp.length>0) {
+              viewItem.attributes.color = tmp[0].attributes.color;
+            }
             viewItem.isInWorkOrder = false;
             that.orderView.push(viewItem);
             }
           });
           var ordersToSave = [];  // now include all orders from prev order view in wo
-          //for (var i = 0; i < that.orderView.length; i++) {
           that.orderView.forEach(function(ovOrder){
             if (that.prevOrdersInWo.filter(function (po) {
                 return po.attributes.order.number === ovOrder.attributes.order.number;
@@ -266,10 +274,14 @@ angular.module('myApp')
           });
           api.saveObjects(ordersToSave)
             .then(function () {
-              api.queryWorkOrder(woId) // we assume that the only records in wo are those just stored
+               api.queryWorkOrder(woId) // we assume that the only records in wo are those just stored
                 .then(function (ov) { // requery them to get their ids
-                  //for (var k = 0; k < ov.length; k++) {
                   ov.forEach(function(o) {
+                    if (o.attributes.color) { // restore original color pointer for selection box to work properly
+                      o.attributes.color = that.colors.filter(function(color) {
+                        return color.tId === o.attributes.color.tId;
+                      })[0];
+                    }
                     that.workOrder.push(o);
                     o.isInWorkOrder = true;
                     that.orderView.push(o);
@@ -280,6 +292,8 @@ angular.module('myApp')
                     } else {
                       return -1;
                     }
+                  });
+                  that.orderView.forEach(function(o) {
                   });
                   that.createSmallOrderView();
                 });
@@ -371,6 +385,10 @@ angular.module('myApp')
  //       this.woIndex.attributes.domainStatus[dd] = false;
  //     }
  //     api.saveObj(this.woIndex);
+    };
+
+    this.setOrderColor = function(ind) {
+      api.saveObj(this.orderView[ind]);
     };
 
     this.createNewWorkOrder = function () {
@@ -667,6 +685,13 @@ angular.module('myApp')
     this.woIndex = this.woIndexes.filter(function(index) {
       return index.attributes.isDefault;
     })[0];
+    this.colors = colors.map(function(color) {
+      color.style = {
+        'color': color.fontColor,
+        'background-color': color.backColor
+      };
+      return  color;
+    });
     this.fromDate = new Date(today);
     this.toDate = new Date(today);
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
