@@ -24,14 +24,6 @@ angular.module('myApp')
   })
 
 // load lovs from DB - just once
-  .factory('eventTypesPromise', function (api) {
-    return api.queryEventTypes().then(function (res) {
-      return res.map(function (obj) {
-        return obj.attributes;
-      });
-    });
-  })
-
   .factory('bidTextTypesPromise', function (api) {
     return api.queryBidTextTypes().then(function (res) {
       return res.map(function (obj) {

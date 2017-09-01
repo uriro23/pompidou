@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('CustomerListCtrl', function ($rootScope, $scope, $state, $modal, api,
-                                            customerService, lov, customers, eventTypes) {
+                                            customerService, lov, customers) {
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
@@ -140,7 +140,7 @@ angular.module('myApp')
       var that = this;
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','eventType','template','remarks','header'
+        'exitTime','template','remarks','header'
       ];
       api.queryOrdersByCustomer(this.currentCustomer.id,fieldList)
         .then(function(ords) {
@@ -150,13 +150,8 @@ angular.module('myApp')
             ord.view = {
               'orderStatus': lov.orderStatuses.filter (function(st) {
                 return st.id === ord.attributes.orderStatus;
-              })[0],
-              'eventType': ord.attributes.eventType ?
-                eventTypes.filter(function (et) {
-                  return et.tId === ord.attributes.eventType;
-                })[0]
-                : undefined
-            };
+              })[0]
+                 };
           });
           that.customerOrders.sort (function(a,b) {
             return b.attributes.eventDate - a.attributes.eventDate;

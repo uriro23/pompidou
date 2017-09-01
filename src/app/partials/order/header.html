@@ -113,13 +113,6 @@
                                           ng-disabled="headerModel.isReadOnly"
                                           ng-class="headerModel.order.view.errors.children?'bg-danger':null">
     </td>
-    <td style="width: 16%">
-      <label>סוג אירוע:</label>&nbsp;<select ng-model="headerModel.order.view.eventType"
-                                      ng-change="headerModel.orderChanged('header')"
-                                      ng-options="eventType.label for eventType in headerModel.eventTypes"
-                                      ng-disabled="headerModel.isReadOnly"
-            ></select>
-    </td>
     <td  ng-hide="orderModel.order.attributes.template"style="width: 15%">
       <label>סטטוס:</label>&nbsp;<select ng-model="headerModel.order.view.orderStatus"
                                          ng-change="headerModel.orderChanged('header')"

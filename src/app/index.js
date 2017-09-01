@@ -55,9 +55,6 @@ config(function($stateProvider, $urlRouterProvider) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           });
-        }],
-       eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
         }]
       }
     })
@@ -105,10 +102,7 @@ config(function($stateProvider, $urlRouterProvider) {
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
         }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
-        }],
-        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
           return bidTextTypesPromise;
         }]
       }
@@ -147,10 +141,7 @@ config(function($stateProvider, $urlRouterProvider) {
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
         }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
-        }],
-        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+         bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
           return bidTextTypesPromise;
         }]
       }
@@ -189,10 +180,7 @@ config(function($stateProvider, $urlRouterProvider) {
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
         }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
-        }],
-        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
           return bidTextTypesPromise;
         }]
       }
@@ -231,9 +219,6 @@ config(function($stateProvider, $urlRouterProvider) {
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
         }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
-        }],
         bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
           return bidTextTypesPromise;
         }]
@@ -249,11 +234,8 @@ config(function($stateProvider, $urlRouterProvider) {
             .then(function (objs) {
               return objs;
             });
-        }],
-       eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
         }]
-    }
+        }
   })
     .state('workOrder', {
       url: '/workOrderView',
@@ -368,10 +350,7 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
-        }],
-        config: ['api', function (api) {
+         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
             return res[0].attributes;
           });
@@ -421,9 +400,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
-        }],
-        eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-          return eventTypesPromise;
         }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
@@ -536,10 +512,7 @@ config(function($stateProvider, $urlRouterProvider) {
       bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
         return bidTextTypesPromise;
       }],
-      eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-        return eventTypesPromise;
-      }],
-      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
@@ -566,10 +539,7 @@ config(function($stateProvider, $urlRouterProvider) {
       bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
         return bidTextTypesPromise;
       }],
-      eventTypes: ['eventTypesPromise', function (eventTypesPromise) {
-        return eventTypesPromise;
-      }],
-      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+     discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {

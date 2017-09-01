@@ -1,7 +1,7 @@
 <h4>
   אירועים
 </h4>
-<table class="table table-hover" style="width:50%">
+<table class="table table-hover" style="width:70%">
   <thead>
   <th>
     מספר
@@ -19,7 +19,10 @@
     לקוח
   </th>
   <th>
-    משתתפים
+    סועדים
+  </th>
+  <th>
+    תפריט
   </th>
   <th>
     סטטוס
@@ -37,11 +40,12 @@
     <td>
       <a ng-href="#/editOrderView/{{woItem.attributes.order.id}}/0">{{woItem.attributes.order.number}}</a>
     </td>
-    <td>{{woItem.attributes.order.eventDate | date: 'dd/MM/yyyy'}}</td>
+    <td>{{woItem.attributes.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
     <td>{{woItem.attributes.order.eventTime | date: 'HH:mm'}}</td>
     <td>{{woItem.attributes.order.exitTime | date: 'HH:mm'}}</td>
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
+    <td>{{woItem.attributes.order.header.title}}</td>
     <td>{{woItem.attributes.orderStatus.name}}</td>
     <td>{{woItem.attributes.color.label}}</td>
   </tr>

@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
-                                          api, lov, today, queryType, customers, eventTypes) {
+                                          api, lov, today, queryType, customers) {
       var that = this;
      $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -73,9 +73,6 @@ angular.module('myApp')
           fetchedOrders[i].view.customer.attributes.mobilePhone?fetchedOrders[i].view.customer.attributes.mobilePhone:
             fetchedOrders[i].view.customer.attributes.homePhone?fetchedOrders[i].view.customer.attributes.homePhone:
               fetchedOrders[i].view.customer.attributes.workPhone?fetchedOrders[i].view.customer.attributes.workPhone:undefined;
-        fetchedOrders[i].view.eventType = eventTypes.filter(function (typ) {
-          return typ.tId === fetchedOrders[i].attributes.eventType;
-        })[0];
         fetchedOrders[i].view.orderStatus = lov.orderStatuses.filter(function (stat) {
           return stat.id === fetchedOrders[i].attributes.orderStatus;
         })[0];
@@ -100,7 +97,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','eventType','template','remarks','header'
+        'exitTime','template','remarks','header'
       ];
       if (this.queryType !== 'year') {
         this.queryYear = undefined;

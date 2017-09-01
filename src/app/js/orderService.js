@@ -198,9 +198,6 @@ angular.module('myApp')
         return;
       }
 
-      if (view.eventType) {
-        thisOrder.eventType = view.eventType.tId;
-      }
       if (view.startBidTextType) {
         thisOrder.startBidTextType = view.startBidTextType.tId;
       }

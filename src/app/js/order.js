@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
-                                     orderService, currentOrder, isFromNew, customer, lov, today, eventTypes,
+                                     orderService, currentOrder, isFromNew, customer, lov, today,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, menuTypes, config) {
 
@@ -95,7 +95,7 @@ angular.module('myApp')
     this.getPrevOrders = function () {
       var that = this;
       var fieldList = [
-        'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','eventType','header'
+        'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','header'
       ];
       if (this.order.view.customer.id) {
         api.queryOrdersByCustomer(this.order.view.customer.id,fieldList)
@@ -107,12 +107,7 @@ angular.module('myApp')
               ord.view = {
                 'orderStatus': lov.orderStatuses.filter (function(st) {
                   return st.id === ord.attributes.orderStatus;
-                })[0],
-                'eventType': ord.attributes.eventType ?
-                    eventTypes.filter(function (et) {
-                    return et.tId === ord.attributes.eventType;
                 })[0]
-                  : undefined
               }
             });
             that.setOrderTableParams();
@@ -153,9 +148,6 @@ angular.module('myApp')
             return (obj.tId === that.order.view.quote.endBoxType.tId);
           })[0];
         }
-        this.order.view.eventType = eventTypes.filter(function (obj) {
-          return (obj.tId === that.order.attributes.eventType);
-        })[0];
         this.order.view.startBidTextType = bidTextTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.startBidTextType);
         })[0];
@@ -275,7 +267,6 @@ angular.module('myApp')
     this.isNewOrder = $state.current.name === 'newOrder'||
                       $state.current.name === 'dupOrder' ||
                       $state.current.name === 'newOrderByCustomer'; // used for view heading
-    this.eventTypes = eventTypes;
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
     this.categories = categories;

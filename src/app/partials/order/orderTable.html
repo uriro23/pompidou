@@ -9,7 +9,7 @@
   <th ng-hide="orderTableModel.queryType==='customer'" style="width: 8%">לקוח</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width:1%">טל'</th>
   <th style="width: 5%">סועדים</th>
-  <th class="hidden-xs" style="width: 7%">סוג אירוע</th>
+  <th class="hidden-xs" style="width: 7%">תפריט</th>
   <th style="width: 7%">סטטוס</th>
   <th style="width: 7%">סכום</th>
   <th  ng-show="orderTableModel.queryType==='debts'" style="width: 7%">יתרה</th>
@@ -46,7 +46,7 @@
     </td>
     <td ng-hide="orderTableModel.queryType==='customer' || order.view.customer.anyPhone"></td>
     <td>{{order.attributes.noOfParticipants}}</td>
-    <td class="hidden-xs">{{order.view.eventType.label}}</td>
+    <td class="hidden-xs">{{order.attributes.header.title}}</td>
     <td ng-show="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
       <select ng-model="order.view.orderStatus"
               ng-change="orderListModel.setStatus(order)"
@@ -77,7 +77,7 @@
       <th style="width: 3%">מס'</th>
       <th style="width: 23%">תבנית</th>
       <th style="width: 5%">סועדים</th>
-      <th style="width: 7%">סוג אירוע</th>
+      <th style="width: 7%">תפריט</th>
       <th style="width: 7%">סכום</th>
       <th style="width: 48%">הערות</th>
       </thead>
@@ -88,7 +88,7 @@
         </td>
         <td>{{order.attributes.template}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
-        <td>{{order.view.eventType.label}}</td>
+        <td>{{order.attributes.header.title}}</td>
         <td>{{order.attributes.header.total | currency}}</td>
         <td>{{order.attributes.remarks}}</td>
       </tr>

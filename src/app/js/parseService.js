@@ -352,21 +352,7 @@ angular.module('myApp')
   };
 
 
-  // EventType
-  // -----------
-
-  var EventType = Parse.Object.extend("EventType");
-
-  this.queryEventTypes = function (id) {
-    var eventTypesQuery = new Parse.Query(EventType);
-    if (id) {
-      eventTypesQuery.equalTo("tId", id);
-    }
-    eventTypesQuery.ascending("tId");
-    return query(eventTypesQuery);
-  };
-
-  // BidTextType
+   // BidTextType
   // -----------
 
   var BidTextType = Parse.Object.extend("BidTextType");

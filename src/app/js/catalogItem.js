@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('CatalogItemCtrl', function ($state, $modal, $rootScope, $scope, api, lov,
                                            currentItem, currentDomain, currentCategory,
-                                           allCategories, productNames,measurementUnits, eventTypes, config) {
+                                           allCategories, productNames,measurementUnits, config) {
 
     var model = this;
     $rootScope.menuStatus = 'show';
@@ -407,7 +407,7 @@ angular.module('myApp')
     model.getOrders = function () {
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus',
-        'customer','number','eventType','header','quotes'
+        'customer','number','header','quotes'
       ];
       model.isProcessing = true;
       model.setOrderTableParams();
@@ -439,13 +439,8 @@ angular.module('myApp')
                   })[0],
                   'orderStatus': lov.orderStatuses.filter (function(st) {
                     return st.id === ord.attributes.orderStatus;
-                  })[0],
-                  'eventType': ord.attributes.eventType ?
-                    eventTypes.filter(function (et) {
-                      return et.tId === ord.attributes.eventType;
-                    })[0]
-                    : undefined
-                };
+                  })[0]
+                    };
                 ord.view.customer.anyPhone =
                   ord.view.customer.attributes.mobilePhone?ord.view.customer.attributes.mobilePhone:
                     ord.view.customer.attributes.homePhone?ord.view.customer.attributes.homePhone:

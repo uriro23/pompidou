@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('BidCtrl', function (api, $state, $filter, $rootScope, $timeout,
                                    bid, lov, config, categories, moment,
-                                   bidTextTypes, eventTypes, discountCauses, isPrintBid) {
+                                   bidTextTypes, discountCauses, isPrintBid) {
     $rootScope.menuStatus = 'hide';
 
     if (bid) {
@@ -56,12 +56,6 @@ angular.module('myApp')
       if (that.currentOrder.endBidTextType) {
         this.endBidTextType = bidTextTypes.filter(function (btt) {
           return btt.tId === that.currentOrder.endBidTextType;
-        })[0];
-      }
-      //fetch event type
-      if (that.currentOrder.eventType) {
-        this.eventType = eventTypes.filter(function (evt) {
-          return evt.tId === that.currentOrder.eventType;
         })[0];
       }
 

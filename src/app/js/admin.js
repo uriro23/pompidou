@@ -578,5 +578,21 @@ angular.module('myApp')
         });
     };
 
+    this.addQuoteTitles = function() {
+      var that = this;
+      api.queryAllOrders()
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+            order.attributes.header.title = order.attributes.quotes[order.attributes.activeQuote].title;
+          });
+          console.log('writing '+orders.length+' orders');
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('done');
+            });
+        });
+    };
+
         });
 
