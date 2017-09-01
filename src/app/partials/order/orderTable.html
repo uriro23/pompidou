@@ -9,12 +9,12 @@
   <th ng-hide="orderTableModel.queryType==='customer'" style="width: 8%">לקוח</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width:1%">טל'</th>
   <th style="width: 5%">סועדים</th>
-  <th class="hidden-xs" style="width: 7%">תפריט</th>
+  <th style="width: 7%">תפריט</th>
   <th style="width: 7%">סטטוס</th>
   <th style="width: 7%">סכום</th>
   <th  ng-show="orderTableModel.queryType==='debts'" style="width: 7%">יתרה</th>
   <th class="hidden-xs" style="width: 7%">משלוח</th>
-  <th style="width: 3%">הנחה</th>
+  <th class="hidden-xs" style="width: 3%">הנחה</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 22%">פעילות</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'"
@@ -46,7 +46,7 @@
     </td>
     <td ng-hide="orderTableModel.queryType==='customer' || order.view.customer.anyPhone"></td>
     <td>{{order.attributes.noOfParticipants}}</td>
-    <td class="hidden-xs">{{order.attributes.header.title}}</td>
+    <td>{{order.attributes.header.title}}</td>
     <td ng-show="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
       <select ng-model="order.view.orderStatus"
               ng-change="orderListModel.setStatus(order)"
@@ -61,7 +61,7 @@
       {{order.attributes.header.balance | currency}}
     </td>
     <td class="hidden-xs">{{order.attributes.header.transportationInclVat | currency}}</td>
-    <td>{{order.attributes.header.discountRate | number:0}}</td>
+    <td class="hidden-xs">{{order.attributes.header.discountRate | number:0}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityDate | date: 'dd/MM/yy'}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityText}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'">
