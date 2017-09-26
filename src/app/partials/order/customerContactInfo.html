@@ -1,0 +1,44 @@
+<div class="modal-header">
+  <h3 class="modal-title">נתוני קשר ללקוח</h3>
+</div>
+<div class="modal-body">
+<table>
+  <tbody>
+  <tr>
+    <td>שם:</td>
+    <td>{{customerContactInfoModel.customer.attributes.firstName+' '+customerContactInfoModel.customer.attributes.lastName}}</td>
+  </tr>
+  <tr ng-show="customerContactInfoModel.customer.attributes.mobilePhone">
+    <td>טלפון נייד:</td>
+    <td>
+      <a href="tel:{{customerContactInfoModel.customer.attributes.mobilePhone}}">
+        {{customerContactInfoModel.customer.attributes.mobilePhone}}</a>
+    </td>
+  </tr>
+  <tr ng-show="customerContactInfoModel.customer.attributes.homePhone">
+    <td>טלפון בית:</td>
+    <td>
+      <a href="tel:{{customerContactInfoModel.customer.attributes.homePhone}}">
+        {{customerContactInfoModel.customer.attributes.homePhone}}
+    </td>
+  </tr>
+  <tr ng-show="customerContactInfoModel.customer.attributes.workPhone">
+    <td>טלפון עבודה:</td>
+    <td>
+      <a href="tel:{{customerContactInfoModel.customer.attributes.workPhone}}">
+      {{customerContactInfoModel.customer.attributes.workPhone}}
+    </td>
+  </tr>
+  <tr ng-show="customerContactInfoModel.customer.attributes.email">
+    <td>דואל:</td>
+    <td>
+      <a href="mailto:{{customerContactInfoModel.customer.attributes.email}}">
+      {{customerContactInfoModel.customer.attributes.email}}
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="customerContactInfoModel.close()">סגור</button>
+</div>

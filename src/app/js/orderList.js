@@ -225,10 +225,26 @@ angular.module('myApp')
     this.isProcessing = false;
   })
 
-  .controller('OrderTableCtrl', function($scope, api, today) {
+  .controller('OrderTableCtrl', function($scope, $modal, api, today) {
     $scope.$parent.initOrderTableParams(this);
 
     this.today = today;
+
+    this.showCustomerContactInfo = function (order) {
+      var customerContactInfo = $modal.open({
+        templateUrl: 'app/partials/order/customerContactInfo.html',
+        controller: 'CustomerContactInfoCtrl as customerContactInfoModel',
+        resolve: {
+          customer: function () {
+            return order.view.customer;
+          }
+        },
+        size: 'sm'
+      });
+
+      customerContactInfo.result.then(function() {
+      })
+    };
 
     this.getLastBid = function (order) {
       api.queryBidsByOrder(order.id)
@@ -240,5 +256,12 @@ angular.module('myApp')
           }
         })
     };
+  })
+
+  .controller('CustomerContactInfoCtrl', function ($modalInstance,customer) {
+    this.customer = customer;
+    this.close = function () {
+      $modalInstance.close();
+    }
   });
 
