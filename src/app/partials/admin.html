@@ -8,8 +8,8 @@
   <button class="btn btn-default" ng-click="adminModel.prepareMultipleQuotes()">הכן ריבוי ציטוטים</button>
   <button class="btn btn-default" ng-click="adminModel.generateProductNames()">צור שמות מוצרים</button>
   <button class="btn btn-default" ng-click="adminModel.productNamesInItems()">שמות מוצרים בפריטי אירוע</button>
-  -->
   <button class="btn-default" ng-click="adminModel.addQuoteTitles()">כותרות</button>
+  -->
 </div>
 <tabset>
   <tab heading='מע"מ'>
@@ -173,38 +173,38 @@
       </tr>
     </table>
   </tab>
-  <tab heading="עדכון שמות מנות" select="adminModel.loadProductNameData()">
+  <tab heading="עדכון קטגוריות">
     <div ng-hide="adminModel.isProcessing">
+      <label>בחר תחום</label>
+      <select ng-model="adminModel.productNamesDomain"
+              ng-change="adminModel.filterProductNameDomain()"
+              ng-options="domain.label for domain in adminModel.domains"></select>
       <label>בחר קטגוריה</label>
       <select ng-model="adminModel.productNamesCategory"
               ng-change="adminModel.filterProductNameCategory()"
               ng-options="category.label for category in adminModel.categories"></select>
-      <table class="table table-hover" style="width: 90%">
+      <table class="table table-hover" style="width: 40%">
         <thead>
         <th>שם</th>
-        <th>תיאור</th>
+        <th>קטגוריה</th>
         <th>ביטול</th>
-        <th>אירועים</th>
         <th></th>
         </thead>
         <tbody>
         <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems"
             ng-class="productNameItem.errors ? 'bg-danger' :
                        productNameItem.isChanged ? 'bg-success' :
-                       productNameItem.attributes.isDeleted ? 'active myCanceledEvent' :
-                       (productNameItem.orderCnt===0) ? 'bg-warning' : bg-active">
+                       productNameItem.attributes.isDeleted ? 'active myCanceledEvent' : bg-active">
+          <td>{{productNameItem.attributes.productName}}</td>
           <td>
-          <input type="text" size="40"
-                 ng-model="productNameItem.attributes.productName"
-                 ng-change="adminModel.productNameItemChanged(productNameItem)">
-          </td>
-          <td>{{productNameItem.attributes.productDescription}}</td>
+            <select ng-model="productNameItem.categoryObject"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)"
+                    ng-options="category.label for category in adminModel.categories"></select>          </td>
           <td>
           <input type="checkbox"
                  ng-model="productNameItem.attributes.isDeleted"
                  ng-change="adminModel.productNameItemChanged(productNameItem)">
           </td>
-          <td>{{productNameItem.orderCnt}}</td>
           <td>
             <button ng-show="productNameItem.isChanged"
                     ng-click="adminModel.saveProductNameitem(productNameItem)">

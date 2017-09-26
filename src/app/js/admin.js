@@ -17,7 +17,8 @@ angular.module('myApp')
 
   this.isEnvTabActive =true;
 
-  this.categories = categories;
+  this.domains = lov.domains;
+  this.domains.splice(0,1);
 
     // vat
     // ---
@@ -273,36 +274,26 @@ angular.module('myApp')
         });
     };
 
-    this.loadProductNameData = function () {
+
+    this.filterProductNameDomain = function() {
       var that = this;
       this.isProcessing = true;
-      api.queryCatalog(1)
-        .then(function(catalog) {
-          console.log(catalog.length+' menu items loaded');
-          catalog.forEach(function(cat) {
-            cat.orderCnt = 0;
-            cat.category = cat.attributes.category; // for ng-repeat filter
+      api.queryCategories(this.productNamesDomain.id)
+        .then(function(categories) {
+          that.categories = categories.map(function(cat) {
+            return cat.attributes;
           });
-          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate());
-          var to = new Date(2099,11,31);
-          api.queryOrdersByRange('eventDate',from,to)
-            .then(function(orders) {
-              console.log(orders.length+' orders loaded');
-              orders.forEach(function(order) {
-                order.attributes.quotes.forEach(function(quote) {
-                  quote.items.forEach(function(item) {
-                    var tmp = catalog.filter(function(cat) {
-                     return cat.id === item.catalogId;
-                    });
-                    if (tmp.length === 0) {
-                      console.log('item '+item.productDescription+' not found in catalog');
-                    } else {
-                      tmp[0].orderCnt++;
-                    }
-                  });
-                });
+          api.queryCatalog(that.productNamesDomain.id)
+            .then(function(catalog) {
+              console.log(catalog.length+' menu items loaded');
+              catalog.forEach(function(cat) {
+                cat.category = cat.attributes.category; // for ng-repeat filter
+                cat.categoryObject = that.categories.filter(function(cat2) {
+                  return cat2.tId === cat.attributes.category;
+                })[0];
               });
               that.productNameItems = catalog;
+              that.productNameCategoryItems = [];
               that.isProcessing = false;
             });
         });
@@ -334,6 +325,7 @@ angular.module('myApp')
     };
 
     this.saveProductNameitem = function(cat) {
+      cat.category = cat.attributes.category = cat.categoryObject.tId;
       api.saveObj(cat);
       cat.isChanged = false;
     };
