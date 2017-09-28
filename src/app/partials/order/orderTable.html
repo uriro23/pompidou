@@ -2,19 +2,18 @@
   <div ng-hide="orderTableModel.queryType==='templates'">
 <table class="table table-hover table-responsive" style="width: 99%">
   <thead ng-hide="orderTableModel.isProcessing">
-  <th class="hidden-xs" style="width: 3%">מס'</th>
   <th style="width: 11%">תאריך</th>
   <th style="width: 4%">מסירה</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 4%">יציאה</th>
-  <th ng-hide="orderTableModel.queryType==='customer'" style="width: 8%">לקוח</th>
+  <th ng-hide="orderTableModel.queryType==='customer'" style="width: 11%">לקוח</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width:1%">טל'</th>
   <th style="width: 5%">סועדים</th>
-  <th style="width: 7%">תפריט</th>
+  <th style="width: 11%">תפריט</th>
   <th style="width: 7%">סטטוס</th>
   <th style="width: 7%">סכום</th>
   <th  ng-show="orderTableModel.queryType==='debts'" style="width: 7%">יתרה</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
-  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 22%">פעילות</th>
+  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 15%">פעילות</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'"
       style="width: 6%">הצעת מחיר</th>
   </thead>
@@ -27,21 +26,24 @@
                         order.view.orderStatus.id===2?'bg-warning':
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
                         order.view.orderStatus.id===6?'active myCanceledEvent':null">
-    <td class="hidden-xs" ng-hide="orderTableModel.isDisableLink">
-      <a  ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.number}}</a>
+     <td ng-hide="orderTableModel.isDisableLink">
+      <a  ng-href="#/editOrderView/{{order.id}}/0">
+        {{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}
+      </a>
     </td>
-    <td class="hidden-xs" ng-show="orderTableModel.isDisableLink">{{order.attributes.number}}</td>
-    <td>{{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</td>
+    <td ng-show="orderTableModel.isDisableLink">
+      {{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}
+    </td>
     <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>
     <td ng-hide="orderTableModel.queryType==='customer'">
       {{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}
     </td>
     <td class="hidden-xs"
-        ng-show="orderTableModel.queryType!=='customer'">
-      <button ng-click="orderTableModel.showCustomerContactInfo(order)">
+        ng-show="orderTableModel.queryType!=='customer'"
+        style="cursor: pointer"
+        ng-click="orderTableModel.showCustomerContactInfo(order)">
         <img src="app/img/phone.png">
-      </button>
     </td>
     <td class="hidden-sm hidden-md hidden-lg hidden-xl"
         ng-show="orderTableModel.queryType!=='customer'">
