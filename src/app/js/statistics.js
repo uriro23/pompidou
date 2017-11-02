@@ -66,12 +66,12 @@ angular.module('myApp')
           var currentOrder = ord.attributes;
           var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
           if (that.fromTotal) {
-            if (currentQuote.total < that.fromTotal) {
+            if (currentQuote.totalBeforeVatForInvoice < that.fromTotal) {
               return false;
             }
           }
           if (that.toTotal) {
-            if (currentQuote.total > that.toTotal) {
+            if (currentQuote.totalBeforeVatForInvoice > that.toTotal) {
               return false;
             }
           }
@@ -103,10 +103,10 @@ angular.module('myApp')
         var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
         var segIndex = getIndex (filteredOrders[i]);
         if (!tempVec[segIndex]) {  // first event for index
-          tempVec[segIndex] = {'label': angular.copy(getLabel(segIndex)), 'potCount': 1, 'potTotal': currentQuote.total};
+          tempVec[segIndex] = {'label': angular.copy(getLabel(segIndex)), 'potCount': 1, 'potTotal': currentQuote.totalBeforeVatForInvoice};
            if (currentOrder.orderStatus >= 2 && currentOrder.orderStatus <= 5) {  // actually happens
             tempVec[segIndex].actCount = 1;
-            tempVec[segIndex].actTotal = currentQuote.total;
+            tempVec[segIndex].actTotal = currentQuote.totalBeforeVatForInvoice;
             tempVec[segIndex].actParticipants = currentOrder.noOfParticipants;
             tempVec[segIndex].actTransportation = currentQuote.transportationInclVat;
 
@@ -118,10 +118,10 @@ angular.module('myApp')
            }
         }  else {
          tempVec[segIndex].potCount++;
-          tempVec[segIndex].potTotal += currentQuote.total;
+          tempVec[segIndex].potTotal += currentQuote.totalBeforeVatForInvoice;
           if (currentOrder.orderStatus >= 2 && currentOrder.orderStatus <= 5) {  // actually happens
             tempVec[segIndex].actCount++;
-            tempVec[segIndex].actTotal += currentQuote.total;
+            tempVec[segIndex].actTotal += currentQuote.totalBeforeVatForInvoice;
             tempVec[segIndex].actParticipants += currentOrder.noOfParticipants;
             tempVec[segIndex].actTransportation += currentQuote.transportationInclVat;
           }
@@ -174,7 +174,7 @@ angular.module('myApp')
       });
       // segmentation by total
       doSegmentation(this.totalStats, this.totalTot, this.totalAvg, function (ord) {
-        return  Math.floor((ord.attributes.quotes[ord.attributes.activeQuote].total + 1) / totalFactor);
+        return  Math.floor((ord.attributes.quotes[ord.attributes.activeQuote].totalBeforeVatForInvoice + 1) / totalFactor);
       },function (ind) {
         return (ind * totalFactor + 1) + '-' + ((ind+1) * totalFactor);
       });

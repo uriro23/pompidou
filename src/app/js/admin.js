@@ -331,6 +331,38 @@ angular.module('myApp')
     };
 
 
+    // customers tab
+    this.loadCustomers = function() {
+      var that = this;
+      api.queryCustomers()
+        .then(function(customers) {
+          api.queryOrdersByRange('eventDate', new Date(2015,5,1),new Date(2099,12,31))
+            .then(function(orders) {
+              customers.forEach(function(customer) {
+                customer.view = {
+                  noOfSuccesses: 0,
+                  noOfFailures: 0,
+                  lastEventDate : new Date(2000,1,1)
+                };
+                orders.forEach(function(order) {
+                  if (order.attributes.customer === customer.id) {
+                    if (order.attributes.eventDate > customer.view.lastEventDate) {
+                      customer.view.lastEventDate = order.attributes.eventDate;
+                    }
+                    if (order.attributes.orderStatus === 1 || order.attributes.orderStatus === 6) {
+                      customer.view.noOfFailures++;
+                    } else {
+                      customer.view.noOfSuccesses++;
+                    }
+                  }
+                })
+              });
+              that.customers = customers.filter(function(cust) {
+                return cust.view.noOfSuccesses + cust.view.noOfFailures;
+              });
+            });
+          });
+     };
 
     // quote conversion  1/2016
 
