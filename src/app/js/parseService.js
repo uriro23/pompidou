@@ -406,6 +406,21 @@ angular.module('myApp')
     };
 
 
+    // PriceIncreaseCause
+    // ------------------
+
+    var PriceIncreaseCause = Parse.Object.extend("PriceIncreaseCause");
+
+    this.queryPriceIncreaseCauses = function (id) {
+      var priceIncreaseCausesQuery = new Parse.Query(PriceIncreaseCause);
+      if (id) {
+        priceIncreaseCausesQuery.equalTo("tId", id);
+      }
+      priceIncreaseCausesQuery.ascending("tId");
+      return query(priceIncreaseCausesQuery);
+    };
+
+
     // ReferralSource
     // -------------
 

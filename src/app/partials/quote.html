@@ -145,14 +145,23 @@
 			    </div>
 			</div>
 
-			<div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
-			  <div class="bold quoteItemDescription">הנחה מיוחדת</div>
-			  <div class="quoteQuantAndUnit">
-			    {{quoteModel.currentQuote.discount | currency}}
-			  </div>
-			</div>
+      <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">הנחה מיוחדת</div>
+        <div class="quoteQuantAndUnit">
+          {{quoteModel.currentQuote.discount | currency}}
+        </div>
+      </div>
 
-			<div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">
+      <div ng-show="quoteModel.currentQuote.priceIncrease && !quoteModel.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          {{quoteModel.currentQuote.priceIncreaseCause.description}}
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quoteModel.currentQuote.priceIncrease | currency}}
+        </div>
+      </div>
+
+      <div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">
 			  <div class="bold quoteItemDescription" >
 			    <span>מע"מ בשיעור %</span>
 			    <span>{{quoteModel.currentOrder.vatRate * 100}}</span>

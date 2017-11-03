@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
-                                     measurementUnits, categories, discountCauses, role) {
+                                     measurementUnits, categories, discountCauses, priceIncreaseCauses, role) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();

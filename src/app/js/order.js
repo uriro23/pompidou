@@ -5,7 +5,7 @@ angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
                                      orderService, currentOrder, isFromNew, customer, lov, today,
                                      bidTextTypes, categories, measurementUnits,
-                                     discountCauses, referralSources, menuTypes, config) {
+                                     discountCauses, priceIncreaseCauses, referralSources, menuTypes, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -272,6 +272,7 @@ angular.module('myApp')
     this.categories = categories;
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
+    this.priceIncreaseCauses = priceIncreaseCauses;
     this.referralSources = referralSources;
     this.menuTypes = menuTypes;
     this.config = config;
@@ -318,7 +319,7 @@ angular.module('myApp')
       for (i=0;i<menuTypes.length;i++) {  // on order creation, we create a quote for each menu type
         var mt = menuTypes[i];
         if (mt.isInitialCreate) {
-          var quote = orderService.initQuote(mt, this.categories, this.discountCauses[0]);
+          var quote = orderService.initQuote(mt, this.categories, this.discountCauses[0],this.priceIncreaseCauses[0]);
           if (mt.isDefault) {
             quote.isActive = true;
             this.order.attributes.activeQuote = j;

@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('BidCtrl', function (api, $state, $filter, $rootScope, $timeout,
                                    bid, lov, config, categories, moment,
-                                   bidTextTypes, discountCauses, isPrintBid) {
+                                   bidTextTypes, discountCauses, priceIncreaseCauses, isPrintBid) {
     $rootScope.menuStatus = 'hide';
 
     if (bid) {
@@ -69,6 +69,9 @@ angular.module('myApp')
           this.discoutCause = this.currentQuote.discountCause;
         }
       }
+
+      //fetch price increase cause
+      this.priceIncreaseCause = this.currentQuote.priceIncreaseCause;
 
       //filter categories - only those in order and not transportation
       this.filteredCategories = this.categories.filter(function (cat) {

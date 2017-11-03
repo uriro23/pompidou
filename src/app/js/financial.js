@@ -6,6 +6,7 @@ angular.module('myApp')
     // references to members of parent order controller
     this.order = $scope.orderModel.order;
     this.discountCauses = $scope.orderModel.discountCauses;
+    this.priceIncreaseCauses = $scope.orderModel.priceIncreaseCauses;
     this.isReadOnly = $scope.orderModel.isReadOnly;
 
 
@@ -58,7 +59,25 @@ angular.module('myApp')
       orderService.quoteChanged(this.order,'discountCause');
     };
 
-     this.setFixedPrice = function () {
+    this.setPriceIncreaseRate = function () {
+      var thisQuote = this.order.view.quote;
+
+      thisQuote.errors.priceIncreaseRate = Number(thisQuote.priceIncreaseRate) != thisQuote.priceIncreaseRate ||
+                                           Number(thisQuote.priceIncreaseRate) < 0;
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order,'priceIncreaseRate');
+    };
+
+    this.setPriceIncreaseCause = function () {
+      var thisQuote = this.order.view.quote;
+
+      thisQuote.priceIncreaseRate = thisQuote.priceIncreaseCause.rate;
+
+      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.quoteChanged(this.order,'priceIncreaseCause');
+    };
+
+    this.setFixedPrice = function () {
       var thisQuote = this.order.view.quote;
 
        thisQuote.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
