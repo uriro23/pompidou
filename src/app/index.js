@@ -527,13 +527,10 @@ config(function($stateProvider, $urlRouterProvider) {
       bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
         return bidTextTypesPromise;
       }],
-         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
+      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
       }],
-      priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-        return priceIncreaseCausesPromise;
-      }],
-      categories: ['categoriesPromise', function (categoriesPromise) {
+       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }],
       isPrintBid: [function () {
@@ -559,9 +556,6 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
      discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
-      }],
-      priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-        return priceIncreaseCausesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;

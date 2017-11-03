@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('BidCtrl', function (api, $state, $filter, $rootScope, $timeout,
                                    bid, lov, config, categories, moment,
-                                   bidTextTypes, discountCauses, priceIncreaseCauses, isPrintBid) {
+                                   bidTextTypes, discountCauses, isPrintBid) {
     $rootScope.menuStatus = 'hide';
 
     if (bid) {
