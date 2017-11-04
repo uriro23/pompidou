@@ -148,6 +148,16 @@ angular.module('myApp')
             return (obj.tId === that.order.view.quote.endBoxType.tId);
           })[0];
         }
+        if (this.order.view.quote.discountCause) {
+          this.order.view.quote.discountCause = discountCauses.filter(function (dc) {
+            return dc.tId === that.order.view.quote.discountCause.tId;
+          })[0];
+        }
+        if (this.order.view.quote.priceIncreaseCause) {
+          this.order.view.quote.priceIncreaseCause = priceIncreaseCauses.filter(function (pic) {
+            return pic.tId === that.order.view.quote.priceIncreaseCause.tId;
+          })[0];
+        }
         this.order.view.startBidTextType = bidTextTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.startBidTextType);
         })[0];
@@ -224,6 +234,16 @@ angular.module('myApp')
       if (this.order.view.quote.endBoxType) {
         this.order.view.quote.endBoxType = menuTypes.filter(function (mt) {
           return mt.tId === that.order.view.quote.endBoxType.tId;
+        })[0];
+      }
+      if (this.order.view.quote.discountCause) {
+        this.order.view.quote.discountCause = discountCauses.filter(function (dc) {
+          return dc.tId === that.order.view.quote.discountCause.tId;
+        })[0];
+      }
+      if (this.order.view.quote.priceIncreaseCause) {
+        this.order.view.quote.priceIncreaseCause = priceIncreaseCauses.filter(function (pic) {
+          return pic.tId === that.order.view.quote.priceIncreaseCause.tId;
         })[0];
       }
     };
