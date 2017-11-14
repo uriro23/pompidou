@@ -108,7 +108,7 @@ angular.module('myApp')
             tempVec[segIndex].actCount = 1;
             tempVec[segIndex].actTotal = currentQuote.totalBeforeVatForInvoice;
             tempVec[segIndex].actParticipants = currentOrder.noOfParticipants;
-            tempVec[segIndex].actTransportation = currentQuote.transportationInclVat;
+            tempVec[segIndex].actTransportation = currentQuote.transportationInclVat / (1+currentOrder.vatRate);
 
           } else {
             tempVec[segIndex].actCount = 0;
@@ -123,7 +123,7 @@ angular.module('myApp')
             tempVec[segIndex].actCount++;
             tempVec[segIndex].actTotal += currentQuote.totalBeforeVatForInvoice;
             tempVec[segIndex].actParticipants += currentOrder.noOfParticipants;
-            tempVec[segIndex].actTransportation += currentQuote.transportationInclVat;
+            tempVec[segIndex].actTransportation += (currentQuote.transportationInclVat / (1+currentOrder.vatRate));
           }
         }
       }
