@@ -618,5 +618,27 @@ angular.module('myApp')
         });
     };
 
+    this.addPriceIncrease = function() {
+      var that = this;
+      api.queryAllOrders()
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+            order.attributes.quotes.forEach(function(quote) {
+              if (!quote.priceIncreaseCause) {
+                quote.priceIncrease = 0;
+                quote.priceIncreaseRate = 0;
+                quote.priceIncreaseCause = priceIncreaseCauses[0];
+              }
+            });
+          });
+          console.log('writing '+orders.length+' orders');
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('done');
+            });
+        });
+    };
+
         });
 
