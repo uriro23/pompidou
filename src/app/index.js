@@ -584,9 +584,6 @@ config(function($stateProvider, $urlRouterProvider) {
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
       }],
-      priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-        return priceIncreaseCausesPromise;
-      }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }],
@@ -613,9 +610,6 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
-      }],
-      priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-        return priceIncreaseCausesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
