@@ -226,6 +226,7 @@
       <thead>
       <th>שם</th>
       <th>דואל</th>
+      <th>טלפון</th>
       <th>מס' הצלחות</th>
       <th>מס' כשלונות</th>
       <th>אירוע אחרון</th>
@@ -234,6 +235,7 @@
       <tr ng-repeat="customer in adminModel.customers">
         <td>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</td>
         <td>{{customer.attributes.email}}</td>
+        <td>{{customer.attributes.mobilePhone}}</td>
         <td>{{customer.view.noOfSuccesses}}</td>
         <td>{{customer.view.noOfFailures}}</td>
         <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
@@ -243,12 +245,14 @@
     </table>
     <div ng-show="adminModel.isCustomersExport">
       <div>
-        <span>name,email,successes,failures,lastEvent</span>
+        <span>name,email,phone,successes,failures,lastEvent</span>
       </div>
       <div ng-repeat="customer in adminModel.customers">
         <span>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</span>
         <span>,</span>
         <span>{{customer.attributes.email}}</span>
+        <span>,'</span>
+        <span>{{customer.attributes.mobilePhone}}</span>
         <span>,</span>
         <span>{{customer.view.noOfSuccesses}}</span>
         <span>,</span>
