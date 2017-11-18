@@ -36,7 +36,7 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'orderTextType');
     };
 
-    function createBidForQuote (quote, docType, bidDesc, isMultipleQuotes) {
+    function createBidForQuote (quote, docType, bidDesc) {
       var bid = api.initBid();
       bid.attributes.version = lov.version;
       bid.attributes.documentType = docType;
@@ -46,10 +46,10 @@ angular.module('myApp')
       bid.attributes.order = that.order.attributes;
       bid.attributes.total = that.total;
       bid.attributes.customer = that.order.view.customer;
-      if (isMultipleQuotes) {
-        bid.attributes.desc = bidDesc + ' ' + quote.title;
+      if (docType === 0) {
+        bid.attributes.desc = bidDesc;
       } else {
-        bid.attributes.desc = bidDesc;   // don't use quote  title for single quotes until new quote be used
+        bid.attributes.desc = bidDesc + ' ' + quote.title;
       }
       bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -65,12 +65,12 @@ angular.module('myApp')
 
       var that = this;
       var bids = [];
-      if (docType === 0) { // if creating backup, pick the active quote only
-        bids.push(createBidForQuote(this.order.view.quote, 0, this.bidDesc, false));
+      if (docType === 0 || this.isOnlyActiveQuote) { // if creating backup, pick the active quote only
+        bids.push(createBidForQuote(this.order.view.quote, docType, this.bidDesc));
       } else {
         this.order.attributes.quotes.forEach(function (quote) {
           if (quote.items.length) { // skip empty quotes
-            bids.push(createBidForQuote(quote, docType, that.bidDesc, that.order.attributes.quotes.length > 1));
+            bids.push(createBidForQuote(quote, docType, that.bidDesc));
           }
         });
       }

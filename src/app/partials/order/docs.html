@@ -76,6 +76,8 @@
          size=50
          ng-model="documentsModel.bidDesc"
          ng-disabled="documentsModel.isReadOnly">
+  <span>רק לתפריט הנבחר?</span>
+  <input type="checkbox" ng-model="documentsModel.isOnlyActiveQuote">
     <span ng-repeat="documentType in documentsModel.documentTypes | filter: {isRealDocumentType: true}">
         <button ng-click="documentsModel.createBid(documentType.id)"
                 ng-disabled="documentsModel.isReadOnly"
@@ -83,6 +85,13 @@
             {{documentType.label}}
         </button>
    </span>
+  <span>
+           <button ng-click="documentsModel.createBid(0)"
+                   ng-disabled="documentsModel.isReadOnly"
+                   class="btn btn-default">
+            גיבוי
+        </button>
+  </span>
 </div>
   <p></p>
 <table class="table table-hover" style="width: 60%">
