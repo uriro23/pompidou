@@ -48,7 +48,6 @@
     </tbody>
 </table>
   <p></p>
-  <!--
 <table>
     <thead>
     <th>
@@ -66,7 +65,6 @@
     </tr>
     </tbody>
 </table>
--->
 
 <div ng-hide="documentsModel.order.view.isChanged">
   <label>
@@ -78,7 +76,7 @@
          ng-disabled="documentsModel.isReadOnly">
   <span>רק לתפריט הנבחר?</span>
   <input type="checkbox" ng-model="documentsModel.isOnlyActiveQuote">
-    <span ng-repeat="documentType in documentsModel.documentTypes | filter: {isRealDocumentType: true}">
+    <span ng-repeat="documentType in documentsModel.sortedDocumentTypes">
         <button ng-click="documentsModel.createBid(documentType.id)"
                 ng-disabled="documentsModel.isReadOnly"
                 class="btn btn-default">
@@ -106,12 +104,12 @@
   <tbody>
   <tr ng-repeat="bid in documentsModel.bids track by bid.id">
       <td>{{documentsModel.documentTypes[bid.attributes.documentType].label}}</td>
-    <td ng-show="bid.attributes.documentType === 1 || bid.attributes.documentType === 2">
+    <td ng-show="bid.attributes.documentType === 1">
       <a ng-href="#/bid/{{bid.attributes.uuid}}" target="_blank">
         {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
-    <td ng-show="bid.attributes.documentType === 4">
+    <td ng-show="bid.attributes.documentType === 4 || bid.attributes.documentType === 2">
       <a ng-href="#/quote/{{bid.attributes.uuid}}" target="_blank">
         {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>

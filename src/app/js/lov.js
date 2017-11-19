@@ -174,22 +174,26 @@ angular.module('myApp')
       {
         id: 1,
         label: 'הצעת מחיר ישנה',
-        isRealDocumentType: true
+        isRealDocumentType: true,
+        order: 1
       },
       {
         id: 2,
         label: 'הזמנה',
-        isRealDocumentType: false
+        isRealDocumentType: true,
+        order:3
       },
       {
         id: 3,
         label: 'דוא"ל',
-        isRealDocumentType: false
+        isRealDocumentType: false,
+        order:0
       },
       {
         id: 4,
         label: 'הצעת מחיר חדשה',
-        isRealDocumentType: true
+        isRealDocumentType: true,
+        order:2
       }
     ],
 

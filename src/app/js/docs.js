@@ -15,6 +15,12 @@ angular.module('myApp')
     this.getPrevOrders = $scope.orderModel.getPrevOrders; // needed for setupOrderView
 
     this.documentTypes = lov.documentTypes;
+    this.sortedDocumentTypes = angular.copy(this.documentTypes).filter(function(dt) {
+      return dt.isRealDocumentType;
+    });
+    this.sortedDocumentTypes.sort(function(a,b) {
+      return a.order - b.order;
+    });
     this.bidDesc = '';
 
     var that = this;
@@ -40,13 +46,14 @@ angular.module('myApp')
       var bid = api.initBid();
       bid.attributes.version = lov.version;
       bid.attributes.documentType = docType;
+      console.log('docType='+docType);
       bid.attributes.menuType = quote.menuType;
       bid.attributes.orderId = that.order.id;
       bid.attributes.date = new Date();
       bid.attributes.order = that.order.attributes;
       bid.attributes.total = that.total;
       bid.attributes.customer = that.order.view.customer;
-      if (docType === 0) {
+      if (docType === 0) {  // backup
         bid.attributes.desc = bidDesc;
       } else {
         bid.attributes.desc = bidDesc + ' ' + quote.title;
@@ -65,7 +72,7 @@ angular.module('myApp')
 
       var that = this;
       var bids = [];
-      if (docType === 0 || this.isOnlyActiveQuote) { // if creating backup, pick the active quote only
+      if (docType === 0 || docType === 2 || this.isOnlyActiveQuote) { // if creating backup or order doc, pick active quote only
         bids.push(createBidForQuote(this.order.view.quote, docType, this.bidDesc));
       } else {
         this.order.attributes.quotes.forEach(function (quote) {
@@ -75,6 +82,8 @@ angular.module('myApp')
         });
       }
       this.bidDesc = '';
+      this.isOnlyActiveQuote = false;
+
      return api.saveObjects(bids)
         .then(function () {
          that.isBidsLoading = true;

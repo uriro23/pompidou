@@ -8,7 +8,15 @@
 
 		<!-- Header + main logo -->
 		<div class="quoteTextBox">
-			<h2 class="purpleText bold quoteMainTitle">הצעת תפריט</h2>
+      <h2 ng-show="quoteModel.bid.attributes.documentType===4"
+          class="purpleText bold quoteMainTitle">
+        הצעת תפריט
+      </h2>
+      <h2 ng-show="quoteModel.bid.attributes.documentType===2"
+          class="purpleText bold quoteMainTitle">
+        <span>הזמנה מס'</span>
+        <span>{{quoteModel.bid.attributes.order.number}}</span>
+      </h2>
 			<div class="quoteLogo">
 			   <img align="left" src="app/img/logo.png"/>
 		    </div>

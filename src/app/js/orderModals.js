@@ -167,7 +167,7 @@ angular.module('myApp')
         this.mail.attachedBids.forEach(function(bid) {
           msgText += '<span>';
           msgText += (bid.desc + ' </span>');
-          if (bid.documentType === 4) {
+          if (bid.documentType === 4 || bid.documentType === 2) {
             msgText += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
             msgText += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
           } else {
@@ -179,7 +179,8 @@ angular.module('myApp')
         });
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
-          var url = bid.documentType===4 ? baseUrl + '/quote/' + bid.uuid : baseUrl + '/bid/' + bid.uuid;
+          var url = (bid.documentType===4 || bid.documentType === 2)
+            ? baseUrl + '/quote/' + bid.uuid : baseUrl + '/bid/' + bid.uuid;
           return {url: url, fileName: bid.desc+'.pdf'}
         });
       }
