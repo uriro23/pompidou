@@ -11,7 +11,6 @@ angular.module('myApp')
       } else {
         var t = quote.subTotal
           + quote.discount
-          + quote.priceIncrease
           + quote.oldTransportation // old style
           + quote.transportationBonus
           + quote.bonusValue;
@@ -77,8 +76,7 @@ angular.module('myApp')
       quote.bonusValue = bonus;
       quote.transportation = transportation;
       quote.transportationBonus = transportationBonus;
-      quote.priceIncrease = (subTotal+bonus+transportationBonus) * quote.priceIncreaseRate / 100;
-      quote.discount = -((subTotal+bonus+transportationBonus+quote.priceIncrease) * quote.discountRate / 100);
+      quote.discount = -((subTotal+bonus+transportationBonus) * quote.discountRate / 100);
       quote.credits = quote.bonusValue + quote.transportationBonus + quote.discount;
 
       this.calcTotal(quote, isBusinessEvent, vatRate);
@@ -135,25 +133,21 @@ angular.module('myApp')
       }
       // calculate cumulative error for quoteData view, to show on radio button label
       order.view.quote.errors.quoteData = order.view.quote.errors.discountRate ||
-                                          order.view.quote.errors.priceIncreaseRate ||
                                           order.view.quote.errors.fixedPrice;
       order.view.quote.errors.items = calcItemErrors (order.view.quote.items);
       this.orderChanged(order);
     };
 
 
-    this.initQuote = function (mt, categories, discountCause, priceIncreaseCause) {
+    this.initQuote = function (mt, categories, discountCause) {
       var quote = {};
       quote.menuType = mt;
       quote.endBoxType = mt;
       quote.title = mt.label;
       quote.subTotal = 0;
       quote.discountCause = discountCause;
-      quote.priceIncreaseCause = priceIncreaseCause;
       quote.discountRate = 0;
       quote.discount = 0;
-      quote.priceIncreaseRate = 0;
-      quote.priceIncrease = 0;
       quote.bonusValue = 0;
       quote.credits = 0;
       quote.transportationInclVat = 0;  // just to display on order list
@@ -325,7 +319,6 @@ angular.module('myApp')
         'balance': currentQuote.balance,
         'transportationInclVat': currentQuote.transportationInclVat,
         'discountRate': currentQuote.discountRate,
-        'priceIncreaseRate': currentQuote.priceIncreaseRate,
         'activityDate': order.activities.length?order.activities[0].date:undefined,
         'activityText': order.activities.length?order.activities[0].text:undefined
       }

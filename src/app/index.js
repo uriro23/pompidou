@@ -90,9 +90,6 @@ config(function($stateProvider, $urlRouterProvider) {
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
         }],
-        priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-          return priceIncreaseCausesPromise;
-        }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
         }],
@@ -131,9 +128,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
-        }],
-        priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-          return priceIncreaseCausesPromise;
         }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
@@ -174,9 +168,6 @@ config(function($stateProvider, $urlRouterProvider) {
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
         }],
-        priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-          return priceIncreaseCausesPromise;
-        }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
         }],
@@ -215,9 +206,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
           return discountCausesPromise;
-        }],
-        priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-          return priceIncreaseCausesPromise;
         }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
@@ -436,9 +424,6 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       discountCauses: ['discountCausesPromise', function (discountCausesPromise) {
         return discountCausesPromise;
-      }],
-      priceIncreaseCauses: ['priceIncreaseCausesPromise', function (priceIncreaseCausesPromise) {
-        return priceIncreaseCausesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;

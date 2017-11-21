@@ -170,14 +170,10 @@
                <li class="bold" style="width:30%;">{{bidModel.currentQuote.transportationBonus | currency}}</li>
              </ul>
              <ul ng-show="!bidModel.currentQuote.isFixedPrice && bidModel.currentQuote.discount">
-               <li class="bold" style="width:30%">{{bidModel.discountCause.label}}</li>
+               <li class="bold" style="width:30%">הנחה</li>
                <li class="bold" style="width:30%">{{bidModel.currentQuote.discount | currency}}</li>
              </ul>
-             <ul ng-show="!bidModel.currentQuote.isFixedPrice && bidModel.currentQuote.priceIncrease">
-               <li class="bold" style="width:30%">{{bidModel.priceIncreaseCause.description}}</li>
-               <li class="bold" style="width:30%">{{bidModel.currentQuote.priceIncrease | currency}}</li>
-             </ul>
-           </div>
+              </div>
 
 
 

@@ -70,8 +70,6 @@ angular.module('myApp')
         }
       }
 
-      //fetch price increase cause
-      this.priceIncreaseCause = this.currentQuote.priceIncreaseCause;
 
       //filter categories - only those in order and not transportation
       this.filteredCategories = this.categories.filter(function (cat) {

@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
-                                     measurementUnits, categories, discountCauses, priceIncreaseCauses, role) {
+                                     measurementUnits, categories, discountCauses, role) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -618,18 +618,17 @@ angular.module('myApp')
         });
     };
 
-    this.addPriceIncrease = function() {
+    this.delPriceIncrease = function() {
       var that = this;
       api.queryAllOrders()
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
+            delete  order.attributes.header.priceIncreaseRate;
             order.attributes.quotes.forEach(function(quote) {
-              if (!quote.priceIncreaseCause) {
-                quote.priceIncrease = 0;
-                quote.priceIncreaseRate = 0;
-                quote.priceIncreaseCause = priceIncreaseCauses[0];
-              }
+              delete quote.priceIncrease;
+              delete quote.priceIncreaseRate;
+              delete quote.priceIncreaseCause;
             });
           });
           console.log('writing '+orders.length+' orders');

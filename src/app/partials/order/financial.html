@@ -48,27 +48,6 @@
     </td>
     <td>{{financialModel.order.view.quote.discount | currency}}</td>
   </tr>
-  <tr ng-class="financialModel.order.view.quote.changes.priceIncreaseCause?'bg-success':null">
-    <td><label>סיבת תוספת</label></td>
-    <td>
-      <select ng-model="financialModel.order.view.quote.priceIncreaseCause"
-              ng-change="financialModel.setPriceIncreaseCause()"
-              ng-options="priceIncreaseCause.label for priceIncreaseCause in financialModel.priceIncreaseCauses"
-              ng-disabled="financialModel.isReadOnly"
-      ></select>
-    </td>
-    <td></td>
-  </tr>
-  <tr ng-class="financialModel.order.view.quote.changes.priceIncreaseRate?'bg-success':null">
-    <td><label>% תוספת</label></td>
-    <td>
-      <input type="number" max=100 min = 0 ng-model="financialModel.order.view.quote.priceIncreaseRate"
-             ng-disabled="!financialModel.order.view.quote.priceIncreaseCause.tId>0 || financialModel.isReadOnly"
-             ng-change="financialModel.setPriceIncreaseRate()"
-             ng-class="financialModel.order.view.quote.errors.priceIncreaseRate?'bg-danger':null">
-    </td>
-    <td>{{financialModel.order.view.quote.priceIncrease | currency}}</td>
-  </tr>
   <tr>
     <td><label>עיגול</label></td>
     <td></td>

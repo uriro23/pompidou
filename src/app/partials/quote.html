@@ -160,14 +160,6 @@
         </div>
       </div>
 
-      <div ng-show="quoteModel.currentQuote.priceIncrease && !quoteModel.currentQuote.isFixedPrice">
-        <div class="bold quoteItemDescription">
-          {{quoteModel.currentQuote.priceIncreaseCause.description}}
-        </div>
-        <div class="quoteQuantAndUnit">
-          {{quoteModel.currentQuote.priceIncrease | currency}}
-        </div>
-      </div>
 
       <div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">
 			  <div class="bold quoteItemDescription" >

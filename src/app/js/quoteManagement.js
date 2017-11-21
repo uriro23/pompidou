@@ -10,7 +10,6 @@ angular.module('myApp')
     this.menuTypes = $scope.orderModel.menuTypes;
     this.categories = $scope.orderModel.categories;
     this.discountCauses = $scope.orderModel.discountCauses;
-    this.priceIncreaseCauses = $scope.orderModel.priceIncreaseCauses;
 
 
     this.setQuoteChanged = function (ind) {
@@ -40,7 +39,7 @@ angular.module('myApp')
 
     this.addQuote = function () {
       if (this.newMenuType) {
-        var quote = orderService.initQuote(this.newMenuType, this.categories,this.discountCauses[0],this.priceIncreaseCauses[0]);
+        var quote = orderService.initQuote(this.newMenuType, this.categories,this.discountCauses[0]);
         quote.changes.management = true;
         orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
        this.order.attributes.quotes.push(quote);

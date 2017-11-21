@@ -71,21 +71,21 @@
 .quoteMainContainer .titleImg {
 	width: 35%;
 	float: left;
-	
+
 }
 .quoteTextItemLine {
 	clear: both;
 }
 .quoteItemDescription {
-	/* Handle the  ............................. */
-	overflow-x: hidden;
-	white-space: nowrap;
-	display: inline;
-	text-align: left;
-	text-overflow: ellipsis;
-	position: relative;
-	float: right;
-	width: 85%;
+  /* Handle the  ............................. */
+  overflow-x: hidden;
+  white-space: nowrap;
+  display: inline;
+  text-align: left;
+  text-overflow: ellipsis;
+  position: relative;
+  float: right;
+  width: 85%;
 }
 
 /* The quantityt and units of items*/
@@ -100,7 +100,7 @@
 	display: inline-block;
 	margin: 30px;
 	vertical-align: top;
-	
+
 }
 
 .purpleText {

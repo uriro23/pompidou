@@ -64,14 +64,6 @@ angular.module('myApp')
     });
   })
 
-  .factory('priceIncreaseCausesPromise', function (api) {
-    return api.queryPriceIncreaseCauses().then(function (res) {
-      return res.map(function (obj) {
-        return obj.attributes;
-      });
-    });
-  })
-
   .factory('referralSourcesPromise', function (api) {
     return api.queryReferralSources().then(function (res) {
       return res.map(function (obj) {
@@ -180,7 +172,7 @@ angular.module('myApp')
       {
         id: 2,
         label: 'הזמנה',
-        isRealDocumentType: true,
+        isRealDocumentType: false,
         order:3
       },
       {
