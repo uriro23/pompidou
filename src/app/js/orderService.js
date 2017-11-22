@@ -47,24 +47,33 @@ angular.module('myApp')
       var transportationBonus = 0;
       var transportation = 0;
       var isOldFreeItems;
-      for (var i = 0; i < quote.items.length; i++) {
-        var thisItem = quote.items[i];
-        subTotal += thisItem.price;
-        boxCount += thisItem.boxCount;
-        satiety += thisItem.satietyIndex;
-        if (thisItem.category.isTransportation) {  // just to display on order list
-          transportation += thisItem.price;
-        }
-        if (thisItem.isFreeItem) {
-          if (thisItem.price===0) { // old style free item - issue alert
-            isOldFreeItems = true;
+      var priceIncreaseItem;
+      quote.items.forEach(function(thisItem) {
+        if (!thisItem.category.isPriceIncrease) {
+          subTotal += thisItem.price;
+          boxCount += thisItem.boxCount;
+          satiety += thisItem.satietyIndex;
+          if (thisItem.category.isTransportation) {  // just to display on order list
+            transportation += thisItem.price;
           }
-          if (thisItem.category.isTransportation) {
-            transportationBonus -= thisItem.price;
-          } else {
-            bonus -= thisItem.price;
+          if (thisItem.isFreeItem) {
+            if (thisItem.price === 0) { // old style free item - issue alert
+              isOldFreeItems = true;
+            }
+            if (thisItem.category.isTransportation) {
+              transportationBonus -= thisItem.price;
+            } else {
+              bonus -= thisItem.price;
+            }
           }
+        } else {
+          priceIncreaseItem = thisItem;
         }
+      });
+
+      if (priceIncreaseItem) {
+        priceIncreaseItem.price = subTotal * priceIncreaseItem.quantity / 100;
+        subTotal += priceIncreaseItem.price;
       }
 
       if(isOldFreeItems) {

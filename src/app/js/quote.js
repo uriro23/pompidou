@@ -81,9 +81,9 @@ angular.module('myApp')
       this.quoteHeading += this.currentQuote.title;
 
 
-      //filter categories - only those in order and not transportation
+      //filter categories - only those in order not transportation and not priceIncrease
       this.filteredCategories = this.categories.filter(function (cat) {
-        if (cat.isTransportation) {
+        if (cat.isTransportation || cat.isPriceIncrease) {
           return false
         }
         var categoryItems = that.currentQuote.items.filter(function (item) {
@@ -125,14 +125,31 @@ angular.module('myApp')
         });
         this.categoryPrice = this.categoryItems.reduce(function(prev,currentItem) { //sum category item prices
           return prev + (currentItem.isFreeItem?0:currentItem.price);
-        },0)
+        },0);
       };
 
-      // filter transportation items
       this.setupTransportationItems = function () {
+        this.category = categories.filter(function(cat) {
+          return cat.isTransportation;
+        })[0];
         this.transportationItems = that.currentQuote.items.filter(function (item) {
           return (item.category.isTransportation);
         });
+        this.categoryPrice = this.transportationItems.reduce(function(prev,currentItem) { //sum category item prices
+          return prev + (currentItem.isFreeItem?0:currentItem.price);
+        },0);
+      };
+
+      this.setupPriceIncreaseItems = function () {
+        this.category = categories.filter(function(cat) {
+          return cat.isPriceIncrease;
+        })[0];
+        this.priceIncreaseItems = that.currentQuote.items.filter(function (item) {
+          return (item.category.isPriceIncrease);
+        });
+        if (this.priceIncreaseItems.length) {
+          this.categoryPrice = this.priceIncreaseItems[0].price;
+        }
       };
 
       // set indication for bonus items

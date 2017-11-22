@@ -118,11 +118,14 @@
              ng-disabled="itemsModel.isReadOnly"
              ng-class="item.errors.quantity?'bg-danger':null">
     </td>
-    <td>
+    <td ng-hide="item.category.isPriceIncrease">
       <input type="text" size="7" money min=0 ng-model="item.price"
              ng-change="itemsModel.setPrice($index)"
              ng-disabled="itemsModel.isReadOnly"
              ng-class="item.errors.price?'bg-danger':null">
+    </td>
+    <td ng-show="item.category.isPriceIncrease">
+      {{item.price | currency}}
     </td>
     <td>
       <input type="checkbox"

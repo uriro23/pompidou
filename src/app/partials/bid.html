@@ -125,22 +125,38 @@
           <!-- transportation items -->
           {{bidModel.setupTransportationItems()}}
           <div ng-show="bidModel.transportationItems.length">
-          <P style="height: 1cm"></P>
+            <P style="height: 1cm"></P>
             <div class="bold">
               השף בקופסא מגיע אלייך בדיוק ברגע הנכון לפני האורחים
+            </div>
+            <div style="padding-right:3%"
+                 ng-repeat="item in bidModel.transportationItems">
+              <div style="width:67%;display:inline-block;">
+                <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+                <span>{{item.productDescription}}</span>
               </div>
-          <div style="padding-right:3%"
-               ng-repeat="item in bidModel.transportationItems">
-            <div style="width:67%;display:inline-block;">
-              <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
-              <span>{{item.productDescription}}</span>
+              <div style="width:10%;display:inline-block;"> </div>
+              <div style="width:10%;display:inline-block;"> </div>
+              <div style="width:10%;display:inline-block;"
+                   ng-hide="bidModel.currentQuote.isFixedPrice" >{{item.price | currency }}</div>
             </div>
-            <div style="width:10%;display:inline-block;"> </div>
-            <div style="width:10%;display:inline-block;"> </div>
-            <div style="width:10%;display:inline-block;"
-                 ng-hide="bidModel.currentQuote.isFixedPrice" >{{item.price | currency }}</div>
           </div>
+
+          <!-- priceIncrease items  (actually, only one allowed -->
+          {{bidModel.setupPriceIncreaseItems()}}
+          <div ng-show="bidModel.priceIncreaseItems.length">
+            <P style="height: 1cm"></P>
+             <div style="padding-right:3%"
+                 ng-repeat="item in bidModel.priceIncreaseItems">
+              <div style="width:67%;display:inline-block;">
+                <span>{{item.productDescription}}</span>
+              </div>
+              <div style="width:10%;display:inline-block;"> </div>
+              <div style="width:10%;display:inline-block;"> </div>
+              <div style="width:10%;display:inline-block;"
+                   ng-hide="bidModel.currentQuote.isFixedPrice" >{{item.price | currency }}</div>
             </div>
+          </div>
 
         </div>
         <!--End of table of items and prices -->

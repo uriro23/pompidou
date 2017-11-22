@@ -89,6 +89,21 @@ angular.module('myApp')
       var thisQuote = this.order.view.quote;
       var orderItems = thisQuote.items;
 
+        var c = this.categories.filter(function (cat) {
+        return cat.tId === catalogEntry.category;
+      })[0];
+
+        //check for duplicate priceIncrease items - illegal
+      if (c.isPriceIncrease) {
+        var tmp = orderItems.filter(function(itm) {
+          return itm.category.isPriceIncrease;
+        });
+        if (tmp.length) {
+          alert("אסור להוסיף יותר מתוספת מחיר אחת");
+          return;
+        }
+      }
+
       var maxIndex = orderItems.length === 0 ? 0 : Math.max.apply(null, orderItems.map(function (itm) {
         return itm.index
       })) + 1;
@@ -96,13 +111,12 @@ angular.module('myApp')
       orderItems.splice(0, 0, {});
       var thisItem = orderItems[0];
       thisItem.index = maxIndex;
-      var c = this.categories.filter(function (cat) {
-        return cat.tId === catalogEntry.category;
-      })[0];
+
       thisItem.category = {   // take only required properties of category
         tId: c.tId,
         label: c.label,
         isTransportation: c.isTransportation,
+        isPriceIncrease: c.isPriceIncrease,
         order: c.order
       };
       thisItem.catalogId = catalogEntry.id;

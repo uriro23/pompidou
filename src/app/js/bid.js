@@ -73,7 +73,7 @@ angular.module('myApp')
 
       //filter categories - only those in order and not transportation
       this.filteredCategories = this.categories.filter(function (cat) {
-        if (cat.isTransportation) {
+        if (cat.isTransportation || cat.isPriceIncrease) {
           return false;
         }
         var categoryItems = that.currentQuote.items.filter(function (item) {
@@ -99,6 +99,14 @@ angular.module('myApp')
           return (item.category.isTransportation);
         });
       };
+
+      // filter priceIncrease item
+      this.setupPriceIncreaseItems = function () {
+         this.priceIncreaseItems = that.currentQuote.items.filter(function (item) {
+          return (item.category.isPriceIncrease);
+        });
+       };
+
 
 
       if (isPrintBid) {
