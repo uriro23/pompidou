@@ -201,7 +201,18 @@
 
 		</div>
 
-		<p style="height: 0.5cm"></p>
+    <div ng-hide="quoteModel.currentQuote.isFixedPrice" class="quoteTextBox">
+		  <span>
+		    הקטלוג המלא שלנו נמצא
+		  </span>
+      <a href="http://pompidou.co.il" target="_blank">כאו.</a>
+      <span>
+		    ניתן להחליף מנה מסויימת באחרת ולבקש שינוי תמהיל.
+		  </span>
+    </div>
+
+
+    <p style="height: 0.5cm"></p>
 
 		<div ng-show="quoteModel.endBoxType.quoteEndBoxUrl">  <!-- show black box only if text exists -->
       <div class="whyShould" class="quoteTextBox">
@@ -225,15 +236,6 @@
 
 		<p style="height: 0.5cm"></p>
 
-		<div ng-hide="quoteModel.currentQuote.isFixedPrice" class="quoteTextBox">
-		  <span>
-		    הקטלוג המלא שלנו נמצא
-		  </span>
-		  <a href="http://pompidou.co.il" target="_blank">כאו.</a>
-		  <span>
-		    ניתן להחליף מנה מסויימת באחרת ולבקש שינוי תמהיל.
-		  </span>
-		</div>
 
 		<p style="height: 0.5cm"></p>
 
