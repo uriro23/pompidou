@@ -57,7 +57,7 @@
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
           </tab>
-          <tab heading="ניהול תפריטים:">
+          <tab heading="ניהול תפריטים:" active="orderModel.isActiveQuoteManagementTab">
             <ng-include src="'app/partials/order/quoteManagement.html'"></ng-include>
           </tab>
         </tabset>

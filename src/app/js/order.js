@@ -340,6 +340,11 @@ angular.module('myApp')
           j++;
         }
       }
+      if (j === 0) {    // no quotes created
+        this.isActiveQuoteTab = false;
+        this.isActiveQuoteManagementTab = true;
+
+      }
       this.order.attributes.vatRate = this.vatRate;
       this.order.attributes.activities = [];
       this.setReadOnly();

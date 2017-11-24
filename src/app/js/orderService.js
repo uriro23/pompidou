@@ -181,6 +181,11 @@ angular.module('myApp')
       var thisOrder = order.attributes;
       var view = order.view;
 
+      // check if any quote has been created
+      if (thisOrder.quotes.length===0) {
+        alert('לא ניתן לשמור. יש ליצור לפחות תפריט אחד');
+        return;
+      }
       // check for errors except in quotes
       for (var fieldName in view.errors) {
         if (view.errors.hasOwnProperty(fieldName)) {

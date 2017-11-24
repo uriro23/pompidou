@@ -121,7 +121,7 @@
     </td>
     <td  ng-show="orderModel.order.attributes.template"></td>
   </tr>
-    <tr>
+    <tr ng-show="headerModel.order.attributes.quotes.length">
       <td>
         <label>
         {{(headerModel.order.view.quote?headerModel.order.view.quote.title:
@@ -148,6 +148,9 @@
               headerModel.order.attributes.noOfParticipants | number:2}}
       </span>
     </td>
+  </tr>
+  <tr ng-hide="headerModel.order.attributes.quotes.length" class="bg-danger">
+    <td>אין תפריטים</td>
   </tr>
 </table>
 </div>

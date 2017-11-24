@@ -43,6 +43,9 @@ angular.module('myApp')
         quote.changes.management = true;
         orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
        this.order.attributes.quotes.push(quote);
+       if (this.order.attributes.quotes.length===1) { // first quote - make it active
+         this.setActiveQuote(0);
+       }
         this.setRemainingMenuTypes();
         orderService.orderChanged(this.order);
       }
