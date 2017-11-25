@@ -48,7 +48,7 @@
           <label>התאמה אישית מס' {{woItem.descCnt}}</label>
         </div>
       </td>
-      <td>{{woItem.attributes.quantity}}</td>
+      <td ng-class="woItem.attributes.notFinalQuantity?'bg-warning':null">{{woItem.attributes.quantity}}</td>
       <td style="width: 20%">{{woItem.attributes.measurementUnit.label}}</td>
       <!--
       <td ng-hide="workOrderModel.isShowMenuItemOrders">
@@ -58,8 +58,12 @@
                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]">
       </td>
       -->
-      <td ng-repeat="order in woItem.attributes.orderQuant" ng-hide="woItem.attributes.orderQuant.length>15">
-         <span>{{order.quantity ? order.quantity : 0}}</span>
+      <td ng-repeat="order in woItem.attributes.orderQuant"
+          ng-hide="woItem.attributes.orderQuant.length>15"
+          ng-class="order.quantity && order.status===2?'bg-warning':null"> <!-- mark events not in final status -->
+         <span>
+           {{order.quantity ? order.quantity : 0}}
+         </span>
        </td>
       <td>
         <button ng-click="workOrderModel.backInfo(woItem)"

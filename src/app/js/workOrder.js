@@ -69,6 +69,9 @@ angular.module('myApp')
             if (workItemInd) {  // item already in list, just add quantity
               workItem = that.workOrder[workItemInd];
               workItem.attributes.quantity += item.quantity;
+              if (inWorkOrderItem.attributes.order.orderStatus===2) {
+                workItem.attributes.notFinalQuantity += item.quantity;
+              }
               workItem.attributes.originalQuantity = workItem.attributes.quantity;
               workItem.attributes.backTrace.push({
                 id: inWorkOrderItem.id,
@@ -91,6 +94,9 @@ angular.module('myApp')
                 workItem.attributes.productDescription = item.productDescription;
               }
               workItem.attributes.quantity = workItem.attributes.originalQuantity = item.quantity;
+              if (inWorkOrderItem.attributes.order.orderStatus===2) {
+                workItem.attributes.notFinalQuantity = item.quantity;
+              }
               workItem.attributes.category = item.category;
               workItem.attributes.domain = 1;
               workItem.attributes.measurementUnit = item.measurementUnit;
@@ -103,7 +109,8 @@ angular.module('myApp')
               for (var i=0;i<that.woOrders.length;i++) {  // initialize to all zero quantity
                 workItem.attributes.orderQuant[i] = {
                   id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
-                  quantity: 0
+                  quantity: 0,
+                  status: that.woOrders[i].attributes.order.orderStatus
                 };
               }
               that.woOrders.forEach(function(o,i) {
@@ -232,9 +239,8 @@ angular.module('myApp')
       this.orderView = [];
       api.queryFutureOrders()
         .then(function (futureOrders) {
-          //for (var j = 0; j < futureOrders.length; j++) {
           futureOrders.forEach(function(order) {
-            if (order.attributes.orderStatus !== 6) {
+            if (order.attributes.orderStatus !== 1 && order.attributes.orderStatus !== 6) {
               var viewItem = api.initWorkOrder();
               // create the object for now, but we don't store it until user decides to include it in WO
               viewItem.attributes.woId = woId;

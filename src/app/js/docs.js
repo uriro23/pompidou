@@ -46,7 +46,6 @@ angular.module('myApp')
       var bid = api.initBid();
       bid.attributes.version = lov.version;
       bid.attributes.documentType = docType;
-      console.log('docType='+docType);
       bid.attributes.menuType = quote.menuType;
       bid.attributes.orderId = that.order.id;
       bid.attributes.date = new Date();
