@@ -82,21 +82,24 @@
   <div ng-show="orderTableModel.queryType==='templates'">
     <table class="table table-hover" style="width: 99%">
       <thead ng-hide="orderTableModel.isProcessing">
-      <th style="width: 3%">מס'</th>
-      <th style="width: 23%">תבנית</th>
+      <th style="width: 10%">סוג תפריט</th>
+      <th style="width: 23%">שם תבנית</th>
+      <th style="width: 10%">שם תפריט</th>
       <th style="width: 5%">סועדים</th>
-      <th style="width: 7%">תפריט</th>
       <th style="width: 7%">סכום</th>
-      <th style="width: 48%">הערות</th>
+      <th style="width: 45%">הערות</th>
       </thead>
       <tbody>
-      <tr ng-repeat="order in orderTableModel.orders">
+      <tr ng-repeat="order in orderTableModel.orders"
+          ng-class="order.view.orderStatus.id===6?'active myCanceledEvent':null">
         <td>
-          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.number}}</a>
+          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.header.menuType.label}}</a>
         </td>
-        <td>{{order.attributes.template}}</td>
-        <td>{{order.attributes.noOfParticipants}}</td>
+        <td>
+          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.template}}</a>
+        </td>
         <td>{{order.attributes.header.title}}</td>
+        <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.attributes.header.total | currency}}</td>
         <td>{{order.attributes.remarks}}</td>
       </tr>

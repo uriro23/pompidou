@@ -47,11 +47,15 @@
   <input type="checkbox" ng-model="itemsModel.isAdjustQuantity">
   <table style="width: 40%" class="table table-hover">
     <thead>
+    <th>סוג תפריט</th>
     <th>שם תבנית</th>
     <th>משתתפים</th>
     </thead>
       <tbody>
       <tr ng-repeat="template in itemsModel.templates">
+        <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
+          {{template.attributes.header.menuType.label}}
+        </td>
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
           {{template.attributes.template}}
         </td>

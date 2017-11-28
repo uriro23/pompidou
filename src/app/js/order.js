@@ -153,9 +153,11 @@ angular.module('myApp')
             return dc.tId === that.order.view.quote.discountCause.tId;
           })[0];
         }
-        this.order.view.quote.endTextType = bidTextTypes.filter(function (obj) {
-          return (obj.tId === that.order.view.quote.endTextType.tId);
-        })[0];
+        if(this.order.view.quote.endTextType) {
+          this.order.view.quote.endTextType = bidTextTypes.filter(function (obj) {
+            return (obj.tId === that.order.view.quote.endTextType.tId);
+          })[0];
+        }
         this.order.view.startBidTextType = bidTextTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.startBidTextType);
         })[0];

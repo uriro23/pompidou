@@ -231,13 +231,29 @@ angular.module('myApp')
 
     this.getTemplates = function () {
       var that = this;
-      api.queryTemplateOrders(['template','noOfParticipants'])
+      api.queryTemplateOrders(['template','noOfParticipants','header','orderStatus'])
         .then(function (temps) {
-          that.templates = temps;
+          that.templates = temps.filter(function(t) {
+            return t.attributes.orderStatus !== 6 && t.attributes.template;
+          });
           that.templates.sort(function (a, b) {
-            return a.attributes.template < b.attributes.template ? -1 : 1
-          })
-        })
+            // sort templates by:
+            //    a. templates with menuType equal to current order, appear first
+            //    b. menuType label
+            //    c. template name
+            var aCurr = a.attributes.header.menuType.tId === that.order.view.quote.menuType.tId;
+            var bCurr = b.attributes.header.menuType.tId === that.order.view.quote.menuType.tId;
+             if (aCurr && !bCurr) {
+              return -1;
+            } else if (!aCurr && bCurr) {
+              return 1;
+            } else if (a.attributes.header.menuType.label > b.attributes.header.menuType.label) {
+              return 1;
+            } else if (a.attributes.header.menuType.label < b.attributes.header.menuType.label) {
+              return -1;
+            } else return a.attributes.template > b.attributes.template ? 1 : -1;
+            })
+          });
     };
 
     this.addTemplate = function (set) {
@@ -253,8 +269,8 @@ angular.module('myApp')
       var that = this;
       return api.queryOrder (template.id)
        .then(function (tmpl) {
-          that.addQuoteItems(tmpl[0].attributes.quotes[tmpl[0].attributes.activeQuote],
-            false,tmpl[0].attributes.noOfParticipants)
+         var currTemplate = tmpl[0].attributes;
+          that.addQuoteItems(currTemplate.quotes[currTemplate.activeQuote],false,currTemplate.noOfParticipants)
             .then(function() {
                that.isAddTemplate = false;
          });
@@ -298,46 +314,56 @@ angular.module('myApp')
             return ct
           });
           sourceQuote.items.forEach(function(sourceItem) {
-            var sourceCatalogItem = sourceCatalogItems.filter(function (cat) {
-              return cat.id === sourceItem.catalogId
-            })[0];
-            // fetch up to date price from catalog
-            if (!isSameOrder) {
-              sourceItem.catalogPrice = sourceCatalogItem.price;
-              sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
-              if (that.isAdjustQuantity) {
-                sourceItem.quantity = sourceItem.quantity / sourceNoOfParticipants * targetOrder.noOfParticipants;
-                var r = sourceItem.measurementUnit.rounding;
-                if (!r) {
-                  r = 1
+            var isDupPriceIncrease = false;
+            if (sourceItem.category.isPriceIncrease) {   // skip duplicate priceIncrease items
+              targetItems.forEach(function(dupItem) {
+                if (dupItem.category.isPriceIncrease) {
+                  isDupPriceIncrease = true;
                 }
-                sourceItem.quantity = Math.ceil(sourceItem.quantity / r) * r;  // round up
+              });
+            }
+            if  (!isDupPriceIncrease) {
+              var sourceCatalogItem = sourceCatalogItems.filter(function (cat) {
+                return cat.id === sourceItem.catalogId
+              })[0];
+              // fetch up to date price from catalog
+              if (!isSameOrder) {
+                sourceItem.catalogPrice = sourceCatalogItem.price;
+                sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
+                if (that.isAdjustQuantity) {
+                  sourceItem.quantity = sourceItem.quantity / sourceNoOfParticipants * targetOrder.noOfParticipants;
+                  var r = sourceItem.measurementUnit.rounding;
+                  if (!r) {
+                    r = 1
+                  }
+                  sourceItem.quantity = Math.ceil(sourceItem.quantity / r) * r;  // round up
+                }
               }
+              var targetItem = targetItems.filter(function (itm) {    // check if product exists in order
+                return itm.catalogId === sourceItem.catalogId;
+              })[0];
+              if (targetItem) {
+                targetItem.quantity += sourceItem.quantity;   // exists, just update quantity
+              } else {
+                var maxIndex = targetItems.length === 0 ? 0 : Math.max.apply(null, targetItems.map(function (itm) {
+                  return itm.index
+                })) + 1;
+                targetItems.splice(0, 0, angular.copy(sourceItem)); // initialize new item as copied one
+                targetItem = targetItems[0];
+                targetItem.index = maxIndex;  // override original index
+              }
+              // now adjust price
+              targetItem.priceInclVat = targetItem.quantity * targetItem.catalogPrice / targetItem.catalogQuantity;
+              targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
+              if (targetOrder.isBusinessEvent) {
+                targetItem.price = targetItem.priceBeforeVat;
+              } else {
+                targetItem.price = targetItem.priceInclVat;
+              }
+              targetItem.boxCount = targetItem.quantity * targetItem.productionBoxCount / targetItem.productionQuantity;
+              targetItem.satietyIndex = targetItem.quantity * targetItem.productionSatietyIndex / targetItem.productionQuantity;
+              targetItem.isChanged = true;
             }
-            var targetItem = targetItems.filter(function (itm) {    // check if product exists in order
-              return itm.catalogId === sourceItem.catalogId;
-            })[0];
-            if (targetItem) {
-              targetItem.quantity += sourceItem.quantity;   // exists, just update quantity
-            } else {
-              var maxIndex = targetItems.length === 0 ? 0 : Math.max.apply(null, targetItems.map(function (itm) {
-                return itm.index
-              })) + 1;
-              targetItems.splice(0, 0, angular.copy(sourceItem)); // initialize new item as copied one
-              targetItem = targetItems[0];
-              targetItem.index = maxIndex;  // override original index
-            }
-            // now adjust price
-            targetItem.priceInclVat = targetItem.quantity * targetItem.catalogPrice / targetItem.catalogQuantity;
-            targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
-            if (targetOrder.isBusinessEvent) {
-              targetItem.price = targetItem.priceBeforeVat;
-            } else {
-              targetItem.price = targetItem.priceInclVat;
-            }
-            targetItem.boxCount = targetItem.quantity * targetItem.productionBoxCount / targetItem.productionQuantity;
-            targetItem.satietyIndex = targetItem.quantity * targetItem.productionSatietyIndex / targetItem.productionQuantity;
-            targetItem.isChanged = true;
           });
           orderService.calcSubTotal(targetQuote, targetOrder.isBusinessEvent, targetOrder.vatRate);
           orderService.quoteChanged(that.order);

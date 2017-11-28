@@ -618,6 +618,22 @@ angular.module('myApp')
         });
     };
 
+    this.addMenuTypeToHeader = function() {
+      var that = this;
+      api.queryAllOrders()
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+            order.attributes.header.menuType = order.attributes.quotes[order.attributes.activeQuote].menuType;
+          });
+          console.log('writing '+orders.length+' orders');
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('done');
+            });
+        });
+    };
+
     this.delPriceIncrease = function() {
       var that = this;
       api.queryAllOrders()

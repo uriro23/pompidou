@@ -38,7 +38,11 @@ angular.module('myApp')
 
       this.orders.sort(function (a, b) {
         if (that.queryType === 'templates') {
-          if (a.attributes.template > b.attributes.template) {
+          if (a.attributes.header.menuType.label > b.attributes.header.menuType.label) {
+            return 1;
+          } else if (a.attributes.header.menuType.label < b.attributes.header.menuType.label) {
+            return -1;
+          } else if (a.attributes.template > b.attributes.template) {
             return 1
           } else {
             return -1

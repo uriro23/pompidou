@@ -329,6 +329,7 @@ angular.module('myApp')
       var currentQuote = order.quotes[order.activeQuote];
       order.header = {
         'title': currentQuote.title,
+        'menuType': currentQuote.menuType,
         'total': currentQuote.total,
         'balance': currentQuote.balance,
         'transportationInclVat': currentQuote.transportationInclVat,
