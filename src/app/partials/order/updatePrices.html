@@ -18,6 +18,16 @@
     </th>
     </thead>
     <tbody>
+    <tr>
+      <td></td>
+      <td></td>
+      <td>הכל?</td>
+      <td>
+        <input type="checkbox"
+               ng-model="updatePricesModel.isChangeAll"
+               ng-change="updatePricesModel.setChangeAll()">
+      </td>
+    </tr>
     <tr ng-repeat="item in updatePricesModel.changedItems">
       <td>{{item.productName}}</td>
       <td>{{item.price | currency}}</td>

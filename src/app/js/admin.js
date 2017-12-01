@@ -655,5 +655,40 @@ angular.module('myApp')
         });
     };
 
+    this.handleForcedPrices = function() {
+      var that = this;
+      var forcedCnt = 0;
+      var itemCnt = 0;
+      var forcedOrders = [];
+      console.log('starting');
+      api.queryAllOrders()
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+              var isForced = false;
+              order.attributes.quotes.forEach(function (quote) {
+                quote.items.forEach(function (item) {
+                  itemCnt++;
+                  if (Math.round(item.priceInclVat)
+                    !== Math.round(item.catalogPrice / item.catalogQuantity * item.quantity)) {
+                    forcedCnt++;
+                    isForced = true;
+                    item.isForcedPrice = true;
+                    }
+                });
+              });
+              if (isForced) {
+                forcedOrders.push(order);
+              }
+          });
+          console.log('found '+forcedCnt+' forced items out of total items '+itemCnt+' in '+forcedOrders.length+' orders');
+          console.log('writing '+forcedOrders.length+' forced price orders');
+          api.saveObjects(forcedOrders)
+            .then(function() {
+              console.log('done');
+            });
+        });
+    };
+
         });
 

@@ -181,6 +181,8 @@ angular.module('myApp')
           thisItem.productDescription = cat[0].attributes.productDescription;
           thisItem.isDescChanged = false;
         });
+      orderService.quoteChanged(this.order);
+      thisItem.isChanged = true;
     };
 
     this.setQuantity = function (ind) {
@@ -200,6 +202,7 @@ angular.module('myApp')
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
       orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
       orderService.quoteChanged(this.order);
+      thisItem.isForcedPrice = false;
       thisItem.isChanged = true;
     };
 
@@ -216,12 +219,13 @@ angular.module('myApp')
         thisItem.priceInclVat = thisItem.price;
         thisItem.priceBeforeVat = thisItem.price / (1 + thisOrder.vatRate);
       }
+      thisItem.isForcedPrice = true;
       orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
-    this.setFreeItem = function (ind) {
+     this.setFreeItem = function (ind) {
       var thisQuote = this.order.view.quote;
       var thisItem = thisQuote.items[ind];
       orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
@@ -330,20 +334,39 @@ angular.module('myApp')
               if (!isSameOrder) {
                 sourceItem.catalogPrice = sourceCatalogItem.price;
                 sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
-                if (that.isAdjustQuantity) {
+                if (that.isAdjustQuantity
+                    && !sourceItem.category.isTransportation
+                    && !sourceItem.category.isPriceIncrease) {
                   sourceItem.quantity = sourceItem.quantity / sourceNoOfParticipants * targetOrder.noOfParticipants;
                   var r = sourceItem.measurementUnit.rounding;
                   if (!r) {
                     r = 1
                   }
                   sourceItem.quantity = Math.ceil(sourceItem.quantity / r) * r;  // round up
+                  // if source item's price has been changed manually, we can't really adjust its price, so set error
+                  sourceItem.errors.price = sourceItem.isForcedPrice;
                 }
               }
               var targetItem = targetItems.filter(function (itm) {    // check if product exists in order
-                return itm.catalogId === sourceItem.catalogId;
+                return (itm.catalogId === sourceItem.catalogId) &&
+                        (itm.isFreeItem === sourceItem.isFreeItem) &&
+                        !itm.isDescChanged && !sourceItem.isDescChanged &&
+                        !itm.category.isTransportation; // keep transportations separate for easier manual inspection
               })[0];
               if (targetItem) {
                 targetItem.quantity += sourceItem.quantity;   // exists, just update quantity
+                // while merging two items, if one of them is forced price, set error to investigate manually
+                targetItem.isForcedPrice = targetItem.errors.price =
+                  sourceItem.isForcedPrice || targetItem.isForcedPrice;
+                if (sourceItem.isForcedPrice) { // add forced source price to target.
+                  targetItem.priceInclVat += sourceItem.priceInclVat;
+                  targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
+                  if (targetOrder.isBusinessEvent) {
+                    targetItem.price = targetItem.priceBeforeVat;
+                  } else {
+                    targetItem.price = targetItem.priceInclVat;
+                  }
+                }
               } else {
                 var maxIndex = targetItems.length === 0 ? 0 : Math.max.apply(null, targetItems.map(function (itm) {
                   return itm.index
@@ -353,12 +376,14 @@ angular.module('myApp')
                 targetItem.index = maxIndex;  // override original index
               }
               // now adjust price
-              targetItem.priceInclVat = targetItem.quantity * targetItem.catalogPrice / targetItem.catalogQuantity;
-              targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
-              if (targetOrder.isBusinessEvent) {
-                targetItem.price = targetItem.priceBeforeVat;
-              } else {
-                targetItem.price = targetItem.priceInclVat;
+              if (!targetItem.isForcedPrice) {
+                targetItem.priceInclVat = targetItem.quantity * targetItem.catalogPrice / targetItem.catalogQuantity;
+                targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
+                if (targetOrder.isBusinessEvent) {
+                  targetItem.price = targetItem.priceBeforeVat;
+                } else {
+                  targetItem.price = targetItem.priceInclVat;
+                }
               }
               targetItem.boxCount = targetItem.quantity * targetItem.productionBoxCount / targetItem.productionQuantity;
               targetItem.satietyIndex = targetItem.quantity * targetItem.productionSatietyIndex / targetItem.productionQuantity;

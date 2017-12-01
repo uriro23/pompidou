@@ -119,30 +119,33 @@
       <input type="number" size="1" min=0 max="10000"
              ng-model="item.quantity"
              ng-change="itemsModel.setQuantity($index)"
-             ng-disabled="itemsModel.isReadOnly"
+             ng-disabled="itemsModel.isReadOnly || item.isForcedPrice"
              ng-class="item.errors.quantity?'bg-danger':null">
     </td>
-    <td ng-hide="item.category.isPriceIncrease">
+    <td>
       <input type="text" size="7" money min=0 ng-model="item.price"
              ng-change="itemsModel.setPrice($index)"
-             ng-disabled="itemsModel.isReadOnly"
+             ng-disabled="itemsModel.isReadOnly || item.category.isPriceIncrease"
              ng-class="item.errors.price?'bg-danger':null">
     </td>
-    <td ng-show="item.category.isPriceIncrease">
-      {{item.price | currency}}
-    </td>
-    <td>
+     <td>
       <input type="checkbox"
              ng-model="item.isFreeItem"
              ng-change="itemsModel.setFreeItem($index)"
              ng-disabled="itemsModel.isReadOnly"
           >
     </td>
-       <td>
+    <td ng-hide="item.isForcedPrice">
       <button ng-click="itemsModel.editCatalogItem($index)"
               ng-disabled="itemsModel.order.view.isChanged"
               class="btn btn-default btn-sm"
       >קטלוג</button>
+    </td>
+    <td ng-show="item.isForcedPrice">
+      <button ng-click="itemsModel.setQuantity($index)"
+              ng-disabled="itemsModel.isReadOnly"
+              class="btn btn-warning btn-sm"
+      >מחיר ב"מ</button> <!-- setQuantity causes price recalc -->
     </td>
     <td>
       <button ng-click="itemsModel.deleteItem($index)"

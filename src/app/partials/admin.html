@@ -10,10 +10,11 @@
   <button class="btn btn-default" ng-click="adminModel.productNamesInItems()">שמות מוצרים בפריטי אירוע</button>
   <button class="btn-default" ng-click="adminModel.addQuoteTitles()">כותרות</button>
   <button class="btn-default" ng-click="adminModel.delPriceIncrease()">תוספת מחיר</button>
-  -->
   <button class="btn-default" ng-click="adminModel.addMenuTypeToHeader()">הוסף סוג תפריט לפרטי כותרת</button>
+   -->
+  <button class="btn-default" ng-click="adminModel.handleForcedPrices()">מחירים כפויים</button>
 </div>
-<tabset>
+ <tabset>
   <tab heading='מע"מ'>
     <label>שיעור מע"מ: </label>
     <input type="number" min="0" max="50" ng-change="adminModel.setVat()"

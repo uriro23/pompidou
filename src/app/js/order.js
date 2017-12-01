@@ -180,11 +180,14 @@ angular.module('myApp')
             }
             that.order.view.customer = custs[0].attributes;
             that.order.view.customer.id = custs[0].id;
-            $rootScope.title = ' - אירוע ' +
-              that.order.view.customer.firstName + ' ' +
-              that.order.view.customer.lastName + ' ' +
-              that.order.attributes.eventDate.getDate() +'/' + (that.order.attributes.eventDate.getMonth()+1);
-            // that.getPrevOrders();
+            if (that.order.attributes.template.length) {
+              $rootScope.title = ' תבנית'+ that.order.attributes.template;
+            } else {
+              $rootScope.title = ' - אירוע ' +
+                that.order.view.customer.firstName + ' ' +
+                that.order.view.customer.lastName + ' ' +
+                that.order.attributes.eventDate.getDate() + '/' + (that.order.attributes.eventDate.getMonth() + 1);
+            }
           });
         if (that.order.attributes.contact) {
           api.queryCustomers(that.order.attributes.contact)

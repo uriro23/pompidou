@@ -37,7 +37,7 @@ angular.module('myApp')
         return cat.id === item.catalogId;
       })[0];
       return (item.catalogPrice !== catEntry.attributes.price ||
-        item.catalogQuantity !== catEntry.attributes.priceQuantity) && !item.isFreeItem;
+        item.catalogQuantity !== catEntry.attributes.priceQuantity);
     });
     for (var i = 0; i < this.changedItems.length; i++) {
       var item = this.changedItems[i];
@@ -51,6 +51,13 @@ angular.module('myApp')
         item.newPrice = priceInclVat;
       }
     }
+
+    this.setChangeAll = function() {
+      var that = this;
+      this.changedItems.forEach(function(item) {
+        item.isChangePrice = that.isChangeAll;
+      });
+    };
 
     this.done = function () {
       var isChanged = false;
@@ -70,6 +77,7 @@ angular.module('myApp')
             item.priceInclVat = item.price;
             item.priceBeforeVat = item.price / (1 + order.attributes.vatRate);
           }
+          item.isForcedPrice = false;
           item.isChanged = true;
           isChanged = true;
         }
