@@ -180,8 +180,8 @@ angular.module('myApp')
             }
             that.order.view.customer = custs[0].attributes;
             that.order.view.customer.id = custs[0].id;
-            if (that.order.attributes.template.length) {
-              $rootScope.title = ' תבנית'+ that.order.attributes.template;
+            if (that.order.attributes.template) {
+              $rootScope.title = ' תבנית '+ that.order.attributes.template;
             } else {
               $rootScope.title = ' - אירוע ' +
                 that.order.view.customer.firstName + ' ' +

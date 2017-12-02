@@ -240,24 +240,32 @@ angular.module('myApp')
           that.templates = temps.filter(function(t) {
             return t.attributes.orderStatus !== 6 && t.attributes.template;
           });
+          that.templates.forEach(function(t) {
+            t.isCurrentMenuType = (t.attributes.header.menuType.tId === that.order.view.quote.menuType.tId);
+          });
           that.templates.sort(function (a, b) {
-            // sort templates by:
-            //    a. templates with menuType equal to current order, appear first
-            //    b. menuType label
-            //    c. template name
-            var aCurr = a.attributes.header.menuType.tId === that.order.view.quote.menuType.tId;
-            var bCurr = b.attributes.header.menuType.tId === that.order.view.quote.menuType.tId;
-             if (aCurr && !bCurr) {
-              return -1;
-            } else if (!aCurr && bCurr) {
-              return 1;
-            } else if (a.attributes.header.menuType.label > b.attributes.header.menuType.label) {
+             if (a.attributes.header.menuType.label > b.attributes.header.menuType.label) {
               return 1;
             } else if (a.attributes.header.menuType.label < b.attributes.header.menuType.label) {
               return -1;
             } else return a.attributes.template > b.attributes.template ? 1 : -1;
             })
           });
+    };
+
+    // returns true if among templates are both such with menuType equal to current quote and such with different MT
+    // used to decide if separator is needed
+    this.isBothMenuTypes = function() {
+      var isSame = false;
+      var isDiff = false;
+      this.templates.forEach(function(template) {
+        if (template.isCurrentMenuType) {
+          isSame = true;
+        } else {
+          isDiff = true;
+        }
+      });
+      return isSame && isDiff;
     };
 
     this.addTemplate = function (set) {
@@ -317,6 +325,7 @@ angular.module('myApp')
             ct.id = c.id;
             return ct
           });
+          var isPriceConflict = false;
           sourceQuote.items.forEach(function(sourceItem) {
             var isDupPriceIncrease = false;
             if (sourceItem.category.isPriceIncrease) {   // skip duplicate priceIncrease items
@@ -345,7 +354,7 @@ angular.module('myApp')
                   sourceItem.quantity = Math.ceil(sourceItem.quantity / r) * r;  // round up
                   // if source item's price has been changed manually, we can't really adjust its price, so set error
                   sourceItem.errors.price = sourceItem.isForcedPrice;
-                }
+                  }
               }
               var targetItem = targetItems.filter(function (itm) {    // check if product exists in order
                 return (itm.catalogId === sourceItem.catalogId) &&
@@ -385,11 +394,17 @@ angular.module('myApp')
                   targetItem.price = targetItem.priceInclVat;
                 }
               }
+              if (targetItem.errors.price) {
+                isPriceConflict = true;
+              }
               targetItem.boxCount = targetItem.quantity * targetItem.productionBoxCount / targetItem.productionQuantity;
               targetItem.satietyIndex = targetItem.quantity * targetItem.productionSatietyIndex / targetItem.productionQuantity;
               targetItem.isChanged = true;
             }
           });
+          if (isPriceConflict) {
+            alert('קיימת בעיה של מחירים קבועים בתבנית המועתקת. בדוק שגיאות מסומנות בשדה המחיר')
+          }
           orderService.calcSubTotal(targetQuote, targetOrder.isBusinessEvent, targetOrder.vatRate);
           orderService.quoteChanged(that.order);
         });

@@ -52,7 +52,7 @@
     <th>משתתפים</th>
     </thead>
       <tbody>
-      <tr ng-repeat="template in itemsModel.templates">
+      <tr ng-repeat="template in itemsModel.templates | filter: {isCurrentMenuType:true}">
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
           {{template.attributes.header.menuType.label}}
         </td>
@@ -63,7 +63,21 @@
           {{template.attributes.noOfParticipants}}
         </td>
       </tr>
-      </tbody>
+      <tr ng-show="itemsModel.isBothMenuTypes()">
+        <td>---------------</td>
+      </tr>
+      <tr ng-repeat="template in itemsModel.templates | filter: {isCurrentMenuType:false}">
+        <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
+          {{template.attributes.header.menuType.label}}
+        </td>
+        <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
+          {{template.attributes.template}}
+        </td>
+        <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
+          {{template.attributes.noOfParticipants}}
+        </td>
+      </tr>
+     </tbody>
   </table>
 </span><button ng-click="itemsModel.addQuote(true)"
                ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
