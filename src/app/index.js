@@ -449,6 +449,11 @@ config(function($stateProvider, $urlRouterProvider) {
     resolve: {
       referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
         return referralSourcesPromise;
+      }],
+      customers: ['api', function (api) {
+        return api.queryCustomers().then(function (objs) {
+          return objs;
+        });
       }]
     }
   })

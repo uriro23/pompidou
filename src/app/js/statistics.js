@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('StatisticsCtrl', function ($rootScope, lov, api, today, referralSources) {
+  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, today, referralSources, customers) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -57,6 +57,8 @@ angular.module('myApp')
             return !ord.attributes.template;    // ignore templates
           });
           that.filterOrders();
+          that.isHideOrders = true;
+          that.setOrderTableParams();
        })
           };
 
@@ -98,17 +100,22 @@ angular.module('myApp')
       // getLabel - function that receives an index into segArray as argument and returns a display label for that index
 
       var tempVec = [];
-      for (var i=0;i<filteredOrders.length;i++) {
-        var currentOrder = filteredOrders[i].attributes;
-        var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
-        var segIndex = getIndex (filteredOrders[i]);
+      filteredOrders.forEach(function(order) {
+        var orderAttr = order.attributes;
+        var currentQuote = orderAttr.quotes[orderAttr.activeQuote];
+        var segIndex = getIndex (order);
         if (!tempVec[segIndex]) {  // first event for index
-          tempVec[segIndex] = {'label': angular.copy(getLabel(segIndex)), 'potCount': 1, 'potTotal': currentQuote.totalBeforeVatForInvoice};
-           if (currentOrder.orderStatus >= 2 && currentOrder.orderStatus <= 5) {  // actually happens
+          tempVec[segIndex] = {
+            'label': angular.copy(getLabel(segIndex)),
+            'potCount': 1,
+            'potTotal': currentQuote.totalBeforeVatForInvoice,
+            'orders': [order]
+          };
+           if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
             tempVec[segIndex].actCount = 1;
             tempVec[segIndex].actTotal = currentQuote.totalBeforeVatForInvoice;
-            tempVec[segIndex].actParticipants = currentOrder.noOfParticipants;
-            tempVec[segIndex].actTransportation = currentQuote.transportationInclVat / (1+currentOrder.vatRate);
+            tempVec[segIndex].actParticipants = orderAttr.noOfParticipants;
+            tempVec[segIndex].actTransportation = currentQuote.transportationInclVat / (1+orderAttr.vatRate);
 
           } else {
             tempVec[segIndex].actCount = 0;
@@ -119,14 +126,15 @@ angular.module('myApp')
         }  else {
          tempVec[segIndex].potCount++;
           tempVec[segIndex].potTotal += currentQuote.totalBeforeVatForInvoice;
-          if (currentOrder.orderStatus >= 2 && currentOrder.orderStatus <= 5) {  // actually happens
+          if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
             tempVec[segIndex].actCount++;
             tempVec[segIndex].actTotal += currentQuote.totalBeforeVatForInvoice;
-            tempVec[segIndex].actParticipants += currentOrder.noOfParticipants;
-            tempVec[segIndex].actTransportation += (currentQuote.transportationInclVat / (1+currentOrder.vatRate));
+            tempVec[segIndex].actParticipants += orderAttr.noOfParticipants;
+            tempVec[segIndex].actTransportation += (currentQuote.transportationInclVat / (1+orderAttr.vatRate));
           }
+          tempVec[segIndex].orders.push(order);
         }
-      }
+      });
       segArray.splice(0,segArray.length); // clear output array
       tot.potCount = 0;
       tot.potTotal = 0;
@@ -191,6 +199,59 @@ angular.module('myApp')
       });
     };
 
-      this.loadOrders();
+    this.setupLineOrders = function(lineArray,line) {
+      this.ordersToShow = line.orders;
+      this.ordersToShow.forEach(function(order) {
+        order.view = {};
+        order.view.customer = customers.filter(function (cust) {
+          return cust.id === order.attributes.customer;
+        })[0];
+        order.view.customer.anyPhone =
+          order.view.customer.attributes.mobilePhone?order.view.customer.attributes.mobilePhone:
+            order.view.customer.attributes.homePhone?order.view.customer.attributes.homePhone:
+              order.view.customer.attributes.workPhone?order.view.customer.attributes.workPhone:undefined;
+        order.view.orderStatus = lov.orderStatuses.filter(function (stat) {
+          return stat.id === order.attributes.orderStatus;
+        })[0];
+        order.view.isReadOnly = order.attributes.eventDate < today;
+      });
+      lineArray.forEach(function(lin) {
+        lin.isBold = false
+      });
+      line.isBold = true;
+      this.isHideOrders = false;
+      this.setOrderTableParams();
+    };
+
+
+    this.deselectTab = function(array) {
+      array.forEach(function(line) {
+        line.isBold = false;
+      });
+      this.ordersToShow = [];
+      this.isHideOrders = true;
+      this.setOrderTableParams();
+    };
+
+    var tabThis;
+
+    this.setOrderTableParams = function () {
+      if (tabThis) {
+        tabThis.queryType = 'statistics';
+        tabThis.isProcessing = this.isHideOrders;
+        tabThis.orders = this.ordersToShow;
+        tabThis.isDisableLink = false;
+      }
+    };
+
+    $scope.initOrderTableParams = function (t) {
+      tabThis = t;
+    };
+
+
+
+    this.loadOrders();
+    this.isHideOrders = true;
+    this.setOrderTableParams();
 
   });
