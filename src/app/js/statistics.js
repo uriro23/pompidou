@@ -135,6 +135,15 @@ angular.module('myApp')
           tempVec[segIndex].orders.push(order);
         }
       });
+      tempVec.forEach(function(line) {
+        line.orders.sort(function(a,b) {
+          if(a.attributes.eventDate > b.attributes.eventDate) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+      });
       segArray.splice(0,segArray.length); // clear output array
       tot.potCount = 0;
       tot.potTotal = 0;

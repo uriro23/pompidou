@@ -86,7 +86,6 @@
       <thead ng-hide="orderTableModel.isProcessing">
       <th style="width: 10%">סוג תפריט</th>
       <th style="width: 23%">שם תבנית</th>
-      <th style="width: 10%">שם תפריט</th>
       <th style="width: 5%">סועדים</th>
       <th style="width: 7%">סכום</th>
       <th style="width: 45%">הערות</th>
@@ -100,7 +99,6 @@
         <td>
           <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.template}}</a>
         </td>
-        <td>{{order.attributes.header.title}}</td>
         <td>{{order.attributes.noOfParticipants}}</td>
         <td>{{order.attributes.header.total | currency}}</td>
         <td>{{order.attributes.remarks}}</td>
