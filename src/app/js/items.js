@@ -258,14 +258,18 @@ angular.module('myApp')
     this.isBothMenuTypes = function() {
       var isSame = false;
       var isDiff = false;
-      this.templates.forEach(function(template) {
-        if (template.isCurrentMenuType) {
-          isSame = true;
-        } else {
-          isDiff = true;
-        }
-      });
-      return isSame && isDiff;
+      if (this.templates) {
+        this.templates.forEach(function (template) {
+          if (template.isCurrentMenuType) {
+            isSame = true;
+          } else {
+            isDiff = true;
+          }
+        });
+        return isSame && isDiff;
+      } else {
+        return false;
+      }
     };
 
     this.addTemplate = function (set) {

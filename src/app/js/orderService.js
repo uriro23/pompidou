@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('orderService', function ($rootScope, $state, api, lov) {
+  .service('orderService', function ($rootScope, $state, api, lov, today) {
 
     this.calcTotal = function (quote, isBusinessEvent, vatRate) {
      if(quote.isFixedPrice) {
@@ -231,8 +231,8 @@ angular.module('myApp')
           order.delAttributes = {contact: true}
         }
       }
-      thisOrder.orderStatus = view.orderStatus.id;
 
+      this.setStatus(order);
 
       // handle quotes
       thisOrder.quotes.forEach(function(q) {
@@ -336,6 +336,30 @@ angular.module('myApp')
         'discountRate': currentQuote.discountRate,
         'activityDate': order.activities.length?order.activities[0].date:undefined,
         'activityText': order.activities.length?order.activities[0].text:undefined
+      }
+    };
+
+    this.setStatus = function(order) {
+      if (order.view.orderStatus.id !== order.attributes.orderStatus) {
+        var txt = (order.attributes.orderStatus ? 'סטטוס האירוע שונה ל- ' : 'האירוע נוצר בסטטוס ') +
+                  order.view.orderStatus.name;
+        order.attributes.activities.splice(0, 0, {date: new Date(), text: txt});
+        if (order.attributes.header) {
+          // if called from orderList we  have to update header fields directly
+          order.attributes.header.activityDate = order.attributes.activities[0].date;
+          order.attributes.header.activityText = order.attributes.activities[0].text;
+        }
+        // in transition from not closed to closed, set closure date
+        if (order.view.orderStatus.id >= 2 && order.view.orderStatus.id <= 5) {    // new status
+          if (order.attributes.orderStatus === undefined ||
+              order.attributes.orderStatus === 1 ||
+              order.attributes.orderStatus === 6) { // prev status
+            order.attributes.closingDate = today;
+          }
+        } else {
+          order.attributes.closingDate = undefined;  // order not closed
+        }
+        order.attributes.orderStatus = order.view.orderStatus.id;
       }
     };
 

@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
-                                          api, lov, today, queryType, customers) {
+                                          api, lov, orderService, today, queryType, customers) {
       var that = this;
      $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -101,7 +101,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','template','remarks','header'
+        'exitTime','template','remarks','header', 'activities'
       ];
       if (this.queryType !== 'year') {
         this.queryYear = undefined;
@@ -189,7 +189,7 @@ angular.module('myApp')
     };
 
     this.setStatus = function (order) {
-      order.attributes.orderStatus = order.view.orderStatus.id;
+      orderService.setStatus(order);
       api.saveObj(order);
     };
 
