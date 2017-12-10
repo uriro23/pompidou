@@ -7,6 +7,13 @@
     </span>&nbsp;&nbsp;
   <button class="btn btn-default" ng-click="orderListModel.newOrder()">חדש</button>
 </h2>
+<div class="messageBox">
+  <span>בשבעת הימים האחרונים יצרת </span>
+  <span>{{orderListModel.recentOpenings.length}}</span>
+  <span> אירועים וסגרת </span>
+  <span>{{orderListModel.recentClosings.length}}</span>
+  <span> אירועים</span>
+</div>
 <table style="width: 99%">
   <tr>
     <td style="width: 65%">

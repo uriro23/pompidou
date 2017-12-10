@@ -149,7 +149,13 @@ a:link, a:visited  {
     font-weight: bold;
 }
 
-
+.messageBox {
+  margin-right: 30%;
+  border: 1px inset goldenrod;
+  background-color: moccasin;
+  text-align: center;
+  width: 30%
+}
 
 
 

@@ -3,7 +3,8 @@
 /* Controllers */
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
-                                          api, lov, orderService, today, queryType, customers) {
+                                          api, lov, orderService, today, queryType, customers,
+                                          recentOpenings, recentClosings) {
       var that = this;
      $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -15,6 +16,9 @@ angular.module('myApp')
     $rootScope.title = 'אירועים';
 
     var fetchedOrders = [];
+
+    this.recentOpenings = recentOpenings;
+    this.recentClosings = recentClosings;
 
 
 //  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag

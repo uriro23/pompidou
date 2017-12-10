@@ -354,7 +354,7 @@ angular.module('myApp')
           if (order.attributes.orderStatus === undefined ||
               order.attributes.orderStatus === 1 ||
               order.attributes.orderStatus === 6) { // prev status
-            order.attributes.closingDate = today;
+            order.attributes.closingDate = new Date();
           }
         } else {
           order.attributes.closingDate = undefined;  // order not closed

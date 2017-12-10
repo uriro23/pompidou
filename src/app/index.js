@@ -55,6 +55,24 @@ config(function($stateProvider, $urlRouterProvider) {
           return api.queryCustomers().then(function (objs) {
             return objs;
           });
+        }],
+        recentOpenings: ['api', function(api) {
+          var from = new Date(new Date().setDate(new Date().getDate()-7));
+          var to = new Date();
+          from.setDate(from.getDate()-7);
+          return api.queryOrdersByRange('createdAt',from,to,['number','header'])
+            .then(function(objs) {
+              return objs;
+            });
+        }],
+        recentClosings: ['api', function(api) {
+          var from = new Date(new Date().setDate(new Date().getDate()-7));
+          var to = new Date();
+          from.setDate(from.getDate()-7);
+          return api.queryOrdersByRange('closingDate',from,to,['number','header'])
+            .then(function(objs) {
+              return objs;
+            });
         }]
       }
     })
