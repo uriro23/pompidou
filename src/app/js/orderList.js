@@ -17,8 +17,12 @@ angular.module('myApp')
 
     var fetchedOrders = [];
 
-    this.recentOpenings = recentOpenings;
-    this.recentClosings = recentClosings;
+    this.recentOpenings = recentOpenings.filter(function(order) {
+      return !order.attributes.template;
+    }).length;
+    this.recentClosings = recentClosings.filter(function(order) {
+      return !order.attributes.template;
+    }).length;
 
 
 //  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag

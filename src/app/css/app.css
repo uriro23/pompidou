@@ -150,11 +150,11 @@ a:link, a:visited  {
 }
 
 .messageBox {
-  margin-right: 30%;
-  border: 1px inset goldenrod;
+  margin-right: 25%;
+  border: 1px groove goldenrod;
   background-color: moccasin;
   text-align: center;
-  width: 30%
+  width: 50%
 }
 
 
