@@ -19,18 +19,15 @@ angular.module('myApp')
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
     this.filterBy = 'eventDate';
-     var fetchedOrders = [];
+    var fetchedOrders = [];
     var filteredOrders = [];
-
-    var biasedFromDate;
     var dateBias;
-
     var participantsFactor = 10;
     var totalFactor = 1000;
 
     var fieldList = [
       'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-      'exitTime','template', 'header', 'vatRate'
+      'exitTime','template', 'header', 'vatRate', 'referralSource'
     ];
 
     //this.loadOrders();
@@ -38,15 +35,11 @@ angular.module('myApp')
     this.loadOrders = function() {
       var that = this;
 
-      this.eventMonthStats = []; //  clear existing display
-      this.eventMonthTot = {};
-      this.eventMonthAvg = {};
+      this.monthStats = []; //  clear existing display
+      this.monthTot = {};
+      this.monthAvg = {};
 
-      this.orderMonthStats = []; //  clear existing display
-      this.orderMonthTot = {};
-      this.orderMonthAvg = {};
-
-      this.participantStats = []; //  clear existing display
+     this.participantStats = []; //  clear existing display
       this.participantTot = {};
       this.participantAvg = {};
 
@@ -60,9 +53,7 @@ angular.module('myApp')
 
       fetchedOrders = filteredOrders = [];
 
-      // set date array to start from a year before fromDate to cope with orders started long before the event
-      biasedFromDate = new Date(this.fromDate.getFullYear()-1,this.fromDate.getMonth(),this.fromDate.getDate());
-      dateBias = (biasedFromDate.getFullYear())*12 + biasedFromDate.getMonth(); // this is index 0 of months array
+      dateBias = this.fromDate.getFullYear()*12 + this.fromDate.getMonth(); // this is index 0 of months array
       api.queryOrdersByRange(this.filterBy, this.fromDate, this.toDate, fieldList)
         .then(function(orders) {
           fetchedOrders = orders.filter(function(ord) {
@@ -184,20 +175,13 @@ angular.module('myApp')
     this.doStat = function () {
       var that = this;
 
-      // segmentation by event months
-      doSegmentation(this.eventMonthStats, this.eventMonthTot, this.eventMonthAvg, function (ord) {
-        return ord.attributes.eventDate.getFullYear()*12+ord.attributes.eventDate.getMonth()-dateBias;
+      // segmentation by months
+      doSegmentation(this.monthStats, this.monthTot, this.monthAvg, function (ord) {
+        var orderDate = that.filterBy === 'eventDate' ? ord.attributes.eventDate : ord.createdAt;
+        return orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
       },function (ind) {
-        var dateLabel =  angular.copy(biasedFromDate);
-        dateLabel.setMonth(biasedFromDate.getMonth()+ind);
-        return dateLabel;
-      });
-      // segmentation by order creation months
-      doSegmentation(this.orderMonthStats, this.orderMonthTot, this.orderMonthAvg, function (ord) {
-        return ord.createdAt.getFullYear()*12+ord.createdAt.getMonth()-dateBias;
-      },function (ind) {
-        var dateLabel =  angular.copy(biasedFromDate);
-        dateLabel.setMonth(biasedFromDate.getMonth()+ind);
+        var dateLabel =  angular.copy(that.fromDate);
+        dateLabel.setMonth(that.fromDate.getMonth()+ind);
         return dateLabel;
       });
       // segmentation by participants
@@ -208,7 +192,7 @@ angular.module('myApp')
       });
       // segmentation by total
       doSegmentation(this.totalStats, this.totalTot, this.totalAvg, function (ord) {
-        return  Math.floor((ord.attributes.header.total / (1+ord.attributes.vatR) + 1) / totalFactor);
+        return  Math.floor((ord.attributes.header.total / (1+ord.attributes.vatRate) + 1) / totalFactor);
       },function (ind) {
         return (ind * totalFactor + 1) + '-' + ((ind+1) * totalFactor);
       });
