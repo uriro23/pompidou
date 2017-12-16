@@ -13,9 +13,9 @@ angular.module('myApp')
     }
     $rootScope.title = 'סטטיסטיקות';
 
-    this.toDate = today;
+    this.toDate = angular.copy(today);
     this.toDate.setDate(this.toDate.getDate()+1); // do until tomorrow, to include events of today
-    this.fromDate = angular.copy(this.toDate);
+    this.fromDate = angular.copy(today);
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
     this.filterBy = 'eventDate';
