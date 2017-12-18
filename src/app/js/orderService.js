@@ -357,7 +357,11 @@ angular.module('myApp')
             order.attributes.closingDate = new Date();
           }
         } else {
-          order.attributes.closingDate = undefined;  // order not closed
+          if (order.delAttributes) {
+            order.delAttributes.closingDate = true;
+          } else {
+            order.delAttributes = {closingDate: true};
+          }
         }
         order.attributes.orderStatus = order.view.orderStatus.id;
       }
