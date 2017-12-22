@@ -1,4 +1,5 @@
 <div ng-controller="ItemsCtrl as itemsModel">
+  <div class="hidden-xs">
 <button ng-click="itemsModel.addItem(true)"
         ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
         ng-disabled="itemsModel.isReadOnly"
@@ -79,7 +80,8 @@
       </tr>
      </tbody>
   </table>
-</span><button ng-click="itemsModel.addQuote(true)"
+</span>
+    <button ng-click="itemsModel.addQuote(true)"
                ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
                ng-disabled="itemsModel.isReadOnly"
                class="btn btn-default">
@@ -105,69 +107,95 @@
       </tbody>
   </table>
 </span>
+  </div>
   <p></p>
-<table class="table table-hover" ng-show="itemsModel.order.view.quote.items.length" style="width: 80%">
-  <thead>
-  <th  class="hidden-xs"style="width: 9%">קטגוריה</th>
-  <th style="width: 73%">מוצר</th>
-  <th  class="hidden-xs"style="width: 6%">יח'</th>
-  <th style="width: 2%">כמות</th>
-  <th style="width: 5%">מחיר</th>
-  <th style="width: 5%">בונוס</th>
-  </thead>
-  <tbody>
-  <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
-      ng-class="item.isChanged?'bg-success':null">
-    <td class="hidden-xs">{{item.category.label}}</td>
-    <td>
-      <input type="text" size="{{item.isDescChanged ? 92 : 100}}" ng-model="item.productDescription"
-             ng-change="itemsModel.setProductDescription($index)"
-             ng-disabled="itemsModel.isReadOnly"
-             ng-class="item.errors.productDescription?'bg-danger':null">
-      <button ng-show="item.isDescChanged"
-              class="btn btn-default btn-sm bg-success"
-              ng-click="itemsModel.resetDescChange($index)">מקור</button>
-    </td>
-    <td class="hidden-xs">{{item.measurementUnit.label}}</td>
-    <td>
-      <input type="number" size="1" min=0 max="10000"
-             ng-model="item.quantity"
-             ng-change="itemsModel.setQuantity($index)"
-             ng-disabled="itemsModel.isReadOnly || item.isForcedPrice"
-             ng-class="item.errors.quantity?'bg-danger':null">
-    </td>
-    <td>
-      <input type="text" size="7" money min=0 ng-model="item.price"
-             ng-change="itemsModel.setPrice($index)"
-             ng-disabled="itemsModel.isReadOnly || item.category.isPriceIncrease"
-             ng-class="item.errors.price?'bg-danger':null">
-    </td>
-     <td>
-      <input type="checkbox"
-             ng-model="item.isFreeItem"
-             ng-change="itemsModel.setFreeItem($index)"
-             ng-disabled="itemsModel.isReadOnly"
+  <div class="hidden-xs">
+    <table class="table table-hover" ng-show="itemsModel.order.view.quote.items.length" style="width: 80%">
+      <thead>
+      <th style="width: 9%">קטגוריה</th>
+      <th style="width: 73%">מוצר</th>
+      <th style="width: 6%">יח'</th>
+      <th style="width: 2%">כמות</th>
+      <th style="width: 5%">מחיר</th>
+      <th style="width: 5%">בונוס</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
+          ng-class="item.isChanged?'bg-success':null">
+        <td>{{item.category.label}}</td>
+        <td>
+          <input type="text" size="{{item.isDescChanged ? 92 : 100}}" ng-model="item.productDescription"
+                 ng-change="itemsModel.setProductDescription($index)"
+                 ng-disabled="itemsModel.isReadOnly"
+                 ng-class="item.errors.productDescription?'bg-danger':null">
+          <button ng-show="item.isDescChanged"
+                  class="btn btn-default btn-sm bg-success"
+                  ng-click="itemsModel.resetDescChange($index)">מקור</button>
+        </td>
+        <td>{{item.measurementUnit.label}}</td>
+        <td>
+          <input type="number" size="1" min=0 max="10000"
+                 ng-model="item.quantity"
+                 ng-change="itemsModel.setQuantity($index)"
+                 ng-disabled="itemsModel.isReadOnly || item.isForcedPrice"
+                 ng-class="item.errors.quantity?'bg-danger':null">
+        </td>
+        <td>
+          <input type="text" size="7" money min=0 ng-model="item.price"
+                 ng-change="itemsModel.setPrice($index)"
+                 ng-disabled="itemsModel.isReadOnly || item.category.isPriceIncrease"
+                 ng-class="item.errors.price?'bg-danger':null">
+        </td>
+        <td>
+          <input type="checkbox"
+                 ng-model="item.isFreeItem"
+                 ng-change="itemsModel.setFreeItem($index)"
+                 ng-disabled="itemsModel.isReadOnly"
           >
-    </td>
-    <td ng-hide="item.isForcedPrice">
-      <button ng-click="itemsModel.editCatalogItem($index)"
-              ng-disabled="itemsModel.order.view.isChanged"
-              class="btn btn-default btn-sm"
-      >קטלוג</button>
-    </td>
-    <td ng-show="item.isForcedPrice">
-      <button ng-click="itemsModel.setQuantity($index)"
-              ng-disabled="itemsModel.isReadOnly"
-              class="btn btn-warning btn-sm"
-      >מחיר ב"מ</button> <!-- setQuantity causes price recalc -->
-    </td>
-    <td>
-      <button ng-click="itemsModel.deleteItem($index)"
-              ng-disabled="itemsModel.isReadOnly"
-              class="btn btn-warning btn-sm"
-      >מחק</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+        </td>
+        <td ng-hide="item.isForcedPrice">
+          <button ng-click="itemsModel.editCatalogItem($index)"
+                  ng-disabled="itemsModel.order.view.isChanged"
+                  class="btn btn-default btn-sm"
+          >קטלוג</button>
+        </td>
+        <td ng-show="item.isForcedPrice">
+          <button ng-click="itemsModel.setQuantity($index)"
+                  ng-disabled="itemsModel.isReadOnly"
+                  class="btn btn-warning btn-sm"
+          >מחיר ב"מ</button> <!-- setQuantity causes price recalc -->
+        </td>
+        <td>
+          <button ng-click="itemsModel.deleteItem($index)"
+                  ng-disabled="itemsModel.isReadOnly"
+                  class="btn btn-warning btn-sm"
+          >מחק</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="hidden-sm hidden-md hidden-lg hidden-xl" style="width: 99%">
+    <table class="table table-hover" ng-show="itemsModel.order.view.quote.items.length">
+      <thead>
+      <th style="width: 73%">מוצר</th>
+      <th style="width: 2%">כמות</th>
+      <th style="width: 5%">מחיר</th>
+      <th style="width: 5%">בונוס</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index">
+        <td>{{item.productDescription}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.price | currency}}</td>
+         <td>
+          <input type="checkbox"
+                 ng-model="item.isFreeItem"
+                 ng-disabled="true"
+          >
+        </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

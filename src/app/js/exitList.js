@@ -25,7 +25,7 @@ angular.module('myApp')
       var categoryItems = that.currentQuote.items.filter(function (item) {
         return (item.category.tId === cat.tId);
       });
-      return categoryItems.length;
+      return (categoryItems.length > 0) && !cat.isTransportation && !cat.isPriceIncrease;
     });
 
     this.filteredCategories.forEach(function(category) {
