@@ -46,6 +46,7 @@ angular.module('myApp')
       var bonus = 0;
       var transportationBonus = 0;
       var transportation = 0;
+      var isHeavyweight = false;
       var isOldFreeItems;
       var priceIncreaseItem;
       quote.items.forEach(function(thisItem) {
@@ -65,6 +66,9 @@ angular.module('myApp')
             } else {
               bonus -= thisItem.price;
             }
+          }
+          if (thisItem.category.isHeavyweight) {
+            isHeavyweight = true;
           }
         } else {
           priceIncreaseItem = thisItem;
@@ -87,6 +91,7 @@ angular.module('myApp')
       quote.transportationBonus = transportationBonus;
       quote.discount = -((subTotal+bonus+transportationBonus) * quote.discountRate / 100);
       quote.credits = quote.bonusValue + quote.transportationBonus + quote.discount;
+      quote.isHeavyweight = isHeavyweight;
 
       this.calcTotal(quote, isBusinessEvent, vatRate);
     };
@@ -334,6 +339,7 @@ angular.module('myApp')
         'balance': currentQuote.balance,
         'transportationInclVat': currentQuote.transportationInclVat,
         'discountRate': currentQuote.discountRate,
+        'isHeavyweight': currentQuote.isHeavyweight,
         'activityDate': order.activities.length?order.activities[0].date:undefined,
         'activityText': order.activities.length?order.activities[0].text:undefined
       }

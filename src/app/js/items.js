@@ -117,6 +117,7 @@ angular.module('myApp')
         label: c.label,
         isTransportation: c.isTransportation,
         isPriceIncrease: c.isPriceIncrease,
+        isHeavyweight: c.isHeavyweight,
         order: c.order
       };
       thisItem.catalogId = catalogEntry.id;

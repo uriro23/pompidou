@@ -665,21 +665,21 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-              var isForced = false;
-              order.attributes.quotes.forEach(function (quote) {
-                quote.items.forEach(function (item) {
-                  itemCnt++;
-                  if (Math.round(item.priceInclVat)
-                    !== Math.round(item.catalogPrice / item.catalogQuantity * item.quantity)) {
-                    forcedCnt++;
-                    isForced = true;
-                    item.isForcedPrice = true;
-                    }
-                });
+            var isForced = false;
+            order.attributes.quotes.forEach(function (quote) {
+              quote.items.forEach(function (item) {
+                itemCnt++;
+                if (Math.round(item.priceInclVat)
+                  !== Math.round(item.catalogPrice / item.catalogQuantity * item.quantity)) {
+                  forcedCnt++;
+                  isForced = true;
+                  item.isForcedPrice = true;
+                }
               });
-              if (isForced) {
-                forcedOrders.push(order);
-              }
+            });
+            if (isForced) {
+              forcedOrders.push(order);
+            }
           });
           console.log('found '+forcedCnt+' forced items out of total items '+itemCnt+' in '+forcedOrders.length+' orders');
           console.log('writing '+forcedOrders.length+' forced price orders');
@@ -690,5 +690,43 @@ angular.module('myApp')
         });
     };
 
+    this.handleHeavyweight = function() {
+      var that = this;
+      var hItemCnt = 0;
+      var hOrderCnt = 0;
+      var itemCnt = 0;
+      var hOrders = [];
+      console.log('starting');
+      api.queryAllOrders()
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+            order.attributes.quotes.forEach(function (quote) {
+              quote.isHeavyweight = false;
+              quote.items.forEach(function (item) {
+                itemCnt++;
+                item.category.isHeavyweight = categories.filter(function(cat) {
+                  return cat.tId === item.category.tId;
+                })[0].isHeavyweight;
+                if (item.category.isHeavyweight) {
+                  quote.isHeavyweight = true;
+                  hItemCnt++;
+                }
+              });
+            });
+            order.attributes.header.isHeavyweight = order.attributes.quotes[order.attributes.activeQuote].isHeavyweight;
+            if (order.attributes.header.isHeavyweight) {
+              hOrderCnt++;
+              hOrders.push(order);
+            }
+           });
+          console.log('found '+hItemCnt+' heavyweight items out of total '+itemCnt+' items in '+hOrderCnt+' orders');
+          api.saveObjects(hOrders)
+            .then(function() {
+              console.log('done');
+            });
         });
+    };
+
+  });
 

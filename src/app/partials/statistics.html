@@ -25,6 +25,10 @@
       <td>
         <button class="btn btn-default" ng-click="statisticsModel.loadOrders()">טען</button>
       </td>
+      <td>
+        <label>ליצוא</label>
+        <input type="checkbox" ng-model="statisticsModel.isForExport">
+      </td>
     </tr>
     <tr>
       <td><label>סינון:</label></td>
@@ -52,11 +56,26 @@
                ng-model="statisticsModel.toParticipants"
                ng-change="statisticsModel.filterOrders()">
       </td>
+      <td><label>אירועים:</label></td>
       <td>
-        <label>ליצוא</label>
-        <input type="checkbox" ng-model="statisticsModel.isForExport">
+        <label>כולם</label>
+        <input type="radio"
+               ng-model="statisticsModel.filterByWeight" value="all"
+               ng-change="statisticsModel.filterOrders()">
       </td>
-    </tr>
+      <td>
+        <label>קלים</label>
+        <input type="radio"
+               ng-model="statisticsModel.filterByWeight" value="light"
+               ng-change="statisticsModel.filterOrders()">
+      </td>
+      <td>
+        <label>כבדים</label>
+        <input type="radio"
+               ng-model="statisticsModel.filterByWeight" value="heavy"
+               ng-change="statisticsModel.filterOrders()">
+      </td>
+     </tr>
      </tbody>
   </table>
   <tabset>

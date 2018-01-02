@@ -19,6 +19,7 @@ angular.module('myApp')
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
     this.filterBy = 'eventDate';
+    this.filterByWeight = 'all';
     var fetchedOrders = [];
     var filteredOrders = [];
     var dateBias;
@@ -95,6 +96,16 @@ angular.module('myApp')
           }
           if (that.toParticipants) {
             if (currentOrder.noOfParticipants > that.toParticipants) {
+              return false;
+            }
+          }
+          if (that.filterByWeight === 'light') {
+            if (currentOrder.header.isHeavyweight) {
+              return false;
+            }
+          }
+          if (that.filterByWeight === 'heavy') {
+            if (!currentOrder.header.isHeavyweight) {
               return false;
             }
           }
@@ -237,7 +248,6 @@ angular.module('myApp')
           return s[0].label;
         }
       });
-      console.log(this.menuTypeStats);
    };
 
     this.setupLineOrders = function(lineArray,line) {
