@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, today, referralSources, customers) {
+  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, today, menuTypes, referralSources, customers) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -24,6 +24,7 @@ angular.module('myApp')
     var dateBias;
     var participantsFactor = 10;
     var totalFactor = 1000;
+    var totalPerParticipantFactor = 20;
 
     var fieldList = [
       'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
@@ -47,9 +48,17 @@ angular.module('myApp')
       this.totalTot = {};
       this.totalAvg = {};
 
+      this.totalPerParticipantStats = []; //  clear existing display
+      this.totalPerParticipantTot = {};
+      this.totalPerParticipantAvg = {};
+
       this.referralSourceStats = []; //  clear existing display
       this.referralSourceTot = {};
       this.referralSourceAvg = {};
+
+      this.menuTypeStats = []; //  clear existing display
+      this.menuTypeTot = {};
+      this.menuTypeAvg = {};
 
       fetchedOrders = filteredOrders = [];
 
@@ -196,6 +205,27 @@ angular.module('myApp')
       },function (ind) {
         return (ind * totalFactor + 1) + '-' + ((ind+1) * totalFactor);
       });
+      // segmentation by total per participant
+      doSegmentation(this.totalPerParticipantStats,
+                     this.totalPerParticipantTot,
+                     this.totalPerParticipantAvg,
+                     function (ord) {
+        return  Math.floor(((ord.attributes.header.total / (1+ord.attributes.vatRate)) /
+          ord.attributes.noOfParticipants + 1) / totalPerParticipantFactor);
+      },function (ind) {
+        return (ind * totalPerParticipantFactor + 1) + '-' + ((ind+1) * totalPerParticipantFactor);
+      });
+      // segmentation by menuType
+      doSegmentation(this.menuTypeStats, this.menuTypeTot, this.menuTypeAvg, function (ord) {
+        return ord.attributes.header.menuType.tId;
+      },function (ind) {
+        var s = menuTypes.filter(function(r) {
+          return r.tId === ind;
+        });
+        if (s.length) {
+          return s[0].label;
+        }
+      });
       // segmentation by referralSource
       doSegmentation(this.referralSourceStats, this.referralSourceTot, this.referralSourceAvg, function (ord) {
         return ord.attributes.referralSource;
@@ -207,7 +237,8 @@ angular.module('myApp')
           return s[0].label;
         }
       });
-    };
+      console.log(this.menuTypeStats);
+   };
 
     this.setupLineOrders = function(lineArray,line) {
       this.ordersToShow = line.orders;

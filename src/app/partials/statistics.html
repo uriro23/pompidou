@@ -260,6 +260,129 @@
       </table>
     </tab>
     </tab>
+    <tab heading="מחיר לאורח" deselect="statisticsModel.deselectTab(statisticsModel.totalPerParticipantStats)">
+      <table class="table table-hover" style="width: 80%">
+        <thead ng-show="statisticsModel.totalPerParticipantStats.length">
+        <th><label>סכום</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.totalPerParticipantStats track by line.label"
+            ng-class="line.isBold?'bg-warning':null">
+          <td style="cursor: pointer"
+              ng-click="statisticsModel.setupLineOrders(statisticsModel.totalPerParticipantStats,line)">{{line.label}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.totalPerParticipantStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.totalPerParticipantTot.potCount}}</td>
+          <td>{{statisticsModel.totalPerParticipantTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.totalPerParticipantTot.actCount}}</td>
+          <td>{{(statisticsModel.totalPerParticipantTot.actCount / statisticsModel.totalPerParticipantTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.totalPerParticipantTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>{{statisticsModel.totalPerParticipantTot.actTransportation | currency}}</td>
+        </tr>
+        <tr ng-show="statisticsModel.totalPerParticipantStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.totalPerParticipantAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.totalPerParticipantAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.totalPerParticipantAvg.potTotal / statisticsModel.totalPerParticipantAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.totalPerParticipantAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.totalPerParticipantAvg.actCount / statisticsModel.totalPerParticipantAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.totalPerParticipantAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.totalPerParticipantAvg.actTotal / statisticsModel.totalPerParticipantAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.totalPerParticipantAvg.actParticipants / statisticsModel.totalPerParticipantAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.totalPerParticipantTot.actTotal / statisticsModel.totalPerParticipantTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.totalPerParticipantTot.actTransportation | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
+    </tab>
+    <tab heading="סוג תפריט" deselect="statisticsModel.deselectTab(statisticsModel.menuTypeStats)">
+      <table class="table table-hover" style="width: 80%">
+        <thead ng-show="statisticsModel.menuTypeStats.length">
+        <th><label>הפניה</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.menuTypeStats track by line.label"
+            ng-class="line.isBold?'bg-warning':null">
+          <td style="cursor: pointer"
+              ng-click="statisticsModel.setupLineOrders(statisticsModel.menuTypeStats,line)">{{line.label}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.menuTypeStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.menuTypeTot.potCount}}</td>
+          <td>{{statisticsModel.menuTypeTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.menuTypeTot.actCount}}</td>
+          <td>{{(statisticsModel.menuTypeTot.actCount / statisticsModel.menuTypeTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.menuTypeTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>{{statisticsModel.menuTypeTot.actTransportation | currency}}</td>
+        </tr>
+        <tr ng-show="statisticsModel.menuTypeStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.menuTypeAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.menuTypeAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.menuTypeAvg.potTotal / statisticsModel.menuTypeAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.menuTypeAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.menuTypeAvg.actCount / statisticsModel.menuTypeAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.menuTypeAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.menuTypeAvg.actTotal / statisticsModel.menuTypeAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.menuTypeAvg.actParticipants / statisticsModel.menuTypeAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.menuTypeTot.actTotal / statisticsModel.menuTypeTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.menuTypeTot.actTransportation | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
     <tab heading="הפניה" deselect="statisticsModel.deselectTab(statisticsModel.referralSourceStats)">
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.referralSourceStats.length">

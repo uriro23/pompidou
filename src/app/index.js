@@ -463,6 +463,9 @@ config(function($stateProvider, $urlRouterProvider) {
     templateUrl: 'app/partials/statistics.html',
     controller: 'StatisticsCtrl as statisticsModel',
     resolve: {
+      menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+        return menuTypesPromise;
+      }],
       referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
         return referralSourcesPromise;
       }],
