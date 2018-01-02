@@ -40,6 +40,8 @@
     <input type="radio" ng-model="sendMailModel.attachmentType" value="link">
     <span>PDF</span>
     <input type="radio" ng-model="sendMailModel.attachmentType" value="pdf">
+    <span>גרסה חדשה</span>
+    <input type="checkbox" ng-model="sendMailModel.isNewPdfVersion" ng-change="sendMailModel.setPdfVersion()">
   </div>
   <p></p>
   <table class="table table-hover">

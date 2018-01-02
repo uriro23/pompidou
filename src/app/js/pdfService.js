@@ -23,7 +23,35 @@ angular.module('myApp')
       return str.join("&");
     };
 
-    this.getPdf = function (sourceUrl) {
+    this.getPdfNew = function (sourceUrl) {
+      var q = $q.defer();
+      var serviceUrl = 'https://v2.convertapi.com/html/to/pdf?Secret='+secrets.prod.web2pdfSecret;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', serviceUrl, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function () {
+        if (this.status === 200) {
+          var respStr = String.fromCharCode.apply(null, new Uint8Array(this.response));
+          console.log(JSON.parse(respStr));
+          var pdf = JSON.parse(respStr).Files[0].FileData;
+          q.resolve(pdf);
+        } else {
+          q.reject(this);
+        }
+      };
+      var formData = new FormData();
+      formData.append('File', sourceUrl);
+      formData.append('ConversionDelay', '2');
+      formData.append('Scripts', 'true');
+      formData.append('MarginBottom', '30');
+      formData.append('CssMediaType', 'print');
+      formData.append('Zoom', '1.5');
+      xhr.send(formData);
+      return q.promise;
+    };
+
+
+    this.getPdfOld = function (sourceUrl) {
       var q = $q.defer();
       var serviceUrl = 'https://do.convertapi.com/Web2Pdf';
       var xhr = new XMLHttpRequest();
@@ -40,11 +68,23 @@ angular.module('myApp')
       };
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       xhr.send(transformRequest({
-        ApiKey: secrets.prod.web2pdfKey,
+        ApiKey: secrets.prod.web2pdfKeyOld,
         CUrl: sourceUrl,
         MarginBottom: 30
       }));
       return q.promise;
+    };
+
+    this.setPdfVersion = function(bool) {
+      this.isNewPdfVersion = bool;
+    };
+
+    this.getPdf = function(sourceUrl) {
+      if (this.isNewPdfVersion) {
+        return this.getPdfNew(sourceUrl);
+      } else {
+        return this.getPdfOld(sourceUrl);
+      }
     };
 
 

@@ -146,6 +146,10 @@ angular.module('myApp')
       removePlugins: 'elementspath'
     };
 
+    this.setPdfVersion = function() {
+      pdfService.setPdfVersion(this.isNewPdfVersion);
+    };
+
     this.doSend = function () {
       var that = this;
       this.mail.attachedBids = [];
@@ -183,7 +187,6 @@ angular.module('myApp')
             msgText += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
           }
           msgText += '<br/>';
-          console.log(msgText);
         });
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
@@ -196,7 +199,6 @@ angular.module('myApp')
         .then(function(pdfResult) {
           that.mail.attachments = pdfResult;
           that.mail.text = '<div dir="rtl">' + msgText + '</div>';
-          console.log(that.mail.text);
           gmailClientLowLevel.sendEmail(that.mail)
             .then(function () {
               var newMail = api.initMail();
@@ -240,7 +242,11 @@ angular.module('myApp')
 
     this.cancel = function () {
       $modalInstance.dismiss();
-    }
+    };
+
+    this.isNewPdfVersion = false;
+    this.setPdfVersion();
+
   })
   .controller('ShowMailCtrl', function ($modalInstance, mail) {
     this.mail = mail;
