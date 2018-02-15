@@ -25,31 +25,26 @@ angular.module('myApp')
 
     this.getPdfNew = function (sourceUrl) {
       var q = $q.defer();
-      var serviceUrl = 'https://v2.convertapi.com/html/to/pdf?Secret='+secrets.prod.web2pdfSecret;
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', serviceUrl, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function () {
-        if (this.status === 200) {
-          var respStr = String.fromCharCode.apply(null, new Uint8Array(this.response));
-          console.log(JSON.parse(respStr));
-          var pdf = JSON.parse(respStr).Files[0].FileData;
-          q.resolve(pdf);
-        } else {
-          q.reject(this);
-        }
-      };
+      var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret='+secrets.prod.web2pdfSecret;
       var formData = new FormData();
-      formData.append('File', sourceUrl);
-      formData.append('ConversionDelay', '2');
-      formData.append('Scripts', 'true');
+      formData.append('Url', sourceUrl);
       formData.append('MarginBottom', '30');
-      formData.append('CssMediaType', 'print');
-      formData.append('Zoom', '1.5');
-      xhr.send(formData);
+
+      $.ajax({
+        url: serviceUrl,
+        data: formData,
+        processData: false,
+        contentType: false,
+        method: 'POST',
+        success: function(data) {
+          q.resolve(data.Files[0].FileData);
+        },
+        error: function () {
+          q.reject();
+        }
+      });
       return q.promise;
     };
-
 
     this.getPdfOld = function (sourceUrl) {
       var q = $q.defer();
