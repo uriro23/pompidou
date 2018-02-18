@@ -124,14 +124,28 @@ angular.module('myApp')
 
 
     function countOrders (customers) {
-      var fieldList = ['customer'];
-      api.queryAllOrders(fieldList)
+      var fieldList = ['customer','eventDate','orderStatus'];
+      // query all orders since angular app started
+      api.queryOrdersByRange('eventDate', new Date(2015,5,1),new Date(2099,12,31),fieldList)
         .then(function(orders) {
           customers.forEach(function (cust) {
-            var t = orders.filter(function (ord) {
+            var custOrders = orders.filter(function (ord) {
               return (ord.attributes.customer === cust.id);
             });
-            cust.orderCount = t.length;
+            cust.successOrderCount = 0;
+            cust.failureOrderCount = 0;
+            cust.lastDate = new Date(2000,0,1);
+            custOrders.forEach(function(ord) {
+              if (ord.attributes.eventDate > cust.lastDate) {
+                cust.lastDate = ord.attributes.eventDate;
+              }
+              if (ord.attributes.orderStatus === 1 || ord.attributes.orderStatus === 6) {
+                cust.failureOrderCount++;
+              } else {
+                cust.successOrderCount++;
+              }
+            });
+            cust.orderCount = cust.successOrderCount + cust.failureOrderCount;
           });
         });
     }
@@ -268,6 +282,8 @@ angular.module('myApp')
       return c;
     });
     var that = this;
+
+    this.firstDate = new Date(2005,0,1); // earliest date on system
 
    customerService.sortList(this.customers);
    this.currentCustomer = {};

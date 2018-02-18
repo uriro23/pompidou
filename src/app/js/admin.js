@@ -334,9 +334,10 @@ angular.module('myApp')
     // customers tab
     this.loadCustomers = function() {
       var that = this;
+      var fields = ['customer','eventDate','orderStatus'];
       api.queryCustomers()
         .then(function(customers) {
-          api.queryOrdersByRange('eventDate', new Date(2015,5,1),new Date(2099,12,31))
+          api.queryOrdersByRange('eventDate', new Date(2015,5,1),new Date(2099,12,31),fields)
             .then(function(orders) {
               customers.forEach(function(customer) {
                 customer.view = {

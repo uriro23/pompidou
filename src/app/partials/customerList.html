@@ -52,10 +52,11 @@
     <th style="width:8%">        טל' בית    </th>
     <th style="width:8%">        טל' עבודה    </th>
     <th style="width:14%">        דוא"ל    </th>
-    <th style="width:13%">        כתובת    </th>
-    <th style="width:2%">אירועים</th>
+    <th style="width:4%">        כתובת    </th>
+    <th style="width:1%">הצ'</th>
+    <th style="width:1%">כש'</th>
+    <th style="width:6%">אחרון</th>
     <th style="width:3%"></th>
-    <th style="width:19%"></th>
     </thead>
     <tbody>
     <tr ng-class="customerListModel.isCustomerChanged?'bg-success':null">
@@ -84,18 +85,16 @@
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=20 ng-model="customerListModel.currentCustomer.attributes.address"
+        <input type="text" size=10 ng-model="customerListModel.currentCustomer.attributes.address"
                ng-change="customerListModel.customerChanged()">
       </td>
-      <td></td>
-      <td></td>
-      <td style="text-align: left">
+       <!--<td style="text-align: left">
         <span>מוצגים</span>
         <span>{{customerListModel.filteredCustomers.length}}</span>
         <span>מתוך</span>
         <span>{{customerListModel.customers.length}}</span>
         <span>לקוחות</span>
-      </td>
+      </td> -->
     </tr>
     <tr ng-repeat="customer in customerListModel.filteredCustomers track by customer.id"
         ng-class="customer.isSelected?'bg-success':null">
@@ -122,7 +121,10 @@
         <a href="mailto:{{customer.attributes.email}}">{{customer.attributes.email}}</a>
       </td>
       <td ng-click="customerListModel.selectLine($index)">{{customer.attributes.address}}</td>
-      <td>{{customer.orderCount}}</td>
+      <td>{{customer.successOrderCount}}</td>
+      <td>{{customer.failureOrderCount}}</td>
+      <td ng-show="customer.lastDate>customerListModel.firstDate">{{customer.lastDate | date:'dd/MM/yyyy'}}</td>
+      <td ng-hide="customer.lastDate>customerListModel.firstDate"></td>
       <td ng-show="customer.isUniqueMatch && !customer.isSelected && customer.orderCount > 0">
         <button class="btn btn-small btn-warning"
                 ng-click="customerListModel.mergeCustomer($index)">
