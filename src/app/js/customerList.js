@@ -58,6 +58,14 @@ angular.module('myApp')
       this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
     };
 
+    this.mobilePhoneChanged = function () {
+      var mobile = this.currentCustomer.attributes.mobilePhone;
+      var mobileRegExp = RegExp('^05[0-9]{8}$');
+      this.currentCustomer.isMobilePhoneError = !mobileRegExp.test(mobile);
+      this.currentCustomer.isError = this.currentCustomer.isMobilePhoneError;
+      this.customerChanged();
+    };
+
     this.clearChanges = function () {
       if (this.state === 'new') {
         this.newCustomer();

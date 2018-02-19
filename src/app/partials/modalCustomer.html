@@ -19,13 +19,15 @@
     </button>
     <button class="btn btn-success btn-sm"
             ng-click="modalCustomerModel.updateCustomer()"
-            ng-show="modalCustomerModel.state==='selected' && modalCustomerModel.isCustomerChanged">
+            ng-show="modalCustomerModel.state==='selected' && modalCustomerModel.isCustomerChanged"
+            ng-disabled="modalCustomerModel.currentCustomer.isError">
       עדכן
     </button>
     <button class="btn btn-success btn-sm"
             ng-click="modalCustomerModel.updateCustomer()"
-            ng-show="modalCustomerModel.state==='new' && modalCustomerModel.isCustomerChanged">
-      צור
+            ng-show="modalCustomerModel.state==='new' && modalCustomerModel.isCustomerChanged"
+            ng-disabled="modalCustomerModel.currentCustomer.isError">
+    צור
     </button>
   </div>
   <table class="table table-hover" style="width:100%">
@@ -50,7 +52,8 @@
       </td>
       <td>
         <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.mobilePhone"
-               ng-change="modalCustomerModel.customerChanged()">
+               ng-class="modalCustomerModel.currentCustomer.isMobilePhoneError?'bg-danger':null"
+               ng-change="modalCustomerModel.mobilePhoneChanged()">
        </td>
       <td>
         <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.homePhone"

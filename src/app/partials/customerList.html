@@ -2,20 +2,22 @@
   ניהול לקוחות
 </h2>
   <div>
-    <button class="btn btn-default"
+    <button class="btn btn-warning"
             ng-show="customerListModel.isCustomerChanged"
             ng-click="customerListModel.clearChanges()">
 בטל עדכון
     </button>
-    <button class="btn btn-default"
+    <button class="btn btn-success"
             ng-click="customerListModel.updateCustomer()"
-            ng-show="customerListModel.state==='selected' && customerListModel.isCustomerChanged">
+            ng-show="customerListModel.state==='selected' && customerListModel.isCustomerChanged"
+            ng-disabled="customerListModel.currentCustomer.isError">
       עדכן לקוח
     </button>
-    <button class="btn btn-default"
+    <button class="btn btn-success"
             ng-click="customerListModel.updateCustomer()"
-            ng-show="customerListModel.state==='new' && customerListModel.isCustomerChanged">
-      צור לקוח
+            ng-show="customerListModel.state==='new' && customerListModel.isCustomerChanged"
+            ng-disabled="customerListModel.currentCustomer.isError">
+    צור לקוח
     </button>
     <button class="btn btn-default"
             ng-show="customerListModel.state==='selected' &&
@@ -36,6 +38,14 @@
             ng-click="customerListModel.createOrder()">
       אירוע חדש
     </button>
+    <span>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+     <span>מוצגים</span>
+     <span>{{customerListModel.filteredCustomers.length}}</span>
+     <span>מתוך</span>
+     <span>{{customerListModel.customers.length}}</span>
+     <span>לקוחות</span>
+   </span>
 </div>
 <div ng-show="customerListModel.isShowOrders">
   <h3>
@@ -70,7 +80,8 @@
       </td>
       <td>
         <input type="text" size=8 ng-model="customerListModel.currentCustomer.attributes.mobilePhone"
-               ng-change="customerListModel.customerChanged()">
+               ng-class="customerListModel.currentCustomer.isMobilePhoneError?'bg-danger':null"
+               ng-change="customerListModel.mobilePhoneChanged()">
       </td>
       <td>
         <input type="text" size=8 ng-model="customerListModel.currentCustomer.attributes.homePhone"
@@ -88,13 +99,6 @@
         <input type="text" size=10 ng-model="customerListModel.currentCustomer.attributes.address"
                ng-change="customerListModel.customerChanged()">
       </td>
-       <!--<td style="text-align: left">
-        <span>מוצגים</span>
-        <span>{{customerListModel.filteredCustomers.length}}</span>
-        <span>מתוך</span>
-        <span>{{customerListModel.customers.length}}</span>
-        <span>לקוחות</span>
-      </td> -->
     </tr>
     <tr ng-repeat="customer in customerListModel.filteredCustomers track by customer.id"
         ng-class="customer.isSelected?'bg-success':null">
