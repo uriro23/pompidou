@@ -44,7 +44,8 @@
     <tr ng-class="modalCustomerModel.isCustomerChanged?'bg-success':null">
       <td>
         <input type="text" size=3 ng-model="modalCustomerModel.currentCustomer.attributes.firstName"
-               ng-change="modalCustomerModel.customerChanged()">
+               ng-class="modalCustomerModel.currentCustomer.isFirstNameError?'bg-danger':null"
+               ng-change="modalCustomerModel.firstNameChanged()">
       </td>
      <td>
         <input type="text" size=4 ng-model="modalCustomerModel.currentCustomer.attributes.lastName"

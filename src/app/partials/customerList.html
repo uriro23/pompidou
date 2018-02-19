@@ -72,7 +72,8 @@
     <tr ng-class="customerListModel.isCustomerChanged?'bg-success':null">
       <td>
         <input type="text" size=15 ng-model="customerListModel.currentCustomer.attributes.firstName"
-               ng-change="customerListModel.customerChanged()">
+               ng-class="customerListModel.currentCustomer.isFirstNameError?'bg-danger':null"
+               ng-change="customerListModel.firstNameChanged()">
       </td>
       <td>
         <input type="text" size=15 ng-model="customerListModel.currentCustomer.attributes.lastName"

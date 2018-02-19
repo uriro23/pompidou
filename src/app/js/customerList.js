@@ -54,15 +54,20 @@ angular.module('myApp')
     };
 
     this.customerChanged = function () {
+      this.currentCustomer.isError = this.currentCustomer.isFirstNameError || this.currentCustomer.isMobilePhoneError;
       this.isCustomerChanged = true;
       this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
+    };
+
+    this.firstNameChanged = function () {
+      this.currentCustomer.isFirstNameError = this.currentCustomer.attributes.firstName.length === 0;
+      this.customerChanged();
     };
 
     this.mobilePhoneChanged = function () {
       var mobile = this.currentCustomer.attributes.mobilePhone;
       var mobileRegExp = RegExp('^05[0-9]{8}$');
-      this.currentCustomer.isMobilePhoneError = !mobileRegExp.test(mobile);
-      this.currentCustomer.isError = this.currentCustomer.isMobilePhoneError;
+      this.currentCustomer.isMobilePhoneError = mobile.length>0 && !mobileRegExp.test(mobile);
       this.customerChanged();
     };
 
@@ -128,6 +133,7 @@ angular.module('myApp')
       this.state = 'new';
       this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
       this.isCustomerChanged = false;
+      this.currentCustomer.isFirstNameError = true;
     };
 
 
