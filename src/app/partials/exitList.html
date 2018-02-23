@@ -142,36 +142,47 @@
 		  </tbody>
 		</table>
 
+  <p style="height: 20px;"></p>
 
 
-		<div ng-repeat="category in exitListModel.filteredCategories">
-		  <label>{{category.label}}</label>
-		  <table style="width:60%">
-		    <tbody>
-		    <tr ng-repeat="item in category.items">
-		      <td style="width:85%">
-            &#128440;
-		        {{item.productName}}
-            <div ng-show="item.isDescChanged">
-              &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
-              {{item.productDescription}}
-            </div>
-		        {{exitListModel.setupItemExitList(item.catalogId)}}
-		        <table>
-		          <tr ng-repeat="listItem in exitListModel.exitList">
-		            <td>
-		              &nbsp;&nbsp;&#128410;
-		              {{listItem.item}}
-		            </td>
-		          </tr>
-		        </table>
-		      </td>
-		      <td style="vertical-align: top; width: 5%">{{item.quantity}}</td>
-		      <td style="vertical-align: top; width: 10%">{{item.measurementUnit.label}}</td>
-		    </tr>
-		    </tbody>
-		  </table>
-		</div>
+
+  <table style="width: 90%">
+    <th style="width: 50%"></th>
+    <th style="width: 25%"></th>
+    <th style="width: 25%"></th>
+    <tr ng-repeat="line in exitListModel.vec">
+      <td ng-show="line.level===0">
+        <label>{{line.data.label}}</label></td>
+      <td ng-show="line.level===1">
+        &nbsp;&#128440;
+        {{line.data.productName}}
+        <div ng-show="line.data.isDescChanged">
+          &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
+          {{line.data.productDescription}}
+        </div>
+      </td>
+      <td ng-show="line.level===2">
+        &nbsp;&nbsp;&#128410;
+        {{line.data.item}}</td>
+      <td ng-show="line.level===0"></td>
+      <td ng-show="line.level===1">
+        {{line.data.quantity}}&nbsp;{{line.data.measurementUnit.label}}
+      </td>
+      <td ng-show="line.level===2"></td>
+      <td ng-show="line.level===0">
+        <span ng-show="line.data.measurementUnit">
+        <input type="text" size="5"> &nbsp; {{line.data.measurementUnitLabel}}
+      </td>
+      <td ng-show="line.level===1">
+        <span ng-show="line.data.packageMeasurementUnit.tId">
+        <input type="text" size="5"> &nbsp; {{line.data.packageMeasurementUnit.label}}
+      </td>
+      <td ng-show="line.level===2">
+        <span ng-show="line.data.measurementUnit.tId">
+        <input type="text" size="5"> &nbsp; {{line.data.measurementUnit.label}}
+      </td>
+    </tr>
+  </table>
 
 
 

@@ -139,6 +139,9 @@ angular.module('myApp')
           itm.view.measurementUnit = measurementUnits.filter(function(mes) {
             return mes.tId===itm.attributes.measurementUnit;
           })[0];
+          itm.view.packageMeasurementUnit = measurementUnits.filter(function(mes) {
+            return mes.tId===itm.attributes.packageMeasurementUnit;
+          })[0];
           itm.isError = true;  // has to specify quantity
           return itm;
         }).sort(function(a,b) {
@@ -200,6 +203,9 @@ angular.module('myApp')
            comp.view.measurementUnit = measurementUnits.filter(function(mes) {
              return mes.tId===comp.attributes.measurementUnit;
            })[0];
+           comp.view.packageMeasurementUnit = measurementUnits.filter(function(mes) {
+             return mes.tId===comp.attributes.packageMeasurementUnit;
+           })[0];
            comp.isError = false;
            var ourDomain = model.compDomains.filter(function(d) {
              return d.id===comp.attributes.domain;
@@ -235,6 +241,9 @@ angular.module('myApp')
             })[0];
             usage.measurementUnit = measurementUnits.filter(function(mu) {
               return mu.tId === usage.attributes.measurementUnit;
+            })[0];
+            usage.packageMeasurementUnit = measurementUnits.filter(function(mu) {
+              return mu.tId === usage.attributes.packageMeasurementUnit;
             })[0];
           });
         });
@@ -279,6 +288,7 @@ angular.module('myApp')
        model.item.view.maxTimeUnit = lov.timeUnits[0];
      }
      model.item.attributes.measurementUnit = model.item.view.measurementUnit.tId;
+     model.item.attributes.packageMeasurementUnit = model.item.view.packageMeasurementUnit.tId;
      model.item.attributes.minTimeUnit = model.item.view.minTimeUnit.id;
      model.item.attributes.maxTimeUnit = model.item.view.maxTimeUnit.id;
      model.item.attributes.priceQuantity = Number(model.item.attributes.priceQuantity);
@@ -368,7 +378,10 @@ angular.module('myApp')
           model.item.errors.priceQuantity = true;
           model.item.errors.price = true;
         }
-        model.item.view.measurementUnit = measurementUnits[0];
+        model.item.view.measurementUnit = measurementUnits.filter(function(mu) {
+          return mu.isDefault;
+        })[0];
+        model.item.view.packageMeasurementUnit = measurementUnits[0];
         model.item.view.minTimeUnit = lov.timeUnits[0];
         model.item.view.maxTimeUnit = lov.timeUnits[0];
         model.item.isCopyToShortDesc = true;
@@ -378,6 +391,9 @@ angular.module('myApp')
         }) [0];
         model.item.view.measurementUnit = model.measurementUnits.filter(function (mes) {
           return mes.tId === model.item.attributes.measurementUnit;
+        }) [0];
+        model.item.view.packageMeasurementUnit = model.measurementUnits.filter(function (mes) {
+          return mes.tId === model.item.attributes.packageMeasurementUnit;
         }) [0];
         if (typeof model.item.attributes.minTimeUnit === 'number') {
           model.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
@@ -389,6 +405,11 @@ angular.module('myApp')
             return tu.id === model.item.attributes.maxTimeUnit;
           }) [0];
         }
+        model.item.attributes.exitList.forEach(function(ex) {
+          ex.measurementUnit = measurementUnits.filter(function(mu) {
+            return mu.tId === ex.measurementUnit.tId;
+          })[0];
+        });
       }
       model.backupItemAttr = angular.copy(model.item.attributes);
     };

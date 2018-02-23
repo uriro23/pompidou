@@ -28,6 +28,7 @@ angular.module('myApp')
       var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret='+secrets.prod.web2pdfSecret;
       var formData = new FormData();
       formData.append('Url', sourceUrl);
+      formData.append('ConversionDelay', '5');
       formData.append('MarginBottom', '30');
 
       $.ajax({

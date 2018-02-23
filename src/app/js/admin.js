@@ -729,5 +729,22 @@ angular.module('myApp')
         });
     };
 
+    this.handlePackageMeasurementUnit = function() {
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          console.log('read '+catalog.length+' catalog items');
+          catalog.forEach(function(cat) {
+            cat.attributes.packageMeasurementUnit = 0;
+            cat.attributes.exitList.forEach(function(ex) {
+              ex.measurementUnit = measurementUnits[0];
+            });
+          });
+          api.saveObjects(catalog)
+            .then(function() {
+              console.log('done');
+            });
+        })
+    };
+
   });
 

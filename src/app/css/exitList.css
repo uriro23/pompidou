@@ -4,4 +4,13 @@
 	margin:0 auto;
 	background-color:#ffffff;
 	padding:5%;
+  margin-bottom:40% ;
+}
+
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 2cm;
+  }
 }

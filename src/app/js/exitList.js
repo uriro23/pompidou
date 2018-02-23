@@ -28,8 +28,24 @@ angular.module('myApp')
       return (categoryItems.length > 0) && !cat.isTransportation && !cat.isPriceIncrease;
     });
 
+    this.vec = [];
+    var ind = -1;
+
     this.filteredCategories.forEach(function(category) {
-      var tmp = that.currentQuote.items.filter(function (item) {
+      if (category.measurementUnit) {
+        category.measurementUnitLabel = measurementUnits.filter(function(mu) {
+          return mu.tId === category.measurementUnit;
+        })[0].label;
+      }
+
+      ind++;
+      that.vec[ind] = {
+        ind: ind,
+        level: 0,
+        data: category
+      };
+
+      var catItems = that.currentQuote.items.filter(function (item) {
         return (item.category.tId === category.tId);
       }).sort(function(a,b) {
         if (a.productName > b.productName) {
@@ -45,25 +61,49 @@ angular.module('myApp')
         }
       });
       category.items = [];
-      if (tmp.length) {       // group items by productName, provided productDescription was not changed
+      if (catItems.length) {       // group items by productName, provided productDescription was not changed
         var j=0;
-        category.items[j] = tmp[0];
-        for (var i=1;i<tmp.length;i++) {
-          if (tmp[i].productName===category.items[j].productName &&
-            !tmp[i].isDescChanged && !category.items.isDescChanged) {
-             category.items[j].quantity += tmp[i].quantity;
+        category.items[j] = catItems[0];
+        for (var i=1;i<catItems.length;i++) {
+          if (catItems[i].productName===category.items[j].productName &&
+            !catItems[i].isDescChanged && !category.items.isDescChanged) {
+             category.items[j].quantity += catItems[i].quantity;
           } else {
-            category.items[++j] = tmp[i];
+            category.items[++j] = catItems[i];
           }
         }
       }
+
+      category.items.forEach(function(item) {
+        var catItem = that.catalog.filter(function (cat) {
+          return cat.id === item.catalogId;
+        })[0].attributes;
+        // load package measurement unit from catalog
+        item.packageMeasurementUnit = measurementUnits.filter(function(mu) {
+          return mu.tId === catItem.packageMeasurementUnit;
+        })[0];
+
+        ind++;
+        that.vec[ind] = {
+          ind: ind,
+          level: 1,
+          data: item
+      };
+
+        catItem.exitList.forEach(function(ex) {
+          ind++;
+          that.vec[ind] = {
+            ind: ind,
+            level: 2,
+            data: ex
+          };
+        });
+      });
     });
 
-    // filter items for current category
-    this.setupCategoryItems = function (catId) {
-     };
+    console.log(this.vec);
 
-    // fetch item's exit list
+     // fetch item's exit list
     this.setupItemExitList = function (catId) {
       var thisItem = this.catalog.filter(function (item) {
         return item.id === catId

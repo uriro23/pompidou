@@ -184,6 +184,12 @@
                  ng-change="catalogItemModel.setChanged(true)">
         </td>
         <td>
+          <select ng-model="listItem.measurementUnit"
+                  ng-change="catalogItemModel.setChanged(true)"
+                  ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits">
+          </select>
+        </td>
+        <td>
           <button class="btn btn-default" ng-click="catalogItemModel.delExitListItem($index)">מחק</button>
         </td>
       </tr>
@@ -278,6 +284,15 @@
                   ng-options="timeUnit.label for timeUnit in catalogItemModel.timeUnits"></select>
         </td>
     </tr>
-   </table>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>יח' מידה לאריזה</label></td>
+        <td>
+          <select ng-model="catalogItemModel.item.view.packageMeasurementUnit"
+                  ng-change="catalogItemModel.setChanged(true)"
+                  ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits">
+          </select>
+        </td>
+      </tr>
+    </table>
   </tab>
 </tabset>
