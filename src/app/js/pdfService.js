@@ -23,12 +23,12 @@ angular.module('myApp')
       return str.join("&");
     };
 
-    this.getPdfNew = function (sourceUrl) {
+    this.getPdf = function (sourceUrl) {
       var q = $q.defer();
       var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret='+secrets.prod.web2pdfSecret;
       var formData = new FormData();
       formData.append('Url', sourceUrl);
-      formData.append('ConversionDelay', '5');
+      formData.append('ConversionDelay', '3');
       formData.append('MarginBottom', '30');
 
       $.ajax({
@@ -71,20 +71,8 @@ angular.module('myApp')
       return q.promise;
     };
 
-    this.setPdfVersion = function(bool) {
-      this.isNewPdfVersion = bool;
-    };
 
-    this.getPdf = function(sourceUrl) {
-      if (this.isNewPdfVersion) {
-        return this.getPdfNew(sourceUrl);
-      } else {
-        return this.getPdfOld(sourceUrl);
-      }
-    };
-
-
-    this.getPdfCollection = function (sourceList, firstTime) {
+      this.getPdfCollection = function (sourceList, firstTime) {
       var that = this;
       if (firstTime) {
         this.pdfArray = [];

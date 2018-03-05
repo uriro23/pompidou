@@ -57,7 +57,7 @@ config(function($stateProvider, $urlRouterProvider) {
           });
         }],
         recentOpenings: ['api', function(api) {
-          var from = new Date(new Date().setDate(new Date().getDate()-7));
+          var from = new Date(new Date().setDate(new Date().getDate()-14));
           var to = new Date();
           return api.queryOrdersByRange('createdAt',from,to,['number','template'])
             .then(function(objs) {
@@ -65,9 +65,9 @@ config(function($stateProvider, $urlRouterProvider) {
             });
         }],
         recentClosings: ['api', function(api) {
-          var from = new Date(new Date().setDate(new Date().getDate()-7));
+          var from = new Date(new Date().setDate(new Date().getDate()-14));
           var to = new Date();
-          return api.queryOrdersByRange('closingDate',from,to,['number','template'])
+          return api.queryOrdersByRange('closingDate',from,to,['number','closingDate','template','header','vatRate'])
             .then(function(objs) {
               return objs;
             });

@@ -7,13 +7,25 @@
     </span>&nbsp;&nbsp;
   <button class="btn btn-default" ng-click="orderListModel.newOrder()">חדש</button>
 </h2>
-<div class="messageBox">
-  <span>בשבעת הימים האחרונים יצרת </span>
-  <span>{{orderListModel.recentOpenings}}</span>
-  <span> אירועים וסגרת </span>
-  <span>{{orderListModel.recentClosings}}</span>
-  <span> אירועים</span>
-</div>
+<table class="recents">
+  <tr ng-repeat="week in orderListModel.weeks">
+    <td>{{week.label}}</td>
+    <td>
+      <span>יצרת</span>
+      <span>{{week.openings}}</span>
+    </td>
+    <td>
+      <span>סגרת</span>
+      <span>{{week.closings}}</span>
+    </td>
+    <td>
+      <span>בסך</span>
+      <span>{{week.closingTotal | number}}</span>
+      <span>ש"ח</span>
+    </td>
+  </tr>
+</table>
+
 <table style="width: 99%">
   <tr>
     <td style="width: 65%">

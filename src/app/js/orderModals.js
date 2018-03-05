@@ -146,11 +146,7 @@ angular.module('myApp')
       removePlugins: 'elementspath'
     };
 
-    this.setPdfVersion = function() {
-      pdfService.setPdfVersion(this.isNewPdfVersion);
-    };
-
-    this.doSend = function () {
+     this.doSend = function () {
       var that = this;
       this.mail.attachedBids = [];
       var bidCnt = 0;
@@ -244,8 +240,6 @@ angular.module('myApp')
       $modalInstance.dismiss();
     };
 
-    this.isNewPdfVersion = false;
-    this.setPdfVersion();
 
   })
   .controller('ShowMailCtrl', function ($modalInstance, mail) {

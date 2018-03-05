@@ -17,15 +17,45 @@ angular.module('myApp')
 
     var fetchedOrders = [];
 
-    this.recentOpenings = recentOpenings.filter(function(order) {
-      return !order.attributes.template;
-    }).length;
-    this.recentClosings = recentClosings.filter(function(order) {
-      return !order.attributes.template;
-    }).length;
+    console.log(recentClosings);
 
+    this.weeks=[{
+      label: 'השבוע'
+    },{
+      label:  'בשבוע שעבר'
+    }];
+    this.weeks[0].start=today;
+    this.weeks[0].start.setDate(today.getDate()-today.getDay());
+    this.weeks[0].end = new Date();
+    this.weeks[1].start = new Date();
+    this.weeks[1].start.setTime(this.weeks[0].start.getTime()-7*24*60*60*1000);
+    this.weeks[1].end = this.weeks[0].start;
 
-//  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
+     console.log('this week:');
+     console.log(this.weeks[0].start);
+     console.log(this.weeks[0].end);
+     console.log('last week:');
+     console.log(this.weeks[1].start);
+     console.log(this.weeks[1].end);
+
+     this.weeks.forEach(function(week) {
+       week.openings = recentOpenings.filter(function(order) {
+         return !order.attributes.template && order.createdAt>=week.start && order.createdAt<week.end;
+       }).length;
+       week.closingVec = recentClosings.filter(function(order) {
+         return !order.attributes.template &&
+           order.attributes.closingDate>=week.start && order.attributes.closingDate<week.end;
+       });
+       week.closings = week.closingVec.length;
+       week.closingTotal = 0;
+       week.closingVec.forEach(function(cl) {
+         week.closingTotal += ((cl.attributes.header.total-cl.attributes.header.transportationInclVat) /
+           (1 + cl.attributes.vatRate));
+       });
+       week.closingTotal = Math.round(week.closingTotal);
+     });
+
+ //  filters fetchedOrders according to different criteria and sorts on ascending/descending eventDate depending on future events only flag
 //  function is called from ng-change of criteria controls, as well as from initialization code below
     this.filterOrders = function () {
       var that = this;
