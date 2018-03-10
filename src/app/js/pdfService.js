@@ -28,7 +28,7 @@ angular.module('myApp')
       var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret='+secrets.prod.web2pdfSecret;
       var formData = new FormData();
       formData.append('Url', sourceUrl);
-      formData.append('ConversionDelay', '3');
+      formData.append('ConversionDelay', '7');
       formData.append('MarginBottom', '30');
 
       $.ajax({
@@ -89,13 +89,20 @@ angular.module('myApp')
         console.log('converting ' + source.url);
         this.getPdf(source.url)
           .then(function (pdf) {
+            if (pdf.length < 1500) {  // too small PDF means timeout
+              return that.promise.reject('PDF timeout');
+            }
             that.pdfArray.push({
               type: 'application/pdf',
               name: source.fileName,
               base64: pdf
             });
             that.getPdfCollection(sourceList, false);
-           });
+           },
+            (function(err) {
+              that.promise.reject(err);
+            })
+          );
         return this.promise.promise;
       } else {
         this.promise.resolve(this.pdfArray);

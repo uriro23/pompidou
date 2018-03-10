@@ -231,7 +231,11 @@ angular.module('myApp')
               alert(errText);
             }
           );
-        });
+        },
+          function(error) {
+          console.log(error);
+          alert(error);
+          });
 
       $modalInstance.close();
     };

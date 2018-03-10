@@ -17,28 +17,20 @@ angular.module('myApp')
 
     var fetchedOrders = [];
 
-    console.log(recentClosings);
 
     this.weeks=[{
       label: 'השבוע'
     },{
       label:  'בשבוע שעבר'
     }];
-    this.weeks[0].start=today;
+    this.weeks[0].start=angular.copy(today);
     this.weeks[0].start.setDate(today.getDate()-today.getDay());
     this.weeks[0].end = new Date();
     this.weeks[1].start = new Date();
     this.weeks[1].start.setTime(this.weeks[0].start.getTime()-7*24*60*60*1000);
     this.weeks[1].end = this.weeks[0].start;
 
-     console.log('this week:');
-     console.log(this.weeks[0].start);
-     console.log(this.weeks[0].end);
-     console.log('last week:');
-     console.log(this.weeks[1].start);
-     console.log(this.weeks[1].end);
-
-     this.weeks.forEach(function(week) {
+    this.weeks.forEach(function(week) {
        week.openings = recentOpenings.filter(function(order) {
          return !order.attributes.template && order.createdAt>=week.start && order.createdAt<week.end;
        }).length;
