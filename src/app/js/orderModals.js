@@ -216,8 +216,9 @@ angular.module('myApp')
                     mail: mail.id
                   };
                   order.attributes.activities.splice(0, 0, activity);
-                  orderService.setupOrderHeader(order.attributes);
-                  api.saveObj(order);
+                  // orderService.setupOrderHeader(order.attributes);
+                  // api.saveObj(order);
+                  orderService.saveOrder(order);
                 });
             },
             function (error) {
