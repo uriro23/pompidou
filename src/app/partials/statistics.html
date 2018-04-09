@@ -463,6 +463,30 @@
         </tbody>
       </table>
     </tab>
+    <tab heading="בונוסים" select="statisticsModel.loadEmpBonuses()">
+      <table class="table table-hover">
+        <thead ng-show="statisticsModel.empBonuses.length">
+        <th style="width:10%">חודש</th>
+        <th style="width:90%">עובדים</th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.empBonuses">
+          <td>{{line.month | date:'MM.yy'}}</td>
+          <td>
+            <table>
+              <tr>
+                <td ng-repeat="employee in line.employees">
+                  <span>{{employee.name}}</span>
+                  <span>:</span>
+                  <span>{{employee.bonuses}}</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
   </tabset>
   <div ng-hide="statisticsModel.isHideOrders">
     <h4>פירוט אירועים:</h4>

@@ -284,6 +284,58 @@ angular.module('myApp')
       this.setOrderTableParams();
     };
 
+    this.loadEmpBonuses = function () {
+      var that = this;
+      var from = new Date(2018,3,1);  // bonuses started 1/4/18
+      //var to = new Date(2099,11,31);
+      var fields = ['eventDate','empBonuses','template','orderStatus'];
+      this.empBonuses = [];
+      api.queryOrdersByRange('eventDate',from,today,fields)
+        .then (function(orders) {
+          orders.forEach(function(order) {
+            if (!order.attributes.template && order.attributes.orderStatus!==1 && order.attributes.orderStatus!==6) {
+              var calcMonth = order.attributes.eventDate.getFullYear()*12+order.attributes.eventDate.getMonth();
+              var monthInd = -1;
+              that.empBonuses.forEach(function(line, lineInd) {
+                if (line.calcMonth === calcMonth) {
+                  monthInd = lineInd;
+                }
+              });
+              if (monthInd === -1) {
+                that.empBonuses.push({
+                  calcMonth: calcMonth,
+                  month: order.attributes.eventDate,
+                  employees: []
+                });
+                monthInd = that.empBonuses.length-1;
+              }
+              order.attributes.empBonuses.forEach(function(bonus) {
+                if (bonus.isBonus && bonus.employee) {
+                  var empInd = -1;
+                  that.empBonuses[monthInd].employees.forEach(function(emp,empj) {
+                    if (bonus.employee.tId === emp.tId) {
+                      empInd = empj;
+                    }
+                  });
+                  if (empInd === -1) {
+                    that.empBonuses[monthInd].employees.push({
+                      tId: bonus.employee.tId,
+                      name: bonus.employee.name,
+                      bonuses: 0
+                    });
+                    empInd = that.empBonuses[monthInd].employees.length-1;
+                  }
+                  that.empBonuses[monthInd].employees[empInd].bonuses++;
+                }
+              });
+            }
+          });
+          that.empBonuses.sort(function(a,b) {  // sort descending on month
+            return b.calcMonth - a.calcMonth;
+          })
+        });
+    };
+
     var tabThis;
 
     this.setOrderTableParams = function () {
