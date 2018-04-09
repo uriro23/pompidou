@@ -5,7 +5,8 @@ angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
                                      orderService, currentOrder, isFromNew, customer, lov, today,
                                      bidTextTypes, categories, measurementUnits,
-                                     discountCauses, referralSources, menuTypes, config) {
+                                     discountCauses, referralSources, menuTypes,
+                                     employees, pRoles, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -271,6 +272,14 @@ angular.module('myApp')
       $rootScope.menuStatus = 'show';
       this.order.attributes = angular.copy(this.order.backupOrderAttr);
       this.setupOrderView();
+      this.order.attributes.empBonuses.forEach(function(role) {
+        if (role.employee) {
+          role.employee = employees.filter(function(emp) {
+            return emp.tId === role.employee.tId;
+          })[0];
+        }
+      });
+
     };
 
     this.close = function() {
@@ -297,6 +306,7 @@ angular.module('myApp')
     this.discountCauses = discountCauses;
     this.referralSources = referralSources;
     this.menuTypes = menuTypes;
+    this.employees = employees;
     this.config = config;
     this.vatRate = config.vatRate;
     this.activityDate = new Date();
@@ -308,7 +318,15 @@ angular.module('myApp')
       this.order = currentOrder;
       this.setupOrderView();
        this.setReadOnly();
-      this.handleVatRateChange();
+      this.order.attributes.empBonuses.forEach(function(role) {
+        if (role.employee) {
+          role.employee = employees.filter(function(emp) {
+            return emp.tId === role.employee.tId;
+          })[0];
+        }
+      });
+
+        this.handleVatRateChange();
       if(!this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
@@ -320,6 +338,18 @@ angular.module('myApp')
       this.order.attributes.eventTime = undefined;
       this.order.attributes.exitTime = undefined;
       this.order.attributes.activities = [];
+
+      // initialize employee bonuses array
+      this.order.attributes.empBonuses = angular.copy(pRoles);
+      this.order.attributes.empBonuses.forEach(function(role) {
+        var temp = employees.filter(function(emp) {
+          return emp.defaultRole === role.tId;
+        });
+        if (temp.length) {
+          role.employee = temp[0];
+        }
+      });
+
       this.setupOrderView();
       this.setReadOnly();
       this.handleVatRateChange();
@@ -337,6 +367,18 @@ angular.module('myApp')
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.eventName = '';
       this.order.attributes.quotes = [];
+
+      // initialize employee bonuses array
+      this.order.attributes.empBonuses = angular.copy(pRoles);
+      this.order.attributes.empBonuses.forEach(function(role) {
+        var temp = employees.filter(function(emp) {
+          return emp.defaultRole === role.tId;
+        });
+        if (temp.length) {
+          role.employee = temp[0];
+        }
+      });
+
       var j = 0;  // count only initialCreate menuTypes
       for (i=0;i<menuTypes.length;i++) {  // on order creation, we create a quote for each menu type
         var mt = menuTypes[i];

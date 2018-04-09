@@ -88,6 +88,22 @@ angular.module('myApp')
     });
   })
 
+  .factory('employeesPromise', function (api) {
+    return api.queryEmployees().then(function (res) {
+       return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
+  .factory('pRolesPromise', function (api) {
+    return api.queryPRoles().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('configPromise', function (api) {
     return api.queryConfig().then(function (res) {
       return res.map(function (obj) {

@@ -239,6 +239,11 @@ angular.module('myApp')
 
       this.setStatus(order);
 
+      // wipe changed indication from bonuses array
+      thisOrder.empBonuses.forEach(function(role) {
+        role.isChanged = false;
+      });
+
       // handle quotes
       thisOrder.quotes.forEach(function(q) {
         q.changes = {};

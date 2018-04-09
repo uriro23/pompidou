@@ -446,6 +446,28 @@ angular.module('myApp')
       return query(colorsQuery);
     };
 
+    // employee
+    // ---------------
+
+    var Employee = Parse.Object.extend("Employee");
+
+    this.queryEmployees = function () {
+      var employeesQuery = new Parse.Query(Employee);
+      employeesQuery.ascending("tId");
+      return query(employeesQuery);
+    };
+
+    // pRole
+    // ---------------
+
+    var PRole = Parse.Object.extend("PRole");
+
+    this.queryPRoles = function () {
+      var pRolesQuery = new Parse.Query(PRole);
+      pRolesQuery.ascending("tId");
+      return query(pRolesQuery);
+    };
+
     // config
   // ------
 

@@ -1,0 +1,26 @@
+<div ng-controller="BonusesCtrl as bonusesModel">
+<table class="table table-hover table-responsive">
+  <thead>
+  <th>תפקיד</th>
+  <th>עובד</th>
+  <th>בונוס</th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="role in bonusesModel.order.attributes.empBonuses"
+      ng-class="role.isChanged?'bg-success':null">
+    <td>{{role.label}}</td>
+    <td>
+      <select ng-model="role.employee"
+              ng-change="bonusesModel.roleChanged($index)"
+              ng-options="employee.name for employee in bonusesModel.employees">
+      </select>
+    </td>
+    <td>
+      <input type="checkbox" ng-model="role.isBonus"
+             ng-change="bonusesModel.roleChanged($index)"
+             ng-disabled="!role.employee">
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>

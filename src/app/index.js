@@ -112,6 +112,12 @@ config(function($stateProvider, $urlRouterProvider) {
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
         }],
+        employees: ['employeesPromise', function (employeesPromise) {
+          return employeesPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
+        }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
         }],
@@ -150,6 +156,12 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
+        }],
+        employees: ['employeesPromise', function (employeesPromise) {
+          return employeesPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
         }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
@@ -190,6 +202,12 @@ config(function($stateProvider, $urlRouterProvider) {
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
         }],
+        employees: ['employeesPromise', function (employeesPromise) {
+          return employeesPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
+        }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
         }],
@@ -228,6 +246,12 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
+        }],
+        employees: ['employeesPromise', function (employeesPromise) {
+          return employeesPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
         }],
         config: ['configPromise', function (configPromise) {
           return configPromise;
@@ -450,6 +474,12 @@ config(function($stateProvider, $urlRouterProvider) {
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
         return measurementUnitsPromise;
       }],
+      employees: ['employeesPromise', function (employeesPromise) {
+        return employeesPromise;
+      }],
+      pRoles: ['pRolesPromise', function (pRolesPromise) {
+        return pRolesPromise;
+      }],
       role: ['api', function (api) {
         return api.queryRoles('everyone').then(function (res) {
           return res[0];
@@ -645,6 +675,9 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
         return measurementUnitsPromise;
+      }],
+      pRoles: ['pRolesPromise', function (pRolesPromise) {
+        return pRolesPromise;
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;

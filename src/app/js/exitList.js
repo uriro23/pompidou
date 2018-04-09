@@ -3,10 +3,14 @@
 /* Controllers */
 angular.module('myApp')
   .controller('ExitListCtrl', function (api, $state, $filter, $rootScope,
-                                        order, catalog, lov, measurementUnits, categories) {
+                                        order, catalog, lov,
+                                        measurementUnits, categories, pRoles) {
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;
     this.categories = categories;
+    this.pRoles = pRoles.filter(function(role) {
+      return role.isInExitList;
+    });
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רשימת יציאה';
 
@@ -100,8 +104,6 @@ angular.module('myApp')
         });
       });
     });
-
-    console.log(this.vec);
 
      // fetch item's exit list
     this.setupItemExitList = function (catId) {

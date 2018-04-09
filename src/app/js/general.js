@@ -67,4 +67,14 @@ angular.module('myApp')
     };
 
 
+  })
+
+  .controller('BonusesCtrl', function ($scope, $state, orderService) {
+    this.order = $scope.orderModel.order;
+    this.employees = $scope.orderModel.employees;
+
+    this.roleChanged = function(ind) {
+      this.order.attributes.empBonuses[ind].isChanged = true;
+      orderService.orderChanged(this.order);
+    };
   });

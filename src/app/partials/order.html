@@ -26,6 +26,9 @@
         </div>
     <p></p>
         <tabset>
+          <tab heading="בונוסים">
+            <ng-include src="'app/partials/order/bonuses.html'"></ng-include>
+          </tab>
             <tab heading="אירועים קודמים"
               select="orderModel.getPrevOrders()">
               <ng-include src="'app/partials/order/orderTable.html'"></ng-include>

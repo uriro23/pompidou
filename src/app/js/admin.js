@@ -4,7 +4,8 @@
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
-                                     measurementUnits, categories, discountCauses, role) {
+                                     measurementUnits, categories,
+                                     discountCauses, role, employees, pRoles) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -744,6 +745,43 @@ angular.module('myApp')
               console.log('done');
             });
         })
+    };
+
+    this.handleEmpBonuses = function() {
+      var that = this;
+      var oldOrd = 0;
+      var newOrd = 0;
+      // initialize template employee bonuses array
+      var empBonuses = angular.copy(pRoles);
+      empBonuses.forEach(function(role) {
+        var temp = employees.filter(function(emp) {
+          return emp.defaultRole === role.tId;
+        });
+        if (temp.length) {
+          role.employee = temp[0];
+        }
+      });
+
+      console.log('starting');
+      api.queryAllOrders(['eventDate'])
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+            if (order.attributes.eventDate > new Date(2018,3,0)) {
+              newOrd++;
+              order.attributes.empBonuses = empBonuses;
+            }
+            else {
+              oldOrd++;
+              order.attributes.empBonuses =[];
+            }
+             });
+          console.log('handled '+oldOrd+' old events, '+newOrd+' new Events');
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('done');
+            });
+        });
     };
 
   });
