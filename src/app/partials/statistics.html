@@ -474,11 +474,17 @@
           <td>{{line.month | date:'MM.yy'}}</td>
           <td>
             <table>
-              <tr>
-                <td ng-repeat="employee in line.employees">
-                  <span>{{employee.name}}</span>
+              <tr ng-repeat="employee in line.employees">
+                <td>{{employee.name}}</td>
+                <td>
+                  <span>(</span>
+                  <span>{{employee.totBonuses}}</span>
+                  <span>)</span>
+                </td>
+                <td ng-repeat="role in employee.roles">
+                  <span>{{role.label}}</span>
                   <span>:</span>
-                  <span>{{employee.bonuses}}</span>
+                  <span>{{role.bonuses}}</span>
                 </td>
               </tr>
             </table>

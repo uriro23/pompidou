@@ -366,6 +366,10 @@ angular.module('myApp')
           });
      };
 
+
+    // conversions
+
+    /*
     // quote conversion  1/2016
 
     this.createNewQuoteData = function () {
@@ -783,6 +787,10 @@ angular.module('myApp')
             });
         });
     };
+
+
+*/
+// end conversions
 
   });
 

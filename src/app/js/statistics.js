@@ -321,18 +321,34 @@ angular.module('myApp')
                     that.empBonuses[monthInd].employees.push({
                       tId: bonus.employee.tId,
                       name: bonus.employee.name,
-                      bonuses: 0
+                      totBonuses: 0,
+                      roles: []
                     });
                     empInd = that.empBonuses[monthInd].employees.length-1;
                   }
-                  that.empBonuses[monthInd].employees[empInd].bonuses++;
+                  that.empBonuses[monthInd].employees[empInd].totBonuses++;
+                  var roleInd = -1;
+                  that.empBonuses[monthInd].employees[empInd].roles.forEach(function(role,rolej) {
+                    if (bonus.tId === role.tId) {
+                      roleInd = rolej;
+                    }
+                  });
+                  if (roleInd === -1) {
+                    that.empBonuses[monthInd].employees[empInd].roles.push({
+                      tId: bonus.tId,
+                      label: bonus.label,
+                      bonuses: 0
+                    });
+                    roleInd = that.empBonuses[monthInd].employees[empInd].roles.length-1;
+                    }
+                  that.empBonuses[monthInd].employees[empInd].roles[roleInd].bonuses++;
                 }
               });
             }
           });
           that.empBonuses.sort(function(a,b) {  // sort descending on month
             return b.calcMonth - a.calcMonth;
-          })
+          });
         });
     };
 
