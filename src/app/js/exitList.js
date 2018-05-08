@@ -14,6 +14,9 @@ angular.module('myApp')
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רשימת יציאה';
 
+    const CATEGORY_SNACKS = 1;
+    const CATEGORY_DESSERTS = 8;
+
     this.currentOrder = order.attributes;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
 
@@ -24,9 +27,22 @@ angular.module('myApp')
       that.customer = customers[0].attributes;
     });
 
+    // for snacks and desserts include in exit list only items which have sub items in their exit list
+    var exitListItems = angular.copy(this.currentQuote.items);
+    exitListItems.forEach(function(item) {
+      if(item.category.tId === CATEGORY_SNACKS || item.category.tId === CATEGORY_DESSERTS) {
+        var exitList = that.catalog.filter(function(cat) {
+          return cat.id === item.catalogId;
+        })[0].attributes.exitList;
+        if (exitList.length === 0) {
+          item.isDontPrint = true;
+        }
+      }
+    });
+
     //filter categories - only those in order
     this.filteredCategories = this.categories.filter(function (cat) {
-      var categoryItems = that.currentQuote.items.filter(function (item) {
+      var categoryItems = exitListItems.filter(function (item) {
         return (item.category.tId === cat.tId);
       });
       return (categoryItems.length > 0) && !cat.isTransportation && !cat.isPriceIncrease;
@@ -49,8 +65,8 @@ angular.module('myApp')
         data: category
       };
 
-      var catItems = that.currentQuote.items.filter(function (item) {
-        return (item.category.tId === category.tId);
+      var catItems = exitListItems.filter(function (item) {
+        return (item.category.tId === category.tId && !item.isDontPrint);
       }).sort(function(a,b) {
         if (a.productName > b.productName) {
           return 1;
