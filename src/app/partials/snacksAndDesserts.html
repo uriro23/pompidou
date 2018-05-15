@@ -1,0 +1,58 @@
+<div style="margin-right: 2%">
+<div ng-repeat="order in snacksAndDessertsModel.woOrders">
+  <h3 ng-style="order.color.style">
+    {{' '+order.customer.firstName+' '+order.customer.lastName}}
+    {{order.order.eventDate | date:'dd/MM/yy EEEE'}}
+    -
+    חטיפים
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in order.snacks">
+      <td>{{item.productName}}
+      <div ng-show="item.isDescChanged">
+        <label>התאמה אישית:</label>
+        {{item.productDescription}}
+      </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <h3 ng-style="order.color.style">
+    {{' '+order.customer.firstName+' '+order.customer.lastName}}
+    {{order.order.eventDate | date:'dd/MM/yy EEEE'}}
+    -
+    קינוחים
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in order.desserts">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div ng-hide="$index===snacksAndDessertsModel.woOrders.length-1">
+  <p style="page-break-after: always;">&nbsp;</p>
+  <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+</div>
+</div>

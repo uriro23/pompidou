@@ -175,6 +175,12 @@ angular.module('myApp')
       thisItem.isChanged = true;
     };
 
+    this.setCosmeticChange = function (ind ) {
+      var thisItem = this.order.view.quote.items[ind];
+      orderService.quoteChanged(this.order);
+      thisItem.isChanged = true;
+    };
+
     this.resetDescChange = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
       api.queryCatalogById(thisItem.catalogId)

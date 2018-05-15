@@ -338,6 +338,34 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
+    .state('snacksAndDesserts', {
+      url: '/snacksAndDesserts/:woId',
+      templateUrl: 'app/partials/snacksAndDesserts.html',
+      controller: 'SnacksAndDessertsCtrl as snacksAndDessertsModel',
+      resolve: {
+        catalog: ['api', function (api) {
+          return api.queryCatalog(1).then(function (obj) {
+            return obj;
+          });
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
+            return workItems.map(function (wi) {
+              var att = wi.attributes;
+              att.id = wi.id;
+              return att;
+            });
+          });
+        }]
+      }
+    })
+
     .state('catalogList', {
       url: '/catalogList/:domain/:category',
       templateUrl: 'app/partials/catalogList.html',

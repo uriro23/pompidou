@@ -80,6 +80,11 @@ angular.module('myApp')
           return 0;
         }
       });
+      catItems.forEach(function(item) {
+        if (item.isDescChanged && item.isCosmeticChange) {
+          item.isDescChanged = false;
+        }
+      });
       category.items = [];
       if (catItems.length) {       // group items by productName, provided productDescription was not changed
         var j=0;

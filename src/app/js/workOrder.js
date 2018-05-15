@@ -58,6 +58,9 @@ angular.module('myApp')
         if (inWorkItem.domain === 0) {
           var items = inWorkItem.order.quotes[inWorkItem.order.activeQuote].items;
           items.forEach(function(item) {
+            if (item.isDescChanged && item.isCosmeticChange) {  // if only cosmetic change, ignore it for work order
+              item.isDescChanged = false;
+            }
             workItemInd = undefined;
             that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
               if (workItem.attributes.domain === 1 && // unless their description is changed
