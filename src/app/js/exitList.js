@@ -35,7 +35,9 @@ angular.module('myApp')
           return cat.id === item.catalogId;
         })[0].attributes.exitList;
         if (exitList.length === 0) {
-          item.isDontPrint = true;
+          item.isExcludeWholeItem = true; // if no sub items dont print item at all
+        } else {
+          item.isExcludeMainItem = true; // if sub items exist, print them without the main item
         }
       }
     });
@@ -66,7 +68,7 @@ angular.module('myApp')
       };
 
       var catItems = exitListItems.filter(function (item) {
-        return (item.category.tId === category.tId && !item.isDontPrint);
+        return (item.category.tId === category.tId && !item.isExcludeWholeItem);
       }).sort(function(a,b) {
         if (a.productName > b.productName) {
           return 1;
