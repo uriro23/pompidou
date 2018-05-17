@@ -38,8 +38,6 @@ angular.module('myApp')
 
     this.woOrders.forEach(function(order) {
       order.snacks = editItems(order,CATEGORY_SNACKS,catalog);
-      console.log(order.order.number);
-      console.log(order.snacks);
       order.desserts = editItems(order,CATEGORY_DESSERTS,catalog);
     });
 
