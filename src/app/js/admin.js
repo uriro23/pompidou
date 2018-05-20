@@ -21,6 +21,8 @@ angular.module('myApp')
   this.domains = lov.domains;
   this.domains.splice(0,1);
 
+
+
     // vat
     // ---
 
@@ -276,6 +278,7 @@ angular.module('myApp')
     };
 
 
+
     this.filterProductNameDomain = function() {
       var that = this;
       this.isProcessing = true;
@@ -289,7 +292,10 @@ angular.module('myApp')
               console.log(catalog.length+' menu items loaded');
               catalog.forEach(function(cat) {
                 cat.category = cat.attributes.category; // for ng-repeat filter
-                cat.categoryObject = that.categories.filter(function(cat2) {
+                cat.measurementUnitLabel = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.attributes.measurementUnit;
+                })[0].label;
+                 cat.categoryObject = that.categories.filter(function(cat2) {
                   return cat2.tId === cat.attributes.category;
                 })[0];
               });

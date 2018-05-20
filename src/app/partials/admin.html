@@ -189,9 +189,13 @@
       <select ng-model="adminModel.productNamesCategory"
               ng-change="adminModel.filterProductNameCategory()"
               ng-options="category.label for category in adminModel.categories"></select>
-      <table class="table table-hover" style="width: 40%">
+      <table class="table table-hover" style="width: 60%">
         <thead>
         <th>שם</th>
+        <th>כמות</th>
+        <th>יח'</th>
+        <th>שם למדבקה</th>
+        <th>כמות מדבקות</th>
         <th>קטגוריה</th>
         <th>ביטול</th>
         <th></th>
@@ -202,6 +206,16 @@
                        productNameItem.isChanged ? 'bg-success' :
                        productNameItem.attributes.isDeleted ? 'active myCanceledEvent' : bg-active">
           <td>{{productNameItem.attributes.productName}}</td>
+          <td>{{productNameItem.attributes.priceQuantity}}</td>
+          <td>{{productNameItem.measurementUnitLabel}}</td>
+          <td>
+            <input type="text" ng-model="productNameItem.attributes.stickerLabel" size="10"
+                   ng-change="adminModel.productNameItemChanged(productNameItem)">
+          </td>
+          <td>
+            <input type="number" ng-model="productNameItem.attributes.stickerQuantity" min="0" max="99"
+                   ng-change="adminModel.productNameItemChanged(productNameItem)">
+          </td>
           <td>
             <select ng-model="productNameItem.categoryObject"
                     ng-change="adminModel.productNameItemChanged(productNameItem)"

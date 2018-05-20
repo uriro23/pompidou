@@ -293,6 +293,20 @@
           </select>
         </td>
       </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>שם למדבקה</label></td>
+        <td>
+          <input  type="text" size = 10 ng-model="catalogItemModel.item.attributes.stickerLabel"
+                  ng-change="catalogItemModel.setChanged(true)">
+        </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>מס' מדבקות</label></td>
+        <td>
+          <input  type="number" min="0" max="99" ng-model="catalogItemModel.item.attributes.stickerQuantity"
+                  ng-change="catalogItemModel.setChanged(true)">
+        </td>
+      </tr>
     </table>
   </tab>
 </tabset>
