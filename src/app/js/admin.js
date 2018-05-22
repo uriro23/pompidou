@@ -292,12 +292,18 @@ angular.module('myApp')
               console.log(catalog.length+' menu items loaded');
               catalog.forEach(function(cat) {
                 cat.category = cat.attributes.category; // for ng-repeat filter
-                cat.measurementUnitLabel = measurementUnits.filter(function(mu) {
+                cat.measurementUnitObj = measurementUnits.filter(function(mu) {
                   return mu.tId === cat.attributes.measurementUnit;
-                })[0].label;
+                })[0];
+                if (!cat.measurementUnitObj) {
+                  console.log('MU not found for '+cat.attributes.productName);
+                } else {
+                  cat.measurementUnitLabel = cat.measurementUnitObj.label;
+                }
                  cat.categoryObject = that.categories.filter(function(cat2) {
                   return cat2.tId === cat.attributes.category;
                 })[0];
+                cat.exitListLength = cat.attributes.exitList.length;
               });
               that.productNameItems = catalog;
               that.productNameCategoryItems = [];
@@ -796,6 +802,25 @@ angular.module('myApp')
 
 
 */
+
+    // generate product name from product description
+    this.generateStickerLabels = function () {
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          console.log(catalog.length+' items loaded');
+          catalog.forEach(function(cat) { // generate names
+              var match = cat.attributes.productName.match(/^\s*\S+\s+\S+/); // extract first 2 words of name
+              cat.attributes.stickerLabel = match ? match[0] : cat.attributes.productName;
+              cat.attributes.stickerQuantity = 1;
+          });
+            api.saveObjects(catalog)
+            .then(function() {
+              console.log('catalog updated');
+            });
+        });
+    };
+
+
 // end conversions
 
   });

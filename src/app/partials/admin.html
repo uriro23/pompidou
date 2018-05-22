@@ -16,6 +16,7 @@
   <button class="btn-default" ng-click="adminModel.handlePackageMeasurementUnit()">יח מידה לאריזה</button>
    <button class="btn-default" ng-click="adminModel.handleEmpBonuses()">בונוסים</button>
   -->
+  <button class="btn btn-default" ng-click="adminModel.generateStickerLabels()">צור שמות מדבקות</button>
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -194,8 +195,9 @@
         <th>שם</th>
         <th>כמות</th>
         <th>יח'</th>
-        <th>שם למדבקה</th>
-        <th>כמות מדבקות</th>
+        <th ng-show="adminModel.productNamesDomain.id===1">שם למדבקה</th>
+        <th ng-show="adminModel.productNamesDomain.id===1">כמות מדבקות</th>
+        <th ng-show="adminModel.productNamesDomain.id===1">נוספות</th>
         <th>קטגוריה</th>
         <th>ביטול</th>
         <th></th>
@@ -208,13 +210,16 @@
           <td>{{productNameItem.attributes.productName}}</td>
           <td>{{productNameItem.attributes.priceQuantity}}</td>
           <td>{{productNameItem.measurementUnitLabel}}</td>
-          <td>
+          <td ng-show="adminModel.productNamesDomain.id===1">
             <input type="text" ng-model="productNameItem.attributes.stickerLabel" size="10"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
           </td>
-          <td>
+          <td ng-show="adminModel.productNamesDomain.id===1">
             <input type="number" ng-model="productNameItem.attributes.stickerQuantity" min="0" max="99"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+          </td>
+          <td ng-show="adminModel.productNamesDomain.id===1">
+            {{productNameItem.exitListLength}}
           </td>
           <td>
             <select ng-model="productNameItem.categoryObject"
