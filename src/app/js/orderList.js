@@ -4,7 +4,7 @@
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
                                           api, lov, orderService, today, queryType, customers,
-                                          recentOpenings, recentClosings) {
+                                          recentOpenings, recentClosings, colors) {
       var that = this;
      $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -14,6 +14,10 @@ angular.module('myApp')
       $state.go('login');
     }
     $rootScope.title = 'אירועים';
+
+    if (user.attributes.username === 'yuval' || user.attributes.username === 'uri') {
+      orderService.generateOrderColors();
+    }
 
     var fetchedOrders = [];
 
@@ -98,20 +102,26 @@ angular.module('myApp')
 
 //  enrich order with info on customers etc.
     this.enrichOrders = function () {
-      for (var i = 0; i < fetchedOrders.length; i++) {
-        fetchedOrders[i].view = {};
-        fetchedOrders[i].view.customer = customers.filter(function (cust) {
-          return cust.id === fetchedOrders[i].attributes.customer;
+      var that = this;
+      fetchedOrders.forEach(function(fetchedOrder) {
+        fetchedOrder.view = {};
+        fetchedOrder.view.customer = customers.filter(function (cust) {
+          return cust.id === fetchedOrder.attributes.customer;
         })[0];
-        fetchedOrders[i].view.customer.anyPhone =
-          fetchedOrders[i].view.customer.attributes.mobilePhone?fetchedOrders[i].view.customer.attributes.mobilePhone:
-            fetchedOrders[i].view.customer.attributes.homePhone?fetchedOrders[i].view.customer.attributes.homePhone:
-              fetchedOrders[i].view.customer.attributes.workPhone?fetchedOrders[i].view.customer.attributes.workPhone:undefined;
-        fetchedOrders[i].view.orderStatus = lov.orderStatuses.filter(function (stat) {
-          return stat.id === fetchedOrders[i].attributes.orderStatus;
+        fetchedOrder.view.customer.anyPhone =
+          fetchedOrder.view.customer.attributes.mobilePhone?fetchedOrder.view.customer.attributes.mobilePhone:
+            fetchedOrder.view.customer.attributes.homePhone?fetchedOrder.view.customer.attributes.homePhone:
+              fetchedOrder.view.customer.attributes.workPhone?fetchedOrder.view.customer.attributes.workPhone:undefined;
+        fetchedOrder.view.orderStatus = lov.orderStatuses.filter(function (stat) {
+          return stat.id === fetchedOrder.attributes.orderStatus;
         })[0];
-        fetchedOrders[i].view.isReadOnly = fetchedOrders[i].attributes.eventDate < today;
-      }
+        if (fetchedOrder.attributes.color) {
+          fetchedOrder.view.color = that.colors.filter(function (color) {
+            return color.tId === fetchedOrder.attributes.color;
+          })[0];
+       }
+        fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < today;
+      });
       this.noOfFetchedOrders = fetchedOrders.length;
       this.filterOrders();
       this.isProcessing = false;
@@ -131,7 +141,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','template','remarks','header', 'activities'
+        'exitTime','template','remarks','header', 'activities', 'color'
       ];
       if (this.queryType !== 'year') {
         this.queryYear = undefined;
@@ -243,7 +253,16 @@ angular.module('myApp')
    };
 
     // main block
-    this.years = [];
+
+     this.colors = colors.map(function(color) {
+       color.style = {
+         'color': color.fontColor,
+         'background-color': color.backColor
+       };
+       return  color;
+     });
+
+     this.years = [];
     for (var y=new Date().getFullYear();y>=2012;y--) {
       this.years.push(y);
     }

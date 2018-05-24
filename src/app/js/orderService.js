@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('orderService', function ($rootScope, $state, api, lov, today) {
+  .service('orderService', function ($rootScope, $state, api, lov, today, colorsPromise) {
 
     this.calcTotal = function (quote, isBusinessEvent, vatRate) {
      if(quote.isFixedPrice) {
@@ -183,9 +183,11 @@ angular.module('myApp')
 
 
     this.saveOrder = function (order) {
+
       var thisOrder = order.attributes;
       var view = order.view;
 
+      console.log('saving '+thisOrder.number);
       // check if any quote has been created
       if (thisOrder.quotes.length===0) {
         alert('לא ניתן לשמור. יש ליצור לפחות תפריט אחד');
@@ -378,5 +380,48 @@ angular.module('myApp')
       }
     };
 
+    this.generateOrderColors = function() {
+
+      var DAYS_TO_COLOR = 7;
+
+      var fields = ['eventDate','number','orderStatus','template','color'];
+      var from = angular.copy(today);
+      var to = angular.copy(from);
+      to.setDate(to.getDate()+ DAYS_TO_COLOR);
+       api.queryOrdersByRange('eventDate',from,to,fields)
+        .then(function(orders) {
+          console.log('total '+orders.length+' orders immediate future');
+          var newOrders = orders.filter(function(order) { // find orders without color assignment
+            return  !order.attributes.template &&
+              order.attributes.orderStatus >= 2 &&
+              order.attributes.orderStatus <= 5 &&
+              !order.attributes.color;
+          });
+          if (newOrders.length > 0) {
+            var existingColors = orders.filter(function(order) {
+              return order.attributes.color;
+            }).map(function(order) {
+              return order.attributes.color;
+            });
+               colorsPromise.then(function(allColors) {
+                 // find a new color for each new order
+                 newOrders.forEach(function(newOrder) {
+                   var selectedColor = allColors.filter(function(allColor) {
+                     var t1 = existingColors.filter(function(eColor) {
+                       return eColor === allColor.tId;
+                     });
+                     return !t1.length; // if color was not previously in use, select it
+                   })[0].tId;
+                   console.log('selected color '+selectedColor+' for order '+newOrder.attributes.number);
+                   newOrder.attributes.color = selectedColor;
+                   existingColors.push(selectedColor);
+
+                   api.saveObj(newOrder);
+
+                 });
+            });
+          }
+        });
+    };
 
   });

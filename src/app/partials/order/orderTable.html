@@ -56,7 +56,7 @@
     <td>{{order.attributes.noOfParticipants}}</td>
     <td>{{order.attributes.header.title}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
-      <select ng-model="order.view.orderStatus"
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
               ng-change="orderListModel.setStatus(order)"
               ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
       ></select>

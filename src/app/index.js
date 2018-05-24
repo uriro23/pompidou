@@ -71,6 +71,9 @@ config(function($stateProvider, $urlRouterProvider) {
             .then(function(objs) {
               return objs;
             });
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
         }]
       }
     })
