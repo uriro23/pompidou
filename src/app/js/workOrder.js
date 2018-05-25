@@ -256,15 +256,9 @@ angular.module('myApp')
             viewItem.attributes.orderStatus = lov.orderStatuses.filter(function(st) {
               return st.id === order.attributes.orderStatus;
             })[0];
-            viewItem.attributes.color = that.colors.filter(function(color) {  // set default color
-              return color.tId === 0;
+            viewItem.attributes.color = colors.filter(function(color) {  // copy order's color to wo
+              return color.tId === order.attributes.color;
             })[0];
-            var tmp = that.prevOrdersInWo.filter(function (po) {    // if order was in wo, copy its color
-              return po.attributes.order.number === viewItem.attributes.order.number;
-            });
-            if (tmp.length>0) {
-              viewItem.attributes.color = tmp[0].attributes.color;
-            }
             viewItem.isInWorkOrder = false;
             that.orderView.push(viewItem);
             }
@@ -286,11 +280,6 @@ angular.module('myApp')
                api.queryWorkOrder(woId) // we assume that the only records in wo are those just stored
                 .then(function (ov) { // requery them to get their ids
                   ov.forEach(function(o) {
-                    if (o.attributes.color) { // restore original color pointer for selection box to work properly
-                      o.attributes.color = that.colors.filter(function(color) {
-                        return color.tId === o.attributes.color.tId;
-                      })[0];
-                    }
                     that.workOrder.push(o);
                     o.isInWorkOrder = true;
                     that.orderView.push(o);
@@ -396,11 +385,7 @@ angular.module('myApp')
  //     api.saveObj(this.woIndex);
     };
 
-    this.setOrderColor = function(ind) {
-      api.saveObj(this.orderView[ind]);
-    };
-
-    this.createNewWorkOrder = function () {
+   this.createNewWorkOrder = function () {
       var that = this;
       var ackDelModal = $modal.open({
         templateUrl: 'app/partials/workOrder/ackDelete.html',

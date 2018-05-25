@@ -41,9 +41,6 @@
   <th>
     פק' עבודה
   </th>
-  <th>
-    צבע
-  </th>
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.orderView"
@@ -60,18 +57,11 @@
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
     <td>{{woItem.attributes.order.header.title}}</td>
-	<td>{{woItem.attributes.orderStatus.name}}</td>
+	<td  ng-style="woItem.attributes.color.style">{{woItem.attributes.orderStatus.name}}</td>
     <td>
       <input type="checkbox"
              ng-model="woItem.isInWorkOrder"
              ng-change="workOrderModel.setOrderInWorkOrder($index)">
-    </td>
-    <td>
-      <select ng-model="woItem.attributes.color"
-              ng-change="workOrderModel.setOrderColor($index)"
-              ng-options="color.label for color in workOrderModel.colors"
-              ng-disabled="!woItem.isInWorkOrder"
-      ></select>
     </td>
   </tr>
   </tbody>
