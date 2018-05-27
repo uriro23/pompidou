@@ -712,6 +712,9 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
+      }],
+      colors: ['colorsPromise', function (colorsPromise) {
+        return colorsPromise;
       }]
     }
   })

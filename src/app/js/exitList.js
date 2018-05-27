@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('ExitListCtrl', function (api, $state, $filter, $rootScope,
                                         order, catalog, lov,
-                                        measurementUnits, categories, pRoles) {
+                                        measurementUnits, categories, pRoles, colors) {
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;
     this.categories = categories;
@@ -20,12 +20,20 @@ angular.module('myApp')
     this.currentOrder = order.attributes;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
 
+
     // fetch customer
     var that = this;
     api.queryCustomers(that.currentOrder.customer)
       .then(function (customers) {
       that.customer = customers[0].attributes;
     });
+
+    // fetch order's color
+    if (this.currentOrder.color) {
+      this.color = colors.filter(function (color) {
+        return color.tId === that.currentOrder.color;
+      })[0];
+    }
 
     // for snacks and desserts include in exit list only items which have sub items in their exit list
     var exitListItems = angular.copy(this.currentQuote.items);
