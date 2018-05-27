@@ -8,8 +8,8 @@ angular.module('myApp')
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'חטיפים וקינוחים';
 
-    const CATEGORY_SNACKS = 1;
-    const CATEGORY_DESSERTS = 8;
+    var CATEGORY_SNACKS = 1;
+    var CATEGORY_DESSERTS = 8;
 
     function editItems (order, category, catalog) {
       return order.order.quotes[order.order.activeQuote].items.filter(function(item) {

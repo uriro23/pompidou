@@ -144,4 +144,28 @@ angular.module('myApp')
       this.exitList = thisItem.attributes.exitList;
     }
 
+
+    function editItems (order, category, catalog) {
+      return order.attributes.quotes[order.attributes.activeQuote].items.filter(function(item) {
+        return item.category.tId === category;
+      }).map(function(item) {
+        var catalogItem = catalog.filter(function(cat) {
+          return cat.id===item.catalogId;
+        })[0].attributes;
+        return {
+          productName: catalogItem.productName,
+          productDescription: item.productDescription,
+          isDescChanged: item.isDescChanged & (!item.isCosmeticChange),
+          quantity: item.quantity,
+          measurementUnitLabel: item.measurementUnit.label
+        }
+      })
+    }
+
+    this.snacks = editItems(order,CATEGORY_SNACKS,catalog);
+    this.desserts = editItems(order,CATEGORY_DESSERTS,catalog);
+
+
+
+
   });

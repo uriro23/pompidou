@@ -195,6 +195,65 @@
     </tr>
   </table>
 
+  <div>
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+
+  <h3>
+    {{exitListModel.customer.firstName+' '+exitListModel.customer.lastName}}
+    {{exitListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    -
+    חטיפים
+    &nbsp;
+    <img src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in exitListModel.snacks">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>
+    {{exitListModel.customer.firstName+' '+exitListModel.customer.lastName}}
+    {{exitListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    -
+    קינוחים
+    &nbsp;
+    <img src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in exitListModel.desserts">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
 
 
 
