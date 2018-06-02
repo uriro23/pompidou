@@ -16,6 +16,17 @@
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
               ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
+        <a href="#/stickers/{{workOrderModel.woIndex.attributes.woId}}" target="_blank"
+           ng-disabled="workOrderModel.isProcessing"
+           ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
+          מדבקות
+        </a>
+      </button>
+    </td>
+    <td style="width: 15%">
+      <button class="btn btn-default"
+              ng-disabled="workOrderModel.isProcessing"
+              ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
         <a href="#/snacksAndDesserts/{{workOrderModel.woIndex.attributes.woId}}" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
            ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">

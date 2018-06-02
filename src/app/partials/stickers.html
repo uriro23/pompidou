@@ -1,0 +1,16 @@
+<div style="margin-right: 1cm; margin-top: 0.5cm; margin-bottom: 0.5cm">
+  <table>
+  <tr ng-repeat="line in stickersModel.stickerLine" style="height:2.5cm">
+    <td ng-repeat="sticker in line.stickers track by sticker.seq" style="width:7cm">
+      <div>
+      <label>{{sticker.label}}</label>
+      </div>
+      <div>
+        <span>{{sticker.customer.firstName}}</span>
+        <span>{{stickersModel.dayName(sticker.eventDate)}}</span>
+        <img src="app/img/bigColors/{{sticker.color.stickerColor}}.jpg"/>
+      </div>
+    </td>
+  </tr>
+  </table>
+</div>

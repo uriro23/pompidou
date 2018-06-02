@@ -369,6 +369,36 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
+    .state('stickers', {
+      url: '/stickers/:woId',
+      templateUrl: 'app/partials/stickers.html',
+      controller: 'StickersCtrl as stickersModel',
+      resolve: {
+        catalog: ['api', function (api) {
+          return api.queryCatalog(1).then(function (obj) {
+            return obj;
+          });
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        config: ['api', function (api) {
+          return api.queryConfig().then(function (res) {
+            return res[0].attributes;
+          });
+        }],
+        workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
+            return workItems.map(function (wi) {
+              var att = wi.attributes;
+              att.id = wi.id;
+              return att;
+            });
+          });
+        }]
+      }
+    })
+
     .state('catalogList', {
       url: '/catalogList/:domain/:category',
       templateUrl: 'app/partials/catalogList.html',
