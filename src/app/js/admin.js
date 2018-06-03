@@ -343,6 +343,32 @@ angular.module('myApp')
       cat.isChanged = false;
     };
 
+    // no boxes
+    this.loadNoBoxes = function() {
+      var that = this;
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          var snacksAndDesserts = catalog.filter(function(cat) {
+            return cat.attributes.category === 1 || cat.attributes.category === 8;
+          });
+          that.noBoxes = snacksAndDesserts.filter(function(cat2) {
+            var tmp = cat2.attributes.components.filter(function(comp) {
+              return comp.id === config.attributes.boxItem;
+            });
+            if (tmp.length === 0) return true;
+          }).sort(function(a,b) {
+            if (a.attributes.category > b.attributes.category) {
+              return 1;
+            } else if (a.attributes.category < b.attributes.category) {
+              return -1;
+            } else if (a.attributes.productName > b.attributes.productName) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+        });
+    };
 
     // customers tab
     this.loadCustomers = function() {

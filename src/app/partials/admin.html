@@ -241,6 +241,16 @@
       </table>
     </div>
   </tab>
+   <tab heading="קופסאות" select="adminModel.loadNoBoxes()">
+     <h3>חטיפים וקינוחים שאין להם קישור לקופסת פומפידו בעץ המוצר</h3>
+     <table class="table table-hover">
+      <tr ng-repeat="product in adminModel.noBoxes">
+        <td style="cursor: pointer" ng-click="adminModel.selectCatItem(product.id)">
+          {{product.attributes.productName}}
+        </td>
+      </tr>
+     </table>
+   </tab>
   <tab heading="לקוחות" select="adminModel.loadCustomers()">
     <div>
       <label>ליצוא</label>
