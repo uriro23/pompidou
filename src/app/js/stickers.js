@@ -98,7 +98,7 @@ angular.module('myApp')
 
     this.renderSticker = function(sticker) {
       sticker.seq = stickerJ;  // for ng-repeat uniqueneness
-      this.stickerLine[stickerI].stickers[stickerJ] = angular.copy(sticker);
+      this.stickerPage[stickerP].lines[stickerI].stickers[stickerJ] = angular.copy(sticker);
       stickerJ++;
       if(stickerJ === STICKER_WIDTH) {
         this.renderNewLine();
@@ -111,12 +111,27 @@ angular.module('myApp')
       }
     };
 
+    this.renderNewPage = function() {
+      stickerP++;
+      this.stickerPage[stickerP] = {
+        seq: stickerP+1,
+        lines: [{
+          stickers: []
+        }]
+      };
+      stickerI = 0;
+    };
+
     this.renderNewLine = function() {
       stickerI++;
       stickerJ = 0;
-      this.stickerLine[stickerI]= {
-        stickers: []
-      };
+      if (stickerI < STICKER_HEIGHT) {    // if last line on page, don't initialize it
+        this.stickerPage[stickerP].lines[stickerI] = {
+          stickers: []
+        };
+      } else  {  // last line on page
+        this.renderNewPage();
+      }
     };
 
     this.renderStickers = function () {
@@ -179,16 +194,21 @@ angular.module('myApp')
     console.log(ordCategories);
 
 
+    var STICKER_HEIGHT = 11;
     var STICKER_WIDTH = 3;
-    this.stickerLine = [];
+    this.stickerPage = [];
+    var stickerP = 0;
     var stickerI = 0;
     var stickerJ = 0;
-    this.stickerLine[0] = {
-      stickers: []
+    this.stickerPage[0] = {
+      seq: 1,
+      lines: [{
+        stickers: []
+      }]
     };
     this.renderStickers();
 
-    console.log(this.stickerLine);
+    console.log(this.stickerPage);
   })
 
 
