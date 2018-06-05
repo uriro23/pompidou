@@ -53,7 +53,7 @@ angular.module('myApp')
               var thisOrd = ordCategories[catInd].orders.filter(function(ord) {
                 return ord.number === order.order.number;
               })[0];
-              thisOrd.quantity += item.quantity / catalogEntry.attributes.priceQuantity * boxComponent[0].quantity;
+              thisOrd.quantity += item.quantity / catalogEntry.attributes.productionQuantity * boxComponent[0].quantity;
             }
           }
           var stickerItem = {
