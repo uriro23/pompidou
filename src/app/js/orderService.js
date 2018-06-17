@@ -384,20 +384,35 @@ angular.module('myApp')
 
       var DAYS_TO_COLOR = 7;
 
-      var fields = ['eventDate','number','orderStatus','template','color'];
+      var fields = ['eventDate', 'eventTime', 'number','orderStatus','template','color'];
       var from = angular.copy(today);
       var to = angular.copy(from);
       to.setDate(to.getDate()+ DAYS_TO_COLOR);
        api.queryOrdersByRange('eventDate',from,to,fields)
         .then(function(orders) {
-          console.log('total '+orders.length+' orders immediate future');
-          var newOrders = orders.filter(function(order) { // find orders without color assignment
+            var newOrders = orders.filter(function(order) { // find orders without color assignment
             return  !order.attributes.template &&
               order.attributes.orderStatus >= 2 &&
               order.attributes.orderStatus <= 5 &&
               !order.attributes.color;
           });
           if (newOrders.length > 0) {
+            console.log('found '+newOrders.length+' orders in immediate future without colors');
+            newOrders.sort(function(a,b) {
+              var ad = a.attributes.eventDate;
+              var at = a.attributes.eventTime;
+              var bd = b.attributes.eventDate;
+              var bt = b.attributes.eventTime;
+              var a1 = ad.getDate() - 1 + ad.getMonth()*31 + (ad.getFullYear()-2010)*372;
+              if (at) {
+                a1 +=  at.getHours()/24 + at.getMinutes()/1440;
+              }
+              var b1 = bd.getDate() - 1 + bd.getMonth()*31 + (bd.getFullYear()-2010)*372;
+              if (bt) {
+                b1 +=  bt.getHours()/24 + bt.getMinutes()/1440;
+              }
+              return a1 - b1;
+            });
             var existingColors = orders.filter(function(order) {
               return order.attributes.color;
             }).map(function(order) {
@@ -406,18 +421,21 @@ angular.module('myApp')
                colorsPromise.then(function(allColors) {
                  // find a new color for each new order
                  newOrders.forEach(function(newOrder) {
-                   var selectedColor = allColors.filter(function(allColor) {
+                   var remainingColors = allColors.filter(function(allColor) {
                      var t1 = existingColors.filter(function(eColor) {
                        return eColor === allColor.tId;
                      });
                      return !t1.length; // if color was not previously in use, select it
-                   })[0].tId;
-                   console.log('selected color '+selectedColor+' for order '+newOrder.attributes.number);
-                   newOrder.attributes.color = selectedColor;
-                   existingColors.push(selectedColor);
-
-                   api.saveObj(newOrder);
-
+                   });
+                   if (remainingColors.length) {  // check if there are any colors to assigns to order
+                     var selectedColor = remainingColors[0].tId;
+                     console.log('selected color '+selectedColor+' for order '+newOrder.attributes.number);
+                     newOrder.attributes.color = selectedColor;
+                     existingColors.push(selectedColor);
+                     api.saveObj(newOrder);
+                   } else {
+                     console.log('no color available for order ' + newOrder.attributes.number);
+                   }
                  });
             });
           }
