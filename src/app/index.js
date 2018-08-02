@@ -115,6 +115,9 @@ config(function($stateProvider, $urlRouterProvider) {
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
         }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
         }],
@@ -159,6 +162,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
         }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
@@ -205,6 +211,9 @@ config(function($stateProvider, $urlRouterProvider) {
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
         }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
         }],
@@ -249,6 +258,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
         }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;

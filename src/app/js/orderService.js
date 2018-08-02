@@ -437,7 +437,7 @@ angular.module('myApp')
                      console.log('no color available for order ' + newOrder.attributes.number);
                    }
                  });
-            });
+               });
           }
         });
     };

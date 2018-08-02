@@ -5,7 +5,7 @@ angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
                                      orderService, currentOrder, isFromNew, customer, lov, today,
                                      bidTextTypes, categories, measurementUnits,
-                                     discountCauses, referralSources, menuTypes,
+                                     discountCauses, referralSources, menuTypes, colors,
                                      employees, pRoles, config) {
 
     $rootScope.menuStatus = 'show';
@@ -171,6 +171,11 @@ angular.module('myApp')
         this.order.view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.attributes.referralSource);
         })[0];
+        if (this.order.attributes.color) {
+          this.order.view.color = colors.filter(function(obj) {
+            return (obj.tId === that.order.attributes.color);
+          })[0];
+        }
 
         api.queryCustomers(that.order.attributes.customer)
           .then(function (custs) {

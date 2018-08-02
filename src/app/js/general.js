@@ -26,6 +26,11 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'isBusinessEvent');
     };
 
+    this.resetColor = function() {
+      this.order.delAttributes = {color:true};
+      this.order.view.color = undefined;
+      orderService.orderChanged(this.order,'color');
+    };
 
     this.duplicateOrder = function () {
       $state.go('dupOrder',{basedOnId:this.order.id});
