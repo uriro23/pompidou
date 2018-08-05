@@ -15,8 +15,7 @@
   <th  ng-show="orderTableModel.queryType==='debts'" style="width: 7%">יתרה</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 15%">פעילות</th>
-  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'"
-      style="width: 6%">הצעת מחיר</th>
+  <th style="width: 6%">יוצר</th>
   </thead>
   <tbody>
   <tr ng-repeat="order in orderTableModel.orders"
@@ -55,14 +54,27 @@
     </td>
     <td>{{order.attributes.noOfParticipants}}</td>
     <td>{{order.attributes.header.title}}</td>
-    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 !orderTableModel.user.isSalesPerson">
       <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
               ng-change="orderListModel.setStatus(order)"
               ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
       ></select>
     </td>
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 orderTableModel.user.isSalesPerson">
+      {{order.view.orderStatus.name}}
+    </td>
     <td class="hidden-sm hidden-md hidden-lg hidden-xl"
-        ng-show="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
+        ng-show="orderTableModel.queryType==='future'||
+                 orderTableModel.queryType==='debts'||
+                 orderTableModel.queryType==='year'">
       {{order.view.orderStatus.name}}
     </td>
     <td ng-hide="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
@@ -74,9 +86,7 @@
     </td>
      <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityDate | date: 'dd/MM/yy'}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityText}}</td>
-    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='customer'">
-      <button class="btn btn-default btn-sm" ng-click="orderTableModel.getLastBid(order)">הצג</button>
-    </td>
+    <td>{{order.attributes.createdBy}}</td>
   </tr>
   </tbody>
 </table>

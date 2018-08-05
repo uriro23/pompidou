@@ -13,6 +13,8 @@ angular.module('myApp')
     }
     $rootScope.title = 'סטטיסטיקות';
 
+    this.user = user;
+
     this.toDate = angular.copy(today);
     this.toDate.setDate(this.toDate.getDate()+1); // do until tomorrow, to include events of today
     this.fromDate = angular.copy(today);
@@ -29,7 +31,7 @@ angular.module('myApp')
 
     var fieldList = [
       'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-      'exitTime','template', 'header', 'vatRate', 'referralSource'
+      'exitTime','template', 'header', 'vatRate', 'referralSource', 'createdBy'
     ];
 
     //this.loadOrders();
@@ -360,6 +362,7 @@ angular.module('myApp')
         tabThis.isProcessing = this.isHideOrders;
         tabThis.orders = this.ordersToShow;
         tabThis.isDisableLink = false;
+        tabThis.user = this.user.attributes;
       }
     };
 

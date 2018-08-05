@@ -7,7 +7,7 @@
     </span>&nbsp;&nbsp;
   <button class="btn btn-default" ng-click="orderListModel.newOrder()">חדש</button>
 </h2>
-<table class="recents">
+<table class="recents" ng-hide="orderListModel.user.attributes.isSalesPerson">
   <tr ng-repeat="week in orderListModel.weeks">
     <td>{{week.label}}</td>
     <td>

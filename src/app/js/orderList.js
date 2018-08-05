@@ -6,14 +6,16 @@ angular.module('myApp')
                                           api, lov, orderService, today, queryType, customers,
                                           recentOpenings, recentClosings, colors) {
       var that = this;
-     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
+    this.user = user;
     if (user) {
       $rootScope.username = user.attributes.username;
     } else {
       $state.go('login');
     }
     $rootScope.title = 'אירועים';
+
+     $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : 'show';
 
     if (user.attributes.username === 'yuval' || user.attributes.username === 'uri') {
       orderService.generateOrderColors();
@@ -141,7 +143,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','template','remarks','header', 'activities', 'color'
+        'exitTime','template','remarks','header', 'activities', 'color', 'createdBy'
       ];
       if (this.queryType !== 'year') {
         this.queryYear = undefined;
@@ -245,6 +247,7 @@ angular.module('myApp')
         tabThis.isProcessing = this.isProcessing;
         tabThis.orders = this.orders;
         tabThis.isDisableLink = false;
+        tabThis.user = this.user.attributes;
       }
     };
 

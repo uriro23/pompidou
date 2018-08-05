@@ -846,6 +846,23 @@ angular.module('myApp')
         });
     };
 
+    this.orderCreatorName = function() {
+      var that = this;
+      console.log('starting');
+      api.queryAllOrders('number')
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          orders.forEach(function(order) {
+            order.attributes.createdBy = 'yuval';
+           });
+            api.saveObjects(orders)
+            .then(function() {
+              console.log('done');
+            });
+        });
+    };
+
+
 
 // end conversions
 

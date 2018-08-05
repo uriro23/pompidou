@@ -24,19 +24,25 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 	<div id="mainAppContainer" ng-cloak>
-	    <ul class="menu" ng-show="menuStatus==='show'">
-	      <li><a ng-href="#/orderListView/future">אירועים</a></li>
-        <li><a ng-href="#/calendarView">לוח שנה</a> </li>
-        <li><a ng-href="#/customerListView">לקוחות</a></li>
-	      <li><a ng-href="#/workOrderView">פקודת עבודה</a> </li>
-        <li><a ng-href="#/catalogList/1/1">קטלוג</a></li>
-	      <li><a ng-href="#/admin">ניהול</a></li>
-        <li><a ng-href="#/statistics">סטטיסטיקות</a> </li>
-	      <li>{{'שלום '+username}}</li>
-	      <li><a ng-href="#/login">התנתק</a> </li>
-	      <li>{{environment}}</li>
-	    </ul>
-	    <ul class="menu" ng-show="menuStatus==='empty'">
+    <ul class="menu" ng-show="menuStatus==='show'">
+      <li><a ng-href="#/orderListView/future">אירועים</a></li>
+      <li><a ng-href="#/calendarView">לוח שנה</a> </li>
+      <li><a ng-href="#/customerListView">לקוחות</a></li>
+      <li><a ng-href="#/workOrderView">פקודת עבודה</a> </li>
+      <li><a ng-href="#/catalogList/1/1">קטלוג</a></li>
+      <li><a ng-href="#/admin">ניהול</a></li>
+      <li><a ng-href="#/statistics">סטטיסטיקות</a> </li>
+      <li>{{'שלום '+username}}</li>
+      <li><a ng-href="#/login">התנתק</a> </li>
+      <li>{{environment}}</li>
+    </ul>
+    <ul class="menu" ng-show="menuStatus==='small'">
+      <li><a ng-href="#/orderListView/future">אירועים</a></li>
+      <li>{{'שלום '+username}}</li>
+      <li><a ng-href="#/login">התנתק</a> </li>
+      <li>{{environment}}</li>
+    </ul>
+    <ul class="menu" ng-show="menuStatus==='empty'">
 	      <li>נא לסיים את ביצוע העדכונים</li>
 	    </ul>
 

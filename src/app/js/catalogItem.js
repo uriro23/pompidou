@@ -15,6 +15,8 @@ angular.module('myApp')
       $state.go('login');
     }
 
+    model.user = user;
+
     model.setChanged = function (bool) {
       if (bool) {
         model.item.isChanged = true;
@@ -428,7 +430,7 @@ angular.module('myApp')
     model.getOrders = function () {
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus',
-        'customer','number','header','quotes'
+        'customer','number','header','quotes', 'createdBy'
       ];
       model.isProcessing = true;
       model.setOrderTableParams();
@@ -496,6 +498,7 @@ angular.module('myApp')
         tabThis.isProcessing = model.isProcessing;
         tabThis.orders = model.orders;
         tabThis.isDisableLink = model.item.isChanged;
+        tabThis.user = model.user.attributes;
       }
     };
 

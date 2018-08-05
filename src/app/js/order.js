@@ -16,6 +16,8 @@ angular.module('myApp')
       $state.go('login');
     }
 
+    this.user = user;
+
     var tabThis;
 
     this.setOrderTableParams = function () {
@@ -24,6 +26,7 @@ angular.module('myApp')
         tabThis.isProcessing = false;
         tabThis.orders = this.prevOrders;
         tabThis.isDisableLink = this.order.view.isChanged;
+        tabThis.user = this.user.attributes;
       }
     };
 
@@ -96,7 +99,8 @@ angular.module('myApp')
     this.getPrevOrders = function () {
       var that = this;
       var fieldList = [
-        'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus','customer','number','header'
+        'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus',
+        'customer','number','header','createdBy'
       ];
       if (this.order.view.customer.id) {
         api.queryOrdersByCustomer(this.order.view.customer.id,fieldList)

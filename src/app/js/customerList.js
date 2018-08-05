@@ -13,6 +13,8 @@ angular.module('myApp')
     }
     $rootScope.title = 'לקוחות';
 
+    this.user = user;
+
     // state diagram
     //--------------
     //
@@ -168,7 +170,7 @@ angular.module('myApp')
       var that = this;
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','template','remarks','header'
+        'exitTime','template','remarks','header','createdBy'
       ];
       api.queryOrdersByCustomer(this.currentCustomer.id,fieldList)
         .then(function(ords) {
@@ -272,6 +274,7 @@ angular.module('myApp')
         tabThis.isProcessing = false;
         tabThis.orders = this.customerOrders;
         tabThis.isDisableLink = false;
+        tabThis.user = this.user.attributes;
       }
     };
 
