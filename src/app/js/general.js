@@ -8,6 +8,7 @@ angular.module('myApp')
     this.order = $scope.orderModel.order;
     this.isReadOnly = $scope.orderModel.isReadOnly;
     this.referralSources = $scope.orderModel.referralSources;
+    this.user = $scope.orderModel.user;
 
     this.orderChanged = function (field) {
       orderService.orderChanged(this.order,field)
@@ -38,6 +39,11 @@ angular.module('myApp')
 
     this.deleteOrder = function () {
       var that = this;
+      if (this.user.attributes.isSalesPerson &&
+        this.user.attributes.username !== this.order.attributes.createdBy) {
+        alert ('אינך יכול לבטל אירוע שלא אתה יצרת');
+        return;
+      }
       var ackDelModal = $modal.open({
         templateUrl: 'app/partials/order/ackDelete.html',
         controller: 'AckDelOrderCtrl as ackDelOrderModel',

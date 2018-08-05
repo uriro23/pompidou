@@ -137,7 +137,12 @@ angular.module('myApp')
     // ------
 
     this.saveOrder = function () {
-      orderService.saveOrder (this.order);
+      if (this.user.attributes.isSalesPerson &&
+          this.user.attributes.username !== this.order.attributes.createdBy) {
+        alert('אינך יכול לעדכן אירוע שלא אתה יצרת');
+      } else {
+        orderService.saveOrder(this.order);
+      }
     };
 
 
@@ -343,6 +348,7 @@ angular.module('myApp')
       $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
       this.order.attributes = currentOrder.attributes;
+      this.order.attributes.createdBy = this.user.attributes.username;
       this.order.attributes.eventDate = undefined;
       this.order.attributes.eventTime = undefined;
       this.order.attributes.exitTime = undefined;
@@ -368,6 +374,7 @@ angular.module('myApp')
     } else {  // new order or new order by customer
       $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
+      this.order.attributes.createdBy = this.user.attributes.username;
       if ($state.current.name === 'newOrderByCustomer') {
         this.order.attributes.customer = customer.id;
       }

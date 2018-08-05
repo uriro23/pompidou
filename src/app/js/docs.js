@@ -9,6 +9,7 @@ angular.module('myApp')
     this.isReadOnly = $scope.orderModel.isReadOnly;
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
     this.orderStatuses = $scope.orderModel.orderStatuses; // needed for setupOrderView
+    this.user = $scope.orderModel.user;
 
     // functions
     this.setupOrderView = $scope.orderModel.setupOrderView;
@@ -132,6 +133,11 @@ angular.module('myApp')
 
     this.sendMail = function () {
       var that = this;
+      if (this.user.attributes.isSalesPerson &&
+        this.user.attributes.username !== this.order.attributes.createdBy) {
+        alert ('אינך יכול לשלוח מייל באירוע שלא יצרת');
+        return;
+      }
       var sendMailModal = $modal.open({
         templateUrl: 'app/partials/order/sendMail.html',
         controller: 'SendMailCtrl as sendMailModel',
