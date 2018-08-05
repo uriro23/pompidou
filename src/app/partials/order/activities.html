@@ -9,9 +9,9 @@
   <tr>
     <td>{{activitiesModel.activityDate | date: 'dd/MM/yyyy HH:mm'}}</td>
     <td>
-      <input type="text" size="70" ng-model="activitiesModel.activityText"
+      <textarea rows="10" cols="70" ng-model="activitiesModel.activityText"
              ng-disabled="activitiesModel.isReadOnly"
-          >
+      ></textarea>
     </td>
     <td>
         <button ng-click="activitiesModel.addActivity()"

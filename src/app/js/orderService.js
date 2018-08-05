@@ -348,7 +348,7 @@ angular.module('myApp')
         'discountRate': currentQuote.discountRate,
         'isHeavyweight': currentQuote.isHeavyweight,
         'activityDate': order.activities.length?order.activities[0].date:undefined,
-        'activityText': order.activities.length?order.activities[0].text:undefined
+        'activityText': order.activities.length?order.activities[0].text.slice(0,30):undefined
       }
     };
 
