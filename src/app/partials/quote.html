@@ -12,12 +12,7 @@
           class="purpleText bold quoteMainTitle">
         הצעת תפריט
       </h2>
-      <h2 ng-show="quoteModel.bid.attributes.documentType===2"
-          class="purpleText bold quoteMainTitle">
-        <span>הזמנה מס'</span>
-        <span>{{quoteModel.bid.attributes.order.number}}</span>
-      </h2>
-			<div class="quoteLogo">
+     <div class="quoteLogo">
 			   <img align="left" src="app/img/logo.png"/>
 		    </div>
 		</div>
@@ -46,6 +41,9 @@
                 <span >{{quoteModel.currentOrder.children}}</span>
                 &nbsp;<span>ילדים</span>&#41;
          </span>
+        <br>
+        <span class="bold">מספרנו:</span>
+        <span>{{quoteModel.bid.attributes.order.number}}</span>
 
 		    </div>
 

@@ -1,0 +1,55 @@
+<div class="quoteMainContainer">
+
+  <div class="quoteMainContent">
+
+  <!-- Top Purple line  -->
+<div class="purpleBG topQuoteLine"></div>
+
+
+<!-- Header + main logo -->
+<div class="quoteTextBox">
+  <h2 class="purpleText bold quoteMainTitle">
+   רשימת רגישויות
+  </h2>
+  <div class="quoteLogo">
+    <img align="left" src="app/img/logo.png"/>
+  </div>
+</div>
+
+    <!-- Customer's details + nice image -->
+    <div class="quoteTextBox quoteDetails">
+
+      <div class="floatRight">
+
+        <span class="bold">שם:</span>
+        <span>{{sensitivityListModel.customer.attributes.firstName+' '+
+                sensitivityListModel.customer.attributes.lastName}}</span>
+        <br>
+        <span class="bold">תאריך האירוע:</span>
+        <span>{{sensitivityListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
+
+      </div>
+
+
+      <!-- image next to customer's details -->
+      <div class="quoteTitleImg floatLeft">
+        <div class="quotePhoneOnImg bold purpleText">טלפון: 054-7514061 </div>
+        <img align="left" src="app/img/box_1.jpg"/>
+      </div>
+
+    </div>
+
+    <div class="quoteTextBox quoteDetails">
+      <div class="floatRight">
+      <div ng-repeat="sensitivity in sensitivityListModel.sensitivities">
+  <h3 class="bold" ng-show="sensitivity.items.length">{{sensitivity.description}}</h3>
+        <ul>
+  <li ng-repeat="item in sensitivity.items">
+    {{item.productDescription}}
+  </li>
+        </ul>
+</div>
+      </div>
+    </div>
+  </div>
+</div>

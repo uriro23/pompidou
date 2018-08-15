@@ -767,17 +767,42 @@ config(function($stateProvider, $urlRouterProvider) {
     }
   })
     .state ('menu', {
-    url: '/menu/:id',
-    templateUrl: 'app/partials/menu.html',
-    controller: 'MenuCtrl as menuModel',
+      url: '/menu/:id',
+      templateUrl: 'app/partials/menu.html',
+      controller: 'MenuCtrl as menuModel',
+      resolve: {
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }]
+      }
+    })
+.state ('sensitivityList', {
+    url: '/sensitivityList/:id',
+    templateUrl: 'app/partials/sensitivityList.html',
+    controller: 'SensitivityListCtrl as sensitivityListModel',
     resolve: {
       order: ['$stateParams', 'api', function ($stateParams, api) {
         return api.queryOrder ($stateParams.id).then (function (orders) {
           return orders[0];
         });
       }],
-       categories: ['categoriesPromise', function (categoriesPromise) {
-        return categoriesPromise;
+      sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+        return sensitivitiesPromise;
+      }],
+      catalog: ['api', function(api) {
+        return api.queryCatalog(1). then (function(catalog) {
+          return catalog;
+        });
+      }],
+      customers: ['api', function (api) {
+        return api.queryCustomers().then(function (objs) {
+          return objs;
+        });
       }]
     }
   });

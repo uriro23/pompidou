@@ -827,7 +827,7 @@ angular.module('myApp')
     };
 
 
-*/
+
 
     // generate product name from product description
     this.generateStickerLabels = function () {
@@ -861,7 +861,21 @@ angular.module('myApp')
             });
         });
     };
+*/
 
+    this.catalogSensitivities = function () {
+      api.queryCatalog()
+        .then(function(catalog) {
+          console.log(catalog.length+' items loaded');
+          catalog.forEach(function(cat) {
+            cat.attributes.sensitivities = [];
+          });
+          api.saveObjects(catalog)
+            .then(function() {
+              console.log('catalog updated');
+            });
+        });
+    };
 
 
 // end conversions

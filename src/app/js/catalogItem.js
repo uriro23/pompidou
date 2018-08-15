@@ -284,6 +284,8 @@ angular.module('myApp')
        if (model.item.errors.hasOwnProperty(e)) {
          if (model.item.errors[e]) {
            hasErrors = true;
+           console.log('error in item property:');
+           console.log(e);
          }
        }
      }
@@ -291,6 +293,10 @@ angular.module('myApp')
        d.compItems.forEach(function(i) {
          if (i.isError) {
            hasErrors = true;
+           console.log('error in component domain:');
+           console.log(d);
+           console.log('in item:');
+           console.log(i);
          }
        });
      });
@@ -400,7 +406,9 @@ angular.module('myApp')
         })[0];
         model.item.errors.productName = true;
         model.item.errors.productDescription = true;
-        model.item.errors.productionQuantity = true;
+        if (model.currentDomain.id<3) {
+          model.item.errors.productionQuantity = true;
+        }
         if (model.currentDomain.id===1) {
           model.item.errors.priceQuantity = true;
           model.item.errors.price = true;

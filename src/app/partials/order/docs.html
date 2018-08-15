@@ -1,8 +1,8 @@
 <div ng-controller="DocumentsCtrl as documentsModel">
   <table>
     <tbody>
-    <tr style="width:50%">
-      <td style="width:40%">
+    <tr style="width:80%">
+      <td style="width:20%">
         <button class="btn btn-default" ng-click="documentsModel.sendMail()"
                 ng-disabled="documentsModel.isReadOnly ||
                              documentsModel.order.view.isChanged ||
@@ -10,9 +10,14 @@
           שלח דוא"ל
         </button>
       </td>
-      <td style="width: 30%">
+      <td style="width: 20%">
         <a ng-href="#/menu/{{documentsModel.order.id}}"target="_blank">
           הדפס תפריט
+        </a>
+      </td>
+      <td style="width: 30%">
+        <a ng-href="#/sensitivityList/{{documentsModel.order.id}}"target="_blank">
+          הדפס רשימת רגישויות
         </a>
       </td>
       <td style="width: 30%">
