@@ -4,7 +4,8 @@
 angular.module('myApp')
   .controller('CatalogItemCtrl', function ($state, $modal, $rootScope, $scope, api, lov,
                                            currentItem, currentDomain, currentCategory,
-                                           allCategories, productNames,measurementUnits, config) {
+                                           allCategories, productNames,measurementUnits,
+                                           sensitivities, config) {
 
     var model = this;
     $rootScope.menuStatus = 'show';
@@ -220,6 +221,30 @@ angular.module('myApp')
    model.addItem = function (domain,category) {
      $state.go('newCatalogItem',{'domain':domain, 'category':category});
    };
+
+   // sensitivities tab
+
+    model.filterAvailableSensitivities = function () {
+      model.sensitivities = sensitivities.filter(function(sen) {
+        var temp = model.item.attributes.sensitivities.filter(function(s) {
+          return s.tId === sen.tId;
+        });
+        return (temp.length===0);
+      });
+
+    };
+
+    model.addSensitivity = function () {
+      model.item.attributes.sensitivities.push(model.sensitivity);
+      model.filterAvailableSensitivities();
+      model.setChanged(true);
+    };
+
+    model.delSensitivity = function (ind) {
+      model.item.attributes.sensitivities.splice(ind,1);
+      model.filterAvailableSensitivities();
+      model.setChanged(true);
+    };
 
    // usage tab
 
@@ -516,6 +541,7 @@ angular.module('myApp')
       return cat.domain===currentDomain;
     });
     model.measurementUnits = measurementUnits;
+    model.sensitivities = sensitivities;
     model.timeUnits = lov.timeUnits;
     model.isNewItem = $state.current.name==='newCatalogItem';
    if (model.isNewItem) {
@@ -534,6 +560,7 @@ angular.module('myApp')
      }
      model.item.attributes.exitList = [];
      model.item.attributes.components = [];
+     model.item.attributes.sensitivities = [];
    } else {
      $rootScope.title = 'קטלוג - ' + currentItem.attributes.productName;
      model.item = currentItem;
@@ -543,6 +570,7 @@ angular.module('myApp')
    model.setupItemView();
    model.setChanged(false);
    model.loadComponentItems();
+   model.filterAvailableSensitivities();
   })
 
   .controller('AckDelCatalogCtrl', function ($modalInstance, item) {

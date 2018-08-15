@@ -463,7 +463,10 @@ config(function($stateProvider, $urlRouterProvider) {
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
         }],
-         config: ['api', function (api) {
+        sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+          return sensitivitiesPromise;
+        }],
+        config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
             return res[0].attributes;
           });
@@ -513,6 +516,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
+        }],
+        sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+          return sensitivitiesPromise;
         }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {

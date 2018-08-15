@@ -72,6 +72,14 @@ angular.module('myApp')
     });
   })
 
+  .factory('sensitivitiesPromise', function (api) {
+    return api.querySensitivities().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('menuTypesPromise', function (api) {
     return api.queryMenuTypes().then(function (res) {
       return res.map(function (obj) {

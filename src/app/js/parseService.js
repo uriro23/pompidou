@@ -420,6 +420,20 @@ angular.module('myApp')
       return query(referralSourcesQuery);
     };
 
+    // Sensitivity
+    // -------------
+
+    var Sensitivity = Parse.Object.extend("Sensitivity");
+
+    this.querySensitivities = function (id) {
+      var sensitivitiesQuery = new Parse.Query(Sensitivity);
+      if (id) {
+        sensitivitiesQuery.equalTo("tId", id);
+      }
+      sensitivitiesQuery.ascending("order");
+      return query(sensitivitiesQuery);
+    };
+
     // MenuType
     // --------
 

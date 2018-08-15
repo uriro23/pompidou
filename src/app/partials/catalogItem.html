@@ -122,6 +122,27 @@
       </tr>
     </table>
   </tab>
+  <tab heading="רגישויות">
+    <p></p>
+    <table style="margin-right: 5%">
+      <tr>
+    <td>הוסף רגישות:</td>
+      <td>
+      <select ng-model="catalogItemModel.sensitivity"
+              ng-change="catalogItemModel.addSensitivity()"
+              ng-options="sensitivity.label for sensitivity in catalogItemModel.sensitivities"></select>
+      </td>
+      </tr>
+      <tr ng-repeat="sensitivity in catalogItemModel.item.attributes.sensitivities">
+        <td></td>
+        <td>{{sensitivity.label}}</td>
+        <td>
+          <button class="btn btn-default"
+                  ng-click="catalogItemModel.delSensitivity($index)">מחק</button>
+        </td>
+      </tr>
+    </table>
+  </tab>
   <tab heading="עץ מוצר"
        ng-show="catalogItemModel.currentDomain.id<3">
     <table style="width: 95%">
