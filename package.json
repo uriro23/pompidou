@@ -12,6 +12,7 @@
     "gulp-util": "^3.0.8",
     "karma": "^0.12.37",
     "karma-jasmine": "^0.3.8",
+    "loadash": "^1.0.0",
     "merge-stream": "^0.1.8",
     "wrench": "^1.5.9"
   },

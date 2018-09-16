@@ -158,8 +158,17 @@ angular.module('myApp')
    };
 
    model.setCompItem = function(compDomain) {
-     compDomain.compItems.push(compDomain.currentItem);
-     model.setChanged(true);
+     console.log('adding:');
+     console.log(compDomain.currentItem);
+     var temp = compDomain.compItems.filter(function(item) {
+       return item.id === compDomain.currentItem.id;
+     });
+     if (temp.length) {
+       alert (compDomain.currentItem.attributes.productName+ ' כבר נמצא ברשימה')
+     } else {
+       compDomain.compItems.push(compDomain.currentItem);
+       model.setChanged(true);
+     }
    };
 
    model.delItem = function(compDomain,ind) {
@@ -405,11 +414,11 @@ angular.module('myApp')
           return cat.tId===currentCategory;
         })[0];
         model.item.errors.productName = true;
-        model.item.errors.productDescription = true;
         if (model.currentDomain.id<3) {
           model.item.errors.productionQuantity = true;
         }
         if (model.currentDomain.id===1) {
+          model.item.errors.productDescription = true;
           model.item.errors.priceQuantity = true;
           model.item.errors.price = true;
         }
