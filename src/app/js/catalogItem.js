@@ -262,12 +262,14 @@ angular.module('myApp')
         .then(function(catalog) {
           model.usages = catalog.filter(function(cat) {
             var isUsage = false;
-            cat.attributes.components.forEach(function(comp) {
-              if (comp.id === model.item.id) {
-                cat.quantity = comp.quantity;   // extract quantity of usage
-                isUsage = true;
-              }
-            });
+            if (!cat.attributes.isDeleted) {    // don't show deleted usages
+              cat.attributes.components.forEach(function (comp) {
+                if (comp.id === model.item.id) {
+                  cat.quantity = comp.quantity;   // extract quantity of usage
+                  isUsage = true;
+                }
+              });
+            }
             return isUsage;
           });
           model.usages.forEach(function(usage) {
@@ -330,7 +332,9 @@ angular.module('myApp')
        model.item.view.maxTimeUnit = lov.timeUnits[0];
      }
      model.item.attributes.measurementUnit = model.item.view.measurementUnit.tId;
-     model.item.attributes.packageMeasurementUnit = model.item.view.packageMeasurementUnit.tId;
+     if (model.item.view.packageMeasurementUnit) {
+       model.item.attributes.packageMeasurementUnit = model.item.view.packageMeasurementUnit.tId;
+     }
      model.item.attributes.minTimeUnit = model.item.view.minTimeUnit.id;
      model.item.attributes.maxTimeUnit = model.item.view.maxTimeUnit.id;
      model.item.attributes.priceQuantity = Number(model.item.attributes.priceQuantity);
