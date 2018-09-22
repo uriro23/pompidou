@@ -18,8 +18,10 @@ angular.module('myApp')
 
   this.isEnvTabActive =true;
 
-  this.domains = lov.domains;
+  this.domains = angular.copy(lov.domains);
   this.domains.splice(0,1);
+
+  this.categories = categories;
 
 
 
@@ -249,9 +251,9 @@ angular.module('myApp')
                 comp.id !== config.attributes.unhandledItemMaterial  &&
                 comp.id !== config.attributes.satietyIndexItem;
             }).forEach(function(component) {
-              var compCatalog = that.catalog.filter(function(cat) {
+              var compCatalog = angular.copy(that.catalog.filter(function(cat) {
                 return cat.id === component.id;
-              })[0];
+              })[0]);
               compCatalog.quantity = component.quantity;
               compCatalog.measurementUnit = measurementUnits.filter(function(mu) {
                 return mu.tId === compCatalog.attributes.measurementUnit;
@@ -259,9 +261,9 @@ angular.module('myApp')
               if (component.domain === 2) {
                 compCatalog.materials = [];
                 compCatalog.attributes.components.forEach(function(prepMaterial) {
-                  var materialCatalog = that.catalog.filter(function(cat) {
+                  var materialCatalog = angular.copy(that.catalog.filter(function(cat) {
                     return cat.id === prepMaterial.id;
-                  })[0];
+                  })[0]);
                   materialCatalog.quantity = prepMaterial.quantity;
                   materialCatalog.measurementUnit = measurementUnits.filter(function(mu) {
                     return mu.tId === materialCatalog.attributes.measurementUnit;

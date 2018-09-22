@@ -17,8 +17,8 @@
   <button class="btn-default" ng-click="adminModel.handleEmpBonuses()">בונוסים</button>
   <button class="btn btn-default" ng-click="adminModel.generateStickerLabels()">צור שמות מדבקות</button>
   <button class="btn btn-default" ng-click="adminModel.orderCreatorName()">שם יוצר אירוע</button>
-  -->
   <button class="btn btn-default" ng-click="adminModel.catalogSensitivities()">רגישויות</button>
+  -->
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -127,7 +127,9 @@
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(prep.id)">
           <span>הכנה:</span>
-          <span>{{prep.attributes.productName}}</span>
+          <span ng-class="prep.attributes.isDeleted?'myCanceledEvent':'null'">
+            {{prep.attributes.productName}}
+          </span>
           </div>
           <div style="width: 18.4%;display: inline-block">
             <span>כמות במנה:</span>
@@ -145,7 +147,9 @@
             <div style="cursor: pointer;width: 37.5%; display: inline-block"
                  ng-click="adminModel.selectCatItem(prepMaterial.id)">
             <span>חומר:</span>
-            <span>{{prepMaterial.attributes.productName}}</span>
+            <span ng-class="prepMaterial.attributes.isDeleted?'myCanceledEvent':'null'">
+              {{prepMaterial.attributes.productName}}
+            </span>
             </div>
             <div style="width: 18.9%;display: inline-block">
               <span>כמות בהכנה:</span>
@@ -160,7 +164,9 @@
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(material.id)">
           <span>חומר:</span>
-          <span>{{material.attributes.productName}}</span>
+          <span ng-class="material.attributes.isDeleted?'myCanceledEvent':'null'">
+            {{material.attributes.productName}}
+          </span>
           </div>
           <div style="width: 18.4%;display: inline-block">
             <span>כמות במנה:</span>
