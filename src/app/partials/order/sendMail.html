@@ -53,10 +53,15 @@
   </table>
 </div>
 <div class="modal-footer">
-    <email-first-time-experience>
-        <button class="btn btn-primary" ng-click="sendMailModel.doSend()"
-                ng-disabled = "!sendMailModel.msg || !sendMailModel.mail.to"
-                >שלח</button>
-    </email-first-time-experience>
+  <email-first-time-experience>
+    <button class="btn btn-primary" ng-click="sendMailModel.doEmail('send')"
+            ng-disabled = "!sendMailModel.msg || !sendMailModel.mail.to"
+    >שלח</button>
+  </email-first-time-experience>
+  <email-first-time-experience>
+    <button class="btn btn-primary" ng-click="sendMailModel.doEmail('save')"
+            ng-disabled = "!sendMailModel.msg || !sendMailModel.mail.to"
+    >שמור</button>
+  </email-first-time-experience>
   <button class="btn btn-warning" ng-click="sendMailModel.cancel()">ביטול</button>
 </div>

@@ -79,11 +79,24 @@
       }));
     }
 
+    function createDraft(email) {
+      // Web-safe base64
+      var base64EncodedEmail = encodeUtf8(email).replace(/\//g, '_').replace(/\+/g, '-');
+      return promiseTranslator(gapi.client.gmail.users.drafts.create({
+        userId: 'me',
+        resource: {
+          message: {
+            raw: base64EncodedEmail
+          }
+        }
+      }));
+    }
+
     function encodeUtf8(toBeEncoded) {
       return btoa(unescape(encodeURIComponent(toBeEncoded)));
     }
 
-    this.sendEmail = function (params) {
+    this.doEmail = function (op,params) {
       //var to = params.to,
       //  cc = params.cc,
       //  subject = params.subject,
@@ -97,7 +110,7 @@
       //  'Content-Transfer-Encoding: 7BIT\r\n';
 
       return isInitialized.promise.then(function () {
-          // return sendMessage(emailHeaders + '\r\n' + content);
+        // return sendMessage(emailHeaders + '\r\n' + content);
         var mimeMsg =
           Mime.toMimeTxt({
             "to": params.to,
@@ -105,13 +118,16 @@
             "subject": params.subject,
             "from": "me",
             "body": params.text,
-             "cids": [],
+            "cids": [],
             "attaches": params.attachments
           });
-        return sendMessage(mimeMsg);
+        if (op === 'send') {
+          return sendMessage(mimeMsg);
+        } else {
+          return createDraft(mimeMsg);
+        }
       });
     };
-
 
   }
 

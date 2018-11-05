@@ -146,7 +146,7 @@ angular.module('myApp')
       removePlugins: 'elementspath'
     };
 
-     this.doSend = function () {
+     this.doEmail = function (op) {
       var that = this;
       this.mail.attachedBids = [];
       var bidCnt = 0;
@@ -195,7 +195,7 @@ angular.module('myApp')
         .then(function(pdfResult) {
           that.mail.attachments = pdfResult;
           that.mail.text = '<div dir="rtl">' + msgText + '</div>';
-          gmailClientLowLevel.sendEmail(that.mail)
+          gmailClientLowLevel.doEmail(op,that.mail)
             .then(function () {
               var newMail = api.initMail();
               newMail.attributes.orderId = order.id;
