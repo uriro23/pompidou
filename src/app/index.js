@@ -7,38 +7,12 @@ angular.module('myApp', [
   'ui.router','ui.bootstrap', 'ngCkeditor', 'ngSanitize', 'ui.select', 'pompidou'
 ]).
 config(function($stateProvider, $urlRouterProvider) {
-  $urlRouterProvider.otherwise(function ($injector, $location) {
+  $urlRouterProvider.otherwise(function ($injector) {
     var $state = $injector.get('$state');
-    /*  this is for pdfCrowd
-    var l = $location.$$url.length;
-    var i1 = $location.$$url.indexOf('/bid/');
-    var p1 = $location.$$url.substr(i1+5,l-(i1+4));
-    var i2 = $location.$$url.indexOf('%2Fbid%2F');
-    var p2 = $location.$$url.substr(i2+9,l-(i2+8));
-    if (i1>=0 && l > i1+5) {
-      console.log('uuid1: ' + p1);
-      $state.go('bid', {uuid: p1});
-    } else if (i2>=0 && l > i2+9) {
-      console.log('uuid2: ' + p2);
-      $state.go('bid', {uuid: p2});
-    } else {
-      $state.go('default', {badUrl: $location.$$url});
-    } */
-    console.log($location.$$url);
-    $state.go('default', {badUrl: $location.$$url});
+    $state.go('login');
   });
   $stateProvider
-    .state('default', {
-      url:'/default/:badUrl',
-      templateUrl: 'app/partials/default.html',
-      controller: 'DefaultCtrl as defaultModel',
-      resolve: {
-        badUrl: ['$stateParams', function($stateParams) {
-          return $stateParams.badUrl;
-        } ]
-      }
-    })
-    .state('login', {
+   .state('login', {
       url: '/login',
       templateUrl: 'app/partials/login.html',
       controller: 'LoginCtrl as loginModel'
@@ -585,51 +559,7 @@ config(function($stateProvider, $urlRouterProvider) {
       }]
     }
   })
-
-    .state('conversion', {
-      url: '/conversion',
-      templateUrl: 'app/partials/conversion.html',
-      controller: 'ConversionCtrl as conversionModel',
-      resolve: {
-        categories: ['api', function (api) {
-          return api.queryCategories().then (function (res) {
-            return res.map(function (obj) {
-              return obj.attributes;
-            });
-          });
-        }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-          return measurementUnitsPromise;
-        }],
-        config: ['api', function (api) {
-          return api.queryConfig().then(function (res) {
-            return res[0];
-          });
-        }],
-        accessCatalog: ['api', function (api) {
-           return api.queryAccessCatalog().then (function (res) {
-             return res.map(function (obj) {
-               return obj.attributes;
-             });
-           });
-        }],
-        accessCustomers: ['api', function (api) {
-          return api.queryAccessCustomers().then (function (res) {
-            return res.map(function (obj) {
-              return obj.attributes;
-            });
-          });
-        }],
-        accessOrders: ['api', function (api) {
-          return api.queryAccessOrders().then (function (res) {
-            return res.map(function (obj) {
-              return obj.attributes;
-            });
-          });
-        }]
-      }
-    })
-    .state ('bid', {
+  .state ('bid', {
     url: '/bid/:uuid',
     templateUrl: 'app/partials/bid.html',
     controller: 'BidCtrl as bidModel',
