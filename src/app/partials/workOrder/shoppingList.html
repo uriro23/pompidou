@@ -1,20 +1,28 @@
-<table style="width:40%">
+<table style="width:60%">
   <tr>
-    <td style="width:20%">
+    <td style="width:20%" ng-hide="workOrderModel.isPrint">
       <span>&nbsp;הצג</span>
       <input type="checkbox"
              ng-model="workOrderModel.hierarchicalWorkOrder[3].isShowAll"
              ng-change="workOrderModel.setShowAll(3)">
     </td>
-    <td style="width:80%;font-size: large">
+    <td style="width:60%;font-size: large" ng-hide="workOrderModel.isPrint">
       {{workOrderModel.domains[3].forWorkItem}}
       <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[3]">
         --- לא מעודכן ---
       </span>
     </td>
+    <td style="width:60%;font-size: large" ng-show="workOrderModel.isPrint">
+      <span>רשימת קניות</span>
+    </td>
+    <td style="width:20%">
+      <span>להדפסה</span>
+      <input type="checkbox" ng-model="workOrderModel.isPrint">
+    </td>
   </tr>
 </table>
-<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories"
+     ng-hide="workOrderModel.isPrint">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:30%">
@@ -22,12 +30,6 @@
     <tr ng-repeat="woItem in cat.list">
       <td style="width: 80%">{{woItem.attributes.productName}}</td>
       <td>
-        <!--
-        <input type="text" money size="5"
-               ng-model="woItem.attributes.quantity"
-               ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[3]"
-               ng-change="workOrderModel.setQuantity(woItem,3)">
-               -->
         {{woItem.attributes.quantity | number:2}}
       </td>
       <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
@@ -48,4 +50,18 @@
     </tr>
     </tbody>
   </table>
+</div>
+<div style="margin-right: 2%;margin-bottom: 2cm;margin-top: 1cm">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories"
+     ng-show="workOrderModel.isPrint">
+  <label ng-show="cat.isShow" style="font-size: x-large">{{cat.category.label}}</label>
+  <div ng-show="cat.isShow" style="column-count: 2; width:90%">
+    <div ng-repeat="woItem in cat.list" style="font-size: large">
+      <span style="position: relative;right:0%">{{woItem.attributes.quantity | number:2}}</span>
+      <span style="position: relative;right:3%">{{woItem.attributes.measurementUnit.label}}</span>
+      <span style="position: relative;right:15%">{{woItem.attributes.productName}}</span>
+    </div>
+  </div>
+  <p></p>
+</div>
 </div>
