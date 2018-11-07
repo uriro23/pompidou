@@ -863,7 +863,6 @@ angular.module('myApp')
             });
         });
     };
-*/
 
     this.catalogSensitivities = function () {
       api.queryCatalog()
@@ -878,6 +877,26 @@ angular.module('myApp')
             });
         });
     };
+
+    this.fixExitListMeasurementUnit = function() {
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          console.log('read '+catalog.length+' catalog items');
+          catalog.forEach(function(cat) {
+            cat.attributes.exitList.forEach(function(ex) {
+              if (!ex.measurementUnit) {
+                ex.measurementUnit = measurementUnits[0];
+                console.log(cat.attributes.productName);
+              }
+            });
+          });
+          api.saveObjects(catalog)
+            .then(function() {
+              console.log('done');
+            });
+        })
+    };
+*/
 
 
 // end conversions

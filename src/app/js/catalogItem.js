@@ -117,9 +117,11 @@ angular.module('myApp')
 
     // Exit List Tab
 
-    //TODO: set focus on added item
     model.addExitListItem = function () {
-      model.item.attributes.exitList.push({item: ''});
+      model.item.attributes.exitList.push({
+        item: '',
+        measurementUnit: measurementUnits[0]
+      });
       model.setChanged(true);
     };
 
