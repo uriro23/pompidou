@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('orderService', function ($rootScope, $state, api, lov, today, colorsPromise) {
+  .service('orderService', function ($rootScope, $state, api, lov, dater, colorsPromise) {
 
     this.calcTotal = function (quote, isBusinessEvent, vatRate) {
      if(quote.isFixedPrice) {
@@ -385,7 +385,7 @@ angular.module('myApp')
       var DAYS_TO_COLOR = 7;
 
       var fields = ['eventDate', 'eventTime', 'number','orderStatus','template','color'];
-      var from = angular.copy(today);
+      var from = dater.today();
       var to = angular.copy(from);
       to.setDate(to.getDate()+ DAYS_TO_COLOR);
        api.queryOrdersByRange('eventDate',from,to,fields)

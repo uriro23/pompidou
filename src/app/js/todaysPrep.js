@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('TodaysPrepCtrl', function (api, $state, $filter, $modal, $q, $rootScope,
-                                         lov, catalog, allCategories, measurementUnits, today,
+                                         lov, catalog, allCategories, measurementUnits, dater,
                                          workOrder) {
 
     var that = this;
@@ -17,7 +17,7 @@ angular.module('myApp')
       } else return -1
     });
 
-    this.dailyDate = today;
+    this.dailyDate = dater.today();
 
     this.todaysPreps = workOrder.filter(function (wi) {
         return wi.domain===2 && wi.isForToday;

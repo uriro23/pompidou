@@ -2,7 +2,7 @@
 
 angular.module('myApp')
 
-  .service('api', function ($q, $rootScope, secrets, today) {
+  .service('api', function ($q, $rootScope, secrets, dater) {
 
   this.getEnvironment = function () {
     return this.environment
@@ -180,7 +180,7 @@ angular.module('myApp')
 
   this.queryFutureOrders = function (fields) {
     var orderQuery = new Parse.Query(Order);
-    orderQuery.greaterThanOrEqualTo('eventDate', today);
+    orderQuery.greaterThanOrEqualTo('eventDate', dater.today());
      if (fields) {
       orderQuery.select(fields);
     }

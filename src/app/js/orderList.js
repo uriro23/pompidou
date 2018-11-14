@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
-                                          api, lov, orderService, today, queryType, customers,
+                                          api, lov, orderService, dater, queryType, customers,
                                           recentOpenings, recentClosings, colors) {
       var that = this;
     var user = api.getCurrentUser();
@@ -29,8 +29,8 @@ angular.module('myApp')
     },{
       label:  'בשבוע שעבר'
     }];
-    this.weeks[0].start=angular.copy(today);
-    this.weeks[0].start.setDate(today.getDate()-today.getDay());
+    this.weeks[0].start=dater.today();
+    this.weeks[0].start.setDate(dater.today().getDate()-dater.today().getDay());
     this.weeks[0].end = new Date();
     this.weeks[1].start = new Date();
     this.weeks[1].start.setTime(this.weeks[0].start.getTime()-7*24*60*60*1000);
@@ -122,7 +122,7 @@ angular.module('myApp')
             return color.tId === fetchedOrder.attributes.color;
           })[0];
        }
-        fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < today;
+        fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today();
       });
       this.noOfFetchedOrders = fetchedOrders.length;
       this.filterOrders();
@@ -168,8 +168,8 @@ angular.module('myApp')
           });
           break;
        case 'debts':
-         var fromDate = new Date(today.getFullYear()-2,today.getMonth(),today.getDate()); // debts beyon 2 years are lost
-         var toDate = new Date(today.getFullYear(),today.getMonth(),today.getDate()-1);
+         var fromDate = new Date(dater.today().getFullYear()-2,dater.today().getMonth(),dater.today().getDate()); // debts beyon 2 years are lost
+         var toDate = new Date(dater.today().getFullYear(),dater.today().getMonth(),dater.today().getDate()-1);
           api.queryOrdersByRange('eventDate',fromDate,toDate,fieldList).then(function (orders) {
             fetchedOrders = orders.filter(function (ord) {
               return (ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4) && // executed events not fully paid
@@ -181,7 +181,7 @@ angular.module('myApp')
       case 'year':
         var fromDate2 = new Date(this.queryYear,0,1);
           var toDate2 = this.queryYear===new Date().getFullYear() ? // if current year, limit to past events
-            new Date(today.getFullYear(),today.getMonth(),today.getDate()-1) :
+            new Date(dater.today().getFullYear(),dater.today().getMonth(),dater.today().getDate()-1) :
             new Date(this.queryYear,11,31);
           api.queryOrdersByRange('eventDate',fromDate2,toDate2,fieldList)
             .then(function(orders) {
@@ -281,10 +281,10 @@ angular.module('myApp')
     this.isProcessing = false;
   })
 
-  .controller('OrderTableCtrl', function($scope, $modal, api, today) {
+  .controller('OrderTableCtrl', function($scope, $modal, api, dater) {
     $scope.$parent.initOrderTableParams(this);
 
-    this.today = today;
+    this.today = dater.today();
 
     this.showCustomerContactInfo = function (order) {
       var customerContactInfo = $modal.open({

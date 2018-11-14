@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('HeaderCtrl', function ($scope, $modal, api, orderService, today) {
+  .controller('HeaderCtrl', function ($scope, $modal, api, orderService, dater) {
 
     // references to members of parent order controller
     //objects
@@ -69,7 +69,7 @@ angular.module('myApp')
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
       orderService.orderChanged(this.order,'header');
-      this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < today;  // past dates not allowed
+      this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < dater.today();  // past dates not allowed
       this.setReadOnly();
     };
 

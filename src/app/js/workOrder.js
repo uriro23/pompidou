@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('WorkOrderCtrl', function (api, $state, $filter, $modal, $q, $rootScope,
-                                         lov, catalog, allCategories, measurementUnits, colors, today,
+                                         lov, catalog, allCategories, measurementUnits, colors, dater,
                                          customers, woIndexes) {
 
 
@@ -686,8 +686,8 @@ angular.module('myApp')
       };
       return  color;
     });
-    this.fromDate = new Date(today);
-    this.toDate = new Date(today);
+    this.fromDate = new Date(dater.today());
+    this.toDate = new Date(dater.today());
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
     this.toDate.setDate(this.toDate.getDate()-1);
     this.switchWorkOrders();

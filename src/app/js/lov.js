@@ -14,13 +14,17 @@ angular.module('myApp')
 
    */
 
-  .factory('today', function () {
-    var today = new Date();
-    today.setHours(0);
-    today.setMinutes(0);
-    today.setSeconds(0);
-    today.setMilliseconds(0);
-    return today;
+  .factory('dater', function () {
+    return {
+      today: function() {
+        var today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        today.setMilliseconds(0);
+        return today;
+      }
+    }
   })
 
 // load lovs from DB - just once

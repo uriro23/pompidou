@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
-                                     orderService, currentOrder, isFromNew, customer, lov, today,
+                                     orderService, currentOrder, isFromNew, customer, lov, dater,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, menuTypes, colors,
                                      employees, pRoles, config) {
@@ -36,7 +36,7 @@ angular.module('myApp')
 
     this.setReadOnly = function () {
       this.isReadOnly = this.order.attributes.eventDate &&
-                        this.order.attributes.eventDate < today &&
+                        this.order.attributes.eventDate < dater.today() &&
                         !this.order.attributes.template;
     };
 

@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, today, menuTypes, referralSources, customers) {
+  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, dater, menuTypes, referralSources, customers) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -15,9 +15,9 @@ angular.module('myApp')
 
     this.user = user;
 
-    this.toDate = angular.copy(today);
+    this.toDate = dater.today();
     this.toDate.setDate(this.toDate.getDate()+1); // do until tomorrow, to include events of today
-    this.fromDate = angular.copy(today);
+    this.fromDate = dater.today();
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
     this.filterBy = 'eventDate';
@@ -266,7 +266,7 @@ angular.module('myApp')
         order.view.orderStatus = lov.orderStatuses.filter(function (stat) {
           return stat.id === order.attributes.orderStatus;
         })[0];
-        order.view.isReadOnly = order.attributes.eventDate < today;
+        order.view.isReadOnly = order.attributes.eventDate < dater.today();
       });
       lineArray.forEach(function(lin) {
         lin.isBold = false
@@ -292,7 +292,7 @@ angular.module('myApp')
       //var to = new Date(2099,11,31);
       var fields = ['eventDate','empBonuses','template','orderStatus'];
       this.empBonuses = [];
-      api.queryOrdersByRange('eventDate',from,today,fields)
+      api.queryOrdersByRange('eventDate',from,dater.today(),fields)
         .then (function(orders) {
           orders.forEach(function(order) {
             if (!order.attributes.template && order.attributes.orderStatus!==1 && order.attributes.orderStatus!==6) {
