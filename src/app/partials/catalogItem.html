@@ -110,6 +110,14 @@
         </td>
       </tr>
       <tr>
+        <td><label>הערות</label></td>
+        <td>
+      <textarea rows="8" cols="48" ng-model="catalogItemModel.item.attributes.remarks"
+                ng-change="catalogItemModel.setChanged(true)"
+      ></textarea>
+        </td>
+      </tr>
+      <tr>
         <td><label>סמן פריט כמבוטל</label></td>
         <td>
           <input type="checkbox"

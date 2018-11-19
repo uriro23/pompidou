@@ -25,7 +25,8 @@ angular.module('myApp')
       var that = this;
       this.categoryItems = this.catalog.filter(function(cat) {
         return (cat.attributes.productName+' '+cat.attributes.productDescription).indexOf(that.filterText)>-1 &&
-            (that.includeDeleted || !cat.attributes.isDeleted);
+            (that.includeDeleted || !cat.attributes.isDeleted) &&
+          (!that.isOnlyRemarks || cat.attributes.remarks);
       });
     };
 
@@ -104,7 +105,11 @@ angular.module('myApp')
       api.queryCatalog(this.currentDomain.id)
         .then(function(results) {
           that.catalog = results.filter(function(cat) {
-            return (cat.attributes.productName+' '+cat.attributes.productDescription).indexOf(that.searchText)>-1
+            var bool = false;
+            if (that.searchText.length) {
+              bool = (cat.attributes.productName+' '+cat.attributes.productDescription).indexOf(that.searchText)>-1;
+            } else bool = true;
+            return bool;
           }).sort(function (a, b) {
             if (a.attributes.category > b.attributes.category) {
               return 1;
@@ -126,6 +131,7 @@ angular.module('myApp')
     this.currentDomain = this.domains[currentDomain-1];
     this.measurementUnits = measurementUnits;
     this.timeUnits = lov.timeUnits;
+    this.searchText = '';
     this.fetchCategoryItems();
   });
 
