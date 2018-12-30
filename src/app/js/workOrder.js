@@ -287,6 +287,14 @@ angular.module('myApp')
                   that.orderView.sort(function (a, b) {
                     if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
                       return 1;
+                    } else if (a.attributes.order.eventDate < b.attributes.order.eventDate){
+                      return -1;
+                    } else if (a.attributes.order.eventTime > b.attributes.order.eventTime) {
+                      return 1;
+                    } else if (a.attributes.order.eventTime < b.attributes.order.eventTime) {
+                      return -1;
+                    } else if (a.id > b.id) {
+                      return 1;
                     } else {
                       return -1;
                     }
@@ -345,9 +353,13 @@ angular.module('myApp')
           return 1;
         } else if (a.attributes.order.eventDate < b.attributes.order.eventDate) {
           return -1;
-        } else if (a.id > b.id) {   // just that sort resultswill be deterministic
+        } else if (a.attributes.order.eventTime > b.attributes.order.eventTime) {
           return 1;
-        } else {
+        } else if (a.attributes.order.eventTime < b.attributes.order.eventTime) {
+          return -1;
+        } else if (a.id > b.id) {   // just that sort results will be deterministic
+          return 1;
+        } else  {
           return -1;
         }
       });
