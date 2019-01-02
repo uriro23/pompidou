@@ -59,7 +59,7 @@
         ng-hide="workOrderModel.woOrders.length>15">
       <span>{{order.attributes.customer.firstName}}</span>
       <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
-      <span>{{order.attributes.order.eventTime | date:'HH:mm'}}</span>
+      <span>{{order.attributes.order.exitTime | date:'HH:mm'}}</span>
       <img src="app/img/smallColors/{{order.attributes.color.stickerColor}}.jpg"/>
     </th>
     </thead>

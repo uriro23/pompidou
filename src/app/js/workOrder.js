@@ -289,9 +289,9 @@ angular.module('myApp')
                       return 1;
                     } else if (a.attributes.order.eventDate < b.attributes.order.eventDate){
                       return -1;
-                    } else if (a.attributes.order.eventTime > b.attributes.order.eventTime) {
+                    } else if (a.attributes.order.exitTime > b.attributes.order.exitTime) {
                       return 1;
-                    } else if (a.attributes.order.eventTime < b.attributes.order.eventTime) {
+                    } else if (a.attributes.order.exitTime < b.attributes.order.exitTime) {
                       return -1;
                     } else if (a.id > b.id) {
                       return 1;
@@ -353,9 +353,9 @@ angular.module('myApp')
           return 1;
         } else if (a.attributes.order.eventDate < b.attributes.order.eventDate) {
           return -1;
-        } else if (a.attributes.order.eventTime > b.attributes.order.eventTime) {
+        } else if (a.attributes.order.exitTime > b.attributes.order.exitTime) {
           return 1;
-        } else if (a.attributes.order.eventTime < b.attributes.order.eventTime) {
+        } else if (a.attributes.order.exitTime < b.attributes.order.exitTime) {
           return -1;
         } else if (a.id > b.id) {   // just that sort results will be deterministic
           return 1;
