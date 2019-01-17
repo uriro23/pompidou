@@ -47,8 +47,7 @@ angular.module('myApp')
        week.closings = week.closingVec.length;
        week.closingTotal = 0;
        week.closingVec.forEach(function(cl) {
-         week.closingTotal += ((cl.attributes.header.total-cl.attributes.header.transportationInclVat) /
-           (1 + cl.attributes.vatRate));
+         week.closingTotal += (cl.attributes.header.total / (1 + cl.attributes.vatRate));
        });
        week.closingTotal = Math.round(week.closingTotal);
      });
