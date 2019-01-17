@@ -161,7 +161,7 @@
     <tr ng-repeat="line in exitListModel.vec">
       <td ng-show="line.level===0">
         <label>{{line.data.label}}</label></td>
-      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem" style="font-weight: bold">
         &nbsp;&#128440;
         {{line.data.productName}}
         <div ng-show="line.data.isDescChanged">
@@ -170,7 +170,7 @@
         </div>
       </td>
       <td ng-show="line.level===2">
-        &nbsp;&nbsp;&#128410;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
         {{line.data.item}}</td>
       <td ng-show="line.level===0"></td>
       <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
