@@ -678,7 +678,7 @@ config(function($stateProvider, $urlRouterProvider) {
         });
       }],
       catalog: ['api', function(api) {
-        return api.queryCatalog(1). then (function(catalog) {
+        return api.queryCatalog(). then (function(catalog) {
           return catalog;
         });
       }],

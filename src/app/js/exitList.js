@@ -14,11 +14,14 @@ angular.module('myApp')
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רשימת יציאה';
 
-    const CATEGORY_SNACKS = 1;
-    const CATEGORY_DESSERTS = 8;
+    var CATEGORY_SNACKS = 1;
+    var CATEGORY_DESSERTS = 8;
+    var CATEGORY_ACCESSORIES = 50;
 
     this.currentOrder = order.attributes;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
+
+    this.accessories = [];
 
 
     // fetch customer
@@ -34,6 +37,41 @@ angular.module('myApp')
         return color.tId === that.currentOrder.color;
       })[0];
     }
+
+    // scan all items for accessories
+    this.currentQuote.items.forEach(function(item) {
+      var catItem2 = that.catalog.filter(function (cat) {
+        return cat.id === item.catalogId;
+      })[0].attributes;
+      catItem2.components.forEach(function(comp) {
+        if (comp.domain === 3) {
+          var shoppingItem = that.catalog.filter(function(cat) {
+            return cat.id === comp.id;
+          })[0];
+          if (shoppingItem.attributes.category === CATEGORY_ACCESSORIES) {
+            var found = false;
+            that.accessories.forEach(function(acc) {
+              if (acc.id === shoppingItem.id) {
+                found = true;
+                acc.quantity += comp.quantity / catItem2.productionQuantity * item.quantity;
+              }
+            });
+            if (!found) {
+              var acc = {
+                id: shoppingItem.id,
+                name: shoppingItem.attributes.productName,
+                measurementUnit: measurementUnits.filter(function(mu) {
+                  return mu.tId === shoppingItem.attributes.measurementUnit;
+                })[0],
+                quantity: comp.quantity / catItem2.productionQuantity * item.quantity
+              };
+              that.accessories.push(acc);
+            }
+          }
+        }
+      });
+
+    });
 
     // for snacks and desserts include in exit list only items which have sub items in their exit list
     var exitListItems = angular.copy(this.currentQuote.items);
@@ -125,6 +163,7 @@ angular.module('myApp')
           data: item
       };
 
+        // add exit list items
         catItem.exitList.forEach(function(ex) {
           ind++;
           that.vec[ind] = {
@@ -133,7 +172,7 @@ angular.module('myApp')
             data: ex
           };
         });
-      });
+   });
     });
 
      // fetch item's exit list
@@ -142,7 +181,7 @@ angular.module('myApp')
         return item.id === catId
       })[0];
       this.exitList = thisItem.attributes.exitList;
-    }
+    };
 
 
     function editItems (order, category, catalog) {

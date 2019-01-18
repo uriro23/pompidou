@@ -1,6 +1,8 @@
 <div id="exitListContainer">
 		<h1>
-		  פומפידו - רשימת יציאה
+		   רשימת יציאה -
+      {{exitListModel.customer.firstName+' '+exitListModel.customer.lastName}}
+      {{exitListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
       <img src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
 		</h1>
 
@@ -194,6 +196,21 @@
       </td>
     </tr>
   </table>
+  <div ng-show="exitListModel.accessories.length">
+    <div><label>אביזרים נלווים</label></div>
+    <table>
+      <tbody>
+      <tr ng-repeat="accessory in exitListModel.accessories">
+        <td>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
+          {{accessory.name}}
+        </td>
+        <td>{{accessory.quantity}}</td>
+        <td>{{accessory.measurementUnit.label}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div>
     <p style="page-break-after: always;">&nbsp;</p>
