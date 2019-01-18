@@ -314,6 +314,13 @@
         </td>
     </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>קבוצה</label></td>
+        <td>
+          <input  type="text" size = 10 ng-model="catalogItemModel.item.attributes.groupLabel"
+                  ng-change="catalogItemModel.setChanged(true)">
+         </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>יח' מידה לאריזה</label></td>
         <td>
           <select ng-model="catalogItemModel.item.view.packageMeasurementUnit"

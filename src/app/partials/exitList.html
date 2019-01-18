@@ -212,6 +212,21 @@
     </table>
   </div>
 
+  <table>
+    <tbody>
+    <tr ng-repeat="group in exitListModel.groups" style="font-weight: bold">
+      <td>
+        סה"כ
+        {{group.label}}
+        :
+      </td>
+      <td>{{group.quantity}}</td>
+      <td>{{group.measurementUnit.label}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+
   <div>
     <p style="page-break-after: always;">&nbsp;</p>
     <p style="page-break-before: always;">&nbsp;</p>

@@ -21,7 +21,6 @@ angular.module('myApp')
     this.currentOrder = order.attributes;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
 
-    this.accessories = [];
 
 
     // fetch customer
@@ -38,12 +37,41 @@ angular.module('myApp')
       })[0];
     }
 
-    // scan all items for accessories
+    //scan all items for group labels
+    this.groups = [];
     this.currentQuote.items.forEach(function(item) {
-      var catItem2 = that.catalog.filter(function (cat) {
+      var catItem = that.catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0].attributes;
-      catItem2.components.forEach(function(comp) {
+      if (catItem.groupLabel) {
+        var found = false;
+        that.groups.forEach(function(group) {
+          if (group.label === catItem.groupLabel) {
+            found = true;
+            group.quantity += item.quantity;
+          }
+        });
+        if (!found) {
+          var group = {
+            label: catItem.groupLabel,
+            measurementUnit: measurementUnits.filter(function(mu) {
+              return mu.tId === catItem.measurementUnit;
+            })[0],
+            quantity: item.quantity
+          };
+          that.groups.push(group);
+        }
+      }
+    });
+    console.log(this.groups);
+
+    // scan all items for accessories
+    this.accessories = [];
+    this.currentQuote.items.forEach(function(item) {
+      var catItem = that.catalog.filter(function (cat) {
+        return cat.id === item.catalogId;
+      })[0].attributes;
+      catItem.components.forEach(function(comp) {
         if (comp.domain === 3) {
           var shoppingItem = that.catalog.filter(function(cat) {
             return cat.id === comp.id;
@@ -53,7 +81,7 @@ angular.module('myApp')
             that.accessories.forEach(function(acc) {
               if (acc.id === shoppingItem.id) {
                 found = true;
-                acc.quantity += comp.quantity / catItem2.productionQuantity * item.quantity;
+                acc.quantity += comp.quantity / catItem.productionQuantity * item.quantity;
               }
             });
             if (!found) {
@@ -63,7 +91,7 @@ angular.module('myApp')
                 measurementUnit: measurementUnits.filter(function(mu) {
                   return mu.tId === shoppingItem.attributes.measurementUnit;
                 })[0],
-                quantity: comp.quantity / catItem2.productionQuantity * item.quantity
+                quantity: comp.quantity / catItem.productionQuantity * item.quantity
               };
               that.accessories.push(acc);
             }
