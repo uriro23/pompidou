@@ -205,16 +205,22 @@
       <select ng-model="adminModel.productNamesCategory"
               ng-change="adminModel.filterProductNameCategory()"
               ng-options="category.label for category in adminModel.categories"></select>
-      <table class="table table-hover" style="width: 60%">
+      <table class="table table-hover" style="width: 99%">
         <thead>
         <th>שם</th>
         <th>כמות</th>
         <th>יח'</th>
+        <!--
         <th ng-show="adminModel.productNamesDomain.id===1">שם למדבקה</th>
         <th ng-show="adminModel.productNamesDomain.id===1">כמות מדבקות</th>
         <th ng-show="adminModel.productNamesDomain.id===1">נוספות</th>
-        <th>קטגוריה</th>
+        -->
         <th>ביטול</th>
+        <th>קטגוריה</th>
+        <th ng-repeat="sensitivity in adminModel.sensitivities"
+            ng-show="adminModel.productNamesDomain.id===1">
+          {{sensitivity.label}}
+        </th>
         <th></th>
         </thead>
         <tbody>
@@ -225,6 +231,7 @@
           <td>{{productNameItem.attributes.productName}}</td>
           <td>{{productNameItem.attributes.priceQuantity}}</td>
           <td>{{productNameItem.measurementUnitLabel}}</td>
+          <!--
           <td ng-show="adminModel.productNamesDomain.id===1">
             <input type="text" ng-model="productNameItem.attributes.stickerLabel" size="10"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
@@ -236,14 +243,20 @@
           <td ng-show="adminModel.productNamesDomain.id===1">
             {{productNameItem.exitListLength}}
           </td>
+          -->
+          <td>
+            <input type="checkbox"
+                   ng-model="productNameItem.attributes.isDeleted"
+                   ng-change="adminModel.productNameItemChanged(productNameItem)">
+          </td>
           <td>
             <select ng-model="productNameItem.categoryObject"
                     ng-change="adminModel.productNameItemChanged(productNameItem)"
                     ng-options="category.label for category in adminModel.categories"></select>          </td>
-          <td>
-          <input type="checkbox"
-                 ng-model="productNameItem.attributes.isDeleted"
-                 ng-change="adminModel.productNameItemChanged(productNameItem)">
+         <td ng-repeat="potSens in productNameItem.sensArray"
+             ng-show="adminModel.productNamesDomain.id===1">
+            <input type="checkbox" ng-model="potSens.isTrue"
+                   ng-change="adminModel.productNameItemChanged(productNameItem)">
           </td>
           <td>
             <button ng-show="productNameItem.isChanged"

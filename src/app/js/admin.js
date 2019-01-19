@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
-                                     measurementUnits, categories,
+                                     measurementUnits, categories,sensitivities,
                                      discountCauses, role, employees, pRoles) {
 
     $rootScope.menuStatus = 'show';
@@ -22,6 +22,7 @@ angular.module('myApp')
   this.domains.splice(0,1);
 
   this.categories = categories;
+  this.sensitivities = sensitivities;
 
 
 
@@ -325,6 +326,16 @@ angular.module('myApp')
           return -1;
         }
       });
+      this.productNameCategoryItems.forEach(function(item) {
+        item.sensArray = angular.copy(sensitivities);
+        item.attributes.sensitivities.forEach(function(trueSens) {
+          item.sensArray.forEach(function(potSens) {
+            if (potSens.tId === trueSens.tId) {
+              potSens.isTrue = true;
+            }
+          });
+        });
+      })
     };
 
     this.productNameItemChanged = function(cat) {
@@ -341,6 +352,9 @@ angular.module('myApp')
 
     this.saveProductNameitem = function(cat) {
       cat.category = cat.attributes.category = cat.categoryObject.tId;
+      cat.attributes.sensitivities = cat.sensArray.filter(function(sen) {
+        return sen.isTrue;
+      });
       api.saveObj(cat);
       cat.isChanged = false;
     };

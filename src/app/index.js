@@ -527,6 +527,9 @@ config(function($stateProvider, $urlRouterProvider) {
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
         return measurementUnitsPromise;
       }],
+      sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+        return sensitivitiesPromise;
+      }],
       employees: ['employeesPromise', function (employeesPromise) {
         return employeesPromise;
       }],

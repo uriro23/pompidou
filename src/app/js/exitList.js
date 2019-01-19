@@ -63,7 +63,6 @@ angular.module('myApp')
         }
       }
     });
-    console.log(this.groups);
 
     // scan all items for accessories
     this.accessories = [];
