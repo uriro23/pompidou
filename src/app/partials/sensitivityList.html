@@ -27,6 +27,13 @@
         <br>
         <span class="bold">תאריך האירוע:</span>
         <span>{{sensitivityListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
+        <p></p>
+        <label>חשוב:</label>
+        <span>במטבח שלנו יש הקפדה על נקיון והיגיינה </span>
+        <br>
+        <span>ומודעות לרגישויות שונות </span>
+        <br>
+        <span>יחד עם זאת סביבת העבודה אינה סטרילית</span>
 
       </div>
 
@@ -42,10 +49,12 @@
     <div class="quoteTextBox quoteDetails">
       <div class="floatRight">
       <div ng-repeat="sensitivity in sensitivityListModel.sensitivities">
-  <h3 class="bold" ng-show="sensitivity.items.length">{{sensitivity.description}}</h3>
+  <h3 class="bold" ng-show="sensitivity.items.length"ng-style="sensitivity.colorObj.style">
+    {{sensitivity.description}}
+  </h3>
         <ul>
   <li ng-repeat="item in sensitivity.items">
-    {{item.productDescription}}
+    {{item.productName}}
   </li>
         </ul>
 </div>

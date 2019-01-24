@@ -3,9 +3,17 @@
 /* Controllers */
 angular.module('myApp')
   .controller('SensitivityListCtrl', function (api, $state, $rootScope, order, moment,
-                                               sensitivities, catalog, customers) {
+                                               sensitivities, catalog, customers, colors) {
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רגישויות';
+
+    this.colors = colors.map(function(color) {
+      color.style = {
+        'color': color.backColor
+      };
+      return  color;
+    });
+
 
     var user = api.getCurrentUser();
     if (user) {
@@ -28,6 +36,9 @@ angular.module('myApp')
     // distribute menu items according to their sensitivities
     this.sensitivities = sensitivities;
     this.sensitivities.forEach(function(sen) {
+      sen.colorObj = that.colors.filter(function(col) {
+        return col.tId === sen.color;
+      })[0];
       sen.items = [];
     });
     currentQuote.items.forEach(function(item) {

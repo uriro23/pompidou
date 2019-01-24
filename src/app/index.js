@@ -736,6 +736,9 @@ config(function($stateProvider, $urlRouterProvider) {
         return api.queryCustomers().then(function (objs) {
           return objs;
         });
+      }],
+      colors: ['colorsPromise', function (colorsPromise) {
+        return colorsPromise;
       }]
     }
   });
