@@ -323,6 +323,7 @@ angular.module('myApp')
     this.employees = employees;
     this.config = config;
     this.vatRate = config.vatRate;
+    this.isProd = config.isProd;
     this.activityDate = new Date();
     this.isItemsTabActive = true;
     this.isActiveQuoteTab = true;

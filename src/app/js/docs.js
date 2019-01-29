@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('DocumentsCtrl', function ($scope, $modal, $filter, api, orderService, lov) {
+  .controller('DocumentsCtrl', function ($scope, $modal, $filter,
+                                         api, orderService, accountingService, lov) {
 
     // references to members of parent order controller
     //objects
@@ -10,6 +11,7 @@ angular.module('myApp')
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
     this.orderStatuses = $scope.orderModel.orderStatuses; // needed for setupOrderView
     this.user = $scope.orderModel.user;
+    this.isProd = $scope.orderModel.isProd;
 
     // functions
     this.setupOrderView = $scope.orderModel.setupOrderView;
@@ -158,6 +160,13 @@ angular.module('myApp')
       sendMailModal.result.then(function () {
       });
 
+
+    };
+
+    this.createAccountingOrder = function() {
+      accountingService.documentTypes(false);
+      //accountingService.createOrder(this.isProd, this.order);
+      //alert('הזמנה מספר 1234 נוצרה');
     };
 
 

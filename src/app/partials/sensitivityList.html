@@ -51,6 +51,8 @@
       <div ng-repeat="sensitivity in sensitivityListModel.sensitivities">
   <h3 class="bold" ng-show="sensitivity.items.length"ng-style="sensitivity.colorObj.style">
     {{sensitivity.description}}
+    <img ng-show="sensitivity.colorObj.backColor==='green'" src="app/img/green_light.jpg"/>
+    <img ng-show="sensitivity.colorObj.backColor==='red'" src="app/img/red_light.jpg"/>
   </h3>
         <ul>
   <li ng-repeat="item in sensitivity.items">

@@ -1,7 +1,7 @@
 <div ng-controller="DocumentsCtrl as documentsModel">
-  <table>
+  <table style="width:60%">
     <tbody>
-    <tr style="width:80%">
+    <tr>
       <td style="width:20%">
         <button class="btn btn-default" ng-click="documentsModel.sendMail()"
                 ng-disabled="documentsModel.isReadOnly ||
@@ -17,13 +17,23 @@
       </td>
       <td style="width: 30%">
         <a ng-href="#/sensitivityList/{{documentsModel.order.id}}"target="_blank">
-          הדפס רשימת רגישויות
+           רשימת רגישויות
         </a>
       </td>
       <td style="width: 30%">
         <a ng-href="#/exitList/{{documentsModel.order.id}}"target="_blank">
-          הדפס רשימת יציאה
+           רשימת יציאה
         </a>
+      </td>
+      <td>
+        <button class="btn btn-warning"
+                ng-click="documentsModel.createAccountingOrder()"
+                ng-disabled="documentsModel.order.attributes.orderStatus === 1 ||
+                             documentsModel.order.attributes.orderStatus === 2 ||
+                             documentsModel.order.attributes.orderStatus === 6 || true">
+          <!-- drop the 'true' when ready  -->
+          צור הזמנה
+        </button>
       </td>
     </tr>
     </tbody>
