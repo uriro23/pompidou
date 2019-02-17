@@ -170,7 +170,7 @@ angular.module('myApp')
       var that = this;
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
-        'exitTime','template','remarks','header','createdBy'
+        'exitTime','template','remarks','header','createdBy','isDateUnknown','isLead'
       ];
       api.queryOrdersByCustomer(this.currentCustomer.id,fieldList)
         .then(function(ords) {

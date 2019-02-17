@@ -5,7 +5,7 @@
     <td>
       <input type="text" size="30" ng-model="generalModel.order.attributes.eventName"
              ng-change="generalModel.orderChanged('eventName')"
-             ng-disabled="generalModel.isReadOnly">
+             ng-disabled="generalModel.readOnly.is">
     </td>
   </tr>
   <tr ng-class="generalModel.order.view.changes.deliveryLocation?'bg-success':null">
@@ -13,7 +13,7 @@
     <td>
       <textarea rows="2" cols="48" ng-model="generalModel.order.attributes.deliveryLocation"
                 ng-change="generalModel.orderChanged('deliveryLocation')"
-                ng-disabled="generalModel.isReadOnly"
+                ng-disabled="generalModel.readOnly.is"
           ></textarea>
     </td>
   </tr>
@@ -22,7 +22,7 @@
     <td>
       <textarea rows="4" cols="48" ng-model="generalModel.order.attributes.remarks"
                 ng-change="generalModel.orderChanged('remarks')"
-                ng-disabled="generalModel.isReadOnly"
+                ng-disabled="generalModel.readOnly.is"
           ></textarea>
     </td>
   </tr>
@@ -31,7 +31,7 @@
     <td>
       <input type="checkbox" ng-model="generalModel.order.attributes.includeRemarksInBid"
              ng-change="generalModel.orderChanged('includeRemarksInBid')"
-             ng-disabled="generalModel.isReadOnly">
+             ng-disabled="generalModel.readOnly.is">
     </td>
   </tr>
   <tr ng-class="generalModel.order.view.changes.isBusinessEvent?'bg-success':null">
@@ -39,7 +39,7 @@
     <td>
       <input type="checkbox" ng-model="generalModel.order.attributes.isBusinessEvent"
              ng-change="generalModel.setBusinessEvent()"
-             ng-disabled="generalModel.isReadOnly">
+             ng-disabled="generalModel.readOnly.is">
     </td>
   </tr>
   <tr ng-class="generalModel.order.view.changes.referralSource?'bg-success':null">
@@ -48,13 +48,13 @@
       <select ng-model="generalModel.order.view.referralSource"
               ng-change="generalModel.orderChanged('referralSource')"
               ng-options="referralSource.label for referralSource in generalModel.referralSources"
-              ng-disabled="generalModel.isReadOnly"
+              ng-disabled="generalModel.readOnly.is"
         ></select>
     </td>
     <td>
       <input type="text" size="50" ng-model="generalModel.order.attributes.referralSourceText"
              ng-change="generalModel.orderChanged('referralSource')"
-             ng-disabled="generalModel.isReadOnly">
+             ng-disabled="generalModel.readOnly.is">
     </td>
     <td></td>
   </tr>
@@ -63,7 +63,7 @@
     <td>
       <input type="text" ng-model="generalModel.order.attributes.template"
              ng-change="generalModel.orderChanged('template')"
-             ng-disabled="generalModel.isReadOnly">
+             ng-disabled="generalModel.readOnly.is">
 
     </td>
   </tr>
@@ -73,7 +73,7 @@
     <td>
       <button class="btn btn-default btn-sm"
               ng-click="generalModel.resetColor()"
-              ng-disabled="generalModel.isReadOnly || !generalModel.order.attributes.color">
+              ng-disabled="generalModel.readOnly.is || !generalModel.order.attributes.color">
         מחק צבע
       </button>
     </td>

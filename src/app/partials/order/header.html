@@ -10,13 +10,13 @@
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="headerModel.order.view.errors.customer?'btn btn-danger':'btn btn-default'"
                 class="btn btn-default"
-                ng-disabled="headerModel.isReadOnly"
+                ng-disabled="headerModel.readOnly.is"
                 ng-show="headerModel.order.view.customer.id">
           {{headerModel.order.view.customer.firstName + ' ' + headerModel.order.view.customer.lastName}}
         </button>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="headerModel.order.view.errors.customer?'btn bg-danger':'btn btn-default'"
-                ng-disabled="headerModel.isReadOnly"
+                ng-disabled="headerModel.readOnly.is"
                 ng-hide="headerModel.order.view.customer.id">
           בחר
         </button>
@@ -48,14 +48,14 @@
         <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
                 ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
                 class="btn btn-default"
-                ng-disabled="headerModel.isReadOnly"
+                ng-disabled="headerModel.readOnly.is"
                 ng-show="headerModel.order.view.contact.id">
           {{headerModel.order.view.contact.firstName + ' ' + headerModel.order.view.contact.lastName}}
         </button>
         <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
                 ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
                 class="btn btn-default"
-                ng-disabled="headerModel.isReadOnly"
+                ng-disabled="headerModel.readOnly.is"
                 ng-hide="headerModel.order.view.contact.id">
           בחר
         </button>
@@ -83,26 +83,37 @@
   </table>
 <table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
-    <td  ng-hide="orderModel.order.attributes.template" style="width: 17%">
+    <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
+         style="width: 17%">
       <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.attributes.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'bg-danger':null">
     </td>
-    <td  ng-hide="orderModel.order.attributes.template" style="width: 17%">
-    <label>שעת מסירה:</label>&nbsp;<input type="time" ng-model="headerModel.order.attributes.eventTime"
-                               ng-disabled="headerModel.isReadOnly"
+    <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
+         style="width: 17%">
+    <label>שעת מסירה:</label>&nbsp
+      <input type="time" ng-model="headerModel.order.attributes.eventTime"
+                               ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.orderChanged('header')">
     </td>
-    <td  ng-hide="orderModel.order.attributes.template" style="width: 14%">
-      <label>שעת יציאה:</label>&nbsp;<input type="time" ng-model="headerModel.order.attributes.exitTime"
-                               ng-disabled="headerModel.isReadOnly"
+    <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
+         style="width: 14%">
+      <label>שעת יציאה:</label>&nbsp
+      <input type="time" ng-model="headerModel.order.attributes.exitTime"
+                               ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.orderChanged('header')">
+    </td>
+    <td style="width: 48%" ng-show="orderModel.order.attributes.isDateUnknown">
+      <label>תאריך לא ידוע:</label>
+      <input type="checkbox" ng-model="headerModel.order.attributes.isDateUnknown"
+             ng-disabled="headerModel.readOnly.is"
+             ng-change="headerModel.setKnownDate()">
     </td>
     <td style="width: 14%">
       <label>משתתפים:</label>&nbsp;<input type="number" min=1 max="9999"
                                           ng-model="headerModel.order.attributes.noOfParticipants"
                                           ng-change="headerModel.setNoOfParticipants()"
-                                          ng-disabled="headerModel.isReadOnly"
+                                          ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.noOfParticipants?'bg-danger':null">
     </td>
     <td style="width: 10%">
@@ -110,14 +121,89 @@
                                           placeholder="מתוכם"
                                           ng-model="headerModel.order.attributes.children"
                                           ng-change="headerModel.setChildren()"
-                                          ng-disabled="headerModel.isReadOnly"
+                                          ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.children?'bg-danger':null">
     </td>
-    <td  ng-hide="orderModel.order.attributes.template"style="width: 15%">
-      <label>סטטוס:</label>&nbsp;<select ng-model="headerModel.order.view.orderStatus"
-                                         ng-change="headerModel.orderChanged('header')"
-                                         ng-options="orderStatus.name for orderStatus in headerModel.orderStatuses"
+    <!--
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 order.view.orderStatus.id > 0 &&
+                 !order.attributes.isDateUnknown &&
+      !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
       ></select>
+    </td>
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 order.view.orderStatus.id > 0 &&
+                 order.attributes.isDateUnknown &&
+                 !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectNoDate:true}"
+      ></select>
+    </td>
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 order.view.orderStatus.id === 0 &&
+                 !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectLead:true}"
+      ></select>
+    </td>
+    -->
+    <td  ng-show="!orderModel.order.attributes.template &&
+                  !orderModel.order.attributes.isLead &&
+                  !orderModel.order.attributes.isDateUnknown"
+         style="width: 15%">
+      <label>סטטוס:</label>a1&nbsp;
+      <select ng-model="headerModel.order.view.orderStatus"
+              ng-change="headerModel.statusChanged()"
+              ng-options=
+ "orderStatus.name for orderStatus in headerModel.orderStatuses | filter:{isSelectDefault:true}">
+      </select>
+    </td>
+    <td  ng-show="!orderModel.order.attributes.template &&
+                  !orderModel.order.attributes.isLead &&
+                  orderModel.order.attributes.isDateUnknown"
+         style="width: 15%">
+    <label>סטטוס:</label>a2&nbsp;
+      <select ng-model="headerModel.order.view.orderStatus"
+              ng-change="headerModel.statusChanged()"
+              ng-options=
+  "orderStatus.name for orderStatus in headerModel.orderStatuses | filter:{isSelectNoDate:true}">
+      </select>
+    </td>
+    <td  ng-show="!orderModel.order.attributes.template &&
+                  orderModel.order.attributes.isLead &&
+                  !orderModel.order.attributes.isDateUnknown"
+         style="width: 15%">
+      <label>סטטוס:</label>a3&nbsp;
+      <select ng-model="headerModel.order.view.orderStatus"
+              ng-change="headerModel.statusChanged()"
+              ng-options=
+  "orderStatus.name for orderStatus in headerModel.orderStatuses"> <!-- no filter needed -->
+      </select>
+    </td>
+    <td  ng-show="!orderModel.order.attributes.template &&
+                  orderModel.order.attributes.isLead &&
+                  orderModel.order.attributes.isDateUnknown"
+         style="width: 15%">
+      <label>סטטוס:</label>a4&nbsp;
+      <select ng-model="headerModel.order.view.orderStatus"
+              ng-change="headerModel.statusChanged()"
+              ng-options=
+ "orderStatus.name for orderStatus in headerModel.orderStatuses | filter:{isSelectLeadNoDate:true}">
+      </select>
     </td>
     <td  ng-show="orderModel.order.attributes.template"></td>
   </tr>

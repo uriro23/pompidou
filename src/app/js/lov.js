@@ -160,28 +160,60 @@ angular.module('myApp')
     ],
     orderStatuses: [
       {
+        id: 0,
+        name: 'פניה',
+        isSelectDefault: false,
+        isSelectLead: true,
+        isSelectLeadNoDate : true,
+        isSelectNoDate: false
+      },
+      {
         id: 1,
-        name: 'חדש'
+        name: 'הצעה',
+        isSelectDefault: true,
+        isSelectLead: false,
+        isSelectLeadNoDate : true,
+        isSelectNoDate: true
       },
       {
         id: 2,
-        name: 'בדיון'
+        name: 'בדיון',
+        isSelectDefault: true,
+        isSelectLead: false,
+        isSelectLeadNoDate : false,
+        isSelectNoDate: false
       },
       {
         id: 3,
-        name: 'סוכם'
+        name: 'סוכם',
+        isSelectDefault: true,
+        isSelectLead: false,
+        isSelectLeadNoDate : false,
+        isSelectNoDate: false
       },
        {
-       id: 4,
-       name: 'מקדמה'
+         id: 4,
+         name: 'מקדמה',
+         isSelectDefault: true,
+         isSelectLead: false,
+         isSelectLeadNoDate : false,
+         isSelectNoDate: false
        },
        {
-       id: 5,
-       name: 'שולם'
+         id: 5,
+         name: 'שולם',
+         isSelectDefault: true,
+         isSelectLead: false,
+         isSelectLeadNoDate : false,
+         isSelectNoDate: false
        },
       {
         id: 6,
-        name: 'בוטל'
+        name: 'בוטל',
+        isSelectDefault: true,
+        isSelectLead: true,
+        isSelectLeadNoDate : true,
+        isSelectNoDate: true
       }
     ],
 

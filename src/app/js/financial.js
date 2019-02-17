@@ -6,7 +6,7 @@ angular.module('myApp')
     // references to members of parent order controller
     this.order = $scope.orderModel.order;
     this.discountCauses = $scope.orderModel.discountCauses;
-    this.isReadOnly = $scope.orderModel.isReadOnly;
+    this.readOnly = $scope.orderModel.readOnly;
 
 
     this.updatePrices = function () {

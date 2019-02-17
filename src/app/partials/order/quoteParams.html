@@ -7,7 +7,7 @@
     <td><label>שם התפריט</label></td>
     <td>
       <input type="text" size="20" ng-model="quoteParamsModel.order.view.quote.title"
-             ng-disabled="quoteParamsModel.isReadOnly"
+             ng-disabled="quoteParamsModel.readOnly.is"
              ng-change="quoteParamsModel.quoteMenuChanged()">
     </td>
  </tr>
@@ -17,7 +17,7 @@
       <select ng-model="quoteParamsModel.order.view.quote.endBoxType"
               ng-change="quoteParamsModel.quoteMenuChanged()"
               ng-options="menuType.endBoxLabel for menuType in quoteParamsModel.menuTypes"
-              ng-disabled="quoteParamsModel.isReadOnly">
+              ng-disabled="quoteParamsModel.readOnly.is">
       </select>
     </td>
     <td><label>טקסט סיום</label></td>
@@ -25,7 +25,7 @@
     <select ng-model="quoteParamsModel.order.view.quote.endTextType"
             ng-change="quoteParamsModel.setEndText()"
             ng-options="bidTextType.label for bidTextType in quoteParamsModel.bidTextTypes | filter: {documentType: 4}"
-            ng-disabled="quoteParamsModel.isReadOnly"
+            ng-disabled="quoteParamsModel.readOnly.is"
       ></select>
     </td>
   </tr>
@@ -36,7 +36,7 @@
      <!-- <textarea ng-class="quoteParamsModel.order.view.changes.quoteEndText?'bg-success':null"
                rows="5" cols="102" ng-model="quoteParamsModel.order.view.quote.endText"
                ng-change="quoteParamsModel.endTextChanged()"
-               ng-disabled="quoteParamsModel.isReadOnly"
+               ng-disabled="quoteParamsModel.readOnly.is"
        ></textarea> -->
     <div style="width: 80%;display: inline-block; border: 1px dashed #000000" ng-bind-html="quoteParamsModel.order.view.quote.endText"></div>
     <button class="btn btn-default" ng-click="quoteParamsModel.editEndText()">ערוך</button>

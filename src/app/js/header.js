@@ -6,8 +6,9 @@ angular.module('myApp')
     // references to members of parent order controller
     //objects
     this.order = $scope.orderModel.order;
-    this.isReadOnly = $scope.orderModel.isReadOnly;
+    this.readOnly = $scope.orderModel.readOnly;
     this.orderStatuses = $scope.orderModel.orderStatuses;
+
 
     // functions
     this.getPrevOrders =  $scope.orderModel.getPrevOrders;
@@ -66,11 +67,28 @@ angular.module('myApp')
 
     };
 
+    this.statusChanged = function () {
+      if (this.order.view.orderStatus.id > 0 && this.order.view.orderStatus.id < 6) {
+        this.order.attributes.isLead = false;
+      }
+      this.setReadOnly();
+      orderService.orderChanged(this.order,'header');
+    };
+
     this.setEventDate = function () {
       var thisOrder = this.order.attributes;
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < dater.today();  // past dates not allowed
       this.setReadOnly();
+    };
+
+    this.setKnownDate = function () {
+      var thisOrder = this.order.attributes;
+      orderService.orderChanged(this.order,'header');
+      if (!thisOrder.isUnknownDate) { // isUnknownDate should always be false here
+        thisOrder.eventDate = undefined;
+        this.order.view.errors.eventDate = true;
+      }
     };
 
     this.setNoOfParticipants = function () {

@@ -33,7 +33,7 @@
       <select ng-model="financialModel.order.view.quote.discountCause"
               ng-change="financialModel.setDiscountCause()"
               ng-options="discountCause.label for discountCause in financialModel.discountCauses"
-              ng-disabled="financialModel.isReadOnly"
+              ng-disabled="financialModel.readOnly.is"
       ></select>
     </td>
     <td></td>
@@ -42,7 +42,7 @@
     <td><label>% הנחה</label></td>
     <td>
       <input type="number" max=100 min = 0 ng-model="financialModel.order.view.quote.discountRate"
-             ng-disabled="!financialModel.order.view.quote.discountCause.tId>0 || financialModel.isReadOnly"
+             ng-disabled="!financialModel.order.view.quote.discountCause.tId>0 || financialModel.readOnly.is"
              ng-change="financialModel.setDiscountRate()"
              ng-class="financialModel.order.view.quote.errors.discountRate?'bg-danger':null">
     </td>
@@ -72,12 +72,12 @@
     <td><label>מחיר קבוע</label></td>
     <td>
       <input type="checkbox" ng-model="financialModel.order.view.quote.isFixedPrice"
-             ng-disabled="financialModel.isReadOnly"
+             ng-disabled="financialModel.readOnly.is"
              ng-change="financialModel.setFixedPrice()">
     </td>
     <td>
       <input type="text" money size=5 ng-model="financialModel.order.view.quote.fixedPrice"
-             ng-disabled="financialModel.isReadOnly || !financialModel.order.view.quote.isFixedPrice"
+             ng-disabled="financialModel.readOnly.is || !financialModel.order.view.quote.isFixedPrice"
              ng-change="financialModel.setFixedPrice()"
              ng-class="financialModel.order.view.quote.errors.fixedPrice?'bg-danger':null">
     </td>

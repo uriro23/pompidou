@@ -35,13 +35,14 @@ angular.module('myApp')
     };
 
     this.setReadOnly = function () {
-      this.isReadOnly = this.order.attributes.eventDate &&
+      this.readOnly.is = (this.order.attributes.eventDate &&
                         this.order.attributes.eventDate < dater.today() &&
-                        !this.order.attributes.template;
+                        !this.order.attributes.template) ||
+                      this.order.view.orderStatus.id === 6;  // canceled
     };
 
     this.handleVatRateChange = function () {
-      if (this.order.attributes.vatRate !== this.vatRate && !this.isReadOnly) {
+      if (this.order.attributes.vatRate !== this.vatRate && !this.readOnly.is) {
         var that = this;
         var vatChangeModal = $modal.open({
           templateUrl: 'app/partials/order/vatChange.html',
@@ -219,7 +220,7 @@ angular.module('myApp')
           that.order.view.contact = {};
         }
         if ($state.current.name === 'dupOrder') {
-          this.order.view.errors.eventDate = true; // empty event date is error
+          this.order.view.errors.eventDate = !this.order.attributes.isDateUnknown; // empty event date is error
         }
       } else { // newOrder or newOrderByCustomer
         if ($state.current.name === 'newOrderByCustomer') {
@@ -229,9 +230,12 @@ angular.module('myApp')
           this.order.view.customer = {};
         }
         this.order.view.contact = {};
-        this.order.view.orderStatus = this.orderStatuses[0]; // set to "New"
+        this.order.view.orderStatus = this.orderStatuses.filter(function (obj) {
+          return (obj.id === 0);
+        })[0];    // create as lead
+        console.log(this.order.view.orderStatus);
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
-        this.order.view.errors.eventDate = true; // empty event date is error
+        this.order.view.errors.eventDate = !this.order.attributes.isDateUnknown; // empty event date is error
        if ($state.current.name === 'newOrder') {
           this.order.view.errors.customer = true; // empty customer is error
         }
@@ -313,6 +317,7 @@ angular.module('myApp')
     this.isNewOrder = $state.current.name === 'newOrder'||
                       $state.current.name === 'dupOrder' ||
                       $state.current.name === 'newOrderByCustomer'; // used for view heading
+    this.readOnly = {is:false}; // declaread as object so it will be shared by ref among controllers
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
     this.categories = categories;
@@ -350,7 +355,8 @@ angular.module('myApp')
       this.order = api.initOrder();
       this.order.attributes = currentOrder.attributes;
       this.order.attributes.createdBy = this.user.attributes.username;
-      this.order.attributes.eventDate = undefined;
+      this.order.attributes.isDateUnknown = true;
+      this.order.attributes.eventDate = new Date(2199,11,31,0,0,0,0);
       this.order.attributes.eventTime = undefined;
       this.order.attributes.exitTime = undefined;
       this.order.attributes.activities = [];
@@ -375,6 +381,9 @@ angular.module('myApp')
     } else {  // new order or new order by customer
       $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
+      this.order.attributes.isDateUnknown = true;
+      this.order.attributes.eventDate = new Date(2199,11,31,0,0,0,0);
+      this.order.attributes.isLead = true; // this is needed so lead status will remain across cancel
       this.order.attributes.createdBy = this.user.attributes.username;
       if ($state.current.name === 'newOrderByCustomer') {
         this.order.attributes.customer = customer.id;
@@ -384,6 +393,8 @@ angular.module('myApp')
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.eventName = '';
       this.order.attributes.quotes = [];
+
+
 
       // initialize employee bonuses array
       this.order.attributes.empBonuses = angular.copy(pRoles);
@@ -421,7 +432,6 @@ angular.module('myApp')
       this.order.attributes.activities = [];
       this.setReadOnly();
     }
-
 
     this.order.view.isChanged = false;
     window.onbeforeunload = function () {

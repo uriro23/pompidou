@@ -34,7 +34,12 @@
     <td ng-show="orderTableModel.isDisableLink">
       {{order.attributes.number}}
     </td>
-    <td>{{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}</td>
+    <td ng-hide="order.attributes.isDateUnknown">
+      {{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}
+    </td>
+    <td ng-show="order.attributes.isDateUnknown">
+      <span>אין תאריך</span>
+    </td>
     <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>
     <td ng-hide="orderTableModel.queryType==='customer'">
@@ -58,10 +63,38 @@
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='debts' ||
                  orderTableModel.queryType==='year') &&
+                 !order.attributes.isLead &&
+                 !order.attributes.isDateUnknown &&
+      !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options=
+  "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
+      ></select>
+    </td>
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 !order.attributes.isLead &&
+                 order.attributes.isDateUnknown &&
                  !orderTableModel.user.isSalesPerson">
       <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
               ng-change="orderListModel.setStatus(order)"
-              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses"
+              ng-options=
+ "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectNoDate:true}"
+      ></select>
+    </td>
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 order.attributes.isLead &&
+                 !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options=
+   "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectLead:true}"
       ></select>
     </td>
     <td class="hidden-xs"

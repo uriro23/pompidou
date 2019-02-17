@@ -10,12 +10,12 @@
     <td>{{activitiesModel.activityDate | date: 'dd/MM/yyyy HH:mm'}}</td>
     <td>
       <textarea rows="10" cols="70" ng-model="activitiesModel.activityText"
-             ng-disabled="activitiesModel.isReadOnly"
+             ng-disabled="activitiesModel.readOnly.is"
       ></textarea>
     </td>
     <td>
         <button ng-click="activitiesModel.addActivity()"
-                ng-disabled="activitiesModel.isReadOnly"
+                ng-disabled="activitiesModel.readOnly.is"
                 class="btn btn-sm btn-default">צור</button>
     </td>
   </tr>
@@ -25,7 +25,7 @@
     <td>
       <button ng-click="activitiesModel.delActivity($index)"
               class="btn btn-sm btn-default"
-              ng-disabled="activitiesModel.isReadOnly"
+              ng-disabled="activitiesModel.readOnly.is"
               >מחק</button>
     </td>
     <td>

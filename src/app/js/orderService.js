@@ -354,7 +354,8 @@ angular.module('myApp')
 
     this.setStatus = function(order) {
       if (order.view.orderStatus.id !== order.attributes.orderStatus) {
-        var txt = (order.attributes.orderStatus ? 'סטטוס האירוע שונה ל- ' : 'האירוע נוצר בסטטוס ') +
+        var txt = ((typeof(order.attributes.orderStatus) === 'undefined')
+          ?  'האירוע נוצר בסטטוס ' : 'סטטוס האירוע שונה ל- ') +
                   order.view.orderStatus.name;
         order.attributes.activities.splice(0, 0, {date: new Date(), text: txt});
         if (order.attributes.header) {

@@ -6,7 +6,7 @@ angular.module('myApp')
     // references to members of parent order controller
     //objects
     this.order = $scope.orderModel.order;
-    this.isReadOnly = $scope.orderModel.isReadOnly;
+    this.readOnly = $scope.orderModel.readOnly;
     this.menuTypes = $scope.orderModel.menuTypes;
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
 

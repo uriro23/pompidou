@@ -2,12 +2,12 @@
   <div class="hidden-xs">
 <button ng-click="itemsModel.addItem(true)"
         ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
-        ng-disabled="itemsModel.isReadOnly"
+        ng-disabled="itemsModel.readOnly.is"
         class="btn btn-default"
         >הוסף פריט</button>
 <button ng-click="itemsModel.addItem(false)"
         ng-show="itemsModel.isAddItem"
-        ng-disabled="itemsModel.isReadOnly"
+        ng-disabled="itemsModel.readOnly.is"
         class="btn btn-warning">
     בטל
 </button>
@@ -31,13 +31,13 @@
 </span>
   <button ng-click="itemsModel.addTemplate(true)"
           ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
-          ng-disabled="itemsModel.isReadOnly"
+          ng-disabled="itemsModel.readOnly.is"
           class="btn btn-default">
     הוסף תבנית
   </button>
   <span ng-show="itemsModel.isAddTemplate">
   <button ng-click="itemsModel.addTemplate(false)"
-          ng-disabled="itemsModel.isReadOnly"
+          ng-disabled="itemsModel.readOnly.is"
           class="btn btn-warning">
       בטל
   </button>
@@ -83,13 +83,13 @@
 </span>
     <button ng-click="itemsModel.addQuote(true)"
                ng-show="!itemsModel.isAddTemplate && !itemsModel.isAddItem && !itemsModel.isAddQuote"
-               ng-disabled="itemsModel.isReadOnly"
+               ng-disabled="itemsModel.readOnly.is"
                class="btn btn-default">
   הוסף תפריט אחר
 </button>
   <span ng-show="itemsModel.isAddQuote">
   <button ng-click="itemsModel.addQuote(false)"
-          ng-disabled="itemsModel.isReadOnly"
+          ng-disabled="itemsModel.readOnly.is"
           class="btn btn-warning">
       בטל
   </button>
@@ -126,12 +126,12 @@
         <td>
           <input type="text" size="{{item.isDescChanged ? 89 : 100}}" ng-model="item.productDescription"
                  ng-change="itemsModel.setProductDescription($index)"
-                 ng-disabled="itemsModel.isReadOnly"
+                 ng-disabled="itemsModel.readOnly.is"
                  ng-class="item.errors.productDescription?'bg-danger':null">
           <input type="checkbox" ng-model="item.isCosmeticChange"
                  ng-show="item.isDescChanged"
                  ng-change="itemsModel.setCosmeticChange($index)"
-                 ng-disabled="itemsModel.isReadOnly">
+                 ng-disabled="itemsModel.readOnly.is">
           <button ng-show="item.isDescChanged"
                   class="btn btn-default btn-sm bg-success"
                   ng-click="itemsModel.resetDescChange($index)">מקור</button>
@@ -141,20 +141,20 @@
           <input type="number" size="1" min=0 max="10000"
                  ng-model="item.quantity"
                  ng-change="itemsModel.setQuantity($index)"
-                 ng-disabled="itemsModel.isReadOnly || item.isForcedPrice"
+                 ng-disabled="itemsModel.readOnly.is || item.isForcedPrice"
                  ng-class="item.errors.quantity?'bg-danger':null">
         </td>
         <td>
           <input type="text" size="7" money min=0 ng-model="item.price"
                  ng-change="itemsModel.setPrice($index)"
-                 ng-disabled="itemsModel.isReadOnly || item.category.isPriceIncrease"
+                 ng-disabled="itemsModel.readOnly.is || item.category.isPriceIncrease"
                  ng-class="item.errors.price?'bg-danger':null">
         </td>
         <td>
           <input type="checkbox"
                  ng-model="item.isFreeItem"
                  ng-change="itemsModel.setFreeItem($index)"
-                 ng-disabled="itemsModel.isReadOnly"
+                 ng-disabled="itemsModel.readOnly.is"
           >
         </td>
         <td ng-hide="item.isForcedPrice">
@@ -165,13 +165,13 @@
         </td>
         <td ng-show="item.isForcedPrice">
           <button ng-click="itemsModel.setQuantity($index)"
-                  ng-disabled="itemsModel.isReadOnly"
+                  ng-disabled="itemsModel.readOnly.is"
                   class="btn btn-warning btn-sm"
           >מחיר ב"מ</button> <!-- setQuantity causes price recalc -->
         </td>
         <td>
           <button ng-click="itemsModel.deleteItem($index)"
-                  ng-disabled="itemsModel.isReadOnly"
+                  ng-disabled="itemsModel.readOnly.is"
                   class="btn btn-warning btn-sm"
           >מחק</button>
         </td>

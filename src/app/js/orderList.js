@@ -121,7 +121,8 @@ angular.module('myApp')
             return color.tId === fetchedOrder.attributes.color;
           })[0];
        }
-        fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today();
+        fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today() ||
+                                        fetchedOrder.view.orderStatus.id === 6;
       });
       this.noOfFetchedOrders = fetchedOrders.length;
       this.filterOrders();
@@ -141,7 +142,8 @@ angular.module('myApp')
       var that = this;
       this.orders = [];
       var fieldList = [
-        'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
+        'orderStatus','noOfParticipants','eventDate','isDateUnknown','isLead',
+        'customer','eventTime','number',
         'exitTime','template','remarks','header', 'activities', 'color', 'createdBy'
       ];
       if (this.queryType !== 'year') {
@@ -153,7 +155,7 @@ angular.module('myApp')
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template;
+              return !ord.attributes.template && ord.attributes.orderStatus < 11;
             });
             that.enrichOrders();
           });
@@ -185,7 +187,7 @@ angular.module('myApp')
           api.queryOrdersByRange('eventDate',fromDate2,toDate2,fieldList)
             .then(function(orders) {
               fetchedOrders = orders.filter(function(ord) {
-                return !ord.attributes.template;
+                return !ord.attributes.template && ord.attributes.orderStatus < 11;
               });
               that.enrichOrders();
             });

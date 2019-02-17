@@ -14,17 +14,17 @@
     <td>
       <input type="text" size="30" ng-model="quote.title"
              ng-change="quoteManagementModel.setQuoteChanged($index)"
-             ng-disabled="quoteManagementModel.isReadOnly">
+             ng-disabled="quoteManagementModel.readOnly.is">
     </td>
     <td>{{quote.total | currency}}</td>
     <td>
       <input type="checkbox" ng-model="quote.isActive"
              ng-change="quoteManagementModel.setActiveQuote($index)"
-             ng-disabled="quoteManagementModel.isReadOnly">
+             ng-disabled="quoteManagementModel.readOnly.is">
     </td>
     <td>
       <button class="btn btn-warning btn-small"
-              ng-disabled="quote.isActive || quoteManagementModel.isReadOnly"
+              ng-disabled="quote.isActive || quoteManagementModel.readOnly.is"
               ng-click="quoteManagementModel.delQuote($index)">
         מחק
       </button>
@@ -38,7 +38,7 @@
 <select ng-model="quoteManagementModel.newMenuType"
         ng-change="quoteManagementModel.addQuote()"
         ng-options="menuType.label for menuType in quoteManagementModel.remainingMenuTypes"
-        ng-disabled="quoteManagementModel.isReadOnly"
+        ng-disabled="quoteManagementModel.readOnly.is"
   ></select>
   </div>
   </div>

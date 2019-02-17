@@ -30,7 +30,8 @@ angular.module('myApp')
     var totalPerParticipantFactor = 20;
 
     var fieldList = [
-      'orderStatus','noOfParticipants','eventDate','customer','eventTime','number',
+      'orderStatus','noOfParticipants','eventDate','isDateUnknown','isLead',
+      'customer','eventTime','number',
       'exitTime','template', 'header', 'vatRate', 'referralSource', 'createdBy'
     ];
 
@@ -266,7 +267,8 @@ angular.module('myApp')
         order.view.orderStatus = lov.orderStatuses.filter(function (stat) {
           return stat.id === order.attributes.orderStatus;
         })[0];
-        order.view.isReadOnly = order.attributes.eventDate < dater.today();
+        order.view.isReadOnly = order.attributes.eventDate < dater.today() ||
+                                order.view.orderStatus.id === 6;
       });
       lineArray.forEach(function(lin) {
         lin.isBold = false
