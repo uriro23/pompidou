@@ -86,6 +86,9 @@ angular.module('myApp')
       this.bidDesc = '';
       this.isOnlyActiveQuote = false;
 
+      console.log('bids');
+      console.log(bids);
+
      return api.saveObjects(bids)
         .then(function () {
          that.isBidsLoading = true;

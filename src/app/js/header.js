@@ -67,11 +67,30 @@ angular.module('myApp')
 
     };
 
+    function checkParticipants (order) {
+      var thisOrder = order.attributes;
+      return (!thisOrder.isLead &&
+        (!Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0)) ||
+        (thisOrder.isLead && thisOrder.noOfParticipants < 0);
+    }
+
+    this.setNoOfParticipants = function () {
+      orderService.orderChanged(this.order,'header');
+      this.order.view.errors.noOfParticipants = checkParticipants (this.order);
+    };
+
+    this.setChildren = function () {
+      var thisOrder = this.order.attributes;
+      orderService.orderChanged(this.order,'header');
+      this.order.view.errors.children = thisOrder.children < 0;
+    };
+
     this.statusChanged = function () {
       if (this.order.view.orderStatus.id > 0 && this.order.view.orderStatus.id < 6) {
         this.order.attributes.isLead = false;
       }
-      this.setReadOnly();
+      this.order.view.errors.noOfParticipants = checkParticipants (this.order);
+       this.setReadOnly();
       orderService.orderChanged(this.order,'header');
     };
 
@@ -91,16 +110,5 @@ angular.module('myApp')
       }
     };
 
-    this.setNoOfParticipants = function () {
-      var thisOrder = this.order.attributes;
-      orderService.orderChanged(this.order,'header');
-      this.order.view.errors.noOfParticipants = !Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0;
-    };
-
-    this.setChildren = function () {
-      var thisOrder = this.order.attributes;
-      orderService.orderChanged(this.order,'header');
-      this.order.view.errors.children = thisOrder.children < 0;
-    };
 
   });

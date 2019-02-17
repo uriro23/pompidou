@@ -27,7 +27,14 @@
 
         <!-- basic details of bid  -->
         <div>
-            <label>תאריך: </label><span>{{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}</span><br/>
+            <label>תאריך: </label>
+          <span ng-hide="bidModel.currentOrder.isDateUnknown">
+            {{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}
+          </span>
+          <span ng-show="bidModel.currentOrder.isDateUnknown">
+            טרם נקבע
+          </span>
+          <br/>
             <label>מספרנו: </label><span>{{bidModel.currentOrder.number}}</span><br/>
             <span>לכבוד</span><br/>
             <span>{{bidModel.customer.firstName+' '+bidModel.customer.lastName}}</span>

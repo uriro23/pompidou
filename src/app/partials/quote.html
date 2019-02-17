@@ -27,8 +27,13 @@
 			  <span>{{quoteModel.bid.attributes.customer.firstName+' '+quoteModel.bid.attributes.customer.lastName}}</span>
 			  <br>
 			  <span class="bold">תאריך האירוע:</span>
-        <span>{{quoteModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
-			  <br>
+        <span ng-hide="quoteModel.bid.attributes.order.isDateUnknown">
+          {{quoteModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}
+        </span>
+        <span ng-show="quoteModel.bid.attributes.order.isDateUnknown">
+          טרם נקבע
+        </span>
+        <br>
 			  <span class="bold" ng-show="quoteModel.eventTime">זמן האספקה:</span>
         <span ng-show="quoteModel.eventTime">
           {{quoteModel.eventTime | convertTimezone:'Asia/Jerusalem' | formatTime: 'H:mm'}}

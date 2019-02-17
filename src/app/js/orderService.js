@@ -187,9 +187,8 @@ angular.module('myApp')
       var thisOrder = order.attributes;
       var view = order.view;
 
-      console.log('saving '+thisOrder.number);
       // check if any quote has been created
-      if (thisOrder.quotes.length===0) {
+      if (view.orderStatus.id > 0 && thisOrder.quotes.length===0) {
         alert('לא ניתן לשמור. יש ליצור לפחות תפריט אחד');
         return;
       }
@@ -339,16 +338,30 @@ angular.module('myApp')
 
     this.setupOrderHeader = function (order) {
       var currentQuote = order.quotes[order.activeQuote];
-      order.header = {
-        'title': currentQuote.title,
-        'menuType': currentQuote.menuType,
-        'total': currentQuote.total,
-        'balance': currentQuote.balance,
-        'transportationInclVat': currentQuote.transportationInclVat,
-        'discountRate': currentQuote.discountRate,
-        'isHeavyweight': currentQuote.isHeavyweight,
-        'activityDate': order.activities.length?order.activities[0].date:undefined,
-        'activityText': order.activities.length?order.activities[0].text.slice(0,30):undefined
+      if (currentQuote) {
+        order.header = {
+          'title': currentQuote.title,
+          'menuType': currentQuote.menuType,
+          'total': currentQuote.total,
+          'balance': currentQuote.balance,
+          'transportationInclVat': currentQuote.transportationInclVat,
+          'discountRate': currentQuote.discountRate,
+          'isHeavyweight': currentQuote.isHeavyweight,
+          'activityDate': order.activities.length ? order.activities[0].date : undefined,
+          'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined
+        };
+      } else {  // no quotes maybe in case of lead
+        order.header = {
+          'title': 'פניה',
+          'menuType': null,
+          'total': 0,
+          'balance': 0,
+          'transportationInclVat': 0,
+          'discountRate': 0,
+          'isHeavyweight': false,
+          'activityDate': order.activities.length ? order.activities[0].date : undefined,
+          'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined
+        };
       }
     };
 

@@ -124,43 +124,6 @@
                                           ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.children?'bg-danger':null">
     </td>
-    <!--
-    <td class="hidden-xs"
-        ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
-                 order.view.orderStatus.id > 0 &&
-                 !order.attributes.isDateUnknown &&
-      !orderTableModel.user.isSalesPerson">
-      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
-              ng-change="orderListModel.setStatus(order)"
-              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
-      ></select>
-    </td>
-    <td class="hidden-xs"
-        ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
-                 order.view.orderStatus.id > 0 &&
-                 order.attributes.isDateUnknown &&
-                 !orderTableModel.user.isSalesPerson">
-      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
-              ng-change="orderListModel.setStatus(order)"
-              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectNoDate:true}"
-      ></select>
-    </td>
-    <td class="hidden-xs"
-        ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
-                 order.view.orderStatus.id === 0 &&
-                 !orderTableModel.user.isSalesPerson">
-      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
-              ng-change="orderListModel.setStatus(order)"
-              ng-options="orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectLead:true}"
-      ></select>
-    </td>
-    -->
     <td  ng-show="!orderModel.order.attributes.template &&
                   !orderModel.order.attributes.isLead &&
                   !orderModel.order.attributes.isDateUnknown"
@@ -235,7 +198,8 @@
       </span>
     </td>
   </tr>
-  <tr ng-hide="headerModel.order.attributes.quotes.length" class="bg-danger">
+  <tr ng-hide="headerModel.order.attributes.quotes.length"
+      ng-class="headerModel.order.view.orderStatus.id > 0 ? 'bg-danger' : null">
     <td>אין תפריטים</td>
   </tr>
 </table>

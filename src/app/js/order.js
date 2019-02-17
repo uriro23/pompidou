@@ -154,17 +154,17 @@ angular.module('myApp')
       this.order.view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
-        if (this.order.view.quote.endBoxType) {
+        if (this.order.view.quote && this.order.view.quote.endBoxType) {
           this.order.view.quote.endBoxType = menuTypes.filter(function (obj) { // so select in quoteParams will work
             return (obj.tId === that.order.view.quote.endBoxType.tId);
           })[0];
         }
-        if (this.order.view.quote.discountCause) {
+        if (this.order.view.quote && this.order.view.quote.discountCause) {
           this.order.view.quote.discountCause = discountCauses.filter(function (dc) {
             return dc.tId === that.order.view.quote.discountCause.tId;
           })[0];
         }
-        if(this.order.view.quote.endTextType) {
+        if(this.order.view.quote && this.order.view.quote.endTextType) {
           this.order.view.quote.endTextType = bidTextTypes.filter(function (obj) {
             return (obj.tId === that.order.view.quote.endTextType.tId);
           })[0];
@@ -233,13 +233,13 @@ angular.module('myApp')
         this.order.view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead
-        console.log(this.order.view.orderStatus);
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
         this.order.view.errors.eventDate = !this.order.attributes.isDateUnknown; // empty event date is error
        if ($state.current.name === 'newOrder') {
           this.order.view.errors.customer = true; // empty customer is error
         }
-        this.order.view.errors.noOfParticipants = true; // empty no of participants is error
+        this.order.view.errors.noOfParticipants = !this.order.attributes.isLead;
+          // empty no of participants is error except for leads
        }
     };
 
@@ -317,7 +317,7 @@ angular.module('myApp')
     this.isNewOrder = $state.current.name === 'newOrder'||
                       $state.current.name === 'dupOrder' ||
                       $state.current.name === 'newOrderByCustomer'; // used for view heading
-    this.readOnly = {is:false}; // declaread as object so it will be shared by ref among controllers
+    this.readOnly = {is:false}; // declared as object so it will be shared by ref among controllers
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
     this.categories = categories;
@@ -347,7 +347,7 @@ angular.module('myApp')
       });
 
         this.handleVatRateChange();
-      if(!this.order.view.quote.advance) {
+      if(this.order.view.quote && !this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
     } else if ($state.current.name === 'dupOrder') {
