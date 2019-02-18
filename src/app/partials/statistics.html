@@ -463,6 +463,67 @@
         </tbody>
       </table>
     </tab>
+    <tab heading="ביטול" deselect="statisticsModel.deselectTab(statisticsModel.cancelReasonStats)">
+      <table class="table table-hover" style="width: 80%">
+        <thead ng-show="statisticsModel.cancelReasonStats.length">
+        <th><label>ביטול</label></th>
+        <th><label>מס' פוט'</label></th>
+        <th><label>סכום פוט'</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' בפועל</label></th>
+        <th><label>% בפועל</label></th>
+        <th><label>סכום בפועל</label></th>
+        <th><label>ממוצע לאירוע</label></th>
+        <th><label>מס' משתתפים</label></th>
+        <th><label>מחיר לאורח</label></th>
+        <th><label>משלוחים</label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in statisticsModel.cancelReasonStats track by line.label"
+            ng-class="line.isBold?'bg-warning':null">
+          <td style="cursor: pointer"
+              ng-click="statisticsModel.setupLineOrders(statisticsModel.cancelReasonStats,line)">{{line.label}}</td>
+          <td>{{line.potCount}}</td>
+          <td>{{line.potTotal | currency}}</td>
+          <td>{{line.potTotal / line.potCount | currency}}</td>
+          <td>{{line.actCount}}</td>
+          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
+          <td>{{line.actTotal | currency}}</td>
+          <td>{{line.actTotal / line.actCount | currency}}</td>
+          <td>{{line.actParticipants / line.actCount | number:1}}</td>
+          <td>{{line.actTotal / line.actParticipants | currency}}</td>
+          <td>{{line.actTransportation | currency}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr ng-show="statisticsModel.cancelReasonStats.length">
+          <td><label>ס"ה</label></td>
+          <td>{{statisticsModel.cancelReasonTot.potCount}}</td>
+          <td>{{statisticsModel.cancelReasonTot.potTotal | currency}}</td>
+          <td></td>
+          <td>{{statisticsModel.cancelReasonTot.actCount}}</td>
+          <td>{{(statisticsModel.cancelReasonTot.actCount / statisticsModel.cancelReasonTot.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.cancelReasonTot.actTotal | currency}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>{{statisticsModel.cancelReasonTot.actTransportation | currency}}</td>
+        </tr>
+        <tr ng-show="statisticsModel.cancelReasonStats.length">
+          <td><label>ממוצע</label></td>
+          <td>{{statisticsModel.cancelReasonAvg.potCount | number:2}}</td>
+          <td>{{statisticsModel.cancelReasonAvg.potTotal | currency}}</td>
+          <td>{{statisticsModel.cancelReasonAvg.potTotal / statisticsModel.cancelReasonAvg.potCount | currency}}</td>
+          <td>{{statisticsModel.cancelReasonAvg.actCount | number:2}}</td>
+          <td>{{(statisticsModel.cancelReasonAvg.actCount / statisticsModel.cancelReasonAvg.potCount) * 100 | number:1}}</td>
+          <td>{{statisticsModel.cancelReasonAvg.actTotal | currency}}</td>
+          <td>{{statisticsModel.cancelReasonAvg.actTotal / statisticsModel.cancelReasonAvg.actCount | currency}}</td>
+          <td>{{statisticsModel.cancelReasonAvg.actParticipants / statisticsModel.cancelReasonAvg.actCount | number:1}}</td>
+          <td>{{statisticsModel.cancelReasonTot.actTotal / statisticsModel.cancelReasonTot.actParticipants | currency}}</td>
+          <td>{{statisticsModel.cancelReasonTot.actTransportation | currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </tab>
     <tab heading="בונוסים" select="statisticsModel.loadEmpBonuses()">
       <table class="table table-hover">
         <thead ng-show="statisticsModel.empBonuses.length">

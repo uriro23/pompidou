@@ -76,6 +76,15 @@ angular.module('myApp')
     });
   })
 
+  .factory('cancelReasonsPromise', function (api) {
+    return api.queryCancelReasons().then(function (res) {
+      console.log(res);
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('sensitivitiesPromise', function (api) {
     return api.querySensitivities().then(function (res) {
       return res.map(function (obj) {

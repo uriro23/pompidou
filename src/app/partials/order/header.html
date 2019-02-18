@@ -84,26 +84,26 @@
 <table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
     <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
-         style="width: 17%">
+         style="width: 22%">
       <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.attributes.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'bg-danger':null">
     </td>
     <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
-         style="width: 17%">
-    <label>שעת מסירה:</label>&nbsp
+         style="width: 12%">
+    <label>מסירה:</label>&nbsp
       <input type="time" ng-model="headerModel.order.attributes.eventTime"
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.orderChanged('header')">
     </td>
     <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
-         style="width: 14%">
-      <label>שעת יציאה:</label>&nbsp
+         style="width: 12%">
+      <label>יציאה:</label>&nbsp
       <input type="time" ng-model="headerModel.order.attributes.exitTime"
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.orderChanged('header')">
     </td>
-    <td style="width: 48%" ng-show="orderModel.order.attributes.isDateUnknown">
+    <td style="width: 46%" ng-show="orderModel.order.attributes.isDateUnknown">
       <label>תאריך לא ידוע:</label>
       <input type="checkbox" ng-model="headerModel.order.attributes.isDateUnknown"
              ng-disabled="headerModel.readOnly.is"
@@ -116,7 +116,7 @@
                                           ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.noOfParticipants?'bg-danger':null">
     </td>
-    <td style="width: 10%">
+    <td style="width: 12%">
       <label>ילדים:</label>&nbsp;<input type="number" min="-999" max="9999"
                                           placeholder="מתוכם"
                                           ng-model="headerModel.order.attributes.children"
@@ -128,7 +128,7 @@
                   !orderModel.order.attributes.isLead &&
                   !orderModel.order.attributes.isDateUnknown"
          style="width: 15%">
-      <label>סטטוס:</label>a1&nbsp;
+      <label>סטטוס:</label>&nbsp;
       <select ng-model="headerModel.order.view.orderStatus"
               ng-change="headerModel.statusChanged()"
               ng-options=
@@ -139,7 +139,7 @@
                   !orderModel.order.attributes.isLead &&
                   orderModel.order.attributes.isDateUnknown"
          style="width: 15%">
-    <label>סטטוס:</label>a2&nbsp;
+    <label>סטטוס:</label>&nbsp;
       <select ng-model="headerModel.order.view.orderStatus"
               ng-change="headerModel.statusChanged()"
               ng-options=
@@ -150,7 +150,7 @@
                   orderModel.order.attributes.isLead &&
                   !orderModel.order.attributes.isDateUnknown"
          style="width: 15%">
-      <label>סטטוס:</label>a3&nbsp;
+      <label>סטטוס:</label>
       <select ng-model="headerModel.order.view.orderStatus"
               ng-change="headerModel.statusChanged()"
               ng-options=
@@ -161,7 +161,7 @@
                   orderModel.order.attributes.isLead &&
                   orderModel.order.attributes.isDateUnknown"
          style="width: 15%">
-      <label>סטטוס:</label>a4&nbsp;
+      <label>סטטוס:</label>&nbsp;
       <select ng-model="headerModel.order.view.orderStatus"
               ng-change="headerModel.statusChanged()"
               ng-options=

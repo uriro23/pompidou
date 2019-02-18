@@ -420,6 +420,20 @@ angular.module('myApp')
       return query(referralSourcesQuery);
     };
 
+    // CancelReason
+    // ------------
+
+    var CancelReason = Parse.Object.extend("CancelReason");
+
+    this.queryCancelReasons = function (id) {
+      var cancelReasonsQuery = new Parse.Query(CancelReason);
+      if (id) {
+        cancelReasonsQuery.equalTo("tId", id);
+      }
+      cancelReasonsQuery.ascending("order");
+      return query(cancelReasonsQuery);
+    };
+
     // Sensitivity
     // -------------
 

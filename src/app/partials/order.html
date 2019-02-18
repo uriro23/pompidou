@@ -42,7 +42,7 @@
             <tab heading="פעילויות">
                 <ng-include src="'app/partials/order/activities.html'"></ng-include>
             </tab>
-          <tab heading="פרטים כלליים">
+          <tab heading="פרטים כלליים" active="orderModel.isActiveGeneralTab">
             <ng-include src="'app/partials/order/general.html'"></ng-include>
           </tab>
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:false}"

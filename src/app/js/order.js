@@ -5,8 +5,8 @@ angular.module('myApp')
   .controller('OrderCtrl', function (api, $state, $filter, $modal, $rootScope, $scope,
                                      orderService, currentOrder, isFromNew, customer, lov, dater,
                                      bidTextTypes, categories, measurementUnits,
-                                     discountCauses, referralSources, menuTypes, colors,
-                                     employees, pRoles, config) {
+                                     discountCauses, referralSources, cancelReasons,
+                                     menuTypes, colors, employees, pRoles, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -181,6 +181,9 @@ angular.module('myApp')
         this.order.view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.attributes.referralSource);
         })[0];
+        this.order.view.cancelReason = cancelReasons.filter(function (obj) {
+          return (obj.tId === that.order.attributes.cancelReason);
+        })[0];
         if (this.order.attributes.color) {
           this.order.view.color = colors.filter(function(obj) {
             return (obj.tId === that.order.attributes.color);
@@ -234,6 +237,7 @@ angular.module('myApp')
           return (obj.id === 0);
         })[0];    // create as lead
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
+        this.order.view.cancelReason = this.cancelReasons[0]; // set to "unknown"
         this.order.view.errors.eventDate = !this.order.attributes.isDateUnknown; // empty event date is error
        if ($state.current.name === 'newOrder') {
           this.order.view.errors.customer = true; // empty customer is error
@@ -324,6 +328,8 @@ angular.module('myApp')
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;
     this.referralSources = referralSources;
+    this.cancelReasons = cancelReasons;
+    console.log(this.cancelReasons);
     this.menuTypes = menuTypes;
     this.employees = employees;
     this.config = config;
@@ -331,12 +337,16 @@ angular.module('myApp')
     this.isProd = config.isProd;
     this.activityDate = new Date();
     this.isItemsTabActive = true;
-    this.isActiveQuoteTab = true;
     this.quoteViewType = 'items';
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       this.setupOrderView();
+      if (this.order.view.quote && this.order.view.orderStatus.id < 6) {
+        this.isActiveQuoteTab = true;
+      } else {
+        this.isActiveGeneralTab = true;
+      }
        this.setReadOnly();
       this.order.attributes.empBonuses.forEach(function(role) {
         if (role.employee) {
@@ -408,24 +418,23 @@ angular.module('myApp')
       });
 
       var j = 0;  // count only initialCreate menuTypes
-      for (i=0;i<menuTypes.length;i++) {  // on order creation, we create a quote for each menu type
-        var mt = menuTypes[i];
+      menuTypes.forEach(function(mt) {  // on order creation, we create a quote for each menu type
         if (mt.isInitialCreate) {
-          var quote = orderService.initQuote(mt, this.categories, this.discountCauses[0]);
+          var quote = orderService.initQuote(mt, that.categories, that.discountCauses[0]);
           if (mt.isDefault) {
             quote.isActive = true;
-            this.order.attributes.activeQuote = j;
-            this.order.view.quote = quote;
+            that.order.attributes.activeQuote = j;
+            that.order.view.quote = quote;
           }
-          orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+          orderService.calcSubTotal(quote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
 
-          this.order.attributes.quotes.push(quote);
+          that.order.attributes.quotes.push(quote);
           j++;
         }
-      }
+      });
       if (j === 0) {    // no quotes created
         this.isActiveQuoteTab = false;
-        this.isActiveQuoteManagementTab = true;
+        this.isActiveGeneralTab = true;
 
       }
       this.order.attributes.vatRate = this.vatRate;

@@ -86,6 +86,9 @@ config(function($stateProvider, $urlRouterProvider) {
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
         }],
+        cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
+          return cancelReasonsPromise;
+        }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
         }],
@@ -133,6 +136,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
+        }],
+        cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
+          return cancelReasonsPromise;
         }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
@@ -182,6 +188,9 @@ config(function($stateProvider, $urlRouterProvider) {
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
         }],
+        cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
+          return cancelReasonsPromise;
+        }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
         }],
@@ -229,6 +238,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
           return referralSourcesPromise;
+        }],
+        cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
+          return cancelReasonsPromise;
         }],
         menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
           return menuTypesPromise;
@@ -554,6 +566,9 @@ config(function($stateProvider, $urlRouterProvider) {
       }],
       referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
         return referralSourcesPromise;
+      }],
+      cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
+        return cancelReasonsPromise;
       }],
       customers: ['api', function (api) {
         return api.queryCustomers().then(function (objs) {

@@ -2,7 +2,8 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, dater, menuTypes, referralSources, customers) {
+  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, dater,
+                                          menuTypes, referralSources, cancelReasons, customers) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -31,8 +32,8 @@ angular.module('myApp')
 
     var fieldList = [
       'orderStatus','noOfParticipants','eventDate','isDateUnknown','isLead',
-      'customer','eventTime','number',
-      'exitTime','template', 'header', 'vatRate', 'referralSource', 'createdBy'
+      'customer','eventTime','number', 'exitTime','template', 'header',
+      'vatRate', 'referralSource', 'cancelReason', 'createdBy'
     ];
 
     //this.loadOrders();
@@ -59,6 +60,10 @@ angular.module('myApp')
       this.referralSourceStats = []; //  clear existing display
       this.referralSourceTot = {};
       this.referralSourceAvg = {};
+
+      this.cancelReasonStats = []; //  clear existing display
+      this.cancelReasonTot = {};
+      this.cancelReasonAvg = {};
 
       this.menuTypeStats = []; //  clear existing display
       this.menuTypeTot = {};
@@ -251,7 +256,18 @@ angular.module('myApp')
           return s[0].label;
         }
       });
-   };
+      // segmentation by cancelReason
+      doSegmentation(this.cancelReasonStats, this.cancelReasonTot, this.cancelReasonAvg, function (ord) {
+        return ord.attributes.cancelReason;
+      },function (ind) {
+        var s = cancelReasons.filter(function(r) {
+          return r.tId === ind;
+        });
+        if (s.length) {
+          return s[0].label;
+        }
+      });
+    };
 
     this.setupLineOrders = function(lineArray,line) {
       this.ordersToShow = line.orders;

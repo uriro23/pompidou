@@ -89,6 +89,9 @@ angular.module('myApp')
       if (this.order.view.orderStatus.id > 0 && this.order.view.orderStatus.id < 6) {
         this.order.attributes.isLead = false;
       }
+      if (this.order.view.orderStatus.id === 6) {
+        $scope.orderModel.isActiveGeneralTab = true;
+      }
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
        this.setReadOnly();
       orderService.orderChanged(this.order,'header');

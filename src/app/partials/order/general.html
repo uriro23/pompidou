@@ -1,5 +1,20 @@
 <div ng-controller="GeneralCtrl as generalModel">
 <table>
+  <tr ng-class="generalModel.order.view.changes.cancelReason?'bg-success':null"
+      ng-show="generalModel.order.view.orderStatus.id === 6">
+    <td><label>סיבת ביטול</label></td>
+    <td>
+      <select ng-model="generalModel.order.view.cancelReason"
+              ng-change="generalModel.orderChanged('cancelReason')"
+              ng-options="cancelReason.label for cancelReason in generalModel.cancelReasons"
+      ></select>
+    </td>
+    <td>
+      <input type="text" size="50" ng-model="generalModel.order.attributes.cancelReasonText"
+             ng-change="generalModel.orderChanged('cancelReason')">
+    </td>
+    <td></td>
+  </tr>
   <tr ng-class="generalModel.order.view.changes.eventName?'bg-success':null">
     <td>שם האירוע</td>
     <td>
@@ -8,7 +23,23 @@
              ng-disabled="generalModel.readOnly.is">
     </td>
   </tr>
-  <tr ng-class="generalModel.order.view.changes.deliveryLocation?'bg-success':null">
+  <tr ng-class="generalModel.order.view.changes.referralSource?'bg-success':null">
+    <td>מקור הפניה</td>
+    <td>
+      <select ng-model="generalModel.order.view.referralSource"
+              ng-change="generalModel.orderChanged('referralSource')"
+              ng-options="referralSource.label for referralSource in generalModel.referralSources"
+              ng-disabled="generalModel.readOnly.is"
+      ></select>
+    </td>
+    <td>
+      <input type="text" size="50" ng-model="generalModel.order.attributes.referralSourceText"
+             ng-change="generalModel.orderChanged('referralSource')"
+             ng-disabled="generalModel.readOnly.is">
+    </td>
+    <td></td>
+  </tr>
+ <tr ng-class="generalModel.order.view.changes.deliveryLocation?'bg-success':null">
     <td>מקום משלוח</td>
     <td>
       <textarea rows="2" cols="48" ng-model="generalModel.order.attributes.deliveryLocation"
@@ -42,23 +73,7 @@
              ng-disabled="generalModel.readOnly.is">
     </td>
   </tr>
-  <tr ng-class="generalModel.order.view.changes.referralSource?'bg-success':null">
-    <td>מקור הפניה</td>
-    <td>
-      <select ng-model="generalModel.order.view.referralSource"
-              ng-change="generalModel.orderChanged('referralSource')"
-              ng-options="referralSource.label for referralSource in generalModel.referralSources"
-              ng-disabled="generalModel.readOnly.is"
-        ></select>
-    </td>
-    <td>
-      <input type="text" size="50" ng-model="generalModel.order.attributes.referralSourceText"
-             ng-change="generalModel.orderChanged('referralSource')"
-             ng-disabled="generalModel.readOnly.is">
-    </td>
-    <td></td>
-  </tr>
-  <tr ng-class="generalModel.order.view.changes.template?'bg-success':null">
+ <tr ng-class="generalModel.order.view.changes.template?'bg-success':null">
     <td>שם תבנית</td>
     <td>
       <input type="text" ng-model="generalModel.order.attributes.template"

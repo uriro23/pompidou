@@ -8,6 +8,7 @@ angular.module('myApp')
     this.order = $scope.orderModel.order;
     this.readOnly = $scope.orderModel.readOnly;
     this.referralSources = $scope.orderModel.referralSources;
+    this.cancelReasons = $scope.orderModel.cancelReasons;
     this.user = $scope.orderModel.user;
 
     this.orderChanged = function (field) {

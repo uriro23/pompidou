@@ -228,6 +228,9 @@ angular.module('myApp')
       if (view.referralSource) {
         thisOrder.referralSource = view.referralSource.tId;
       }
+      if (view.cancelReason) {
+        thisOrder.cancelReason = view.cancelReason.tId;
+      }
       thisOrder.customer = view.customer.id;
       thisOrder.contact = view.contact.id;
       if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
