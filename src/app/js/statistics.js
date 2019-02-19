@@ -31,7 +31,7 @@ angular.module('myApp')
     var totalPerParticipantFactor = 20;
 
     var fieldList = [
-      'orderStatus','noOfParticipants','eventDate','isDateUnknown','isLead',
+      'orderStatus','noOfParticipants','eventDate','isDateUnknown',
       'customer','eventTime','number', 'exitTime','template', 'header',
       'vatRate', 'referralSource', 'cancelReason', 'createdBy'
     ];

@@ -478,7 +478,7 @@ angular.module('myApp')
     model.getOrders = function () {
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','eventTime','orderStatus',
-        'isDateUnknown','isLead',
+        'isDateUnknown',
         'customer','number','header','quotes', 'createdBy'
       ];
       model.isProcessing = true;

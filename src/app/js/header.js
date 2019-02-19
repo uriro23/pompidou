@@ -69,9 +69,9 @@ angular.module('myApp')
 
     function checkParticipants (order) {
       var thisOrder = order.attributes;
-      return (!thisOrder.isLead &&
+      return (order.view.orderStatus.id > 0 &&
         (!Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0)) ||
-        (thisOrder.isLead && thisOrder.noOfParticipants < 0);
+        (order.view.orderStatus.id === 0 && thisOrder.noOfParticipants < 0);
     }
 
     this.setNoOfParticipants = function () {
@@ -86,11 +86,15 @@ angular.module('myApp')
     };
 
     this.statusChanged = function () {
-      if (this.order.view.orderStatus.id > 0 && this.order.view.orderStatus.id < 6) {
-        this.order.attributes.isLead = false;
-      }
       if (this.order.view.orderStatus.id === 6) {
         $scope.orderModel.isActiveGeneralTab = true;
+      }
+      if (this.order.view.orderStatus.id > 1 && this.order.view.orderStatus.id < 6) {
+        if(this.order.attributes.isDateUnknown) {
+          this.order.attributes.eventDate = undefined;
+          this.order.attributes.isDateUnknown = false;
+          this.order.view.errors.eventDate = true;
+        }
       }
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
        this.setReadOnly();

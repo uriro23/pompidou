@@ -4,6 +4,7 @@
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
                                           api, lov, orderService, dater, queryType, customers,
+                                          cancelReasons,
                                           recentOpenings, recentClosings, colors) {
       var that = this;
     var user = api.getCurrentUser();
@@ -142,7 +143,7 @@ angular.module('myApp')
       var that = this;
       this.orders = [];
       var fieldList = [
-        'orderStatus','noOfParticipants','eventDate','isDateUnknown','isLead',
+        'orderStatus','noOfParticipants','eventDate','isDateUnknown',
         'customer','eventTime','number',
         'exitTime','template','remarks','header', 'activities', 'color', 'createdBy'
       ];
@@ -232,8 +233,31 @@ angular.module('myApp')
     };
 
     this.setStatus = function (order) {
-      orderService.setStatus(order);
-      api.saveObj(order);
+      if (order.view.orderStatus.id === 6) {
+        var cancelReasonModal = $modal.open({
+          templateUrl: 'app/partials/order/cancelReason.html',
+          controller: 'CancelReasonCtrl as cancelReasonModel',
+          resolve: {
+            order: function () {
+              return order;
+            },
+            cancelReasons: function () {
+              return cancelReasons;
+            }
+           },
+          size: 'sm'
+        });
+
+        cancelReasonModal.result.then(function (res) {
+          order.attributes.cancelReason = res.cancelReason;
+          order.attributes.cancelReasonText = res.cancelReasonText;
+          orderService.setStatus(order);
+          api.saveObj(order);
+        });
+      } else {
+        orderService.setStatus(order);
+        api.saveObj(order);
+      }
     };
 
     this.newOrder = function () {

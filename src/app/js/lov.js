@@ -78,7 +78,6 @@ angular.module('myApp')
 
   .factory('cancelReasonsPromise', function (api) {
     return api.queryCancelReasons().then(function (res) {
-      console.log(res);
       return res.map(function (obj) {
         return obj.attributes;
       });
@@ -171,57 +170,43 @@ angular.module('myApp')
       {
         id: 0,
         name: 'פניה',
-        isSelectDefault: false,
-        isSelectLead: true,
-        isSelectLeadNoDate : true,
-        isSelectNoDate: false
+        isSelectDefault: true,
+        isSelectNoDate: true
       },
       {
         id: 1,
         name: 'הצעה',
         isSelectDefault: true,
-        isSelectLead: false,
-        isSelectLeadNoDate : true,
         isSelectNoDate: true
       },
       {
         id: 2,
         name: 'בדיון',
         isSelectDefault: true,
-        isSelectLead: false,
-        isSelectLeadNoDate : false,
         isSelectNoDate: false
       },
       {
         id: 3,
         name: 'סוכם',
         isSelectDefault: true,
-        isSelectLead: false,
-        isSelectLeadNoDate : false,
         isSelectNoDate: false
       },
        {
          id: 4,
          name: 'מקדמה',
          isSelectDefault: true,
-         isSelectLead: false,
-         isSelectLeadNoDate : false,
          isSelectNoDate: false
        },
        {
          id: 5,
          name: 'שולם',
          isSelectDefault: true,
-         isSelectLead: false,
-         isSelectLeadNoDate : false,
          isSelectNoDate: false
        },
       {
         id: 6,
         name: 'בוטל',
         isSelectDefault: true,
-        isSelectLead: true,
-        isSelectLeadNoDate : true,
         isSelectNoDate: true
       }
     ],

@@ -30,6 +30,9 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs;
           });
         }],
+        cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
+          return cancelReasonsPromise;
+        }],
         recentOpenings: ['api', function(api) {
           var from = new Date(new Date().setDate(new Date().getDate()-14));
           var to = new Date();

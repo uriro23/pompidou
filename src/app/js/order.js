@@ -242,7 +242,8 @@ angular.module('myApp')
        if ($state.current.name === 'newOrder') {
           this.order.view.errors.customer = true; // empty customer is error
         }
-        this.order.view.errors.noOfParticipants = !this.order.attributes.isLead;
+        this.order.view.errors.noOfParticipants = this.order.view.orderStatus.id > 0 &&
+                                                  this.order.view.orderStatus.id < 6;
           // empty no of participants is error except for leads
        }
     };
@@ -329,7 +330,6 @@ angular.module('myApp')
     this.discountCauses = discountCauses;
     this.referralSources = referralSources;
     this.cancelReasons = cancelReasons;
-    console.log(this.cancelReasons);
     this.menuTypes = menuTypes;
     this.employees = employees;
     this.config = config;
@@ -393,7 +393,6 @@ angular.module('myApp')
       this.order = api.initOrder();
       this.order.attributes.isDateUnknown = true;
       this.order.attributes.eventDate = new Date(2199,11,31,0,0,0,0);
-      this.order.attributes.isLead = true; // this is needed so lead status will remain across cancel
       this.order.attributes.createdBy = this.user.attributes.username;
       if ($state.current.name === 'newOrderByCustomer') {
         this.order.attributes.customer = customer.id;

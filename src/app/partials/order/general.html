@@ -15,16 +15,8 @@
     </td>
     <td></td>
   </tr>
-  <tr ng-class="generalModel.order.view.changes.eventName?'bg-success':null">
-    <td>שם האירוע</td>
-    <td>
-      <input type="text" size="30" ng-model="generalModel.order.attributes.eventName"
-             ng-change="generalModel.orderChanged('eventName')"
-             ng-disabled="generalModel.readOnly.is">
-    </td>
-  </tr>
   <tr ng-class="generalModel.order.view.changes.referralSource?'bg-success':null">
-    <td>מקור הפניה</td>
+    <td><label>מקור הפניה</label></td>
     <td>
       <select ng-model="generalModel.order.view.referralSource"
               ng-change="generalModel.orderChanged('referralSource')"
@@ -38,6 +30,14 @@
              ng-disabled="generalModel.readOnly.is">
     </td>
     <td></td>
+  </tr>
+  <tr ng-class="generalModel.order.view.changes.eventName?'bg-success':null">
+    <td>שם האירוע</td>
+    <td>
+      <input type="text" size="30" ng-model="generalModel.order.attributes.eventName"
+             ng-change="generalModel.orderChanged('eventName')"
+             ng-disabled="generalModel.readOnly.is">
+    </td>
   </tr>
  <tr ng-class="generalModel.order.view.changes.deliveryLocation?'bg-success':null">
     <td>מקום משלוח</td>

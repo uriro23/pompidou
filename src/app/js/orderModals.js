@@ -256,7 +256,21 @@ angular.module('myApp')
 
   })
 
-.controller('EditTextCtrl', function ($modalInstance, text, title) {
+  .controller('CancelReasonCtrl', function ($modalInstance, order, cancelReasons) {
+    this.cancelReasons = cancelReasons;
+    this.cancelReason = order.view.cancelReason;
+    this.cancelReasonText = order.attributes.cancelReasonText;
+
+    this.save = function () {
+      var res = {
+        cancelReason: this.cancelReason.tId,
+        cancelReasonText: this.cancelReasonText
+      };
+     $modalInstance.close(res);
+    };
+  })
+
+  .controller('EditTextCtrl', function ($modalInstance, text, title) {
     this.text = text;
     this.title = title;
 
