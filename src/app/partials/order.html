@@ -29,7 +29,7 @@
           <tab heading="בונוסים">
             <ng-include src="'app/partials/order/bonuses.html'"></ng-include>
           </tab>
-            <tab heading="אירועים קודמים"
+            <tab heading="אירועים קודמים" ng-show="orderModel.order.attributes.customer"
               select="orderModel.getPrevOrders()">
               <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
             </tab>

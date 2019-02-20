@@ -107,13 +107,15 @@ angular.module('myApp')
       var that = this;
       fetchedOrders.forEach(function(fetchedOrder) {
         fetchedOrder.view = {};
-        fetchedOrder.view.customer = customers.filter(function (cust) {
-          return cust.id === fetchedOrder.attributes.customer;
-        })[0];
-        fetchedOrder.view.customer.anyPhone =
-          fetchedOrder.view.customer.attributes.mobilePhone?fetchedOrder.view.customer.attributes.mobilePhone:
-            fetchedOrder.view.customer.attributes.homePhone?fetchedOrder.view.customer.attributes.homePhone:
-              fetchedOrder.view.customer.attributes.workPhone?fetchedOrder.view.customer.attributes.workPhone:undefined;
+        if (fetchedOrder.attributes.customer) {
+          fetchedOrder.view.customer = customers.filter(function (cust) {
+            return cust.id === fetchedOrder.attributes.customer;
+          })[0];
+          fetchedOrder.view.customer.anyPhone =
+            fetchedOrder.view.customer.attributes.mobilePhone ? fetchedOrder.view.customer.attributes.mobilePhone :
+              fetchedOrder.view.customer.attributes.homePhone ? fetchedOrder.view.customer.attributes.homePhone :
+                fetchedOrder.view.customer.attributes.workPhone ? fetchedOrder.view.customer.attributes.workPhone : undefined;
+        }
         fetchedOrder.view.orderStatus = lov.orderStatuses.filter(function (stat) {
           return stat.id === fetchedOrder.attributes.orderStatus;
         })[0];

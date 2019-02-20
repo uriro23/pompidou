@@ -190,24 +190,36 @@ angular.module('myApp')
           })[0];
         }
 
-        api.queryCustomers(that.order.attributes.customer)
-          .then(function (custs) {
-            if (!custs.length) {
-              alert('customer not found');
-              console.log('customer not found');
-              console.log(that.order.attributes.customer);
-            }
-            that.order.view.customer = custs[0].attributes;
-            that.order.view.customer.id = custs[0].id;
-            if (that.order.attributes.template) {
-              $rootScope.title = ' תבנית '+ that.order.attributes.template;
-            } else {
-              $rootScope.title = ' - אירוע ' +
-                that.order.view.customer.firstName + ' ' +
-                that.order.view.customer.lastName + ' ' +
-                that.order.attributes.eventDate.getDate() + '/' + (that.order.attributes.eventDate.getMonth() + 1);
-            }
-          });
+        if (that.order.attributes.customer) {
+          api.queryCustomers(that.order.attributes.customer)
+            .then(function (custs) {
+              if (!custs.length) {
+                alert('customer not found');
+                console.log('customer not found');
+                console.log(that.order.attributes.customer);
+              }
+              that.order.view.customer = custs[0].attributes;
+              that.order.view.customer.id = custs[0].id;
+              if (that.order.attributes.template) {
+                $rootScope.title = ' תבנית ' + that.order.attributes.template;
+              } else {
+                $rootScope.title = ' - אירוע ' +
+                  that.order.view.customer.firstName + ' ' +
+                  that.order.view.customer.lastName + ' ' +
+                  that.order.attributes.eventDate.getDate() + '/' + (that.order.attributes.eventDate.getMonth() + 1);
+              }
+            });
+        } else {
+          that.order.view.customer = {};
+          if (that.order.attributes.template) {
+            $rootScope.title = ' תבנית ' + that.order.attributes.template;
+          } else {
+            $rootScope.title = ' - אירוע ' +
+              that.order.view.customer.firstName + ' ' +
+              that.order.view.customer.lastName + ' ' +
+              that.order.attributes.eventDate.getDate() + '/' + (that.order.attributes.eventDate.getMonth() + 1);
+          }
+        }
         if (that.order.attributes.contact) {
           api.queryCustomers(that.order.attributes.contact)
             .then(function (custs) {
@@ -222,10 +234,7 @@ angular.module('myApp')
         } else {
           that.order.view.contact = {};
         }
-        if ($state.current.name === 'dupOrder') {
-          this.order.view.errors.eventDate = !this.order.attributes.isDateUnknown; // empty event date is error
-        }
-      } else { // newOrder or newOrderByCustomer
+       } else { // newOrder or newOrderByCustomer
         if ($state.current.name === 'newOrderByCustomer') {
           this.order.view.customer = customer.attributes;
           this.order.view.customer.id = customer.id;
@@ -238,14 +247,7 @@ angular.module('myApp')
         })[0];    // create as lead
         this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
         this.order.view.cancelReason = this.cancelReasons[0]; // set to "unknown"
-        this.order.view.errors.eventDate = !this.order.attributes.isDateUnknown; // empty event date is error
-       if ($state.current.name === 'newOrder') {
-          this.order.view.errors.customer = true; // empty customer is error
-        }
-        this.order.view.errors.noOfParticipants = this.order.view.orderStatus.id > 0 &&
-                                                  this.order.view.orderStatus.id < 6;
-          // empty no of participants is error except for leads
-       }
+      }
     };
 
     this.selectQuote = function (mt) {

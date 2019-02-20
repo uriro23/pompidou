@@ -86,15 +86,19 @@ angular.module('myApp')
     };
 
     this.statusChanged = function () {
-      if (this.order.view.orderStatus.id === 6) {
+      var orderStatus = this.order.view.orderStatus;
+      if (orderStatus.id === 6) {
         $scope.orderModel.isActiveGeneralTab = true;
       }
-      if (this.order.view.orderStatus.id > 1 && this.order.view.orderStatus.id < 6) {
+      if (orderStatus.id > 1 && orderStatus.id < 6) {
         if(this.order.attributes.isDateUnknown) {
           this.order.attributes.eventDate = undefined;
           this.order.attributes.isDateUnknown = false;
           this.order.view.errors.eventDate = true;
         }
+      }
+      if (orderStatus.id > 0 && orderStatus.id < 6) {
+        this.order.errors.customer = !this.order.attributes.customer;
       }
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
        this.setReadOnly();
