@@ -170,42 +170,49 @@ angular.module('myApp')
       {
         id: 0,
         name: 'פניה',
+        isSelectLead : true,
         isSelectDefault: true,
         isSelectNoDate: true
       },
       {
         id: 1,
         name: 'הצעה',
+        isSelectLead : false,
         isSelectDefault: true,
         isSelectNoDate: true
       },
       {
         id: 2,
         name: 'בדיון',
+        isSelectLead : false,
         isSelectDefault: true,
         isSelectNoDate: false
       },
       {
         id: 3,
         name: 'סוכם',
+        isSelectLead : false,
         isSelectDefault: true,
         isSelectNoDate: false
       },
        {
          id: 4,
          name: 'מקדמה',
+         isSelectLead : false,
          isSelectDefault: true,
          isSelectNoDate: false
        },
        {
          id: 5,
          name: 'שולם',
+         isSelectLead : false,
          isSelectDefault: true,
          isSelectNoDate: false
        },
       {
         id: 6,
         name: 'בוטל',
+        isSelectLead : true,
         isSelectDefault: true,
         isSelectNoDate: true
       }

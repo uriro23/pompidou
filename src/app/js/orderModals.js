@@ -258,12 +258,16 @@ angular.module('myApp')
 
   .controller('CancelReasonCtrl', function ($modalInstance, order, cancelReasons) {
     this.cancelReasons = cancelReasons;
-    this.cancelReason = order.view.cancelReason;
+    if (order.attributes.cancelReason) {
+      this.cancelReason = cancelReasons.filter(function (cr) {
+        return cr.tId === order.attributes.cancelReason;
+      })[0];
+    }
     this.cancelReasonText = order.attributes.cancelReasonText;
 
     this.save = function () {
       var res = {
-        cancelReason: this.cancelReason.tId,
+        cancelReason: this.cancelReason ? this.cancelReason.tId : undefined,
         cancelReasonText: this.cancelReasonText
       };
      $modalInstance.close(res);

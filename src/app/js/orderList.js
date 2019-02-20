@@ -144,7 +144,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','isDateUnknown',
-        'customer','eventTime','number',
+        'customer','eventTime','number','cancelReason','cancelReasonText',
         'exitTime','template','remarks','header', 'activities', 'color', 'createdBy'
       ];
       if (this.queryType !== 'year') {
@@ -156,7 +156,7 @@ angular.module('myApp')
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template && ord.attributes.orderStatus < 11;
+              return !ord.attributes.template;
             });
             that.enrichOrders();
           });
@@ -188,7 +188,7 @@ angular.module('myApp')
           api.queryOrdersByRange('eventDate',fromDate2,toDate2,fieldList)
             .then(function(orders) {
               fetchedOrders = orders.filter(function(ord) {
-                return !ord.attributes.template && ord.attributes.orderStatus < 11;
+                return !ord.attributes.template;
               });
               that.enrichOrders();
             });

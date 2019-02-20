@@ -91,8 +91,19 @@
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='debts' ||
                  orderTableModel.queryType==='year') &&
-                 (order.view.orderStatus.id === 0 ||
-                  order.view.orderStatus.id === 6 ) &&
+                 order.view.orderStatus.id === 0 &&
+                 !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options=
+   "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectLead:true}"
+      ></select>
+    </td>
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='debts' ||
+                 orderTableModel.queryType==='year') &&
+                 order.view.orderStatus.id === 6  &&
                  !orderTableModel.user.isSalesPerson">
       {{order.view.orderStatus.name}}
     </td>
