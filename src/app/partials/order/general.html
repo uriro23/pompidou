@@ -5,8 +5,9 @@
     <td><label>סיבת ביטול</label></td>
     <td>
       <select ng-model="generalModel.order.view.cancelReason"
-              ng-change="generalModel.orderChanged('cancelReason')"
+              ng-change="generalModel.setCancelReason()"
               ng-options="cancelReason.label for cancelReason in generalModel.cancelReasons"
+              ng-class="generalModel.order.view.errors.cancelReason ? 'bg-danger' : null"
       ></select>
     </td>
     <td>
@@ -19,9 +20,10 @@
     <td><label>מקור הפניה</label></td>
     <td>
       <select ng-model="generalModel.order.view.referralSource"
-              ng-change="generalModel.orderChanged('referralSource')"
+              ng-change="generalModel.setReferralSource()"
               ng-options="referralSource.label for referralSource in generalModel.referralSources"
               ng-disabled="generalModel.readOnly.is"
+              ng-class="generalModel.order.view.errors.referralSource ? 'bg-danger' : null"
       ></select>
     </td>
     <td>

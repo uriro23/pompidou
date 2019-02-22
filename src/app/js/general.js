@@ -28,6 +28,16 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'isBusinessEvent');
     };
 
+    this.setReferralSource = function() {
+      this.order.view.errors.referralSource = !this.order.view.referralSource;
+      orderService.orderChanged(this.order,'referralSource');
+    };
+
+    this.setCancelReason = function() {
+      this.order.view.errors.cancelReason = !this.order.view.cancelReason;
+      orderService.orderChanged(this.order,'cancelReason');
+    };
+
     this.resetColor = function() {
       this.order.delAttributes = {color:true};
       this.order.view.color = undefined;

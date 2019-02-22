@@ -245,8 +245,7 @@ angular.module('myApp')
         this.order.view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead
-        this.order.view.referralSource = this.referralSources[0]; // set to "unknown"
-        this.order.view.cancelReason = this.cancelReasons[0]; // set to "unknown"
+        this.order.view.errors.referralSource = true; // required for lead
       }
     };
 
