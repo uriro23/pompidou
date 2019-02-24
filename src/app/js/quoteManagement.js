@@ -48,6 +48,7 @@ angular.module('myApp')
        }
         this.setRemainingMenuTypes();
         orderService.orderChanged(this.order);
+        orderService.upgradeOrderStatus(this.order);
       }
     };
 

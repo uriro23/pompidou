@@ -53,9 +53,10 @@ angular.module('myApp')
         if (custType === 1) {
           that.order.view.customer = cust;
           orderService.orderChanged(that.order,'customer');
+          orderService.upgradeOrderStatus(that.order);
           that.order.view.errors.customer = false;
           that.getPrevOrders();
-        } else if (custType === 2) {
+       } else if (custType === 2) {
           that.order.view.contact = cust;
           orderService.orderChanged(that.order,'customer');
           that.order.view.errors.contact = false;
@@ -78,6 +79,9 @@ angular.module('myApp')
     this.setNoOfParticipants = function () {
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
+      if (!this.order.view.errors.noOfParticipants) {
+        orderService.upgradeOrderStatus(this.order);
+      }
     };
 
     this.setChildren = function () {
@@ -88,7 +92,6 @@ angular.module('myApp')
 
     this.statusChanged = function () {
       var orderStatus = this.order.view.orderStatus;
-      console.log(orderStatus.id);
       if (orderStatus.id === 6) {
         $scope.orderModel.isActiveGeneralTab = true;
         this.order.view.errors.cancelReason = !this.order.view.cancelReason &&

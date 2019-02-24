@@ -337,6 +337,19 @@ angular.module('myApp')
       }
     };
 
+    // upgrade lead to bid status if 3 required attributes are given
+    this.upgradeOrderStatus = function(order) {
+      if (order.view.orderStatus.id === 0) {
+        if (order.view.customer.id &&
+            order.attributes.noOfParticipants &&
+            order.attributes.quotes.length) {
+          order.view.orderStatus = lov.orderStatuses.filter(function(os) {
+            return os.id === 1;
+          })[0];
+        }
+      }
+    };
+
 
     // used to update the header object in order. This is a flattening mechanism, so when retrieving lists of orders
     // it will not be necessary to load all the quotes objects, just the total etc. from the active quote, and the last

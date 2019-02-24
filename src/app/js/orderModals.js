@@ -90,7 +90,8 @@ angular.module('myApp')
     }
   })
 
-  .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov, order, bids, bidTextTypes,
+  .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov,
+                                        order, bids, bidTextTypes,
                                         pdfService, gmailClientLowLevel, $scope, $filter) {
     var that = this;
     this.order = order;
@@ -216,8 +217,6 @@ angular.module('myApp')
                     mail: mail.id
                   };
                   order.attributes.activities.splice(0, 0, activity);
-                  // orderService.setupOrderHeader(order.attributes);
-                  // api.saveObj(order);
                   orderService.saveOrder(order);
                 });
             },

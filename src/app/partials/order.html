@@ -36,8 +36,7 @@
               <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
             </tab>
           <tab heading="מסמכים"
-               ng-show="orderModel.order.view.orderStatus.id > 1 &&
-                        orderModel.order.view.orderStatus.id < 6">
+               ng-show="orderModel.order.view.orderStatus.id > 0">
           <ng-include src="'app/partials/order/docs.html'"></ng-include>
           </tab>
           <tab heading="תפריט מודפס"

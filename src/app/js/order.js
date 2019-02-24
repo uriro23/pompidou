@@ -26,7 +26,9 @@ angular.module('myApp')
         tabThis.isProcessing = false;
         tabThis.orders = this.prevOrders;
         tabThis.isDisableLink = this.order.view.isChanged;
-        tabThis.user = this.user.attributes;
+        if (this.user) { // todo: find why this is undefined sometimes
+          tabThis.user = this.user.attributes;
+        }
       }
     };
 
