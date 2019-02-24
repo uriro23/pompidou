@@ -29,12 +29,14 @@ angular.module('myApp')
     };
 
     this.setReferralSource = function() {
-      this.order.view.errors.referralSource = !this.order.view.referralSource;
+      this.order.view.errors.referralSource = !this.order.view.referralSource &&
+                                              !this.order.attributes.template;
       orderService.orderChanged(this.order,'referralSource');
     };
 
     this.setCancelReason = function() {
-      this.order.view.errors.cancelReason = !this.order.view.cancelReason;
+      this.order.view.errors.cancelReason = !this.order.view.cancelReason &&
+                                            !this.order.attributes.template;
       orderService.orderChanged(this.order,'cancelReason');
     };
 
@@ -42,6 +44,11 @@ angular.module('myApp')
       this.order.delAttributes = {color:true};
       this.order.view.color = undefined;
       orderService.orderChanged(this.order,'color');
+    };
+
+    this.setTemplate = function() {
+      this.order.view.errors.referralSource = !this.order.attributes.template;
+      orderService.orderChanged(this.order,'template');
     };
 
     this.duplicateOrder = function () {

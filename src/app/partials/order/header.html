@@ -163,8 +163,9 @@
     </td>
   </tr>
   <tr ng-hide="headerModel.order.attributes.quotes.length"
-      ng-class="headerModel.order.view.orderStatus.id > 0 &&
-                headerModel.order.view.orderStatus.id < 6 ? 'bg-danger' : null">
+      ng-class="(headerModel.order.view.orderStatus.id > 0 &&
+                headerModel.order.view.orderStatus.id < 6) ||
+                headerModel.order.attributes.template ? 'bg-danger' : null">
     <td>אין תפריטים</td>
   </tr>
 </table>

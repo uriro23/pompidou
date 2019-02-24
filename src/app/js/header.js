@@ -91,7 +91,8 @@ angular.module('myApp')
       console.log(orderStatus.id);
       if (orderStatus.id === 6) {
         $scope.orderModel.isActiveGeneralTab = true;
-        this.order.view.errors.cancelReason = !this.order.view.cancelReason;
+        this.order.view.errors.cancelReason = !this.order.view.cancelReason &&
+                                              !this.order.attributes.template;
       }
       if (orderStatus.id > 1 && orderStatus.id < 6) {
         if(this.order.attributes.isDateUnknown) {

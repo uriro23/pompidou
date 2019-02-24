@@ -79,18 +79,19 @@
     <td>שם תבנית</td>
     <td>
       <input type="text" ng-model="generalModel.order.attributes.template"
-             ng-change="generalModel.orderChanged('template')"
+             ng-change="generalModel.setTemplate()"
              ng-disabled="generalModel.readOnly.is">
 
     </td>
   </tr>
-  <tr ng-class="generalModel.order.view.changes.color?'bg-success':null">
+  <tr ng-class="generalModel.order.view.changes.color?'bg-success':null"
+      ng-show="generalModel.order.attributes.color">
     <td>צבע</td>
     <td>{{generalModel.order.view.color.label}}</td>
     <td>
       <button class="btn btn-default btn-sm"
               ng-click="generalModel.resetColor()"
-              ng-disabled="generalModel.readOnly.is || !generalModel.order.attributes.color">
+              ng-disabled="generalModel.readOnly.is">
         מחק צבע
       </button>
     </td>

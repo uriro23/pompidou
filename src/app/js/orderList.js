@@ -235,7 +235,7 @@ angular.module('myApp')
     };
 
     this.setStatus = function (order) {
-      if (order.view.orderStatus.id === 6) {
+      if (order.view.orderStatus.id === 6 && !order.attributes.template) {
         var cancelReasonModal = $modal.open({
           templateUrl: 'app/partials/order/cancelReason.html',
           controller: 'CancelReasonCtrl as cancelReasonModel',

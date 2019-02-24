@@ -46,11 +46,14 @@
       {{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}
     </td>
     <td class="hidden-xs"
-        ng-show="orderTableModel.queryType!=='customer'"
+        ng-show="orderTableModel.queryType!=='customer' && order.view.customer"
         style="cursor: pointer"
         ng-click="orderTableModel.showCustomerContactInfo(order)">
-        <img src="app/img/phone.png">
+      <img src="app/img/phone.png">
     </td>
+    <td class="hidden-xs"
+        ng-hide="orderTableModel.queryType!=='customer' && order.view.customer"
+      </td>
     <td class="hidden-sm hidden-md hidden-lg hidden-xl"
         ng-show="orderTableModel.queryType!=='customer'">
       <a href="tel:{{order.view.customer.anyPhone}}">
