@@ -1,13 +1,16 @@
 <h2>
-  <span ng-hide="orderListModel.queryType==='templates'">
-    רשימת אירועים
-    </span>&nbsp;&nbsp;
-  <span ng-show="orderListModel.queryType==='templates'">
-    רשימת תבניות
-    </span>&nbsp;&nbsp;
-  <button class="btn btn-default" ng-click="orderListModel.newOrder()">חדש</button>
+  <span ng-show="orderListModel.queryType==='future'">אירועים צפויים</span>&nbsp;&nbsp;
+  <span ng-show="orderListModel.queryType==='year'">
+    <span>אירועים בשנת</span>&nbsp;<span>{{orderListModel.queryYear}}</span>
+  </span>
+  <span ng-show="orderListModel.queryType==='sales'">מכירת אירועים</span>
+  <span ng-show="orderListModel.queryType==='templates'">רשימת תבניות</span>&nbsp;&nbsp;
+  &nbsp;
+  <button class="btn btn-default" ng-show="orderListModel.queryType==='sales'"
+          ng-click="orderListModel.newOrder()">חדש</button>
 </h2>
-<table class="recents" ng-hide="orderListModel.user.attributes.isSalesPerson">
+<table class="recents" ng-show="orderListModel.queryType==='sales' &&
+                                !orderListModel.user.attributes.isSalesPerson">
   <tr ng-repeat="week in orderListModel.weeks">
     <td>{{week.label}}</td>
     <td>
@@ -29,26 +32,28 @@
 <table style="width: 99%">
   <tr>
     <td style="width: 80%">
+      <span>מכירות</span>
+      <input type="radio" ng-model="orderListModel.queryType" value="sales"
+             ng-change="orderListModel.setQuery()">
       <span>  עתידיים </span>
       <input type="radio" ng-model="orderListModel.queryType" value="future"
                                      ng-change="orderListModel.setQuery()">
-      <span>תבניות </span>
+     <span>תבניות </span>
       <input type="radio" ng-model="orderListModel.queryType" value="templates"
                                      ng-change="orderListModel.setQuery()">
-      <span>חובות</span>
-      <input type="radio" ng-model="orderListModel.queryType" value="debts"
-             ng-change="orderListModel.setQuery()">
-      &nbsp;
       <span>אירועי עבר משנת:</span>
       <select ng-model="orderListModel.queryYear"
               ng-change="orderListModel.setQueryYear()"
               ng-options="year for year in orderListModel.years">
         <option value=""></option>
       </select>
+      &nbsp;&nbsp;
+      <span ng-hide="orderListModel.queryType==='sales'">
       &nbsp;&nbsp;<span>מבוטלים:</span>
       <input type="checkbox"
              ng-model="orderListModel.isIncludecanceled"
              ng-change="orderListModel.filterOrders()"> &nbsp;&nbsp;
+      </span>
         <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
                 ng-show="orderListModel.filterByCustomer.id">
           {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}

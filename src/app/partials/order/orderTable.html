@@ -3,8 +3,9 @@
 <table class="table table-hover table-responsive" style="width: 99%">
   <thead ng-hide="orderTableModel.isProcessing">
   <th style="width:3%">מס'</th>
+  <th ng-show="orderTableModel.queryType==='sales'" style="width:3%">נוצר</th>
   <th style="width: 11%">תאריך</th>
-  <th style="width: 4%">מסירה</th>
+  <th ng-show="orderTableModel.queryType==='future'" style="width: 4%">מסירה</th>
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 4%">יציאה</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width: 11%">לקוח</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width:1%">טל'</th>
@@ -13,13 +14,21 @@
   <th style="width: 7%">סטטוס</th>
   <th style="width: 7%">סכום</th>
   <th  ng-show="orderTableModel.queryType==='debts'" style="width: 7%">יתרה</th>
-  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 6%">ת' פעילות</th>
-  <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 15%">פעילות</th>
+  <th class="hidden-xs"
+      ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'"
+      style="width: 6%">
+    ת' פעילות
+  </th>
+  <th class="hidden-xs"
+      ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'"
+      style="width: 15%">
+    פעילות
+  </th>
   <th  class="hidden-xs" style="width: 6%">יוצר</th>
   </thead>
   <tbody>
   <tr ng-repeat="order in orderTableModel.orders"
-      ng-class="order.view.orderStatus.id===1 && order.attributes.header.activityDate &&
+      ng-class="order.view.orderStatus.id<2 && order.attributes.header.activityDate &&
                             (orderTableModel.today - order.attributes.header.activityDate)/(24*3600000)>2
                               ? 'myAlertEvent' :
                         order.view.orderStatus.id===1?'bg-active':
@@ -34,14 +43,19 @@
     <td ng-show="orderTableModel.isDisableLink">
       {{order.attributes.number}}
     </td>
+    <td ng-show="orderTableModel.queryType==='sales'">
+      {{order.createdAt | date: 'dd/MM'}}
+    </td>
     <td ng-hide="order.attributes.isDateUnknown">
       {{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}
     </td>
     <td ng-show="order.attributes.isDateUnknown">
       <span>אין תאריך</span>
     </td>
-    <td>{{order.attributes.eventTime | date: 'HH:mm'}}</td>
-    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.exitTime | date: 'HH:mm'}}</td>
+    <td ng-show="orderTableModel.queryType==='future'">
+      {{order.attributes.eventTime | date: 'HH:mm'}}</td>
+    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">
+      {{order.attributes.exitTime | date: 'HH:mm'}}</td>
     <td ng-hide="orderTableModel.queryType==='customer'">
       {{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}
     </td>
@@ -52,7 +66,7 @@
       <img src="app/img/phone.png">
     </td>
     <td class="hidden-xs"
-        ng-hide="orderTableModel.queryType!=='customer' && order.view.customer"
+        ng-hide="orderTableModel.queryType!=='customer' && order.view.customer">
       </td>
     <td class="hidden-sm hidden-md hidden-lg hidden-xl"
         ng-show="orderTableModel.queryType!=='customer'">
@@ -64,8 +78,7 @@
     <td>{{order.attributes.header.title}}</td>
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
+                 orderTableModel.queryType==='sales') &&
                  order.view.orderStatus.id > 0 &&
                  order.view.orderStatus.id < 6 &&
                  !order.attributes.isDateUnknown &&
@@ -77,9 +90,7 @@
       ></select>
     </td>
     <td class="hidden-xs"
-        ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
+        ng-show="orderTableModel.queryType==='sales' &&
                  order.view.orderStatus.id > 0 &&
                  order.view.orderStatus.id < 6 &&
                  order.attributes.isDateUnknown &&
@@ -92,8 +103,7 @@
     </td>
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
+                 orderTableModel.queryType==='sales') &&
                  order.view.orderStatus.id === 0 &&
                  !orderTableModel.user.isSalesPerson">
       <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
@@ -103,35 +113,38 @@
       ></select>
     </td>
     <td class="hidden-xs"
-        ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
+        ng-show="orderTableModel.queryType==='future' &&
                  order.view.orderStatus.id === 6  &&
                  !orderTableModel.user.isSalesPerson">
       {{order.view.orderStatus.name}}
     </td>
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
-                 orderTableModel.queryType==='debts' ||
-                 orderTableModel.queryType==='year') &&
+                 orderTableModel.queryType==='sales') &&
                  orderTableModel.user.isSalesPerson">
       {{order.view.orderStatus.name}}
     </td>
     <td class="hidden-sm hidden-md hidden-lg hidden-xl"
         ng-show="orderTableModel.queryType==='future'||
-                 orderTableModel.queryType==='debts'||
-                 orderTableModel.queryType==='year'">
+                 orderTableModel.queryType==='sales'">
       {{order.view.orderStatus.name}}
     </td>
-    <td ng-hide="orderTableModel.queryType==='future'||orderTableModel.queryType==='debts'||orderTableModel.queryType==='year'">
+    <td ng-hide="orderTableModel.queryType==='future'||
+                  orderTableModel.queryType==='sales'">
       {{order.view.orderStatus.name}}
     </td>
     <td>{{order.attributes.header.total | currency}}</td>
     <td ng-show="orderTableModel.queryType==='debts'">
       {{order.attributes.header.balance | currency}}
     </td>
-     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityDate | date: 'dd/MM/yy'}}</td>
-    <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">{{order.attributes.header.activityText}}</td>
+     <td class="hidden-xs"
+         ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'">
+       {{order.attributes.header.activityDate | date: 'dd/MM/yy'}}
+     </td>
+    <td class="hidden-xs"
+        ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'">
+      {{order.attributes.header.activityText}}
+    </td>
     <td class="hidden-xs">{{order.attributes.createdBy}}</td>
   </tr>
   </tbody>

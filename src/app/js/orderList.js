@@ -83,6 +83,8 @@ angular.module('myApp')
           } else {
             return -1
           }
+        } else if(that.queryType === 'sales') {
+          return b.createdAt - a.createdAt;
         } else {
           var ad = a.attributes.eventDate;
           var at = a.attributes.eventTime;
@@ -155,10 +157,19 @@ angular.module('myApp')
       this.isProcessing = true;
       this.setOrderTableParams();
       switch (this.queryType) {
+        case 'sales':
+          api.queryFutureOrders(fieldList).then(function (orders) {
+            fetchedOrders = orders.filter (function (ord) {
+              return !ord.attributes.template &&
+                      (ord.attributes.orderStatus === 0 || ord.attributes.orderStatus === 1);
+            });
+            that.enrichOrders();
+          });
+          break;
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template;
+              return !ord.attributes.template && !ord.attributes.isDateUnknown;
             });
             that.enrichOrders();
           });
@@ -167,17 +178,6 @@ angular.module('myApp')
           api.queryTemplateOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) { // filter templates with empty string names
               return ord.attributes.template;
-            });
-            that.enrichOrders();
-          });
-          break;
-       case 'debts':
-         var fromDate = new Date(dater.today().getFullYear()-2,dater.today().getMonth(),dater.today().getDate()); // debts beyon 2 years are lost
-         var toDate = new Date(dater.today().getFullYear(),dater.today().getMonth(),dater.today().getDate()-1);
-          api.queryOrdersByRange('eventDate',fromDate,toDate,fieldList).then(function (orders) {
-            fetchedOrders = orders.filter(function (ord) {
-              return (ord.attributes.orderStatus===3 || ord.attributes.orderStatus===4) && // executed events not fully paid
-                !ord.attributes.template;
             });
             that.enrichOrders();
           });
