@@ -4,7 +4,7 @@
 angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
                                           api, lov, orderService, dater, queryType, customers,
-                                          cancelReasons,
+                                          referralSources, cancelReasons,
                                           recentOpenings, recentClosings, colors) {
       var that = this;
     var user = api.getCurrentUser();
@@ -125,7 +125,17 @@ angular.module('myApp')
           fetchedOrder.view.color = that.colors.filter(function (color) {
             return color.tId === fetchedOrder.attributes.color;
           })[0];
-       }
+        }
+        if (fetchedOrder.attributes.referralSource) {
+          fetchedOrder.view.referralSource = referralSources.filter(function (rs) {
+            return rs.tId === fetchedOrder.attributes.referralSource;
+          })[0];
+        }
+        if (fetchedOrder.attributes.cancelReason) {
+          fetchedOrder.view.cancelReason = cancelReasons.filter(function (cr) {
+            return cr.tId === fetchedOrder.attributes.cancelReason;
+          })[0];
+        }
         fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today() ||
                                         fetchedOrder.view.orderStatus.id === 6;
       });
@@ -148,7 +158,7 @@ angular.module('myApp')
       this.orders = [];
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','isDateUnknown',
-        'customer','eventTime','number','cancelReason','cancelReasonText',
+        'customer','eventTime','number', 'referralSource', 'cancelReason','cancelReasonText',
         'exitTime','template','remarks','header', 'activities', 'color', 'createdBy'
       ];
       if (this.queryType !== 'year') {
@@ -161,7 +171,9 @@ angular.module('myApp')
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
               return !ord.attributes.template &&
-                      (ord.attributes.orderStatus === 0 || ord.attributes.orderStatus === 1);
+                      (ord.attributes.orderStatus === 0 ||
+                        ord.attributes.orderStatus === 1 ||
+                        ord.attributes.orderStatus === 6);
             });
             that.enrichOrders();
           });

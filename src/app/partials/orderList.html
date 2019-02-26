@@ -48,12 +48,10 @@
         <option value=""></option>
       </select>
       &nbsp;&nbsp;
-      <span ng-hide="orderListModel.queryType==='sales'">
       &nbsp;&nbsp;<span>מבוטלים:</span>
       <input type="checkbox"
              ng-model="orderListModel.isIncludecanceled"
              ng-change="orderListModel.filterOrders()"> &nbsp;&nbsp;
-      </span>
         <button class="btn btn-default" ng-click="orderListModel.setCustomerFilter()"
                 ng-show="orderListModel.filterByCustomer.id">
           {{orderListModel.filterByCustomer.firstName + ' ' + orderListModel.filterByCustomer.lastName}}

@@ -30,6 +30,9 @@ config(function($stateProvider, $urlRouterProvider) {
             return objs;
           });
         }],
+        referralSources: ['referralSourcesPromise', function (referralSourcesPromise) {
+          return referralSourcesPromise;
+        }],
         cancelReasons: ['cancelReasonsPromise', function (cancelReasonsPromise) {
           return cancelReasonsPromise;
         }],
