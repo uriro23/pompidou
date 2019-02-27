@@ -94,9 +94,9 @@ angular.module('myApp')
       })[0];
 
         //check for duplicate priceIncrease items - illegal
-      if (c.isPriceIncrease) {
+      if (c.type === 4) {  // priceIncrease
         var tmp = orderItems.filter(function(itm) {
-          return itm.category.isPriceIncrease;
+          return (itm.category.type === 4);
         });
         if (tmp.length) {
           alert("אסור להוסיף יותר מתוספת מחיר אחת");
@@ -115,9 +115,7 @@ angular.module('myApp')
       thisItem.category = {   // take only required properties of category
         tId: c.tId,
         label: c.label,
-        isTransportation: c.isTransportation,
-        isPriceIncrease: c.isPriceIncrease,
-        isHeavyweight: c.isHeavyweight,
+        type: c.type,
         order: c.order
       };
       thisItem.catalogId = catalogEntry.id;
@@ -339,9 +337,9 @@ angular.module('myApp')
           var isPriceConflict = false;
           sourceQuote.items.forEach(function(sourceItem) {
             var isDupPriceIncrease = false;
-            if (sourceItem.category.isPriceIncrease) {   // skip duplicate priceIncrease items
+            if (sourceItem.category.type === 4) {   // skip duplicate priceIncrease items
               targetItems.forEach(function(dupItem) {
-                if (dupItem.category.isPriceIncrease) {
+                if (dupItem.category.type === 4) {
                   isDupPriceIncrease = true;
                 }
               });
@@ -354,9 +352,7 @@ angular.module('myApp')
               if (!isSameOrder) {
                 sourceItem.catalogPrice = sourceCatalogItem.price;
                 sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
-                if (that.isAdjustQuantity
-                    && !sourceItem.category.isTransportation
-                    && !sourceItem.category.isPriceIncrease) {
+                if (that.isAdjustQuantity && sourceItem.category.type < 3) {  // food category
                   sourceItem.quantity = sourceItem.quantity / sourceNoOfParticipants * targetOrder.noOfParticipants;
                   var r = sourceItem.measurementUnit.rounding;
                   if (!r) {
@@ -371,7 +367,7 @@ angular.module('myApp')
                 return (itm.catalogId === sourceItem.catalogId) &&
                         (itm.isFreeItem === sourceItem.isFreeItem) &&
                         !itm.isDescChanged && !sourceItem.isDescChanged &&
-                        !itm.category.isTransportation; // keep transportations separate for easier manual inspection
+                        itm.category.type < 3; // keep non food items separate for easier manual inspection
               })[0];
               if (targetItem) {
                 targetItem.quantity += sourceItem.quantity;   // exists, just update quantity

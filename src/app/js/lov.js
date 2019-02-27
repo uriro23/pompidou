@@ -218,6 +218,29 @@ angular.module('myApp')
       }
     ],
 
+    categoryTypes: [
+      {
+        id: 1,
+        name: 'lightFood'
+      },
+      {
+        id: 2,
+        name: 'heavyFood'
+      },
+      {
+        id: 3,
+        name: 'transportation'
+      },
+      {
+        id: 4,
+        name: 'priceIncrease'
+      },
+      {
+        id: 5,
+        name: 'extraServices'
+      }
+    ],
+
     documentTypes: [
       {
         id: 0,

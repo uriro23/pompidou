@@ -147,7 +147,7 @@
         <td>
           <input type="text" size="7" money min=0 ng-model="item.price"
                  ng-change="itemsModel.setPrice($index)"
-                 ng-disabled="itemsModel.readOnly.is || item.category.isPriceIncrease"
+                 ng-disabled="itemsModel.readOnly.is || item.category.type === 4"
                  ng-class="item.errors.price?'bg-danger':null">
         </td>
         <td>

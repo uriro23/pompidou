@@ -177,7 +177,7 @@ angular.module('myApp')
 
     splitMenuItemsByCategory(woOrders);
     ordCategories = ordCategories.filter(function(cat) {
-      return !(cat.category.isTransportation || cat.category.isPriceIncrease);
+      return cat.category.type < 3;  // only food items
     });
     ordCategories.forEach(function(cat) {    // filter snacks and desserts who don't have exit list sub items
       if (cat.category.tId === CATEGORY_SNACKS || cat.category.tId === CATEGORY_DESSERTS) {

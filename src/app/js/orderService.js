@@ -50,24 +50,24 @@ angular.module('myApp')
       var isOldFreeItems;
       var priceIncreaseItem;
       quote.items.forEach(function(thisItem) {
-        if (!thisItem.category.isPriceIncrease) {
+        if (thisItem.category.type !== 4) {  // not priceIncrease
           subTotal += thisItem.price;
           boxCount += thisItem.boxCount;
           satiety += thisItem.satietyIndex;
-          if (thisItem.category.isTransportation) {  // just to display on order list
+          if (thisItem.category.type === 3) {  // just to displaytransportation  on order list
             transportation += thisItem.price;
           }
           if (thisItem.isFreeItem) {
             if (thisItem.price === 0) { // old style free item - issue alert
               isOldFreeItems = true;
             }
-            if (thisItem.category.isTransportation) {
+            if (thisItem.category.type === 3) {   // transportation category
               transportationBonus -= thisItem.price;
             } else {
               bonus -= thisItem.price;
             }
           }
-          if (thisItem.category.isHeavyweight) {
+          if (thisItem.category.type === 2) {  // heavy food category
             isHeavyweight = true;
           }
         } else {

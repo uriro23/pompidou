@@ -83,7 +83,7 @@ angular.module('myApp')
 
       //filter categories - only those in order not transportation and not priceIncrease
       this.filteredCategories = this.categories.filter(function (cat) {
-        if (cat.isTransportation || cat.isPriceIncrease) {
+        if (cat.type > 2) {  // discard non food categories
           return false
         }
         var categoryItems = that.currentQuote.items.filter(function (item) {
@@ -130,10 +130,10 @@ angular.module('myApp')
 
       this.setupTransportationItems = function () {
         this.category = categories.filter(function(cat) {
-          return cat.isTransportation;
+          return cat.type === 3;  // transportation
         })[0];
         this.transportationItems = that.currentQuote.items.filter(function (item) {
-          return (item.category.isTransportation);
+          return (item.category.type === 3); // transportation
         });
         this.categoryPrice = this.transportationItems.reduce(function(prev,currentItem) { //sum category item prices
           return prev + (currentItem.isFreeItem?0:currentItem.price);
@@ -142,10 +142,10 @@ angular.module('myApp')
 
       this.setupPriceIncreaseItems = function () {
         this.category = categories.filter(function(cat) {
-          return cat.isPriceIncrease;
+          return cat.type === 4; // priceIncrease
         })[0];
         this.priceIncreaseItems = that.currentQuote.items.filter(function (item) {
-          return (item.category.isPriceIncrease);
+          return (item.category.type === 4);  // priceIncrease
         });
         if (this.priceIncreaseItems.length) {
           this.categoryPrice = this.priceIncreaseItems[0].price;

@@ -911,6 +911,133 @@ angular.module('myApp')
         })
     };
 */
+    this.categoryType = function(target) {
+
+      var fCnt = 0;
+      var hCnt = 0;
+      var tCnt = 0;
+      var pCnt = 0;
+      var iCnt = 0;
+      var cCnt = 0;
+      var qCnt = 0;
+
+      function fixCategory (category) {
+        var cnt = 0;
+        var type;
+        if (category.tId === 5 || category.tId === 6 || category.tId === 7) {
+          delete category.isHeavyweight;
+          hCnt++;
+          cnt++;
+          type = 2;
+        }
+        if (category.tId === 39) {
+          delete category.isTransportation;
+          tCnt++;
+          cnt++;
+          type = 3;
+        }
+        if (category.tId === 48) {
+          delete category.isPriceIncrease;
+          pCnt++;
+          cnt++;
+          type = 4;
+        }
+        if (cnt > 1) {
+          console.log('multiple types');
+          console.log(category);
+          return false;
+        } else if (cnt === 0) {
+          fCnt++;
+          type = 1;
+          category.type = type;
+          return true;
+        } else {
+          category.type = type;
+          return true;
+        }
+      }
+
+      function fixQuotes (quotes) {
+        quotes.forEach(function(quote) {
+          if (quote.categories) {
+            qCnt++;
+            quote.categories.forEach(function (category) {
+              cCnt++;
+              if (!fixCategory(category)) {
+                console.log('bad category in quote');
+                console.log(quote);
+                return false;
+              }
+            });
+          }
+          quote.items.forEach(function(item) {
+            iCnt++;
+            if (!fixCategory(item.category)) {
+              console.log('bad category in item');
+              console.log(item);
+              return false;
+            }
+          });
+        });
+        return true;
+      }
+
+      var that = this;
+      console.log('starting');
+      if (target === 1) {   // order
+        api.queryAllOrders('quotes')
+          .then(function(orders) {
+            console.log('read '+orders.length+' orders');
+            orders.forEach(function(order) {
+              if (!fixQuotes(order.attributes.quotes)) {
+                console.log('bad order');
+                console.log(order);
+              }
+            });
+            console.log('quotes '+qCnt);
+            console.log('quote categories '+cCnt);
+            console.log('items '+iCnt);
+            console.log('food '+fCnt);
+            console.log('heavyWeight '+hCnt);
+            console.log('transportation '+tCnt);
+            console.log('priceIncrease '+pCnt);
+            if (1===1) {
+              console.log('saving orders');
+              api.saveObjects(orders)
+                .then(function () {
+                  console.log('done')
+                })
+            }
+          })
+      } else {    // bid
+        api.queryAllBids('order')
+          .then(function(bids) {
+            console.log('read '+bids.length+' bids');
+            bids.forEach(function(bid) {
+              if (bid.attributes.order.quotes) {
+                if (!fixQuotes(bid.attributes.order.quotes)) {
+                  console.log('bad bid');
+                  console.log(bid);
+                }
+              }
+            });
+            console.log('quotes '+qCnt);
+            console.log('quote categories '+cCnt);
+            console.log('items '+iCnt);
+            console.log('food '+fCnt);
+            console.log('heavyWeight '+hCnt);
+            console.log('transportation '+tCnt);
+            console.log('priceIncrease '+pCnt);
+            if (1===1) {
+              console.log('saving bids');
+              api.saveObjects(bids)
+                .then(function () {
+                  console.log('done')
+                })
+            }
+          });
+      }
+    };
 
 
 // end conversions

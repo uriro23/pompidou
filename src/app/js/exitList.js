@@ -115,12 +115,12 @@ angular.module('myApp')
       }
     });
 
-    //filter categories - only those in order
+    //filter categories - only those in order and  are food
     this.filteredCategories = this.categories.filter(function (cat) {
       var categoryItems = exitListItems.filter(function (item) {
         return (item.category.tId === cat.tId);
       });
-      return (categoryItems.length > 0) && !cat.isTransportation && !cat.isPriceIncrease;
+      return (categoryItems.length > 0) && cat.type < 3; // is food category
     });
 
     this.vec = [];
