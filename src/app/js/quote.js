@@ -33,10 +33,6 @@ angular.module('myApp')
 
       this.customer = bid.attributes.customer;
 
-      this.isYuvalTest = this.customer.accessKey==='176'; // set prod debug option for customer Yuval
-
-      console.log('isYuvalTest='+this.isYuvalTest);
-
       $rootScope.title = lov.company    // set title so PDF file will be named correctly
       + ' - הצעת מחיר '
       + (this.customer.firstName ? this.customer.firstName : '')
@@ -121,11 +117,19 @@ angular.module('myApp')
       // filter items for current category
       this.setupCategoryItems = function (catId) {
         this.categoryItems = that.currentQuote.items.filter(function (item) {
-          return (item.category.tId === catId);
+          return (item.category.tId === catId && !item.isFreeItem);
         });
         this.categoryPrice = this.categoryItems.reduce(function(prev,currentItem) { //sum category item prices
-          return prev + (currentItem.isFreeItem?0:currentItem.price);
+          return prev + currentItem.price;
         },0);
+      };
+
+      // filter all bonus food and externalServices items
+      this.setupBonusItems = function () {
+        this.bonusItems = that.currentQuote.items.filter(function (item) {
+          return item.isFreeItem && item.category.type < 3 ||
+            item.isFreeItem && item.category.type === 5;
+        });
       };
 
       this.setupTransportationItems = function () {
@@ -150,6 +154,18 @@ angular.module('myApp')
         if (this.priceIncreaseItems.length) {
           this.categoryPrice = this.priceIncreaseItems[0].price;
         }
+      };
+
+      this.setupExternalServicesItems= function () {
+        this.category = categories.filter(function(cat) {
+          return cat.type === 5; // externalServices
+        })[0];
+        this.externalServicesItems = that.currentQuote.items.filter(function (item) {
+          return (item.category.type === 5);  // externalServices
+        });
+        this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
+          return prev + (currentItem.isFreeItem?0:currentItem.price);
+        },0);
       };
 
       // set indication for bonus items

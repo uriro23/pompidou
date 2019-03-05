@@ -30,10 +30,18 @@ angular.module('myApp')
 
       updatePricesModal.result.then(function (isChanged) {
         if (isChanged) {
-          orderService.calcSubTotal(that.order.view.quote, that.order.attributes.isBusinessEvent, that.order.attributes.vatRate);
+          orderService.calcSubTotal(that.order.view.quote,
+                                    that.order.attributes.isBusinessEvent,
+                                    that.order.attributes.vatRate,
+                                    that.order.attributes.noOfParticipants);
           orderService.quoteChanged(that.order);
         }
       })
+
+    };
+
+    this.quoteChanged = function(attr) {
+      orderService.quoteChanged(this.order,attr);
 
     };
 
@@ -42,7 +50,10 @@ angular.module('myApp')
       var thisQuote = this.order.view.quote;
 
       thisQuote.errors.discountRate = Number(thisQuote.discountRate) != thisQuote.discountRate || Number(thisQuote.discountRate) < 0;
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+                                this.order.attributes.isBusinessEvent,
+                                this.order.attributes.vatRate,
+                                this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order,'discountRate');
     };
 
@@ -54,7 +65,10 @@ angular.module('myApp')
       } else {
         this.setDiscountRate();
       }
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+        this.order.attributes.isBusinessEvent,
+        this.order.attributes.vatRate,
+        this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order,'discountCause');
     };
 
@@ -64,13 +78,19 @@ angular.module('myApp')
 
        thisQuote.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
                               Number(thisQuote.fixedPrice) < 0;
-       orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+        this.order.attributes.isBusinessEvent,
+        this.order.attributes.vatRate,
+        this.order.attributes.noOfParticipants);
        orderService.quoteChanged(this.order,'fixedPrice');
     };
 
     this.setAdvance = function () {
       var thisQuote = this.order.view.quote;
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+        this.order.attributes.isBusinessEvent,
+        this.order.attributes.vatRate,
+        this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order,'advance');
     };
 

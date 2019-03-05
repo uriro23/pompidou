@@ -910,7 +910,6 @@ angular.module('myApp')
             });
         })
     };
-*/
     this.categoryType = function(target) {
 
       var fCnt = 0;
@@ -1038,6 +1037,7 @@ angular.module('myApp')
           });
       }
     };
+*/
 
 
 // end conversions

@@ -376,7 +376,7 @@ angular.module('myApp')
     if (domain) {
       categoriesQuery.equalTo('domain', domain);
     }
-    categoriesQuery.ascending("tId");
+    categoriesQuery.ascending("order");
     return query(categoriesQuery);
   };
 

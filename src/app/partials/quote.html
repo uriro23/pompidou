@@ -47,8 +47,6 @@
                 &nbsp;<span>ילדים</span>&#41;
          </span>
         <br>
-        <span class="bold">מספרנו:</span>
-        <span>{{quoteModel.bid.attributes.order.number}}</span>
 
 		    </div>
 
@@ -84,8 +82,7 @@
 			<!-- Regular items  -->
 			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems">
 
-			  <!-- Item description taken from DB, bonus/free added if needed -->
-			  <div style="width:90%;display:inline-block;">
+			  <div style="width:80%;display:inline-block;">
 			    <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
 			    <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
 			    <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
@@ -93,11 +90,9 @@
 
 
 
-		  	  <div ng-hide="quoteModel.currentQuote.isNoQuantities" class="quoteQuantAndUnit">
-				  <!-- Item quantity -->
+		  	  <div ng-hide="quoteModel.currentQuote.isNoQuantities"
+               style="width:20%" class="quoteQuantAndUnit">
 				  <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
-
-				  <!-- Item measurement -->
 				  <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
 
 		      </div>
@@ -105,37 +100,117 @@
 			</div>
 			<!-- End of  regular items -->
 
+    </div>
 
-			  <div style="width:70%;padding-right: 3%" ng-hide="quoteModel.currentQuote.isFixedPrice">
-			    <div style="width:77%;display: inline-block;">
-			      <span class="bold">מחיר</span>
-			      <span class="bold">{{category.label}}</span>
-			    </div>
-			   <div style="width:10%;display: inline-block">{{quoteModel.categoryPrice | currency}}</div>
-			  </div>
-			</div>
+    <div class="quoteTextBox"
+         style="padding-right: 7%"
+         ng-show="!quoteModel.currentQuote.isFixedPrice &&
+                  quoteModel.currentQuote.isShowTransportationPrice">
+      <p></p>
+        <div style="width:77%;display: inline-block;">
+          <span class="bold">ס"ה מחיר האוכל</span>
+        </div>
+        <div class="quoteQuantAndUnit bold">{{quoteModel.currentQuote.foodPrice | currency}}</div>
+      </div>
 
     {{quoteModel.setupTransportationItems()}}
     <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.transportationItems.length">
       <P style="height: 0.5cm"></P>
       <div class="bold">
-        השף בקופסא מגיע אלייך בדיוק ברגע הנכון לפני האורחים
+        {{quoteModel.category.description}}
       </div>
       <div ng-repeat="item in quoteModel.transportationItems">
         <div style="width:77%;display:inline-block;">
-          <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+          <span class="bold" ng-show="item.isFreeItem">ללא חיוב: </span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
-          <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+          <span class="bold" ng-show="item.isFreeItem">(ערך כספי</span>
+          <span class="bold" ng-show="item.isFreeItem">{{item.price | currency}}</span>
+          <span class="bold" ng-show="item.isFreeItem">)</span>
         </div>
       </div>
-      <div style="width:70%;padding-right: 3%" ng-hide="quoteModel.currentQuote.isFixedPrice">
+
+      <div style="padding-right: 1%" ng-show="!quoteModel.currentQuote.isFixedPrice &&
+                                              quoteModel.currentQuote.isShowTransportationPrice">
         <div style="width:77%;display: inline-block;">
           <span class="bold">מחיר</span>
           <span class="bold">{{quoteModel.category.label}}</span>
         </div>
-        <div style="width:10%;display: inline-block">{{quoteModel.categoryPrice | currency}}</div>
+        <div class="quoteQuantAndUnit bold">{{quoteModel.categoryPrice | currency}}</div>
+      </div>
+
+    </div>
+
+
+      <div class="quoteTextBox purpleBG">
+
+      <div ng-hide="quoteModel.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          <span>סה"כ אוכל ומשלוח</span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quoteModel.currentQuote.subTotal | currency}}
+        </div>
+      </div>
+
+      <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">הנחה מיוחדת</div>
+        <div class="quoteQuantAndUnit">
+          {{quoteModel.currentQuote.discount | currency}}
+        </div>
+      </div>
+
+      <div ng-hide="quoteModel.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          <span>לאחר הנחה</span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quoteModel.currentQuote.subTotal + quoteModel.currentQuote.discount | currency}}
+        </div>
+      </div>
+
+      <div ng-hide="quoteModel.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          <span>(מחיר לסועד</span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quoteModel.currentQuote.perPerson | currency}})
+        </div>
       </div>
     </div>
+
+
+      {{quoteModel.setupBonusItems()}}
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.bonusItems.length === 1">
+      <P style="height: 0.5cm"></P>
+      <div ng-repeat="item in quoteModel.bonusItems">
+        <div style="width:77%;display:inline-block;" class="bold">
+          <span>החלטנו לצ'פר אותך ב</span>
+          <span>{{item.quantity}}</span>
+          <span>{{item.measurementUnit.label}}</span>
+          <span>{{item.productDescription}}</span>
+          <span>(ערך כספי:</span>
+          <span>{{item.price | currency}}</span>
+          <span>)</span>
+        </div>
+      </div>
+     </div>
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.bonusItems.length > 1">
+      <P style="height: 0.5cm"></P>
+      <div class="bold">
+        החלטנו לצ'פר אותך בפריטים הבאים:
+      </div>
+      <div ng-repeat="item in quoteModel.bonusItems">
+        <div style="width:77%;display:inline-block;" class="bold">
+          <span>{{item.quantity}}</span>
+          <span>{{item.measurementUnit.label}}</span>
+          <span>{{item.productDescription}}</span>
+          <span>(ערך כספי:</span>
+          <span>{{item.price | currency}}</span>
+          <span>)</span>
+        </div>
+      </div>
+      </div>
+
 
     {{quoteModel.setupPriceIncreaseItems()}}
     <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.priceIncreaseItems.length">
@@ -145,13 +220,51 @@
           <span>{{item.productDescription}}</span>
         </div>
       </div>
-      <div style="width:70%;padding-right: 3%" ng-hide="quoteModel.currentQuote.isFixedPrice">
+      <div style="padding-right: 1%" ng-hide="quoteModel.currentQuote.isFixedPrice">
         <div style="width:77%;display: inline-block;">
           <span class="bold">{{quoteModel.category.label}}</span>
         </div>
-        <div style="width:10%;display: inline-block">{{quoteModel.categoryPrice | currency}}</div>
+        <div class="quoteQuantAndUnit">{{quoteModel.categoryPrice | currency}}</div>
       </div>
     </div>
+
+
+    {{quoteModel.setupExternalServicesItems()}}
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.externalServicesItems.length">
+      <P style="height: 0.5cm"></P>
+      <div class="bold quoteFoodCategoryName">
+        {{quoteModel.category.label}}
+      </div>
+      <div class="bold">
+        {{quoteModel.category.description}}
+      </div>
+      <div ng-repeat="item in quoteModel.externalServicesItems">
+        <div style="width:30%;display:inline-block;">
+          <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+          <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+          <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+        </div>
+     <div style="width:30%;display: inline-block;" class="externalQuantAndUnit">
+          <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
+         <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+     </div>
+        <div style="width:30%;display: inline-block;" class="quoteQuantAndUnit">
+          <span style="display:inline-block">{{item.price | currency}}</span>
+        </div>
+      </div>
+
+
+      <div style="padding-right: 1%" ng-show="!quoteModel.currentQuote.isFixedPrice &&
+                                              quoteModel.currentQuote.isShowTransportationPrice">
+        <div style="width:77%;display: inline-block;">
+          <span class="bold">מחיר</span>
+          <span class="bold">{{quoteModel.category.label}}</span>
+        </div>
+        <div class="quoteQuantAndUnit bold">{{quoteModel.categoryPrice | currency}}</div>
+      </div>
+
+    </div>
+
 
     <p style="height: 0.5cm"></p>
 
@@ -159,30 +272,6 @@
 		<!-- Sum up of prices - purple BG  -->
 
 		<div class="quoteTextBox purpleBG">
-
-			<div ng-hide="quoteModel.currentQuote.isFixedPrice">
-        <div class="bold quoteItemDescription">
-          <span>סה"כ</span>
-          <span ng-show="quoteModel.isBonusItems">(כולל פריטי בונוס)</span>
-        </div>
-			  <div class="quoteQuantAndUnit">
-			    {{quoteModel.currentQuote.subTotal | currency}}
-			  </div>
-			</div>
-
-			<div ng-show="(quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus) && !quoteModel.currentQuote.isFixedPrice">
-			    <div class="bold quoteItemDescription">סה"כ זיכויים</div>
-			    <div class="quoteQuantAndUnit">
-			      {{quoteModel.currentQuote.bonusValue + quoteModel.currentQuote.transportationBonus | currency}}
-			    </div>
-			</div>
-
-      <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
-        <div class="bold quoteItemDescription">הנחה מיוחדת</div>
-        <div class="quoteQuantAndUnit">
-          {{quoteModel.currentQuote.discount | currency}}
-        </div>
-      </div>
 
 
       <div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">

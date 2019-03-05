@@ -7,29 +7,22 @@ angular.module('myApp')
     this.calcTotal = function (quote, isBusinessEvent, vatRate) {
      if(quote.isFixedPrice) {
         quote.total = quote.fixedPrice;
-        quote.totalBeforeVat = quote.transportationInclVat = quote.rounding = quote.vat = 0;
+        quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
       } else {
-        var t = quote.subTotal
-          + quote.discount
-          + quote.oldTransportation // old style
-          + quote.transportationBonus
-          + quote.bonusValue;
-        if (isBusinessEvent) {
-          var v = t * vatRate;
-        } else {
-          v = 0;
-        }
-        quote.total = Math.round(t + v);
-        if (isBusinessEvent) {
-          quote.totalBeforeVat = quote.total / (1 + vatRate);
-          quote.transportationInclVat = quote.transportation * (1 + vatRate); // just to display on order list
-        } else {
-          quote.totalBeforeVat = quote.total;
-          quote.transportationInclVat = quote.transportation;
-        }
-        quote.rounding = quote.totalBeforeVat - t;
-        quote.vat = quote.total - quote.totalBeforeVat;
-      }
+       quote.totalBeforeVat = quote.subTotal +
+                              quote.discount +
+                              quote.priceIncrease +
+                              quote.extraServices;
+         if (isBusinessEvent) {
+           quote.vat = Math.round(quote.totalBeforeVat * vatRate);
+           quote.total = quote.totalBeforeVat + quote.vat;
+           quote.transportationInclVat = quote.transportation * (1 + vatRate); // just to display on order list
+         } else {
+           quote.vat = 0;
+           quote.total = quote.totalBeforeVat;
+           quote.transportationInclVat = quote.transportation;
+         }
+       }
 
       quote.balance = quote.total - quote.advance;
 
@@ -38,35 +31,33 @@ angular.module('myApp')
       quote.vatForInvoice = quote.totalBeforeVatForInvoice * vatRate;
     };
 
-    this.calcSubTotal = function (quote, isBusinessEvent, vatRate) {
+    this.calcSubTotal = function (quote, isBusinessEvent, vatRate, participants) {
 
       var subTotal = 0;
+      var foodPrice = 0;
+      var transportation = 0;
+      var priceIncrease = 0;
+      var extraServices = 0;
       var boxCount = 0;
       var satiety = 0;
-      var bonus = 0;
-      var transportationBonus = 0;
-      var transportation = 0;
       var isHeavyweight = false;
-      var isOldFreeItems;
       var priceIncreaseItem;
       quote.items.forEach(function(thisItem) {
         if (thisItem.category.type !== 4) {  // not priceIncrease
-          subTotal += thisItem.price;
+          if (!thisItem.isFreeItem) {
+            if (thisItem.category.type === 5) {
+              extraServices += thisItem.price;
+            } else if (thisItem.category.type < 4) {
+              subTotal += thisItem.price;
+            }
+            if (thisItem.category.type === 3) {  // just to display transportation  on order list
+              transportation += thisItem.price;
+            } else if (thisItem.category.type < 3) {
+              foodPrice += thisItem.price;
+            }
+            }
           boxCount += thisItem.boxCount;
           satiety += thisItem.satietyIndex;
-          if (thisItem.category.type === 3) {  // just to displaytransportation  on order list
-            transportation += thisItem.price;
-          }
-          if (thisItem.isFreeItem) {
-            if (thisItem.price === 0) { // old style free item - issue alert
-              isOldFreeItems = true;
-            }
-            if (thisItem.category.type === 3) {   // transportation category
-              transportationBonus -= thisItem.price;
-            } else {
-              bonus -= thisItem.price;
-            }
-          }
           if (thisItem.category.type === 2) {  // heavy food category
             isHeavyweight = true;
           }
@@ -76,21 +67,18 @@ angular.module('myApp')
       });
 
       if (priceIncreaseItem) {
-        priceIncreaseItem.price = subTotal * priceIncreaseItem.quantity / 100;
-        subTotal += priceIncreaseItem.price;
+        priceIncrease = priceIncreaseItem.price = subTotal * priceIncreaseItem.quantity / 100;
       }
 
-      if(isOldFreeItems) {
-        alert('שים לב, יש באירוע פריטי בונוס ישנים עם מחיר 0, יש לעדכן את המחיר')
-      }
-      quote.subTotal = subTotal;
+      quote.subTotal = Math.round(subTotal);
+      quote.foodPrice = Math.round(foodPrice);
+      quote.transportation = Math.round(transportation);
+      quote.priceIncrease = Math.round(priceIncrease);
+      quote.extraServices = Math.round(extraServices);
+      quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
+      quote.perPerson = Math.round((quote.subTotal + quote.discount) / participants);
       quote.boxEstimate = boxCount;
       quote.satietyIndex = satiety;
-      quote.bonusValue = bonus;
-      quote.transportation = transportation;
-      quote.transportationBonus = transportationBonus;
-      quote.discount = -((subTotal+bonus+transportationBonus) * quote.discountRate / 100);
-      quote.credits = quote.bonusValue + quote.transportationBonus + quote.discount;
       quote.isHeavyweight = isHeavyweight;
 
       this.calcTotal(quote, isBusinessEvent, vatRate);
@@ -162,12 +150,10 @@ angular.module('myApp')
       quote.discountCause = discountCause;
       quote.discountRate = 0;
       quote.discount = 0;
-      quote.bonusValue = 0;
       quote.credits = 0;
       quote.transportationInclVat = 0;  // just to display on order list
       quote.transportation = 0;  // just to display on order list
-      quote.transportationBonus = 0;
-      quote.oldTransportation = 0;
+      quote.extraServices = 0;
       quote.advance = 0;
       quote.categories = angular.copy(categories); // used to edit category descriptions
       quote.categories.forEach (function(cat) {

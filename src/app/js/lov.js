@@ -237,7 +237,7 @@ angular.module('myApp')
       },
       {
         id: 5,
-        name: 'extraServices'
+        name: 'extralServices'
       }
     ],
 

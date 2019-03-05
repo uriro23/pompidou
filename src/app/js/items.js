@@ -61,7 +61,10 @@ angular.module('myApp')
     this.deleteItem = function (ind) {
       var thisQuote = this.order.view.quote;
       thisQuote.items.splice(ind, 1);
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+                                this.order.attributes.isBusinessEvent,
+                                this.order.attributes.vatRate,
+                                this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order);
     };
 
@@ -161,7 +164,10 @@ angular.module('myApp')
       thisItem.isChanged = true;
       this.isAddItem = false;
       this.filterText = '';
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+        this.order.attributes.isBusinessEvent,
+        this.order.attributes.vatRate,
+        this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order);
     };
 
@@ -205,7 +211,10 @@ angular.module('myApp')
       }
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+        this.order.attributes.isBusinessEvent,
+        this.order.attributes.vatRate,
+        this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order);
       thisItem.isForcedPrice = false;
       thisItem.isChanged = true;
@@ -225,7 +234,10 @@ angular.module('myApp')
         thisItem.priceBeforeVat = thisItem.price / (1 + thisOrder.vatRate);
       }
       thisItem.isForcedPrice = true;
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+      orderService.calcSubTotal(thisQuote,
+        this.order.attributes.isBusinessEvent,
+        this.order.attributes.vatRate,
+        this.order.attributes.noOfParticipants);
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
@@ -233,8 +245,11 @@ angular.module('myApp')
      this.setFreeItem = function (ind) {
       var thisQuote = this.order.view.quote;
       var thisItem = thisQuote.items[ind];
-      orderService.calcSubTotal(thisQuote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
-      orderService.quoteChanged(this.order);
+       orderService.calcSubTotal(thisQuote,
+         this.order.attributes.isBusinessEvent,
+         this.order.attributes.vatRate,
+         this.order.attributes.noOfParticipants);
+       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
@@ -412,7 +427,9 @@ angular.module('myApp')
           if (isPriceConflict) {
             alert('קיימת בעיה של מחירים קבועים בתבנית המועתקת. בדוק שגיאות מסומנות בשדה המחיר')
           }
-          orderService.calcSubTotal(targetQuote, targetOrder.isBusinessEvent, targetOrder.vatRate);
+          orderService.calcSubTotal(targetQuote,
+                                    targetOrder.isBusinessEvent,
+                                    targetOrder.vatRate, targetOrder.noOfParticipants);
           orderService.quoteChanged(that.order);
         });
     };

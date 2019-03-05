@@ -41,7 +41,10 @@ angular.module('myApp')
       if (this.newMenuType) {
         var quote = orderService.initQuote(this.newMenuType, this.categories,this.discountCauses[0]);
         quote.changes.management = true;
-        orderService.calcSubTotal(quote, this.order.attributes.isBusinessEvent, this.order.attributes.vatRate);
+        orderService.calcSubTotal(quote,
+                                  this.order.attributes.isBusinessEvent,
+                                  this.order.attributes.vatRate,
+                                  this.order.attributes.noOfParticipants);
        this.order.attributes.quotes.push(quote);
        if (this.order.attributes.quotes.length===1) { // first quote - make it active
          this.setActiveQuote(0);

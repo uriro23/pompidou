@@ -23,7 +23,7 @@ angular.module('myApp')
         quote.items.forEach(function(item) {
           item.price = thisOrder.isBusinessEvent ? item.priceBeforeVat : item.priceInclVat;
         });
-        orderService.calcSubTotal(quote, thisOrder.isBusinessEvent, thisOrder.vatRate);
+        orderService.calcSubTotal(quote, thisOrder.isBusinessEvent, thisOrder.vatRate, thisOrder.noOfParticipants);
       });
       orderService.orderChanged(this.order,'isBusinessEvent');
     };
