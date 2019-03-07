@@ -255,6 +255,7 @@ angular.module('myApp')
 
     this.getTemplates = function () {
       var that = this;
+      this.isAdjustQuantity = true;
       api.queryTemplateOrders(['template','noOfParticipants','header','orderStatus'])
         .then(function (temps) {
           that.templates = temps.filter(function(t) {

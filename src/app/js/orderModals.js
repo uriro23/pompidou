@@ -96,7 +96,7 @@ angular.module('myApp')
     var that = this;
     this.order = order;
     this.bids = bids;
-    this.attachmentType = 'link';
+    this.attachmentType = 'pdf';
     // reset isInclude checkbox from previous sends
     for (var i = 0; i < this.bids.length; i++) {
       bids[i].isInclude = false;

@@ -95,8 +95,9 @@
   <input type="checkbox" ng-model="documentsModel.isOnlyActiveQuote">
     <span ng-repeat="documentType in documentsModel.sortedDocumentTypes">
         <button ng-click="documentsModel.createBid(documentType.id)"
-                ng-disabled="documentsModel.readOnly.is"
-                class="btn btn-default">
+                ng-disabled="documentsModel.readOnly.is ||
+                             !documentsModel.order.view.quote.foodPrice"
+                class="btn btn-default">  <!-- disable for quotes before 7/3/2019 -->
             {{documentType.label}}
         </button>
    </span>

@@ -248,7 +248,9 @@
           <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
          <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
      </div>
-        <div style="width:30%;display: inline-block;" class="quoteQuantAndUnit">
+        <div style="width:30%;display: inline-block;"
+             class="quoteQuantAndUnit"
+             ng-hide="quoteModel.currentQuote.isFixedPrice">
           <span style="display:inline-block">{{item.price | currency}}</span>
         </div>
       </div>
