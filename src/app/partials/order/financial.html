@@ -90,6 +90,15 @@
              ng-class="financialModel.order.view.quote.errors.fixedPrice?'bg-danger':null">
     </td>
   </tr>
+  <tr ng-class="financialModel.order.view.quote.changes.noTotal?'bg-success':null">
+    <td><label>לא להציג סה"כ</label></td>
+    <td>
+      <input type="checkbox" ng-model="financialModel.order.view.quote.isNoTotal"
+             ng-disabled="financialModel.readOnly.is ||
+                          !financialModel.order.view.quote.isFixedPrice"
+             ng-change="financialModel.quoteChanged('noTotal')">
+    </td>
+   </tr>
   <tr>
     <td><label>לתשלום</label></td>
     <td></td>

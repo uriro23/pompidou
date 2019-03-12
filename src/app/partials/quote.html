@@ -121,7 +121,7 @@
       </div>
       <div ng-repeat="item in quoteModel.transportationItems">
         <div style="width:77%;display:inline-block;">
-          <span class="bold" ng-show="item.isFreeItem">ללא חיוב: </span>
+          <span class="bold" ng-show="item.isFreeItem">החלטנו לתת לך במתנה את המשלוח:</span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
           <span class="bold" ng-show="item.isFreeItem">(ערך כספי</span>
           <span class="bold" ng-show="item.isFreeItem">{{item.price | currency}}</span>
@@ -145,7 +145,12 @@
 
       <div ng-hide="quoteModel.currentQuote.isFixedPrice">
         <div class="bold quoteItemDescription">
-          <span>סה"כ אוכל ומשלוח</span>
+          <span ng-show="quoteModel.transportationItems.length">
+            סה"כ אוכל ומשלוח
+          </span>
+          <span ng-hide="quoteModel.transportationItems.length">
+            סה"כ אוכל
+          </span>
         </div>
         <div class="quoteQuantAndUnit">
           {{quoteModel.currentQuote.subTotal | currency}}
@@ -159,7 +164,7 @@
         </div>
       </div>
 
-      <div ng-hide="quoteModel.currentQuote.isFixedPrice">
+      <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
         <div class="bold quoteItemDescription">
           <span>לאחר הנחה</span>
         </div>
@@ -273,7 +278,7 @@
 
 		<!-- Sum up of prices - purple BG  -->
 
-		<div class="quoteTextBox purpleBG">
+		<div class="quoteTextBox purpleBG" ng-hide="quoteModel.currentQuote.isNoTotal">
 
 
       <div ng-show="quoteModel.currentOrder.isBusinessEvent && !quoteModel.currentQuote.isFixedPrice">
