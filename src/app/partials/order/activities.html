@@ -9,7 +9,7 @@
   <tr>
     <td>{{activitiesModel.activityDate | date: 'dd/MM/yyyy HH:mm'}}</td>
     <td>
-      <textarea rows="10" cols="70" ng-model="activitiesModel.activityText"
+      <textarea rows="5" cols="70" ng-model="activitiesModel.activityText"
              ng-disabled="activitiesModel.readOnly.is"
       ></textarea>
     </td>
@@ -36,4 +36,18 @@
     </td>
   </tr>
 </table>
+  <table class="table table-hover" style="width:30%">
+    <tr>
+      <td><label>תאריך יצירה</label></td>
+      <td>{{activitiesModel.order.createdAt | date:'dd/MM/yyyy'}}</td>
+    </tr>
+    <tr>
+      <td><label>תאריך הצעה ראשונה</label></td>
+      <td>{{activitiesModel.order.attributes.bidDate | date:'dd/MM/yyyy'}}</td>
+    </tr>
+    <tr>
+      <td><label>תאריך סגירה</label></td>
+      <td>{{activitiesModel.order.attributes.closingDate | date:'dd/MM/yyyy'}}</td>
+    </tr>
+  </table>
 </div>

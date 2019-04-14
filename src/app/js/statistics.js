@@ -33,7 +33,7 @@ angular.module('myApp')
     var fieldList = [
       'orderStatus','noOfParticipants','eventDate','isDateUnknown',
       'customer','eventTime','number', 'exitTime','template', 'header',
-      'vatRate', 'referralSource', 'cancelReason', 'createdBy'
+      'vatRate', 'referralSource', 'cancelReason', 'createdBy', 'bidDate'
     ];
 
     //this.loadOrders();
@@ -136,30 +136,35 @@ angular.module('myApp')
         if (!tempVec[segIndex]) {  // first event for index
           tempVec[segIndex] = {
             'label': angular.copy(getLabel(segIndex)),
-            'potCount': 1,
-            'potTotal': orderAttr.header.total/(1+orderAttr.vatRate),
+            'leads': 1,
             'orders': [order]
           };
-           if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
-            tempVec[segIndex].actCount = 1;
-            tempVec[segIndex].actTotal = orderAttr.header.total/(1+orderAttr.vatRate);
-            tempVec[segIndex].actParticipants = orderAttr.noOfParticipants;
-            tempVec[segIndex].actTransportation = orderAttr.header.transportationInclVat / (1+orderAttr.vatRate);
-
-          } else {
-            tempVec[segIndex].actCount = 0;
-            tempVec[segIndex].actTotal = 0;
-            tempVec[segIndex].actParticipants = 0;
-            tempVec[segIndex].actTransportation = 0;
+          if (orderAttr.bidDate) {
+            tempVec[segIndex].bids = 1;
+            tempVec[segIndex].bidsTotal = orderAttr.header.total/(1+orderAttr.vatRate);
+            } else {
+            tempVec[segIndex].bids = 0;
+            tempVec[segIndex].bidsTotal = 0;
            }
-        }  else {
-         tempVec[segIndex].potCount++;
-          tempVec[segIndex].potTotal += orderAttr.header.total/(1+orderAttr.vatRate);
           if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
-            tempVec[segIndex].actCount++;
-            tempVec[segIndex].actTotal += orderAttr.header.total/(1+orderAttr.vatRate);
-            tempVec[segIndex].actParticipants += orderAttr.noOfParticipants;
-            tempVec[segIndex].actTransportation += (orderAttr.header.transportationInclVat / (1+orderAttr.vatRate));
+            tempVec[segIndex].closed = 1;
+            tempVec[segIndex].closedTotal = orderAttr.header.total/(1+orderAttr.vatRate);
+            tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
+          } else {
+            tempVec[segIndex].closed = 0;
+            tempVec[segIndex].closedTotal = 0;
+            tempVec[segIndex].closedParticipants = 0;
+          }
+        }  else {
+         tempVec[segIndex].leads++;
+          if (orderAttr.bidDate) {
+            tempVec[segIndex].bids++;
+            tempVec[segIndex].bidsTotal += orderAttr.header.total/(1+orderAttr.vatRate);
+            }
+          if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
+            tempVec[segIndex].closed++;
+            tempVec[segIndex].closedTotal += orderAttr.header.total/(1+orderAttr.vatRate);
+            tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
           }
           tempVec[segIndex].orders.push(order);
         }
@@ -174,30 +179,30 @@ angular.module('myApp')
         });
       });
       segArray.splice(0,segArray.length); // clear output array
-      tot.potCount = 0;
-      tot.potTotal = 0;
-      tot.actCount = 0;
-      tot.actTotal = 0;
-      tot.actParticipants = 0;
-      tot.actTransportation = 0;
+      tot.leads = 0;
+      tot.bids = 0;
+      tot.bidsTotal = 0;
+      tot.closed = 0;
+      tot.closedTotal = 0;
+      tot.closedParticipants = 0;
       for (var j=0;j<tempVec.length;j++) {
         if (tempVec[j]) {
           segArray.push(tempVec[j]);
-          tot.potCount += tempVec[j].potCount;
-          tot.potTotal += tempVec[j].potTotal;
-          tot.actCount += tempVec[j].actCount;
-          tot.actTotal += tempVec[j].actTotal;
-          tot.actParticipants += tempVec[j].actParticipants;
-          tot.actTransportation += tempVec[j].actTransportation;
+          tot.leads += tempVec[j].leads;
+          tot.bids += tempVec[j].bids;
+          tot.bidsTotal += tempVec[j].bidsTotal;
+          tot.closed += tempVec[j].closed;
+          tot.closedTotal += tempVec[j].closedTotal;
+          tot.closedParticipants += tempVec[j].closedParticipants;
         }
       }
 
-      avg.potCount = tot.potCount / segArray.length;
-      avg.potTotal = tot.potTotal / segArray.length;
-      avg.actCount = tot.actCount / segArray.length;
-      avg.actTotal = tot.actTotal / segArray.length;
-      avg.actParticipants = tot.actParticipants / segArray.length;
-      avg.actTransportation = tot.actTransportation / segArray.length;
+      avg.leads = tot.leads / segArray.length;
+      avg.bids = tot.bids / segArray.length;
+      avg.bidsTotal = tot.bidsTotal / segArray.length;
+      avg.closed = tot.closed / segArray.length;
+      avg.closedTotal = tot.closedTotal / segArray.length;
+      avg.closedParticipants = tot.closedParticipants / segArray.length;
   }
 
     this.doStat = function () {

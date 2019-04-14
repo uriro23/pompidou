@@ -384,6 +384,7 @@ angular.module('myApp')
         // in transition from not closed to closed, set closure date
         if (order.view.orderStatus.id >= 2 && order.view.orderStatus.id <= 5) {    // new status
           if (order.attributes.orderStatus === undefined ||
+              order.attributes.orderStatus === 0 ||
               order.attributes.orderStatus === 1 ||
               order.attributes.orderStatus === 6) { // prev status
             order.attributes.closingDate = new Date();
@@ -394,6 +395,10 @@ angular.module('myApp')
           } else {
             order.delAttributes = {closingDate: true};
           }
+        }
+        if (order.view.orderStatus.id >= 1 && order.view.orderStatus.id <= 5 && // new status
+            !order.attributes.bidDate) {
+          order.attributes.bidDate = new Date();
         }
         order.attributes.orderStatus = order.view.orderStatus.id;
       }

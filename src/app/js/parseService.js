@@ -30,6 +30,7 @@ angular.module('myApp')
           obj.unset(delAttr)
         }
       }
+      obj.delAttributes = undefined;
     }
     for (var attr in obj.attributes) {
       if (obj.attributes.hasOwnProperty(attr)) {
@@ -61,6 +62,7 @@ angular.module('myApp')
             objs[i].unset(delAttr)
           }
         }
+        objs[i].delAttributes = undefined;
       }
       for (var attr in objs[i].attributes) {
         if (objs[i].attributes.hasOwnProperty(attr)) {

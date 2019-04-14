@@ -1037,7 +1037,61 @@ angular.module('myApp')
           });
       }
     };
+
 */
+
+    this.quoteDate = function() {
+      console.log('starting');
+      api.queryAllOrders(['activities', 'closingDate', 'number', 'orderStatus'])
+        .then(function(orders) {
+          console.log ('read '+orders.length+' orders');
+          var leadCnt = 0;
+          var leadMinDate = new Date();
+          var leadMinNum = 0;
+          var bidCnt = 0;
+          orders.forEach(function(order) {
+            if (order.attributes.activities.length) {
+              if (order.attributes.activities[order.attributes.activities.length-1].text.includes('פניה')) {
+                leadCnt++;
+                if (order.createdAt < leadMinDate) {
+                  leadMinDate = order.createdAt;
+                  leadMinNum = order.attributes.number;
+                }
+                var isBid = false;
+                order.attributes.activities.forEach(function(activity) {
+                  if (activity.text.includes('הצעה')) {
+                    isBid = true;
+                    order.attributes.bidDate = activity.date;
+                  }
+                });
+                if (isBid) {
+                  bidCnt++;
+                  if (order.attributes.orderStatus === 0) {
+                    console.log('orderStatus conflict 1, order '+order.attributes.number);
+                  }
+                } else {
+                  if (order.attributes.orderStatus !== 0 && order.attributes.orderStatus !== 6 ) {
+                    console.log('orderStatus conflict 2, order '+order.attributes.number);
+                  }
+
+                }
+              } else {
+                order.attributes.bidDate = order.createdAt;
+              }
+            } else {
+              order.attributes.bidDate = order.createdAt;
+            }
+          });
+          console.log(leadCnt+' lead orders');
+          console.log('starting at '+leadMinDate+' order number '+leadMinNum);
+          console.log(bidCnt+' orders advanced to bid');
+          console.log('updating orders');
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('done');
+            })
+        });
+    };
 
 
 // end conversions

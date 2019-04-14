@@ -84,59 +84,59 @@
         <table class="table table-hover" style="width: 80%">
           <thead ng-show="statisticsModel.monthStats.length">
           <th><label>חודש</label></th>
-          <th><label>מס' פוט'</label></th>
-          <th><label>סכום פוט'</label></th>
-          <th><label>ממוצע לאירוע</label></th>
-          <th><label>מס' בפועל</label></th>
-          <th><label>% בפועל</label></th>
-          <th><label>סכום בפועל</label></th>
+          <th><label>פניות</label></th>
+          <th><label>הצעות</label></th>
+          <th><label>סכום הצעות</label></th>
+          <th><label>סגירות</label></th>
+          <th><label>% מפניות</label></th>
+          <th><label>% מהצעות</label></th>
+          <th><label>סכום</label></th>
           <th><label>ממוצע לאירוע</label></th>
           <th><label>מס' משתתפים</label></th>
           <th><label>מחיר לאורח</label></th>
-          <th><label>משלוחים</label></th>
           </thead>
           <tbody>
           <tr ng-repeat="line in statisticsModel.monthStats track by line.label"
               ng-class="line.isBold?'bg-warning':null">
             <td style="cursor: pointer"
                 ng-click="statisticsModel.setupLineOrders(statisticsModel.monthStats,line)">{{line.label | date: 'MM.yy'}}</td>
-            <td>{{line.potCount}}</td>
-            <td>{{line.potTotal | currency}}</td>
-            <td>{{line.potTotal / line.potCount | currency}}</td>
-            <td>{{line.actCount}}</td>
-            <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-            <td>{{line.actTotal | currency}}</td>
-            <td>{{line.actTotal / line.actCount | currency}}</td>
-            <td>{{line.actParticipants / line.actCount | number:1}}</td>
-            <td>{{line.actTotal / line.actParticipants | currency}}</td>
-            <td>{{line.actTransportation | currency}}</td>
+            <td>{{line.leads}}</td>
+            <td>{{line.bids}}</td>
+            <td>{{line.bidsTotal | currency}}</td>
+            <td>{{line.closed}}</td>
+            <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+            <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+            <td>{{line.closedTotal | currency}}</td>
+            <td>{{line.closedTotal / line.closed | currency}}</td>
+            <td>{{line.closedParticipants / line.closed | number:1}}</td>
+            <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
           </tr>
           <tr><td></td></tr>
           <tr ng-show="statisticsModel.monthStats.length">
             <td><label>ס"ה</label></td>
-            <td>{{statisticsModel.monthTot.potCount}}</td>
-            <td>{{statisticsModel.monthTot.potTotal | currency}}</td>
-            <td></td>
-            <td>{{statisticsModel.monthTot.actCount}}</td>
-            <td>{{(statisticsModel.monthTot.actCount / statisticsModel.monthTot.potCount) * 100 | number:1}}</td>
-            <td>{{statisticsModel.monthTot.actTotal | currency}}</td>
+            <td>{{statisticsModel.monthTot.leads}}</td>
+            <td>{{statisticsModel.monthTot.bids}}</td>
+            <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+            <td>{{statisticsModel.monthTot.closed}}</td>
             <td></td>
             <td></td>
+            <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
             <td></td>
-            <td>{{statisticsModel.monthTot.actTransportation | currency}}</td>
+            <td></td>
+            <td></td>
           </tr>
           <tr ng-show="statisticsModel.monthStats.length">
             <td><label>ממוצע</label></td>
-            <td>{{statisticsModel.monthAvg.potCount | number:2}}</td>
-            <td>{{statisticsModel.monthAvg.potTotal | currency}}</td>
-            <td>{{statisticsModel.monthAvg.potTotal / statisticsModel.monthAvg.potCount | currency}}</td>
-            <td>{{statisticsModel.monthAvg.actCount | number:2}}</td>
-            <td>{{(statisticsModel.monthAvg.actCount / statisticsModel.monthAvg.potCount) * 100 | number:1}}</td>
-            <td>{{statisticsModel.monthAvg.actTotal | currency}}</td>
-            <td>{{statisticsModel.monthAvg.actTotal / statisticsModel.monthAvg.actCount | currency}}</td>
-            <td>{{statisticsModel.monthAvg.actParticipants / statisticsModel.monthAvg.actCount | number:1}}</td>
-            <td>{{statisticsModel.monthTot.actTotal / statisticsModel.monthTot.actParticipants | currency}}</td>
-            <td>{{statisticsModel.monthAvg.actTransportation | currency}}</td>
+            <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+            <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+            <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+            <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+            <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+            <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+            <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+            <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+            <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+            <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
           </tr>
           </tbody>
         </table>
@@ -146,13 +146,15 @@
         <div ng-repeat="line in statisticsModel.monthStats track by line.label">
           <span>{{line.label | date: 'MM/yy'}}</span>
           <span>,</span>
-          <span>{{line.potCount }}</span>
+          <span>{{line.leads }}</span>
           <span>,</span>
-          <span>{{line.potTotal }}</span>
+          <span>{{line.bids }}</span>
           <span>,</span>
-          <span>{{line.actCount }}</span>
+          <span>{{line.bidsTotal }}</span>
           <span>,</span>
-          <span>{{line.actTotal }}</span>
+          <span>{{line.closed }}</span>
+          <span>,</span>
+          <span>{{line.closedTotal }}</span>
         </div>
       </div>
     </tab>
@@ -160,59 +162,59 @@
     <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.participantStats.length">
         <th><label>משתתפים</label></th>
-        <th><label>מס' פוט'</label></th>
-        <th><label>סכום פוט'</label></th>
-        <th><label>ממוצע לאירוע</label></th>
-        <th><label>מס' בפועל</label></th>
-        <th><label>% בפועל</label></th>
-        <th><label>סכום בפועל</label></th>
+        <th><label>פניות</label></th>
+        <th><label>הצעות</label></th>
+        <th><label>סכום הצעות</label></th>
+        <th><label>סגירות</label></th>
+        <th><label>% מפניות</label></th>
+        <th><label>% מהצעות</label></th>
+        <th><label>סכום</label></th>
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
-        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.participantStats track by line.label"
             ng-class="line.isBold?'bg-warning':null">
           <td style="cursor: pointer"
               ng-click="statisticsModel.setupLineOrders(statisticsModel.participantStats,line)">{{line.label}}</td>
-          <td>{{line.potCount}}</td>
-          <td>{{line.potTotal | currency}}</td>
-          <td>{{line.potTotal / line.potCount | currency}}</td>
-          <td>{{line.actCount}}</td>
-          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-          <td>{{line.actTotal | currency}}</td>
-          <td>{{line.actTotal / line.actCount | currency}}</td>
-          <td>{{line.actParticipants / line.actCount | number:1}}</td>
-          <td>{{line.actTotal / line.actParticipants | currency}}</td>
-          <td>{{line.actTransportation | currency}}</td>
+          <td>{{line.leads}}</td>
+          <td>{{line.bids}}</td>
+          <td>{{line.bidsTotal | currency}}</td>
+          <td>{{line.closed}}</td>
+          <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+          <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+          <td>{{line.closedTotal | currency}}</td>
+          <td>{{line.closedTotal / line.closed | currency}}</td>
+          <td>{{line.closedParticipants / line.closed | number:1}}</td>
+          <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
         </tr>
         <tr><td></td></tr>
-        <tr ng-show="statisticsModel.participantStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ס"ה</label></td>
-          <td>{{statisticsModel.participantTot.potCount}}</td>
-          <td>{{statisticsModel.participantTot.potTotal | currency}}</td>
-          <td></td>
-          <td>{{statisticsModel.participantTot.actCount}}</td>
-          <td>{{(statisticsModel.participantTot.actCount / statisticsModel.participantTot.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.participantTot.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.leads}}</td>
+          <td>{{statisticsModel.monthTot.bids}}</td>
+          <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.closed}}</td>
           <td></td>
           <td></td>
+          <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
           <td></td>
-          <td>{{statisticsModel.participantTot.actTransportation | currency}}</td>
+          <td></td>
+          <td></td>
         </tr>
-        <tr ng-show="statisticsModel.participantStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
-          <td>{{statisticsModel.participantAvg.potCount | number:2}}</td>
-          <td>{{statisticsModel.participantAvg.potTotal | currency}}</td>
-          <td>{{statisticsModel.participantAvg.potTotal / statisticsModel.participantAvg.potCount | currency}}</td>
-          <td>{{statisticsModel.participantAvg.actCount | number:2}}</td>
-          <td>{{(statisticsModel.participantAvg.actCount / statisticsModel.participantAvg.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.participantAvg.actTotal | currency}}</td>
-          <td>{{statisticsModel.participantAvg.actTotal / statisticsModel.participantAvg.actCount | currency}}</td>
-          <td>{{statisticsModel.participantAvg.actParticipants / statisticsModel.participantAvg.actCount | number:1}}</td>
-          <td>{{statisticsModel.participantTot.actTotal / statisticsModel.participantTot.actParticipants | currency}}</td>
-          <td>{{statisticsModel.participantTot.actTransportation | currency}}</td>
+          <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+          <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -221,59 +223,59 @@
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.totalStats.length">
         <th><label>סכום</label></th>
-        <th><label>מס' פוט'</label></th>
-        <th><label>סכום פוט'</label></th>
-        <th><label>ממוצע לאירוע</label></th>
-        <th><label>מס' בפועל</label></th>
-        <th><label>% בפועל</label></th>
-        <th><label>סכום בפועל</label></th>
+        <th><label>פניות</label></th>
+        <th><label>הצעות</label></th>
+        <th><label>סכום הצעות</label></th>
+        <th><label>סגירות</label></th>
+        <th><label>% מפניות</label></th>
+        <th><label>% מהצעות</label></th>
+        <th><label>סכום</label></th>
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
-        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.totalStats track by line.label"
             ng-class="line.isBold?'bg-warning':null">
           <td style="cursor: pointer"
               ng-click="statisticsModel.setupLineOrders(statisticsModel.totalStats,line)">{{line.label}}</td>
-          <td>{{line.potCount}}</td>
-          <td>{{line.potTotal | currency}}</td>
-          <td>{{line.potTotal / line.potCount | currency}}</td>
-          <td>{{line.actCount}}</td>
-          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-          <td>{{line.actTotal | currency}}</td>
-          <td>{{line.actTotal / line.actCount | currency}}</td>
-          <td>{{line.actParticipants / line.actCount | number:1}}</td>
-          <td>{{line.actTotal / line.actParticipants | currency}}</td>
-          <td>{{line.actTransportation | currency}}</td>
+          <td>{{line.leads}}</td>
+          <td>{{line.bids}}</td>
+          <td>{{line.bidsTotal | currency}}</td>
+          <td>{{line.closed}}</td>
+          <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+          <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+          <td>{{line.closedTotal | currency}}</td>
+          <td>{{line.closedTotal / line.closed | currency}}</td>
+          <td>{{line.closedParticipants / line.closed | number:1}}</td>
+          <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
         </tr>
         <tr><td></td></tr>
-        <tr ng-show="statisticsModel.totalStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ס"ה</label></td>
-          <td>{{statisticsModel.totalTot.potCount}}</td>
-          <td>{{statisticsModel.totalTot.potTotal | currency}}</td>
-          <td></td>
-          <td>{{statisticsModel.totalTot.actCount}}</td>
-          <td>{{(statisticsModel.totalTot.actCount / statisticsModel.totalTot.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.totalTot.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.leads}}</td>
+          <td>{{statisticsModel.monthTot.bids}}</td>
+          <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.closed}}</td>
           <td></td>
           <td></td>
+          <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
           <td></td>
-          <td>{{statisticsModel.totalTot.actTransportation | currency}}</td>
+          <td></td>
+          <td></td>
         </tr>
-        <tr ng-show="statisticsModel.totalStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
-          <td>{{statisticsModel.totalAvg.potCount | number:2}}</td>
-          <td>{{statisticsModel.totalAvg.potTotal | currency}}</td>
-          <td>{{statisticsModel.totalAvg.potTotal / statisticsModel.totalAvg.potCount | currency}}</td>
-          <td>{{statisticsModel.totalAvg.actCount | number:2}}</td>
-          <td>{{(statisticsModel.totalAvg.actCount / statisticsModel.totalAvg.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.totalAvg.actTotal | currency}}</td>
-          <td>{{statisticsModel.totalAvg.actTotal / statisticsModel.totalAvg.actCount | currency}}</td>
-          <td>{{statisticsModel.totalAvg.actParticipants / statisticsModel.totalAvg.actCount | number:1}}</td>
-          <td>{{statisticsModel.totalTot.actTotal / statisticsModel.totalTot.actParticipants | currency}}</td>
-          <td>{{statisticsModel.totalTot.actTransportation | currency}}</td>
+          <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+          <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -283,59 +285,59 @@
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.totalPerParticipantStats.length">
         <th><label>סכום</label></th>
-        <th><label>מס' פוט'</label></th>
-        <th><label>סכום פוט'</label></th>
-        <th><label>ממוצע לאירוע</label></th>
-        <th><label>מס' בפועל</label></th>
-        <th><label>% בפועל</label></th>
-        <th><label>סכום בפועל</label></th>
+        <th><label>פניות</label></th>
+        <th><label>הצעות</label></th>
+        <th><label>סכום הצעות</label></th>
+        <th><label>סגירות</label></th>
+        <th><label>% מפניות</label></th>
+        <th><label>% מהצעות</label></th>
+        <th><label>סכום</label></th>
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
-        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.totalPerParticipantStats track by line.label"
             ng-class="line.isBold?'bg-warning':null">
           <td style="cursor: pointer"
               ng-click="statisticsModel.setupLineOrders(statisticsModel.totalPerParticipantStats,line)">{{line.label}}</td>
-          <td>{{line.potCount}}</td>
-          <td>{{line.potTotal | currency}}</td>
-          <td>{{line.potTotal / line.potCount | currency}}</td>
-          <td>{{line.actCount}}</td>
-          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-          <td>{{line.actTotal | currency}}</td>
-          <td>{{line.actTotal / line.actCount | currency}}</td>
-          <td>{{line.actParticipants / line.actCount | number:1}}</td>
-          <td>{{line.actTotal / line.actParticipants | currency}}</td>
-          <td>{{line.actTransportation | currency}}</td>
+          <td>{{line.leads}}</td>
+          <td>{{line.bids}}</td>
+          <td>{{line.bidsTotal | currency}}</td>
+          <td>{{line.closed}}</td>
+          <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+          <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+          <td>{{line.closedTotal | currency}}</td>
+          <td>{{line.closedTotal / line.closed | currency}}</td>
+          <td>{{line.closedParticipants / line.closed | number:1}}</td>
+          <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
         </tr>
         <tr><td></td></tr>
-        <tr ng-show="statisticsModel.totalPerParticipantStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ס"ה</label></td>
-          <td>{{statisticsModel.totalPerParticipantTot.potCount}}</td>
-          <td>{{statisticsModel.totalPerParticipantTot.potTotal | currency}}</td>
-          <td></td>
-          <td>{{statisticsModel.totalPerParticipantTot.actCount}}</td>
-          <td>{{(statisticsModel.totalPerParticipantTot.actCount / statisticsModel.totalPerParticipantTot.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.totalPerParticipantTot.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.leads}}</td>
+          <td>{{statisticsModel.monthTot.bids}}</td>
+          <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.closed}}</td>
           <td></td>
           <td></td>
+          <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
           <td></td>
-          <td>{{statisticsModel.totalPerParticipantTot.actTransportation | currency}}</td>
+          <td></td>
+          <td></td>
         </tr>
-        <tr ng-show="statisticsModel.totalPerParticipantStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
-          <td>{{statisticsModel.totalPerParticipantAvg.potCount | number:2}}</td>
-          <td>{{statisticsModel.totalPerParticipantAvg.potTotal | currency}}</td>
-          <td>{{statisticsModel.totalPerParticipantAvg.potTotal / statisticsModel.totalPerParticipantAvg.potCount | currency}}</td>
-          <td>{{statisticsModel.totalPerParticipantAvg.actCount | number:2}}</td>
-          <td>{{(statisticsModel.totalPerParticipantAvg.actCount / statisticsModel.totalPerParticipantAvg.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.totalPerParticipantAvg.actTotal | currency}}</td>
-          <td>{{statisticsModel.totalPerParticipantAvg.actTotal / statisticsModel.totalPerParticipantAvg.actCount | currency}}</td>
-          <td>{{statisticsModel.totalPerParticipantAvg.actParticipants / statisticsModel.totalPerParticipantAvg.actCount | number:1}}</td>
-          <td>{{statisticsModel.totalPerParticipantTot.actTotal / statisticsModel.totalPerParticipantTot.actParticipants | currency}}</td>
-          <td>{{statisticsModel.totalPerParticipantTot.actTransportation | currency}}</td>
+          <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+          <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -345,59 +347,59 @@
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.menuTypeStats.length">
         <th><label>הפניה</label></th>
-        <th><label>מס' פוט'</label></th>
-        <th><label>סכום פוט'</label></th>
-        <th><label>ממוצע לאירוע</label></th>
-        <th><label>מס' בפועל</label></th>
-        <th><label>% בפועל</label></th>
-        <th><label>סכום בפועל</label></th>
+        <th><label>פניות</label></th>
+        <th><label>הצעות</label></th>
+        <th><label>סכום הצעות</label></th>
+        <th><label>סגירות</label></th>
+        <th><label>% מפניות</label></th>
+        <th><label>% מהצעות</label></th>
+        <th><label>סכום</label></th>
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
-        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.menuTypeStats track by line.label"
             ng-class="line.isBold?'bg-warning':null">
           <td style="cursor: pointer"
               ng-click="statisticsModel.setupLineOrders(statisticsModel.menuTypeStats,line)">{{line.label}}</td>
-          <td>{{line.potCount}}</td>
-          <td>{{line.potTotal | currency}}</td>
-          <td>{{line.potTotal / line.potCount | currency}}</td>
-          <td>{{line.actCount}}</td>
-          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-          <td>{{line.actTotal | currency}}</td>
-          <td>{{line.actTotal / line.actCount | currency}}</td>
-          <td>{{line.actParticipants / line.actCount | number:1}}</td>
-          <td>{{line.actTotal / line.actParticipants | currency}}</td>
-          <td>{{line.actTransportation | currency}}</td>
+          <td>{{line.leads}}</td>
+          <td>{{line.bids}}</td>
+          <td>{{line.bidsTotal | currency}}</td>
+          <td>{{line.closed}}</td>
+          <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+          <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+          <td>{{line.closedTotal | currency}}</td>
+          <td>{{line.closedTotal / line.closed | currency}}</td>
+          <td>{{line.closedParticipants / line.closed | number:1}}</td>
+          <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
         </tr>
         <tr><td></td></tr>
-        <tr ng-show="statisticsModel.menuTypeStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ס"ה</label></td>
-          <td>{{statisticsModel.menuTypeTot.potCount}}</td>
-          <td>{{statisticsModel.menuTypeTot.potTotal | currency}}</td>
-          <td></td>
-          <td>{{statisticsModel.menuTypeTot.actCount}}</td>
-          <td>{{(statisticsModel.menuTypeTot.actCount / statisticsModel.menuTypeTot.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.menuTypeTot.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.leads}}</td>
+          <td>{{statisticsModel.monthTot.bids}}</td>
+          <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.closed}}</td>
           <td></td>
           <td></td>
+          <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
           <td></td>
-          <td>{{statisticsModel.menuTypeTot.actTransportation | currency}}</td>
+          <td></td>
+          <td></td>
         </tr>
-        <tr ng-show="statisticsModel.menuTypeStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
-          <td>{{statisticsModel.menuTypeAvg.potCount | number:2}}</td>
-          <td>{{statisticsModel.menuTypeAvg.potTotal | currency}}</td>
-          <td>{{statisticsModel.menuTypeAvg.potTotal / statisticsModel.menuTypeAvg.potCount | currency}}</td>
-          <td>{{statisticsModel.menuTypeAvg.actCount | number:2}}</td>
-          <td>{{(statisticsModel.menuTypeAvg.actCount / statisticsModel.menuTypeAvg.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.menuTypeAvg.actTotal | currency}}</td>
-          <td>{{statisticsModel.menuTypeAvg.actTotal / statisticsModel.menuTypeAvg.actCount | currency}}</td>
-          <td>{{statisticsModel.menuTypeAvg.actParticipants / statisticsModel.menuTypeAvg.actCount | number:1}}</td>
-          <td>{{statisticsModel.menuTypeTot.actTotal / statisticsModel.menuTypeTot.actParticipants | currency}}</td>
-          <td>{{statisticsModel.menuTypeTot.actTransportation | currency}}</td>
+          <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+          <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -406,59 +408,59 @@
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.referralSourceStats.length">
         <th><label>הפניה</label></th>
-        <th><label>מס' פוט'</label></th>
-        <th><label>סכום פוט'</label></th>
-        <th><label>ממוצע לאירוע</label></th>
-        <th><label>מס' בפועל</label></th>
-        <th><label>% בפועל</label></th>
-        <th><label>סכום בפועל</label></th>
+        <th><label>פניות</label></th>
+        <th><label>הצעות</label></th>
+        <th><label>סכום הצעות</label></th>
+        <th><label>סגירות</label></th>
+        <th><label>% מפניות</label></th>
+        <th><label>% מהצעות</label></th>
+        <th><label>סכום</label></th>
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
-        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.referralSourceStats track by line.label"
             ng-class="line.isBold?'bg-warning':null">
           <td style="cursor: pointer"
               ng-click="statisticsModel.setupLineOrders(statisticsModel.referralSourceStats,line)">{{line.label}}</td>
-          <td>{{line.potCount}}</td>
-          <td>{{line.potTotal | currency}}</td>
-          <td>{{line.potTotal / line.potCount | currency}}</td>
-          <td>{{line.actCount}}</td>
-          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-          <td>{{line.actTotal | currency}}</td>
-          <td>{{line.actTotal / line.actCount | currency}}</td>
-          <td>{{line.actParticipants / line.actCount | number:1}}</td>
-          <td>{{line.actTotal / line.actParticipants | currency}}</td>
-          <td>{{line.actTransportation | currency}}</td>
+          <td>{{line.leads}}</td>
+          <td>{{line.bids}}</td>
+          <td>{{line.bidsTotal | currency}}</td>
+          <td>{{line.closed}}</td>
+          <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+          <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+          <td>{{line.closedTotal | currency}}</td>
+          <td>{{line.closedTotal / line.closed | currency}}</td>
+          <td>{{line.closedParticipants / line.closed | number:1}}</td>
+          <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
         </tr>
         <tr><td></td></tr>
-        <tr ng-show="statisticsModel.referralSourceStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ס"ה</label></td>
-          <td>{{statisticsModel.referralSourceTot.potCount}}</td>
-          <td>{{statisticsModel.referralSourceTot.potTotal | currency}}</td>
-          <td></td>
-          <td>{{statisticsModel.referralSourceTot.actCount}}</td>
-          <td>{{(statisticsModel.referralSourceTot.actCount / statisticsModel.referralSourceTot.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.referralSourceTot.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.leads}}</td>
+          <td>{{statisticsModel.monthTot.bids}}</td>
+          <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.closed}}</td>
           <td></td>
           <td></td>
+          <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
           <td></td>
-          <td>{{statisticsModel.referralSourceTot.actTransportation | currency}}</td>
+          <td></td>
+          <td></td>
         </tr>
-        <tr ng-show="statisticsModel.referralSourceStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
-          <td>{{statisticsModel.referralSourceAvg.potCount | number:2}}</td>
-          <td>{{statisticsModel.referralSourceAvg.potTotal | currency}}</td>
-          <td>{{statisticsModel.referralSourceAvg.potTotal / statisticsModel.referralSourceAvg.potCount | currency}}</td>
-          <td>{{statisticsModel.referralSourceAvg.actCount | number:2}}</td>
-          <td>{{(statisticsModel.referralSourceAvg.actCount / statisticsModel.referralSourceAvg.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.referralSourceAvg.actTotal | currency}}</td>
-          <td>{{statisticsModel.referralSourceAvg.actTotal / statisticsModel.referralSourceAvg.actCount | currency}}</td>
-          <td>{{statisticsModel.referralSourceAvg.actParticipants / statisticsModel.referralSourceAvg.actCount | number:1}}</td>
-          <td>{{statisticsModel.referralSourceTot.actTotal / statisticsModel.referralSourceTot.actParticipants | currency}}</td>
-          <td>{{statisticsModel.referralSourceTot.actTransportation | currency}}</td>
+          <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+          <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
         </tr>
         </tbody>
       </table>
@@ -467,59 +469,59 @@
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.cancelReasonStats.length">
         <th><label>ביטול</label></th>
-        <th><label>מס' פוט'</label></th>
-        <th><label>סכום פוט'</label></th>
-        <th><label>ממוצע לאירוע</label></th>
-        <th><label>מס' בפועל</label></th>
-        <th><label>% בפועל</label></th>
-        <th><label>סכום בפועל</label></th>
+        <th><label>פניות</label></th>
+        <th><label>הצעות</label></th>
+        <th><label>סכום הצעות</label></th>
+        <th><label>סגירות</label></th>
+        <th><label>% מפניות</label></th>
+        <th><label>% מהצעות</label></th>
+        <th><label>סכום</label></th>
         <th><label>ממוצע לאירוע</label></th>
         <th><label>מס' משתתפים</label></th>
         <th><label>מחיר לאורח</label></th>
-        <th><label>משלוחים</label></th>
         </thead>
         <tbody>
         <tr ng-repeat="line in statisticsModel.cancelReasonStats track by line.label"
             ng-class="line.isBold?'bg-warning':null">
           <td style="cursor: pointer"
               ng-click="statisticsModel.setupLineOrders(statisticsModel.cancelReasonStats,line)">{{line.label}}</td>
-          <td>{{line.potCount}}</td>
-          <td>{{line.potTotal | currency}}</td>
-          <td>{{line.potTotal / line.potCount | currency}}</td>
-          <td>{{line.actCount}}</td>
-          <td>{{(line.actCount / line.potCount) * 100 | number:1}}</td>
-          <td>{{line.actTotal | currency}}</td>
-          <td>{{line.actTotal / line.actCount | currency}}</td>
-          <td>{{line.actParticipants / line.actCount | number:1}}</td>
-          <td>{{line.actTotal / line.actParticipants | currency}}</td>
-          <td>{{line.actTransportation | currency}}</td>
+          <td>{{line.leads}}</td>
+          <td>{{line.bids}}</td>
+          <td>{{line.bidsTotal | currency}}</td>
+          <td>{{line.closed}}</td>
+          <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
+          <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
+          <td>{{line.closedTotal | currency}}</td>
+          <td>{{line.closedTotal / line.closed | currency}}</td>
+          <td>{{line.closedParticipants / line.closed | number:1}}</td>
+          <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
         </tr>
         <tr><td></td></tr>
-        <tr ng-show="statisticsModel.cancelReasonStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ס"ה</label></td>
-          <td>{{statisticsModel.cancelReasonTot.potCount}}</td>
-          <td>{{statisticsModel.cancelReasonTot.potTotal | currency}}</td>
-          <td></td>
-          <td>{{statisticsModel.cancelReasonTot.actCount}}</td>
-          <td>{{(statisticsModel.cancelReasonTot.actCount / statisticsModel.cancelReasonTot.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.cancelReasonTot.actTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.leads}}</td>
+          <td>{{statisticsModel.monthTot.bids}}</td>
+          <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthTot.closed}}</td>
           <td></td>
           <td></td>
+          <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
           <td></td>
-          <td>{{statisticsModel.cancelReasonTot.actTransportation | currency}}</td>
+          <td></td>
+          <td></td>
         </tr>
-        <tr ng-show="statisticsModel.cancelReasonStats.length">
+        <tr ng-show="statisticsModel.monthStats.length">
           <td><label>ממוצע</label></td>
-          <td>{{statisticsModel.cancelReasonAvg.potCount | number:2}}</td>
-          <td>{{statisticsModel.cancelReasonAvg.potTotal | currency}}</td>
-          <td>{{statisticsModel.cancelReasonAvg.potTotal / statisticsModel.cancelReasonAvg.potCount | currency}}</td>
-          <td>{{statisticsModel.cancelReasonAvg.actCount | number:2}}</td>
-          <td>{{(statisticsModel.cancelReasonAvg.actCount / statisticsModel.cancelReasonAvg.potCount) * 100 | number:1}}</td>
-          <td>{{statisticsModel.cancelReasonAvg.actTotal | currency}}</td>
-          <td>{{statisticsModel.cancelReasonAvg.actTotal / statisticsModel.cancelReasonAvg.actCount | currency}}</td>
-          <td>{{statisticsModel.cancelReasonAvg.actParticipants / statisticsModel.cancelReasonAvg.actCount | number:1}}</td>
-          <td>{{statisticsModel.cancelReasonTot.actTotal / statisticsModel.cancelReasonTot.actParticipants | currency}}</td>
-          <td>{{statisticsModel.cancelReasonTot.actTransportation | currency}}</td>
+          <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
+          <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
+          <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+          <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
+          <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
         </tr>
         </tbody>
       </table>
