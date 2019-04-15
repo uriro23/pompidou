@@ -176,7 +176,7 @@ angular.module('myApp')
                         ord.attributes.orderStatus === 6);
             });
             that.enrichOrders();
-          });
+           });
           break;
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
@@ -317,8 +317,7 @@ angular.module('myApp')
       this.queryType = queryType;
     }
     this.doQuery();
-    this.isProcessing = false;
-  })
+    })
 
   .controller('OrderTableCtrl', function($scope, $modal, api, dater) {
     $scope.$parent.initOrderTableParams(this);

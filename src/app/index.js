@@ -567,6 +567,9 @@ config(function($stateProvider, $urlRouterProvider) {
     templateUrl: 'app/partials/statistics.html',
     controller: 'StatisticsCtrl as statisticsModel',
     resolve: {
+      categories: ['categoriesPromise', function (categoriesPromise) {
+        return categoriesPromise;
+      }],
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
       }],

@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, dater,
+  .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, dater, categories,
                                           menuTypes, referralSources, cancelReasons, customers) {
 
     $rootScope.menuStatus = 'show';
@@ -133,40 +133,42 @@ angular.module('myApp')
       filteredOrders.forEach(function(order) {
         var orderAttr = order.attributes;
         var segIndex = getIndex (order);
-        if (!tempVec[segIndex]) {  // first event for index
-          tempVec[segIndex] = {
-            'label': angular.copy(getLabel(segIndex)),
-            'leads': 1,
-            'orders': [order]
-          };
-          if (orderAttr.bidDate) {
-            tempVec[segIndex].bids = 1;
-            tempVec[segIndex].bidsTotal = orderAttr.header.total/(1+orderAttr.vatRate);
+        if (segIndex > -1) {  // if no index for this order - skip it
+          if (!tempVec[segIndex]) {  // first event for index
+            tempVec[segIndex] = {
+              'label': angular.copy(getLabel(segIndex)),
+              'leads': 1,
+              'orders': [order]
+            };
+            if (orderAttr.bidDate) {
+              tempVec[segIndex].bids = 1;
+              tempVec[segIndex].bidsTotal = orderAttr.header.total / (1 + orderAttr.vatRate);
             } else {
-            tempVec[segIndex].bids = 0;
-            tempVec[segIndex].bidsTotal = 0;
-           }
-          if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
-            tempVec[segIndex].closed = 1;
-            tempVec[segIndex].closedTotal = orderAttr.header.total/(1+orderAttr.vatRate);
-            tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
-          } else {
-            tempVec[segIndex].closed = 0;
-            tempVec[segIndex].closedTotal = 0;
-            tempVec[segIndex].closedParticipants = 0;
-          }
-        }  else {
-         tempVec[segIndex].leads++;
-          if (orderAttr.bidDate) {
-            tempVec[segIndex].bids++;
-            tempVec[segIndex].bidsTotal += orderAttr.header.total/(1+orderAttr.vatRate);
+              tempVec[segIndex].bids = 0;
+              tempVec[segIndex].bidsTotal = 0;
             }
-          if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
-            tempVec[segIndex].closed++;
-            tempVec[segIndex].closedTotal += orderAttr.header.total/(1+orderAttr.vatRate);
-            tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
+            if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
+              tempVec[segIndex].closed = 1;
+              tempVec[segIndex].closedTotal = orderAttr.header.total / (1 + orderAttr.vatRate);
+              tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
+            } else {
+              tempVec[segIndex].closed = 0;
+              tempVec[segIndex].closedTotal = 0;
+              tempVec[segIndex].closedParticipants = 0;
+            }
+          } else {
+            tempVec[segIndex].leads++;
+            if (orderAttr.bidDate) {
+              tempVec[segIndex].bids++;
+              tempVec[segIndex].bidsTotal += orderAttr.header.total / (1 + orderAttr.vatRate);
+            }
+            if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
+              tempVec[segIndex].closed++;
+              tempVec[segIndex].closedTotal += orderAttr.header.total / (1 + orderAttr.vatRate);
+              tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
+            }
+            tempVec[segIndex].orders.push(order);
           }
-          tempVec[segIndex].orders.push(order);
         }
       });
       tempVec.forEach(function(line) {
@@ -219,13 +221,21 @@ angular.module('myApp')
       });
       // segmentation by participants
       doSegmentation(this.participantStats, this.participantTot, this.participantAvg, function (ord) {
-        return  Math.floor((ord.attributes.noOfParticipants + 1) / participantsFactor);
+        if (ord.attributes.noOfParticipants) {
+          return Math.floor((ord.attributes.noOfParticipants + 1) / participantsFactor);
+        } else {
+          return -1;  // for leads with no participants yet
+        }
       },function (ind) {
         return (ind * participantsFactor + 1) + '-' + ((ind+1) * participantsFactor);
       });
       // segmentation by total
       doSegmentation(this.totalStats, this.totalTot, this.totalAvg, function (ord) {
-        return  Math.floor((ord.attributes.header.total / (1+ord.attributes.vatRate) + 1) / totalFactor);
+        if (ord.attributes.header.total) {
+          return Math.floor((ord.attributes.header.total / (1 + ord.attributes.vatRate) + 1) / totalFactor);
+        } else {
+          return -1;
+        }
       },function (ind) {
         return (ind * totalFactor + 1) + '-' + ((ind+1) * totalFactor);
       });
@@ -234,14 +244,22 @@ angular.module('myApp')
                      this.totalPerParticipantTot,
                      this.totalPerParticipantAvg,
                      function (ord) {
-        return  Math.floor(((ord.attributes.header.total / (1+ord.attributes.vatRate)) /
-          ord.attributes.noOfParticipants + 1) / totalPerParticipantFactor);
+        if (ord.attributes.header.total) {
+          return Math.floor(((ord.attributes.header.total / (1 + ord.attributes.vatRate)) /
+            ord.attributes.noOfParticipants + 1) / totalPerParticipantFactor);
+        } else {
+          return -1;
+        }
       },function (ind) {
         return (ind * totalPerParticipantFactor + 1) + '-' + ((ind+1) * totalPerParticipantFactor);
       });
       // segmentation by menuType
       doSegmentation(this.menuTypeStats, this.menuTypeTot, this.menuTypeAvg, function (ord) {
-        return ord.attributes.header.menuType.tId;
+        if (ord.attributes.header.menuType) {
+          return ord.attributes.header.menuType.tId;
+        } else {
+          return -1;
+        }
       },function (ind) {
         var s = menuTypes.filter(function(r) {
           return r.tId === ind;
@@ -252,18 +270,26 @@ angular.module('myApp')
       });
       // segmentation by referralSource
       doSegmentation(this.referralSourceStats, this.referralSourceTot, this.referralSourceAvg, function (ord) {
-        return ord.attributes.referralSource;
+        if (ord.attributes.referralSource) {
+          return ord.attributes.referralSource;
+        } else {
+          return -1;
+        }
       },function (ind) {
         var s = referralSources.filter(function(r) {
           return r.tId === ind;
         });
         if (s.length) {
-          return s[0].label;
-        }
-      });
+            return s[0].label;
+          }
+        });
       // segmentation by cancelReason
       doSegmentation(this.cancelReasonStats, this.cancelReasonTot, this.cancelReasonAvg, function (ord) {
-        return ord.attributes.cancelReason;
+        if (ord.attributes.cancelReason) {
+          return ord.attributes.cancelReason;
+        } else {
+          return -1;
+        }
       },function (ind) {
         var s = cancelReasons.filter(function(r) {
           return r.tId === ind;
@@ -373,6 +399,64 @@ angular.module('myApp')
           });
           that.empBonuses.sort(function(a,b) {  // sort descending on month
             return b.calcMonth - a.calcMonth;
+          });
+        });
+    };
+
+    this.loadOrderCategories = function() {
+      var that = this;
+      this.categories = categories;
+      this.categoryOrdersByMonth = [];
+      this.catProcessing = true;
+      api.queryOrdersByRange(this.filterBy, this.fromDate, this.toDate)
+        .then(function(orders) {
+          that.catProcessing = false;
+          orders.forEach(function(order) {
+            if (!order.attributes.template && order.attributes.orderStatus>=2 && order.attributes.orderStatus<=5) {
+              var quote = order.attributes.quotes[order.attributes.activeQuote];
+              if (!quote) {
+                console.log(order);
+              }
+              if (!quote.isFixedPrice) {
+                var orderDate = that.filterBy === 'eventDate' ? order.attributes.eventDate : order.createdAt;
+                var monthInd = orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
+                if (!that.categoryOrdersByMonth[monthInd]) {
+                  var dateLabel =  angular.copy(that.fromDate);
+                  dateLabel.setMonth(that.fromDate.getMonth()+monthInd);
+                  that.categoryOrdersByMonth[monthInd] = {
+                    isActive: true,
+                    label: dateLabel,
+                    categories: angular.copy(that.categories)
+                   };
+                  that.categoryOrdersByMonth[monthInd].categories.forEach(function(cat) {
+                    cat.count = 0;
+                    cat.total = 0;
+                  });
+                }
+                quote.items.forEach(function(item) {
+                  that.categoryOrdersByMonth[monthInd].categories.forEach(function(cat, ind) {
+                    if (cat.tId === item.category.tId) {
+                      cat.count++;
+                      var price = item.category.type===4 ?
+                        item.price / (1 + order.attributes.vatRate) :
+                        item.priceBeforeVat;
+                      if (quote.discountRate) {
+                        price = price * (100 - quote.discountRate) / 100;
+                      }
+                      cat.total += price;
+                      that.categories[ind].isActive = true;
+                    }
+                  });
+                });
+              }
+            }
+          });
+          that.categoryOrdersByMonth.forEach(function(month) {
+            if (month.isActive) {
+              month.categories.forEach(function(cat,ind) {
+                cat.isActive = that.categories[ind].isActive;
+              });
+            }
           });
         });
     };

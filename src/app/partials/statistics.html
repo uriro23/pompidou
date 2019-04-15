@@ -556,6 +556,26 @@
         </tbody>
       </table>
     </tab>
+    <tab heading="קטגוריות" select="statisticsModel.loadOrderCategories()">
+      <div ng-hide="statisticsModel.catProcessing">
+      <table class="table" border="1">
+        <thead>
+        <th><label>חודש</label></th>
+        <th ng-repeat="category in statisticsModel.categories | filter: {isActive: true}"><label>
+          {{category.label}}
+        </label></th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="month in statisticsModel.categoryOrdersByMonth | filter: {isActive: true}">
+          <td>{{month.label | date: 'MM.yy'}}</td>
+          <td ng-repeat="category in month.categories | filter: {isActive: true}">
+            {{category.total | currency}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      </div>
+    </tab>
   </tabset>
   <div ng-hide="statisticsModel.isHideOrders">
     <h4>פירוט אירועים:</h4>
