@@ -249,19 +249,47 @@
                     ng-change="catalogItemModel.setShortDescription()"></textarea>
         </td>
       </tr>
+    </table>
+     <table>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>האם לכלול בתפריט?</label></td>
         <td><input type="checkbox" ng-model="catalogItemModel.item.attributes.isInMenu"
                     ng-change="catalogItemModel.setChanged(true)"></td>
       </tr>
-      <tr>
-        <td><label>יח' מידה</label></td>
+      <tr ng-show="catalogItemModel.currentDomain.id===1"
+          ng-class="catalogItemModel.item.errors.muFactor?'bg-danger':null">
+        <td><label>יח' מידה ללקוח</label></td>
         <td>
-        <select ng-model="catalogItemModel.item.view.measurementUnit"
-                ng-change="catalogItemModel.setChanged(true)"
-                ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
+          <select ng-model="catalogItemModel.item.view.measurementUnit"
+                  ng-change="catalogItemModel.setMeasurementUnit()"
+                  ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
+        </td>
+        <td><label>יח' מידה לייצור</label></td>
+        <td>
+          <select ng-model="catalogItemModel.item.view.prodMeasurementUnit"
+                  ng-change="catalogItemModel.setProdMeasurementUnit()"
+                  ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
+        </td>
+        <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
+          <label>פקטור</label>
+        </td>
+        <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
+          <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.muFactor"
+                 ng-change="catalogItemModel.setMuFactor()">
+
+        </td>
+        <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
+          (כמה יח' מידה לייצור הן יח' מידה אחת ללקוח)
         </td>
       </tr>
+       <tr ng-hide="catalogItemModel.currentDomain.id===1">
+         <td><label>יח' מידה</label></td>
+         <td>
+           <select ng-model="catalogItemModel.item.view.measurementUnit"
+                   ng-change="catalogItemModel.setChanged(true)"
+                   ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
+         </td>
+       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
           ng-class="catalogItemModel.item.errors.priceQuantity?'bg-danger':null">
         <td><label>כמות להצעת מחיר</label></td>

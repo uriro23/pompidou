@@ -1038,8 +1038,6 @@ angular.module('myApp')
       }
     };
 
-*/
-
     this.quoteDate = function() {
       console.log('starting');
       api.queryAllOrders(['activities', 'closingDate', 'number', 'orderStatus'])
@@ -1090,6 +1088,24 @@ angular.module('myApp')
             .then(function() {
               console.log('done');
             })
+        });
+    };
+     */
+
+    this.prodMu = function() {
+      console.log('starting');
+      api.queryCatalog(1,['measurementUnit'])
+        .then(function(items) {
+          console.log('read '+items.length+' items');
+          items.forEach(function(item) {
+           item.attributes.prodMeasurementUnit = item.attributes.measurementUnit;
+           item.attributes.muFactor = 1;
+          });
+          console.log('updating');
+          api.saveObjects(items)
+            .then(function() {
+              console.log('done');
+            });
         });
     };
 

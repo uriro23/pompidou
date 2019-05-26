@@ -243,7 +243,7 @@ angular.module('myApp')
       api.queryFutureOrders()
         .then(function (futureOrders) {
           futureOrders.forEach(function(order) {
-            if (order.attributes.orderStatus !== 1 && order.attributes.orderStatus !== 6) {
+            if (order.attributes.orderStatus > 1 && order.attributes.orderStatus < 6) {
               var viewItem = api.initWorkOrder();
               // create the object for now, but we don't store it until user decides to include it in WO
               viewItem.attributes.woId = woId;
