@@ -43,7 +43,7 @@ angular.module('myApp')
       var catItem = that.catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0].attributes;
-      if (catItem.groupLabel) {
+       if (catItem.groupLabel) {
         var found = false;
         that.groups.forEach(function(group) {
           if (group.label === catItem.groupLabel) {
@@ -178,6 +178,13 @@ angular.module('myApp')
         var catItem = that.catalog.filter(function (cat) {
           return cat.id === item.catalogId;
         })[0].attributes;
+        // convert basic measurement unit to prod measurement unit, if needed
+        if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
+          item.measurementUnit = measurementUnits.filter(function(mu) {
+            return mu.tId === catItem.prodMeasurementUnit;
+          })[0];
+          item.quantity = item.quantity * catItem.muFactor;
+        }
         // load package measurement unit from catalog
         item.packageMeasurementUnit = measurementUnits.filter(function(mu) {
           return mu.tId === catItem.packageMeasurementUnit;
