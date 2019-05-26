@@ -61,6 +61,16 @@ angular.module('myApp')
             if (item.isDescChanged && item.isCosmeticChange) {  // if only cosmetic change, ignore it for work order
               item.isDescChanged = false;
             }
+            // change measurement unit to prod mu and adjust quantity
+            var catItem = catalog.filter(function(cat) {
+              return cat.id === item.catalogId;
+            })[0].attributes;
+            if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
+              item.measurementUnit = measurementUnits.filter(function(mu) {
+                return mu.tId === catItem.prodMeasurementUnit;
+              })[0];
+              item.quantity = item.quantity * catItem.muFactor;
+            }
             workItemInd = undefined;
             that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
               if (workItem.attributes.domain === 1 && // unless their description is changed
