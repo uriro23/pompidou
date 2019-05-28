@@ -57,6 +57,9 @@ angular.module('myApp')
         cat.view.measurementUnit = that.measurementUnits.filter(function (mes) {
           return mes.tId === cat.attributes.measurementUnit;
         }) [0];
+        cat.view.prodMeasurementUnit = that.measurementUnits.filter(function (mes) {
+          return mes.tId === cat.attributes.prodMeasurementUnit;
+        }) [0];
         if (typeof cat.attributes.minTimeUnit === 'number') {
           cat.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
             return tu.id === cat.attributes.minTimeUnit;

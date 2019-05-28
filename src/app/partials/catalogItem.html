@@ -21,7 +21,7 @@
   <span>{{catalogItemModel.item.attributes.productName}}</span>
   <span>&nbsp;&nbsp;כמות ייצור:</span>
   <span>{{catalogItemModel.item.attributes.productionQuantity}}</span>
-  <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
+  <span>{{catalogItemModel.item.view.prodMeasurementUnit.label}}</span>
 </div>
 <tabset>
   <tab heading="אירועים"
@@ -298,6 +298,7 @@
                ng-change="catalogItemModel.setPriceQuantity()">
 
         </td>
+        <td>{{catalogItemModel.item.view.measurementUnit.label}}</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
           ng-class="catalogItemModel.item.errors.price?'bg-danger':null">
@@ -316,6 +317,7 @@
                ng-model="catalogItemModel.item.attributes.productionQuantity"
                ng-change="catalogItemModel.setProductionQuantity()">
         </td>
+        <td>{{catalogItemModel.item.view.prodMeasurementUnit.label}}</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===2"
           ng-class="catalogItemModel.item.errors.minTime?'bg-danger':null">
