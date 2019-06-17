@@ -47,6 +47,7 @@ angular.module('myApp')
         });
     };
 
+    // ---
     this.enrichCatalogData = function() {
       var that = this;
       this.catalog.forEach(function(cat) {
