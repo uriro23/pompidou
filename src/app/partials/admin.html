@@ -22,8 +22,8 @@
   <button class="btn btn-default" ng-click="adminModel.categoryType(1)">category type order</button>
   <button class="btn btn-default" ng-click="adminModel.categoryType(2)">category type bid</button>
   <button class="btn btn-default" ng-click="adminModel.quoteDate()">quote date</button>
-  -->
   <button class="btn btn-default" ng-click="adminModel.prodMu()">prod measurement unit</button>
+  -->
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -283,52 +283,98 @@
       </tr>
      </table>
    </tab>
-  <tab heading="לקוחות" select="adminModel.loadCustomers()">
-    <div>
-      <label>ליצוא</label>
-      <input type="checkbox" ng-model="adminModel.isCustomersExport">
-    </div>
-    <table class="table table-hover" ng-hide="adminModel.isCustomersExport">
-      <thead>
-      <th>שם</th>
-      <th>דואל</th>
-      <th>טלפון</th>
-      <th>מס' הצלחות</th>
-      <th>מס' כשלונות</th>
-      <th>אירוע אחרון</th>
-      </thead>
-      <tbody>
-      <tr ng-repeat="customer in adminModel.customers">
-        <td>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</td>
-        <td>{{customer.attributes.email}}</td>
-        <td>{{customer.attributes.mobilePhone}}</td>
-        <td>{{customer.view.noOfSuccesses}}</td>
-        <td>{{customer.view.noOfFailures}}</td>
-        <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
-        <td></td>
-      </tr>
-      </tbody>
-    </table>
-    <div ng-show="adminModel.isCustomersExport">
-      <div>
-        <span>name,email,phone,successes,failures,lastEvent</span>
-      </div>
-      <div ng-repeat="customer in adminModel.customers">
-        <span>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</span>
-        <span>,</span>
-        <span>{{customer.attributes.email}}</span>
-        <span>,'</span>
-        <span>{{customer.attributes.mobilePhone}}</span>
-        <span>,</span>
-        <span>{{customer.view.noOfSuccesses}}</span>
-        <span>,</span>
-        <span>{{customer.view.noOfFailures}}</span>
-        <span>,</span>
-        <span>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</span>
+   <tab heading="לקוחות" select="adminModel.loadCustomers()">
+     <div>
+       <label>ליצוא</label>
+       <input type="checkbox" ng-model="adminModel.isCustomersExport">
+     </div>
+     <table class="table table-hover" ng-hide="adminModel.isCustomersExport">
+       <thead>
+       <th>שם</th>
+       <th>דואל</th>
+       <th>טלפון</th>
+       <th>מס' הצלחות</th>
+       <th>מס' כשלונות</th>
+       <th>אירוע אחרון</th>
+       </thead>
+       <tbody>
+       <tr ng-repeat="customer in adminModel.customers">
+         <td>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</td>
+         <td>{{customer.attributes.email}}</td>
+         <td>{{customer.attributes.mobilePhone}}</td>
+         <td>{{customer.view.noOfSuccesses}}</td>
+         <td>{{customer.view.noOfFailures}}</td>
+         <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
+         <td></td>
+       </tr>
+       </tbody>
+     </table>
+     <div ng-show="adminModel.isCustomersExport">
+       <div>
+         <span>name,email,phone,successes,failures,lastEvent</span>
        </div>
-    </div>
-  </tab>
-  <tab heading="סביבה" active="adminModel.isEnvTabActive">
+       <div ng-repeat="customer in adminModel.customers">
+         <span>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</span>
+         <span>,</span>
+         <span>{{customer.attributes.email}}</span>
+         <span>,'</span>
+         <span>{{customer.attributes.mobilePhone}}</span>
+         <span>,</span>
+         <span>{{customer.view.noOfSuccesses}}</span>
+         <span>,</span>
+         <span>{{customer.view.noOfFailures}}</span>
+         <span>,</span>
+         <span>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</span>
+       </div>
+     </div>
+   </tab>
+   <tab heading="מבצע" select="adminModel.loadCustomers2()">
+     <div>
+       <h3>לקוחות שסגרו אירוע בעבר ואין להם אירוע עתידי</h3>
+       <label>ליצוא</label>
+       <input type="checkbox" ng-model="adminModel.isCustomersExport">
+     </div>
+     <table class="table table-hover" ng-hide="adminModel.isCustomersExport">
+       <thead>
+       <th>שם</th>
+       <th>דואל</th>
+       <th>טלפון</th>
+       <th>הצלחות עבר</th>
+       <th>אירועי עתיד</th>
+       <th>אירוע אחרון</th>
+       </thead>
+       <tbody>
+       <tr ng-repeat="customer in adminModel.customers">
+         <td>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</td>
+         <td>{{customer.attributes.email}}</td>
+         <td>{{customer.attributes.mobilePhone}}</td>
+         <td>{{customer.view.pastSuccesses}}</td>
+         <td>{{customer.view.futureOrders}}</td>
+         <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
+         <td></td>
+       </tr>
+       </tbody>
+     </table>
+     <div ng-show="adminModel.isCustomersExport">
+       <div>
+         <span>name,email,phone,pastSuccesses,futureOrders,lastEvent</span>
+       </div>
+       <div ng-repeat="customer in adminModel.customers">
+         <span>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</span>
+         <span>,</span>
+         <span>{{customer.attributes.email}}</span>
+         <span>,'</span>
+         <span>{{customer.attributes.mobilePhone}}</span>
+         <span>,</span>
+         <span>{{customer.view.pastSuccesses}}</span>
+         <span>,</span>
+         <span>{{customer.view.futureOrders}}</span>
+         <span>,</span>
+         <span>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</span>
+       </div>
+     </div>
+   </tab>
+   <tab heading="סביבה" active="adminModel.isEnvTabActive">
     <div>
       <span>סביבה נוכחית היא </span>
       <span>{{environment}}</span>

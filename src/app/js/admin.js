@@ -405,7 +405,9 @@ angular.module('myApp')
                     if (order.attributes.eventDate > customer.view.lastEventDate) {
                       customer.view.lastEventDate = order.attributes.eventDate;
                     }
-                    if (order.attributes.orderStatus === 1 || order.attributes.orderStatus === 6) {
+                    if (order.attributes.orderStatus === 0 ||
+                        order.attributes.orderStatus === 1 ||
+                        order.attributes.orderStatus === 6) {
                       customer.view.noOfFailures++;
                     } else {
                       customer.view.noOfSuccesses++;
@@ -417,8 +419,46 @@ angular.module('myApp')
                 return cust.view.noOfSuccesses + cust.view.noOfFailures;
               });
             });
-          });
-     };
+        });
+    };
+
+// modified customers tab: only customers who were a success in the past and don't have a future order
+    this.loadCustomers2 = function() {
+      var that = this;
+      var fields = ['customer','eventDate','orderStatus'];
+      api.queryCustomers()
+        .then(function(customers) {
+          api.queryOrdersByRange('eventDate', new Date(2015,5,1),new Date(2099,12,31),fields)
+            .then(function(orders) {
+              customers.forEach(function(customer) {
+                customer.view = {
+                  pastSuccesses: 0,
+                  futureOrders: 0,
+                  lastEventDate : new Date(2000,1,1)
+                };
+                orders.forEach(function(order) {
+                  if (order.attributes.customer === customer.id) {
+                    if (order.attributes.eventDate > customer.view.lastEventDate) {
+                      customer.view.lastEventDate = order.attributes.eventDate;
+                    }
+                    if (order.attributes.eventDate < new Date() &&
+                        order.attributes.orderStatus > 1 &&
+                        order.attributes.orderStatus < 6) {
+                      customer.view.pastSuccesses++;
+                    }
+                    if (order.attributes.eventDate > new Date() &&
+                        order.attributes.orderStatus < 6) {
+                      customer.view.futureOrders++;
+                    }
+                   }
+                })
+              });
+              that.customers = customers.filter(function(cust) {
+                return cust.view.pastSuccesses && !cust.view.futureOrders;
+              });
+            });
+        });
+    };
 
 
     // conversions
