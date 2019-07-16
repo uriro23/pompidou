@@ -1130,7 +1130,6 @@ angular.module('myApp')
             })
         });
     };
-     */
 
     this.prodMu = function() {
       console.log('starting');
@@ -1148,7 +1147,37 @@ angular.module('myApp')
             });
         });
     };
+     */
 
+    this.totForStat = function() {
+      console.log('starting');
+      api.queryAllOrders(['number','vatRate','quotes','activeQuote','header'])
+        .then(function(orders) {
+          console.log ('read '+orders.length+' orders');
+          var badCount = 0;
+          orders.forEach(function(order) {
+            var quote = order.attributes.quotes[order.attributes.activeQuote];
+            if (quote) {
+              if (typeof quote.priceIncrease === 'undefined') {
+                quote.priceIncrease = 0;
+              }
+              quote.totalForStat = (quote.subTotal + quote.discount + quote.priceIncrease) / (1+order.attributes.vatRate);
+              if (typeof quote.totalForStat !== 'number') {
+                console.log('bad quote, order ' + order.attributes.number);
+                badCount++;
+              }
+              order.attributes.header.totalForStat = quote.totalForStat;
+            }
+         });
+          if (!badCount) {
+            console.log('updating orders');
+            api.saveObjects(orders)
+              .then(function () {
+                console.log('done');
+              })
+          }
+        });
+    };
 
 // end conversions
 

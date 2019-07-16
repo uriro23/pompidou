@@ -88,12 +88,12 @@ angular.module('myApp')
         filteredOrders = fetchedOrders.filter (function (ord) {
           var currentOrder = ord.attributes;
           if (that.fromTotal) {
-            if (currentOrder.header.total/(1+currentOrder.vatRate) < that.fromTotal) {
+            if (currentOrder.header.totalForStat < that.fromTotal) {
               return false;
             }
           }
           if (that.toTotal) {
-            if (currentOrder.header.total/(1+currentOrder.vatRate) > that.toTotal) {
+            if (currentOrder.header.totalForStat > that.toTotal) {
               return false;
             }
           }
@@ -142,14 +142,14 @@ angular.module('myApp')
             };
             if (orderAttr.bidDate) {
               tempVec[segIndex].bids = 1;
-              tempVec[segIndex].bidsTotal = orderAttr.header.total / (1 + orderAttr.vatRate);
+              tempVec[segIndex].bidsTotal = orderAttr.header.totalForStat;
             } else {
               tempVec[segIndex].bids = 0;
               tempVec[segIndex].bidsTotal = 0;
             }
             if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
               tempVec[segIndex].closed = 1;
-              tempVec[segIndex].closedTotal = orderAttr.header.total / (1 + orderAttr.vatRate);
+              tempVec[segIndex].closedTotal = orderAttr.header.totalForStat;
               tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
             } else {
               tempVec[segIndex].closed = 0;
@@ -160,14 +160,15 @@ angular.module('myApp')
             tempVec[segIndex].leads++;
             if (orderAttr.bidDate) {
               tempVec[segIndex].bids++;
-              tempVec[segIndex].bidsTotal += orderAttr.header.total / (1 + orderAttr.vatRate);
+              tempVec[segIndex].bidsTotal += orderAttr.header.totalForStat;
             }
             if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
               tempVec[segIndex].closed++;
-              tempVec[segIndex].closedTotal += orderAttr.header.total / (1 + orderAttr.vatRate);
+              tempVec[segIndex].closedTotal += orderAttr.header.totalForStat;
               tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
             }
             tempVec[segIndex].orders.push(order);
+            console.log('order '+orderAttr.number+', index '+segIndex+', tot '+orderAttr.header.totalForStat);
           }
         }
       });
@@ -180,6 +181,7 @@ angular.module('myApp')
           }
         });
       });
+      console.log(tempVec);
       segArray.splice(0,segArray.length); // clear output array
       tot.leads = 0;
       tot.bids = 0;
@@ -219,6 +221,7 @@ angular.module('myApp')
         dateLabel.setMonth(that.fromDate.getMonth()+ind);
         return dateLabel;
       });
+      console.log(this.monthStats);
       // segmentation by participants
       doSegmentation(this.participantStats, this.participantTot, this.participantAvg, function (ord) {
         if (ord.attributes.noOfParticipants) {
@@ -231,8 +234,8 @@ angular.module('myApp')
       });
       // segmentation by total
       doSegmentation(this.totalStats, this.totalTot, this.totalAvg, function (ord) {
-        if (ord.attributes.header.total) {
-          return Math.floor((ord.attributes.header.total / (1 + ord.attributes.vatRate) + 1) / totalFactor);
+        if (ord.attributes.header.totalForStat) {
+          return Math.floor((ord.attributes.header.totalForStat + 1) / totalFactor);
         } else {
           return -1;
         }
@@ -244,8 +247,8 @@ angular.module('myApp')
                      this.totalPerParticipantTot,
                      this.totalPerParticipantAvg,
                      function (ord) {
-        if (ord.attributes.header.total) {
-          return Math.floor(((ord.attributes.header.total / (1 + ord.attributes.vatRate)) /
+        if (ord.attributes.header.totalForStat) {
+          return Math.floor((ord.attributes.header.totalForStat /
             ord.attributes.noOfParticipants + 1) / totalPerParticipantFactor);
         } else {
           return -1;

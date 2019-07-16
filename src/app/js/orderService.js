@@ -9,17 +9,19 @@ angular.module('myApp')
         quote.total = quote.fixedPrice;
         quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
       } else {
-       quote.totalBeforeVat = quote.subTotal +
-                              quote.discount +
-                              quote.priceIncrease +
+       quote.totalForStat = quote.subTotal +
+                            quote.discount +
+                            quote.priceIncrease;
+       quote.totalBeforeVat = quote.totalForStat +
                               quote.extraServices;
-         if (isBusinessEvent) {
+        if (isBusinessEvent) {
            quote.vat = Math.round(quote.totalBeforeVat * vatRate);
            quote.total = quote.totalBeforeVat + quote.vat;
            quote.transportationInclVat = quote.transportation * (1 + vatRate); // just to display on order list
          } else {
            quote.vat = 0;
            quote.total = quote.totalBeforeVat;
+           quote.totalForStat = quote.totalForStat / (1 + vatRate);  // stat is before vat
            quote.transportationInclVat = quote.transportation;
          }
        }
@@ -348,6 +350,7 @@ angular.module('myApp')
           'title': currentQuote.title,
           'menuType': currentQuote.menuType,
           'total': currentQuote.total,
+          'totalForStat': currentQuote.totalForStat,
           'balance': currentQuote.balance,
           'transportationInclVat': currentQuote.transportationInclVat,
           'discountRate': currentQuote.discountRate,
@@ -360,6 +363,7 @@ angular.module('myApp')
           'title': 'פניה',
           'menuType': null,
           'total': 0,
+          'totalForStat': 0,
           'balance': 0,
           'transportationInclVat': 0,
           'discountRate': 0,
