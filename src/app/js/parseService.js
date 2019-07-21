@@ -476,6 +476,35 @@ angular.module('myApp')
       return query(colorsQuery);
     };
 
+    // TaskType
+    // -------------
+
+    var TaskType = Parse.Object.extend("TaskType");
+
+    this.queryTaskTypes = function (id) {
+      var q = new Parse.Query(TaskType);
+      if (id) {
+        q.equalTo("tId", id);
+      }
+      q.ascending("order");
+      return query(q);
+    };
+
+
+    // Phase
+    // -------------
+
+    var Phase = Parse.Object.extend("Phase");
+
+    this.queryPhases = function (id) {
+      var q = new Parse.Query(Phase);
+      if (id) {
+        q.equalTo("tId", id);
+      }
+      q.ascending("tId");
+      return query(q);
+    };
+
     // employee
     // ---------------
 

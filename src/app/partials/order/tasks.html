@@ -1,0 +1,20 @@
+<div  ng-controller="TasksCtrl as tasksModel">
+  <table>
+    <tr>
+      <td style="vertical-align: top; width: 25%;" ng-repeat="phase in tasksModel.order.view.phases">
+        <h4>{{phase.description}}</h4>
+        <table>
+          <tr ng-repeat="task in phase.tasks">
+            <td style="vertical-align: top;">
+              <input type="checkbox" ng-model="task.isDone">
+            </td>
+            <td>
+              <div>{{task.description}}</div>
+             </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</div>

@@ -108,6 +108,22 @@ angular.module('myApp')
     });
   })
 
+ .factory('taskTypesPromise', function (api) {
+    return api.queryTaskTypes().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
+  .factory('phasesPromise', function (api) {
+    return api.queryPhases().then(function (res) {
+      return res.map(function (obj) {
+        return obj.attributes;
+      });
+    });
+  })
+
   .factory('employeesPromise', function (api) {
     return api.queryEmployees().then(function (res) {
        return res.map(function (obj) {

@@ -222,6 +222,20 @@ angular.module('myApp')
       if (view.cancelReason) {
         thisOrder.cancelReason = view.cancelReason.tId;
       }
+      thisOrder.tasks = [];
+      view.phases.forEach(function(phase) {
+        var pTasks = phase.tasks.map(function(t) {
+          return {
+            tId: t.tId,
+            isDone: t.isDone,
+            isShow: t.isShow,
+            isDisabled: t.isDisabled
+          };
+        });
+        thisOrder.tasks = thisOrder.tasks.concat(pTasks);
+      });
+      console.log('task to save:');
+      console.log(thisOrder.tasks);
       thisOrder.customer = view.customer.id;
       thisOrder.contact = view.contact.id;
       if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj

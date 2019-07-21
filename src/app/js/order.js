@@ -6,7 +6,7 @@ angular.module('myApp')
                                      orderService, currentOrder, isFromNew, customer, lov, dater,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, cancelReasons,
-                                     menuTypes, colors, employees, pRoles, config) {
+                                     menuTypes, colors, taskTypes, phases, employees, pRoles, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -158,42 +158,44 @@ angular.module('myApp')
     this.setupOrderView = function () {
       var that = this;
       this.order.view = {};
-      this.order.view.errors = {};
-      this.order.view.changes = {};
+      var view = this.order.view;
+      var attr = this.order.attributes;
+      view.errors = {};
+      view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
-        this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote]; // load active quote
-        if (this.order.view.quote && this.order.view.quote.endBoxType) {
-          this.order.view.quote.endBoxType = menuTypes.filter(function (obj) { // so select in quoteParams will work
+        view.quote = attr.quotes[attr.activeQuote]; // load active quote
+        if (view.quote && view.quote.endBoxType) {
+          view.quote.endBoxType = menuTypes.filter(function (obj) { // so select in quoteParams will work
             return (obj.tId === that.order.view.quote.endBoxType.tId);
           })[0];
         }
-        if (this.order.view.quote && this.order.view.quote.discountCause) {
-          this.order.view.quote.discountCause = discountCauses.filter(function (dc) {
+        if (view.quote && view.quote.discountCause) {
+          view.quote.discountCause = discountCauses.filter(function (dc) {
             return dc.tId === that.order.view.quote.discountCause.tId;
           })[0];
         }
-        if(this.order.view.quote && this.order.view.quote.endTextType) {
-          this.order.view.quote.endTextType = bidTextTypes.filter(function (obj) {
+        if(view.quote && view.quote.endTextType) {
+          view.quote.endTextType = bidTextTypes.filter(function (obj) {
             return (obj.tId === that.order.view.quote.endTextType.tId);
           })[0];
         }
-        this.order.view.startBidTextType = bidTextTypes.filter(function (obj) {
+        view.startBidTextType = bidTextTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.startBidTextType);
         })[0];
-        this.order.view.endBidTextType = bidTextTypes.filter(function (obj) {
+        view.endBidTextType = bidTextTypes.filter(function (obj) {
           return (obj.tId === that.order.attributes.endBidTextType);
         })[0];
-        this.order.view.orderStatus = this.orderStatuses.filter(function (obj) {
+        view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === that.order.attributes.orderStatus);
         })[0];
-        this.order.view.referralSource = referralSources.filter(function (obj) {
+        view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.attributes.referralSource);
         })[0];
-        this.order.view.cancelReason = cancelReasons.filter(function (obj) {
+        view.cancelReason = cancelReasons.filter(function (obj) {
           return (obj.tId === that.order.attributes.cancelReason);
         })[0];
-        if (this.order.attributes.color) {
-          this.order.view.color = colors.filter(function(obj) {
+        if (attr.color) {
+          view.color = colors.filter(function(obj) {
             return (obj.tId === that.order.attributes.color);
           })[0];
         }
@@ -244,18 +246,42 @@ angular.module('myApp')
         }
        } else { // newOrder or newOrderByCustomer
         if ($state.current.name === 'newOrderByCustomer') {
-          this.order.view.customer = customer.attributes;
-          this.order.view.customer.id = customer.id;
+          view.customer = customer.attributes;
+          view.customer.id = customer.id;
         } else {
-          this.order.view.customer = {};
+          view.customer = {};
         }
-        this.order.view.contact = {};
-        this.order.view.orderStatus = this.orderStatuses.filter(function (obj) {
+        view.contact = {};
+        view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead
-        this.order.view.errors.referralSource = true; // required for lead
+        view.errors.referralSource = true; // required for lead
       }
-    };
+      var allTasks = angular.copy(taskTypes);
+      view.phases = angular.copy(phases);
+      view.phases.forEach(function(vPhase) {
+         vPhase.tasks = allTasks.filter(function(t) {
+          return t.phase === vPhase.tId;
+        });
+        vPhase.tasks.forEach(function(vTask) {
+          if (attr.tasks) {
+            attr.tasks.forEach(function(aTask) {
+              if (aTask.tId === vTask.tId) {
+                vTask.isDone = aTask.isDone;
+                vTask.isShow = aTask.isShow;
+                vTask.isDisabled = aTask.isDisabled;
+              }
+            });
+          } else {
+            vTask.isDone = false;
+            vTask.isShow = true;
+            vTask.isDisabled = false;
+          }
+        });
+      });
+      console.log('phases view:');
+      console.log(view.phases);
+     };
 
     this.selectQuote = function (mt) {
       var ind;

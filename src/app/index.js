@@ -101,6 +101,12 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
+        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+          return taskTypesPromise;
+        }],
+        phases: ['phasesPromise', function (phasesPromise) {
+          return phasesPromise;
+        }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
         }],
@@ -151,6 +157,12 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
+        }],
+        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+          return taskTypesPromise;
+        }],
+        phases: ['phasesPromise', function (phasesPromise) {
+          return phasesPromise;
         }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
@@ -203,6 +215,12 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
+        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+          return taskTypesPromise;
+        }],
+        phases: ['phasesPromise', function (phasesPromise) {
+          return phasesPromise;
+        }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
         }],
@@ -253,6 +271,12 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
+        }],
+        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+          return taskTypesPromise;
+        }],
+        phases: ['phasesPromise', function (phasesPromise) {
+          return phasesPromise;
         }],
         employees: ['employeesPromise', function (employeesPromise) {
           return employeesPromise;
