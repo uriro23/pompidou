@@ -143,6 +143,12 @@ a:link, a:visited  {
   font-weight: bold;
   color: red
 }
+.taskRequired {
+  color: red
+}
+.taskDone {
+  color: #80ee80
+}
 
 .bold
 {

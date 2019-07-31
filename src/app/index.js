@@ -101,8 +101,14 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
+        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
+          return foodTypesPromise;
+        }],
         taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
+        }],
+        taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
+          return taskDetailsPromise;
         }],
         phases: ['phasesPromise', function (phasesPromise) {
           return phasesPromise;
@@ -158,8 +164,14 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
+        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
+          return foodTypesPromise;
+        }],
         taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
+        }],
+        taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
+          return taskDetailsPromise;
         }],
         phases: ['phasesPromise', function (phasesPromise) {
           return phasesPromise;
@@ -215,8 +227,14 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
+        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
+          return foodTypesPromise;
+        }],
         taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
+        }],
+        taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
+          return taskDetailsPromise;
         }],
         phases: ['phasesPromise', function (phasesPromise) {
           return phasesPromise;
@@ -272,8 +290,14 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
+        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
+          return foodTypesPromise;
+        }],
         taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
+        }],
+        taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
+          return taskDetailsPromise;
         }],
         phases: ['phasesPromise', function (phasesPromise) {
           return phasesPromise;

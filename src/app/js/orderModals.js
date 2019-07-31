@@ -217,6 +217,11 @@ angular.module('myApp')
                     mail: mail.id
                   };
                   order.attributes.activities.splice(0, 0, activity);
+                  if (typeof order.attributes.mailCount === 'undefined') {
+                    order.attributes.mailCount = 1;  // this is needed for tasks
+                  } else {
+                    order.attributes.mailCount++;
+                  }
                   orderService.saveOrder(order);
                 });
             },

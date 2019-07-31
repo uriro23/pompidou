@@ -31,6 +31,7 @@ angular.module('myApp')
     this.setReferralSource = function() {
       this.order.view.errors.referralSource = !this.order.view.referralSource &&
                                               !this.order.attributes.template;
+      this.order.attributes.referralSource = this.order.view.referralSource.tId;
       orderService.orderChanged(this.order,'referralSource');
     };
 

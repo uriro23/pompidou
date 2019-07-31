@@ -91,6 +91,7 @@ angular.module('myApp')
       if (field) {
         order.view.changes[field] = true;
       }
+      this.checkTasks(order);  // check if change influenced status of tasks
       window.onbeforeunload = function () {   // force the user to comit or abort changes before moving
         return "יש שינויים שלא נשמרו"
       };
@@ -216,13 +217,11 @@ angular.module('myApp')
       if (view.endBidTextType) {
         thisOrder.endBidTextType = view.endBidTextType.tId;
       }
-      if (view.referralSource) {
-        thisOrder.referralSource = view.referralSource.tId;
-      }
       if (view.cancelReason) {
         thisOrder.cancelReason = view.cancelReason.tId;
       }
       thisOrder.tasks = [];
+      thisOrder.taskDetails = [];
       view.phases.forEach(function(phase) {
         var pTasks = phase.tasks.map(function(t) {
           return {
@@ -233,11 +232,25 @@ angular.module('myApp')
           };
         });
         thisOrder.tasks = thisOrder.tasks.concat(pTasks);
+        phase.tasks.forEach(function(t) {
+          var tDetails = t.details.map(function(d) {
+            return {
+              tId: d.tId,
+              isDone: d.isDone,
+              inputText: d.inputText
+            };
+          });
+          thisOrder.taskDetails = thisOrder.taskDetails.concat(tDetails);
+        });
       });
       console.log('task to save:');
       console.log(thisOrder.tasks);
-      thisOrder.customer = view.customer.id;
-      thisOrder.contact = view.contact.id;
+      console.log('details to save:');
+      console.log(thisOrder.taskDetails);
+
+      console.log(view);
+      // thisOrder.customer = view.customer.id;
+      // thisOrder.contact = view.contact.id;
       if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
         if (order.delAttributes) {
           order.delAttributes.contact = true
@@ -352,6 +365,51 @@ angular.module('myApp')
       }
     };
 
+    this.checkTasks = function (order) {
+      var phases = order.view.phases;
+      phases.forEach(function(phase) {
+        phase.tasks.forEach(function(task) {
+          task.details.forEach(function(detail) {
+            if (detail.type === 1 || detail.type === 11) {
+              detail.isDone = Boolean(eval('order.'+detail.attributeName));
+            }
+            if (detail.type === 3) {
+              detail.isDone = !Boolean(eval('order.'+detail.attributeName));
+            }
+          });
+        });
+      });
+      phases.forEach(function(phase) {
+        phase.isDone = true;
+        phase.tasks.forEach(function(task) {
+          task.isDisabled = false;  // task is disabled as long as one of its details is required and not done
+          var unDoneCnt = 0; // automatically mark task done if all its details are done
+          var doneCnt = 0;
+          task.details.forEach(function(detail) {
+            if(detail.condition) {
+              detail.isShow = Boolean(eval('order.' + detail.condition)); // evaluate condition to show detail
+            } else {
+              detail.isShow = true;
+            }
+            if (detail.isRequired && !detail.isDone) {
+              task.isDisabled = true;
+              task.isDone = false;
+            }
+            if (detail.isDone) {
+              doneCnt++
+            } else {
+              unDoneCnt++;
+            }
+          });
+          if (doneCnt && !unDoneCnt) {  // at least one done detail and no undone details
+            task.isDone = true;
+          }
+          if (!task.isDone) {
+            phase.isDone = false;
+          }
+        });
+      });
+      };
 
     // used to update the header object in order. This is a flattening mechanism, so when retrieving lists of orders
     // it will not be necessary to load all the quotes objects, just the total etc. from the active quote, and the last

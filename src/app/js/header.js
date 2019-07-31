@@ -52,12 +52,14 @@ angular.module('myApp')
       selectCustomer.result.then(function (cust) {
         if (custType === 1) {
           that.order.view.customer = cust;
+          that.order.attributes.customer = cust.id;
           orderService.orderChanged(that.order,'customer');
           orderService.upgradeOrderStatus(that.order);
           that.order.view.errors.customer = false;
           that.getPrevOrders();
        } else if (custType === 2) {
           that.order.view.contact = cust;
+          that.order.attributes.contact = cust.id;
           orderService.orderChanged(that.order,'customer');
           that.order.view.errors.contact = false;
         } else {

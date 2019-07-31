@@ -6,7 +6,8 @@ angular.module('myApp')
                                      orderService, currentOrder, isFromNew, customer, lov, dater,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, cancelReasons,
-                                     menuTypes, colors, taskTypes, phases, employees, pRoles, config) {
+                                     menuTypes, colors, foodTypes, taskTypes, taskDetails, phases,
+                                     employees, pRoles, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -199,6 +200,11 @@ angular.module('myApp')
             return (obj.tId === that.order.attributes.color);
           })[0];
         }
+        if (attr.foodType) {
+          view.foodType = foodTypes.filter(function(obj) {
+            return (obj.tId === that.order.attributes.foodType);
+          })[0];
+        }
 
         if (that.order.attributes.customer) {
           api.queryCustomers(that.order.attributes.customer)
@@ -258,12 +264,30 @@ angular.module('myApp')
         view.errors.referralSource = true; // required for lead
       }
       var allTasks = angular.copy(taskTypes);
+      var allDetails = angular.copy(taskDetails);
       view.phases = angular.copy(phases);
       view.phases.forEach(function(vPhase) {
          vPhase.tasks = allTasks.filter(function(t) {
           return t.phase === vPhase.tId;
         });
         vPhase.tasks.forEach(function(vTask) {
+          vTask.details = allDetails.filter(function(detail) {
+            return detail.task === vTask.tId;
+          });
+          vTask.details.forEach(function(vDetail) {
+            if (attr.taskDetails) {
+              attr.taskDetails.forEach(function(aDetail) {
+                if (aDetail.tId === vDetail.tId) {
+                  vDetail.inputText = aDetail.inputText;
+                  vDetail.isDone = aDetail.isDone;
+                  vDetail.isShow = aDetail.isShow;
+                }
+              });
+            } else {
+              vDetail.isDone = false;
+              vDetail.isShow = true;
+            }
+          });
           if (attr.tasks) {
             attr.tasks.forEach(function(aTask) {
               if (aTask.tId === vTask.tId) {
@@ -281,6 +305,7 @@ angular.module('myApp')
       });
       console.log('phases view:');
       console.log(view.phases);
+      view.texts = {};
      };
 
     this.selectQuote = function (mt) {
@@ -366,6 +391,7 @@ angular.module('myApp')
     this.referralSources = referralSources;
     this.cancelReasons = cancelReasons;
     this.menuTypes = menuTypes;
+    this.foodTypes = foodTypes;
     this.employees = employees;
     this.config = config;
     this.vatRate = config.vatRate;
@@ -377,6 +403,9 @@ angular.module('myApp')
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       this.setupOrderView();
+      if (typeof this.order.attributes.texts === 'undefined') {
+        this.order.attributes.texts = {};
+      }
       if (this.order.view.quote && this.order.view.orderStatus.id < 6) {
         this.isActiveQuoteTab = true;
       } else {
@@ -405,6 +434,7 @@ angular.module('myApp')
       this.order.attributes.eventTime = undefined;
       this.order.attributes.exitTime = undefined;
       this.order.attributes.activities = [];
+      this.order.attributes.texts = {};
 
       // initialize employee bonuses array
       this.order.attributes.empBonuses = angular.copy(pRoles);
@@ -437,6 +467,7 @@ angular.module('myApp')
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.eventName = '';
       this.order.attributes.quotes = [];
+      this.order.attributes.texts = {};
 
 
 
@@ -478,6 +509,8 @@ angular.module('myApp')
       this.order.attributes.activities = [];
       this.setReadOnly();
     }
+
+    orderService.checkTasks(this.order);
 
     this.order.view.isChanged = false;
     window.onbeforeunload = function () {
