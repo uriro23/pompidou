@@ -130,5 +130,23 @@ angular.module('myApp')
       }
     };
 
+    this.setEventTime = function () {
+      var thisOrder = this.order.attributes;
+      if (thisOrder.isExitTimeExplicit) {
+        this.order.view.errors.exitTime = true; // let user reconsider exit time
+      } else {
+        thisOrder.exitTime = angular.copy(thisOrder.eventTime);
+        thisOrder.exitTime.setHours(thisOrder.eventTime.getHours() - 1); // default - one hour before eventTime
+      }
+      orderService.orderChanged(this.order,'header');
+    };
+
+    this.setExitTime = function () {
+      var thisOrder = this.order.attributes;
+      thisOrder.isExitTimeExplicit = true;
+      this.order.view.errors.exitTime = Boolean(thisOrder.exitTime > thisOrder.eventTime);
+      orderService.orderChanged(this.order,'header');
+    };
+
 
   });

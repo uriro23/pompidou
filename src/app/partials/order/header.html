@@ -94,14 +94,15 @@
     <label>מסירה:</label>&nbsp
       <input type="time" ng-model="headerModel.order.attributes.eventTime"
                                ng-disabled="headerModel.readOnly.is"
-                               ng-change="headerModel.orderChanged('header')">
+                               ng-change="headerModel.setEventTime()">
     </td>
     <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
          style="width: 12%">
       <label>יציאה:</label>&nbsp
       <input type="time" ng-model="headerModel.order.attributes.exitTime"
                                ng-disabled="headerModel.readOnly.is"
-                               ng-change="headerModel.orderChanged('header')">
+                               ng-change="headerModel.setExitTime()"
+                               ng-class="headerModel.order.view.errors.exitTime?'bg-danger':null">
     </td>
     <td style="width: 46%" ng-show="orderModel.order.attributes.isDateUnknown">
       <label>תאריך לא ידוע:</label>
