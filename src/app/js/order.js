@@ -279,6 +279,7 @@ angular.module('myApp')
               attr.taskDetails.forEach(function(aDetail) {
                 if (aDetail.tId === vDetail.tId) {
                   vDetail.inputText = aDetail.inputText;
+                  vDetail.boolean = aDetail.boolean;
                   vDetail.isDone = aDetail.isDone;
                   vDetail.isShow = aDetail.isShow;
                 }
@@ -305,7 +306,6 @@ angular.module('myApp')
       });
       console.log('phases view:');
       console.log(view.phases);
-      view.texts = {};
      };
 
     this.selectQuote = function (mt) {
@@ -355,6 +355,9 @@ angular.module('myApp')
       $rootScope.menuStatus = 'show';
       this.order.attributes = angular.copy(this.order.backupOrderAttr);
       this.setupOrderView();
+      if (typeof this.order.attributes.taskData === 'undefined') {
+        this.order.attributes.taskData = {};
+      }
       this.order.attributes.empBonuses.forEach(function(role) {
         if (role.employee) {
           role.employee = employees.filter(function(emp) {
@@ -403,8 +406,8 @@ angular.module('myApp')
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       this.setupOrderView();
-      if (typeof this.order.attributes.texts === 'undefined') {
-        this.order.attributes.texts = {};
+      if (typeof this.order.attributes.taskData === 'undefined') {
+        this.order.attributes.taskData = {};
       }
       if (this.order.view.quote && this.order.view.orderStatus.id < 6) {
         this.isActiveQuoteTab = true;
@@ -434,7 +437,7 @@ angular.module('myApp')
       this.order.attributes.eventTime = undefined;
       this.order.attributes.exitTime = undefined;
       this.order.attributes.activities = [];
-      this.order.attributes.texts = {};
+      this.order.attributes.taskData = {};
 
       // initialize employee bonuses array
       this.order.attributes.empBonuses = angular.copy(pRoles);
@@ -467,7 +470,7 @@ angular.module('myApp')
       this.order.attributes.includeRemarksInBid = false;
       this.order.attributes.eventName = '';
       this.order.attributes.quotes = [];
-      this.order.attributes.texts = {};
+      this.order.attributes.taskData = {};
 
 
 

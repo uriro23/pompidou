@@ -16,15 +16,10 @@
   <th style="width: 7%">סכום</th>
   <th class="hidden-xs"
       ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'"
-      style="width: 6%">
-    ת' פעילות
+      style="width: 21%">
+שירותים מיוחדים
   </th>
-  <th class="hidden-xs"
-      ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'"
-      style="width: 15%">
-    פעילות
-  </th>
-  <th  class="hidden-xs" style="width: 6%">יוצר</th>
+<th  class="hidden-xs" style="width: 6%">יוצר</th>
   </thead>
   <tbody>
   <tr ng-repeat="order in orderTableModel.orders"
@@ -143,15 +138,11 @@
       {{order.view.orderStatus.name}}
     </td>
     <td>{{order.attributes.header.total | currency}}</td>
-     <td class="hidden-xs"
+     <td class="hidden-xs" style="overflow-wrap: break-word"
          ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'">
-       {{order.attributes.header.activityDate | date: 'dd/MM/yy'}}
+       {{order.attributes.header.extraText}}
      </td>
-    <td class="hidden-xs"
-        ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'">
-      {{order.attributes.header.activityText}}
-    </td>
-    <td class="hidden-xs">{{order.attributes.createdBy}}</td>
+     <td class="hidden-xs">{{order.attributes.createdBy}}</td>
   </tr>
   </tbody>
 </table>

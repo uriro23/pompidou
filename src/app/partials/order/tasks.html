@@ -17,7 +17,7 @@
               <table>
                 <tr ng-repeat="detail in task.details" ng-show="detail.isShow">
                   <td>
-                    <div>
+                    <div ng-hide="(detail.type===2 || detail.type===4) && !detail.inputText && !detail.isRequired">
                       <span ng-show="detail.isRequired">*</span>
                       <span ng-hide="detail.isRequired">-</span>
                       <span ng-class="detail.isRequired && !detail.isDone?'taskRequired':
@@ -33,11 +33,13 @@
                     <div ng-show="detail.type===2">
                       <input type="text" size="30" ng-model="detail.inputText"
                              ng-change="tasksModel.detailTextChanged(detail)"
+                             placeholder="{{detail.description}}"
                              ng-disabled="tasksModel.readOnly.is">
                     </div>
                     <div ng-show="detail.type===4">
                       <textarea rows="2" cols="32" ng-model="detail.inputText"
                                 ng-change="tasksModel.detailTextChanged(detail)"
+                                placeholder="{{detail.description}}"
                                 ng-disabled="tasksModel.readOnly.is">
                       </textarea>
                     </div>

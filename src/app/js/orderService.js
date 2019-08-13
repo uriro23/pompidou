@@ -237,7 +237,8 @@ angular.module('myApp')
             return {
               tId: d.tId,
               isDone: d.isDone,
-              inputText: d.inputText
+              inputText: d.inputText,
+              boolean: d.boolean
             };
           });
           thisOrder.taskDetails = thisOrder.taskDetails.concat(tDetails);
@@ -387,7 +388,7 @@ angular.module('myApp')
           var doneCnt = 0;
           task.details.forEach(function(detail) {
             if(detail.condition) {
-              detail.isShow = Boolean(eval('order.' + detail.condition)); // evaluate condition to show detail
+              detail.isShow = Boolean(eval(detail.condition)); // evaluate condition to show detail
             } else {
               detail.isShow = true;
             }
@@ -417,6 +418,48 @@ angular.module('myApp')
 
     this.setupOrderHeader = function (order) {
       var currentQuote = order.quotes[order.activeQuote];
+      var extraText = '';
+      if (typeof order.taskData !== 'undefined') {
+        for (var attr in order.taskData) {
+          if (order.taskData.hasOwnProperty(attr)) {
+            if (order.taskData[attr]) {
+              switch (attr) {
+                case 'isSurpriseParty':
+                  extraText += 'הפתעה,';
+                  break;
+                case 'isEquipRental':
+                  extraText += 'השכרת ציוד,';
+                  break;
+                case 'isCustomerEquipRental':
+                  extraText += 'השכרה לקוח,';
+                  break;
+                case 'isDisposableDishes':
+                  extraText += 'ח"פ,';
+                  break;
+                case 'isWaiters':
+                  extraText += 'מלצרים,';
+                  break;
+                case 'isEventManager':
+                  extraText += 'מנהל ארוע,';
+                  break;
+                case 'isLiquids':
+                  extraText += 'שתיה,';
+                  break;
+                case 'isOtherExtras':
+                  if (order.taskData.otherExtras) {
+                    console.log(order.taskData.otherExtras);
+                    extraText += (order.taskData.otherExtras + ',');
+                  }
+                  console.log(extraText);
+                  break;
+              }
+            }
+          }
+        }
+        if (extraText.length) { // trim trailing ,
+          extraText = extraText.slice(0, extraText.length - 1)
+        }
+      }
       if (currentQuote) {
         order.header = {
           'title': currentQuote.title,
@@ -428,7 +471,8 @@ angular.module('myApp')
           'discountRate': currentQuote.discountRate,
           'isHeavyweight': currentQuote.isHeavyweight,
           'activityDate': order.activities.length ? order.activities[0].date : undefined,
-          'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined
+          'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined,
+          'extraText': extraText
         };
       } else {  // no quotes maybe in case of lead
         order.header = {
@@ -441,7 +485,8 @@ angular.module('myApp')
           'discountRate': 0,
           'isHeavyweight': false,
           'activityDate': order.activities.length ? order.activities[0].date : undefined,
-          'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined
+          'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined,
+          'extraText': extraText
         };
       }
     };
