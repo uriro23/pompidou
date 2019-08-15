@@ -10,6 +10,7 @@ angular.module('myApp')
     this.taskTypes = $scope.orderModel.taskTypes;
     this.phases = $scope.orderModel.phases;
     this.referralSources = $scope.orderModel.referralSources;
+    this.cancelReasons = $scope.orderModel.cancelReasons;
     this.foodTypes = $scope.orderModel.foodTypes;
     this.user = $scope.orderModel.user;
 
@@ -50,6 +51,11 @@ angular.module('myApp')
         delete this.order.attributes.foodType;
         this.order.delAttributes = {foodType:true};
       }
+      this.orderChanged('tasks');
+    };
+
+    this.setCancelReason = function(detail) {
+      this.order.attributes.cancelReason = this.order.view.cancelReason.tId;
       this.orderChanged('tasks');
     };
 

@@ -94,11 +94,11 @@ angular.module('myApp')
 
     this.statusChanged = function () {
       var orderStatus = this.order.view.orderStatus;
-      if (orderStatus.id === 6) {
-        $scope.orderModel.isActiveGeneralTab = true;
-        this.order.view.errors.cancelReason = !this.order.view.cancelReason &&
-                                              !this.order.attributes.template;
-      }
+      // if (orderStatus.id === 6) {
+      //   $scope.orderModel.isActiveGeneralTab = true;
+      //   this.order.view.errors.cancelReason = !this.order.view.cancelReason &&
+      //                                         !this.order.attributes.template;
+      // }
       if (orderStatus.id > 1 && orderStatus.id < 6) {
         if(this.order.attributes.isDateUnknown) {
           this.order.attributes.eventDate = undefined;

@@ -7,8 +7,6 @@ angular.module('myApp')
     //objects
     this.order = $scope.orderModel.order;
     this.readOnly = $scope.orderModel.readOnly;
-    this.referralSources = $scope.orderModel.referralSources;
-    this.cancelReasons = $scope.orderModel.cancelReasons;
     this.user = $scope.orderModel.user;
 
     this.orderChanged = function (field) {
@@ -28,18 +26,6 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'isBusinessEvent');
     };
 
-    this.setReferralSource = function() {
-      this.order.view.errors.referralSource = !this.order.view.referralSource &&
-                                              !this.order.attributes.template;
-      this.order.attributes.referralSource = this.order.view.referralSource.tId;
-      orderService.orderChanged(this.order,'referralSource');
-    };
-
-    this.setCancelReason = function() {
-      this.order.view.errors.cancelReason = !this.order.view.cancelReason &&
-                                            !this.order.attributes.template;
-      orderService.orderChanged(this.order,'cancelReason');
-    };
 
     this.resetColor = function() {
       this.order.delAttributes = {color:true};
@@ -48,7 +34,6 @@ angular.module('myApp')
     };
 
     this.setTemplate = function() {
-      this.order.view.errors.referralSource = !this.order.attributes.template;
       orderService.orderChanged(this.order,'template');
     };
 

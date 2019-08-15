@@ -496,6 +496,10 @@ angular.module('myApp')
 
     var TaskType = Parse.Object.extend("TaskType");
 
+    this.initTaskType = function () {
+      return new TaskType();
+    };
+
     this.queryTaskTypes = function (id) {
       var q = new Parse.Query(TaskType);
       if (id) {
@@ -510,6 +514,10 @@ angular.module('myApp')
     // -------------
 
     var TaskDetail = Parse.Object.extend("TaskDetail");
+
+    this.initTaskDetail = function () {
+      return new TaskDetail();
+    };
 
     this.queryTaskDetails = function (id) {
       var q = new Parse.Query(TaskDetail);
@@ -527,12 +535,17 @@ angular.module('myApp')
 
     var Phase = Parse.Object.extend("Phase");
 
+    this.initPhase = function () {
+      return new Phase();
+    };
+
+
     this.queryPhases = function (id) {
       var q = new Parse.Query(Phase);
       if (id) {
         q.equalTo("tId", id);
       }
-      q.ascending("tId");
+      q.ascending("order");
       return query(q);
     };
 

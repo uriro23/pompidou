@@ -606,6 +606,15 @@ config(function($stateProvider, $urlRouterProvider) {
         return api.queryRoles('everyone').then(function (res) {
           return res[0];
         });
+      }],
+      taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+        return taskTypesPromise;
+      }],
+      taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
+        return taskDetailsPromise;
+      }],
+      phases: ['phasesPromise', function (phasesPromise) {
+        return phasesPromise;
       }]
     }
   })

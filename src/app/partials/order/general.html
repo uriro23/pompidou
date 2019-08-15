@@ -1,38 +1,5 @@
 <div ng-controller="GeneralCtrl as generalModel">
 <table>
-  <tr ng-class="generalModel.order.view.changes.cancelReason?'bg-success':null"
-      ng-show="generalModel.order.view.orderStatus.id === 6">
-    <td><label>סיבת ביטול</label></td>
-    <td>
-      <select ng-model="generalModel.order.view.cancelReason"
-              ng-change="generalModel.setCancelReason()"
-              ng-options="cancelReason.label for cancelReason in generalModel.cancelReasons"
-              ng-class="generalModel.order.view.errors.cancelReason ? 'bg-danger' : null"
-      ></select>
-    </td>
-    <td>
-      <input type="text" size="50" ng-model="generalModel.order.attributes.cancelReasonText"
-             ng-change="generalModel.orderChanged('cancelReason')">
-    </td>
-    <td></td>
-  </tr>
-  <tr ng-class="generalModel.order.view.changes.referralSource?'bg-success':null">
-    <td><label>מקור הפניה</label></td>
-    <td>
-      <select ng-model="generalModel.order.view.referralSource"
-              ng-change="generalModel.setReferralSource()"
-              ng-options="referralSource.label for referralSource in generalModel.referralSources"
-              ng-disabled="generalModel.readOnly.is"
-              ng-class="generalModel.order.view.errors.referralSource ? 'bg-danger' : null"
-      ></select>
-    </td>
-    <td>
-      <input type="text" size="50" ng-model="generalModel.order.attributes.referralSourceText"
-             ng-change="generalModel.orderChanged('referralSource')"
-             ng-disabled="generalModel.readOnly.is">
-    </td>
-    <td></td>
-  </tr>
   <tr ng-class="generalModel.order.view.changes.eventName?'bg-success':null">
     <td>שם האירוע</td>
     <td>

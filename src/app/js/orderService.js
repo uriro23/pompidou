@@ -222,7 +222,8 @@ angular.module('myApp')
       }
       thisOrder.tasks = [];
       thisOrder.taskDetails = [];
-      view.phases.forEach(function(phase) {
+      view.columns.forEach(function(column) {
+      column.phases.forEach(function(phase) {
         var pTasks = phase.tasks.map(function(t) {
           return {
             tId: t.tId,
@@ -243,6 +244,7 @@ angular.module('myApp')
           });
           thisOrder.taskDetails = thisOrder.taskDetails.concat(tDetails);
         });
+      });
       });
       console.log('task to save:');
       console.log(thisOrder.tasks);
@@ -367,20 +369,23 @@ angular.module('myApp')
     };
 
     this.checkTasks = function (order) {
-      var phases = order.view.phases;
-      phases.forEach(function(phase) {
-        phase.tasks.forEach(function(task) {
-          task.details.forEach(function(detail) {
-            if (detail.type === 1 || detail.type === 11) {
-              detail.isDone = Boolean(eval('order.'+detail.attributeName));
-            }
-            if (detail.type === 3) {
-              detail.isDone = !Boolean(eval('order.'+detail.attributeName));
-            }
+      var columns = order.view.columns;
+      columns.forEach(function(column) {
+        column.phases.forEach(function(phase) {
+          phase.tasks.forEach(function(task) {
+            task.details.forEach(function(detail) {
+              if (detail.type === 1 || detail.type === 11) {
+                detail.isDone = Boolean(eval('order.'+detail.attributeName));
+              }
+              if (detail.type === 3) {
+                detail.isDone = !Boolean(eval('order.'+detail.attributeName));
+              }
+            });
           });
         });
       });
-      phases.forEach(function(phase) {
+      columns.forEach(function(column) {
+      column.phases.forEach(function(phase) {
         phase.isDone = true;
         phase.tasks.forEach(function(task) {
           task.isDisabled = false;  // task is disabled as long as one of its details is required and not done
@@ -409,6 +414,7 @@ angular.module('myApp')
             phase.isDone = false;
           }
         });
+      });
       });
       };
 

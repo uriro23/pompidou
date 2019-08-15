@@ -261,51 +261,61 @@ angular.module('myApp')
         view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead
-        view.errors.referralSource = true; // required for lead
       }
       var allTasks = angular.copy(taskTypes);
       var allDetails = angular.copy(taskDetails);
-      view.phases = angular.copy(phases);
-      view.phases.forEach(function(vPhase) {
-         vPhase.tasks = allTasks.filter(function(t) {
-          return t.phase === vPhase.tId;
-        });
-        vPhase.tasks.forEach(function(vTask) {
-          vTask.details = allDetails.filter(function(detail) {
-            return detail.task === vTask.tId;
+      var allPhases = angular.copy(phases);
+      view.columns = [];
+      allPhases.forEach(function(phase) {
+        if (!view.columns[phase.column]) {
+          view.columns[phase.column] = {
+            phases: []
+          };
+        }
+        view.columns[phase.column].phases.push(phase);
+      });
+      view.columns.forEach(function(column) {
+        column.phases.forEach(function (vPhase) {
+          vPhase.tasks = allTasks.filter(function (t) {
+            return t.phase === vPhase.tId;
           });
-          vTask.details.forEach(function(vDetail) {
-            if (attr.taskDetails) {
-              attr.taskDetails.forEach(function(aDetail) {
-                if (aDetail.tId === vDetail.tId) {
-                  vDetail.inputText = aDetail.inputText;
-                  vDetail.boolean = aDetail.boolean;
-                  vDetail.isDone = aDetail.isDone;
-                  vDetail.isShow = aDetail.isShow;
+          vPhase.tasks.forEach(function (vTask) {
+            vTask.details = allDetails.filter(function (detail) {
+              return detail.task === vTask.tId;
+            });
+            vTask.details.forEach(function (vDetail) {
+              if (attr.taskDetails) {
+                attr.taskDetails.forEach(function (aDetail) {
+                  if (aDetail.tId === vDetail.tId) {
+                    vDetail.inputText = aDetail.inputText;
+                    vDetail.boolean = aDetail.boolean;
+                    vDetail.isDone = aDetail.isDone;
+                    vDetail.isShow = aDetail.isShow;
+                  }
+                });
+              } else {
+                vDetail.isDone = false;
+                vDetail.isShow = true;
+              }
+            });
+            if (attr.tasks) {
+              attr.tasks.forEach(function (aTask) {
+                if (aTask.tId === vTask.tId) {
+                  vTask.isDone = aTask.isDone;
+                  vTask.isShow = aTask.isShow;
+                  vTask.isDisabled = aTask.isDisabled;
                 }
               });
             } else {
-              vDetail.isDone = false;
-              vDetail.isShow = true;
+              vTask.isDone = false;
+              vTask.isShow = true;
+              vTask.isDisabled = false;
             }
           });
-          if (attr.tasks) {
-            attr.tasks.forEach(function(aTask) {
-              if (aTask.tId === vTask.tId) {
-                vTask.isDone = aTask.isDone;
-                vTask.isShow = aTask.isShow;
-                vTask.isDisabled = aTask.isDisabled;
-              }
-            });
-          } else {
-            vTask.isDone = false;
-            vTask.isShow = true;
-            vTask.isDisabled = false;
-          }
         });
       });
-      console.log('phases view:');
-      console.log(view.phases);
+      console.log('columns view:');
+      console.log(view.columns);
      };
 
     this.selectQuote = function (mt) {
@@ -409,11 +419,12 @@ angular.module('myApp')
       if (typeof this.order.attributes.taskData === 'undefined') {
         this.order.attributes.taskData = {};
       }
-      if (this.order.view.quote && this.order.view.orderStatus.id < 6) {
-        this.isActiveQuoteTab = true;
-      } else {
-        this.isActiveGeneralTab = true;
-      }
+      // if (this.order.view.quote && this.order.view.orderStatus.id < 6) {
+      //   this.isActiveQuoteTab = true;
+      // } else {
+      //   this.isActiveGeneralTab = true;
+      // }
+      this.isActiveTasksTab = true;
        this.setReadOnly();
       this.order.attributes.empBonuses.forEach(function(role) {
         if (role.employee) {
@@ -451,6 +462,7 @@ angular.module('myApp')
       });
 
       this.setupOrderView();
+      this.isActiveTasksTab = true;
       this.setReadOnly();
       this.handleVatRateChange();
       if (!this.order.view.quote.advance) {
@@ -503,11 +515,11 @@ angular.module('myApp')
           j++;
         }
       });
-      if (j === 0) {    // no quotes created
-        this.isActiveQuoteTab = false;
-        this.isActiveGeneralTab = true;
-
-      }
+      // if (j === 0) {    // no quotes created
+      //   this.isActiveQuoteTab = false;
+      //   this.isActiveGeneralTab = true;
+      // }
+      this.isActiveTasksTab = true;
       this.order.attributes.vatRate = this.vatRate;
       this.order.attributes.activities = [];
       this.setReadOnly();

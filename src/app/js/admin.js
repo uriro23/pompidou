@@ -5,7 +5,7 @@ angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
                                      measurementUnits, categories,sensitivities,
-                                     discountCauses, role, employees, pRoles) {
+                                     discountCauses, role, employees, pRoles, phases, taskTypes, taskDetails) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -1147,7 +1147,6 @@ angular.module('myApp')
             });
         });
     };
-     */
 
     this.totForStat = function() {
       console.log('starting');
@@ -1178,7 +1177,39 @@ angular.module('myApp')
           }
         });
     };
+   */
 
+    this.copyTasks = function() {
+      alert ('are we in prod?');
+      var tt = [];
+      var p;
+      var pc = 0;
+      var tc = 0;
+      var dc = 0;
+      phases.forEach(function(h) {
+        p = api.initPhase();
+        p.attributes = h;
+        tt.push(p);
+        pc++;
+      })
+      taskTypes.forEach(function(t) {
+        p = api.initTaskType();
+        p.attributes = t;
+        tt.push(p);
+        tc++;
+      })
+      taskDetails.forEach(function(d) {
+        p = api.initTaskDetail();
+        p.attributes = d;
+        tt.push(p);
+        dc++;
+      })
+      alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
+      api.saveObjects(tt)
+        .then(function() {
+          alert('done');
+        })
+    };
 // end conversions
 
   });
