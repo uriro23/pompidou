@@ -26,15 +26,19 @@ angular.module('myApp')
     };
 
     this.detailTextChanged = function(detail) {
-      this.order.attributes.taskData[detail.attributeName] = detail.inputText;
+      if (detail.attributeName) {
+        this.order.attributes.taskData[detail.attributeName] = detail.inputText;
+      }
       detail.isDone = Boolean(detail.inputText);
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 
     this.detailBooleanSet = function(detail) {
-      this.order.attributes.taskData[detail.attributeName] = detail.boolean;
-      this.isDone = true;
+      if (detail.attributeName) {
+        this.order.attributes.taskData[detail.attributeName] = detail.boolean;
+      }
+      detail.isDone = true;
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };

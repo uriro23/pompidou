@@ -374,13 +374,10 @@ angular.module('myApp')
         column.phases.forEach(function(phase) {
           phase.tasks.forEach(function(task) {
             task.details.forEach(function(detail) {
-              if (detail.type === 1 || detail.type === 11) {
-                detail.isDone = Boolean(eval('order.'+detail.attributeName));
+              if (detail.type === 1 || detail.type === 11 || detail.type === 12 || detail.type === 13) {
+                detail.isDone = Boolean(eval(detail.attributeName));
               }
-              if (detail.type === 3) {
-                detail.isDone = !Boolean(eval('order.'+detail.attributeName));
-              }
-            });
+           });
           });
         });
       });
