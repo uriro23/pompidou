@@ -38,28 +38,34 @@ angular.module('myApp')
       if (detail.attributeName) {
         this.order.attributes.taskData[detail.attributeName] = detail.boolean;
       }
-      detail.isDone = true;
+      detail.isDone = detail.boolean;
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 
     this.setReferralSource = function(detail) {
       this.order.attributes.referralSource = this.order.view.referralSource.tId;
+      detail.isDone = true;
+      orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 
     this.setFoodType = function(detail) {
       if (this.order.view.foodType) {
         this.order.attributes.foodType = this.order.view.foodType.tId;
+        detail.isDone = true;
       } else {
         delete this.order.attributes.foodType;
         this.order.delAttributes = {foodType:true};
       }
+      orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 
     this.setCancelReason = function(detail) {
       this.order.attributes.cancelReason = this.order.view.cancelReason.tId;
+      detail.isDone = true;
+      orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 

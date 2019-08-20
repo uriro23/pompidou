@@ -222,6 +222,7 @@ angular.module('myApp')
                   } else {
                     order.attributes.mailCount++;
                   }
+                  orderService.checkTasks(order);
                   orderService.saveOrder(order);
                 });
             },

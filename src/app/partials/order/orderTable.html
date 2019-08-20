@@ -140,7 +140,8 @@
     <td>{{order.attributes.header.total | currency}}</td>
      <td class="hidden-xs" style="overflow-wrap: break-word"
          ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'">
-       {{order.attributes.header.extraText}}
+       <span class="taskRequired">{{order.attributes.header.extraUndone}}</span>
+       <span class="taskNormal">{{order.attributes.header.extraDone}}</span>
      </td>
      <td class="hidden-xs">{{order.attributes.createdBy}}</td>
   </tr>

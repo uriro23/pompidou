@@ -374,7 +374,7 @@ angular.module('myApp')
         column.phases.forEach(function(phase) {
           phase.tasks.forEach(function(task) {
             task.details.forEach(function(detail) {
-              if (detail.type === 1 || detail.type === 11 || detail.type === 12 || detail.type === 13) {
+              if (detail.type === 1) {
                 detail.isDone = Boolean(eval(detail.attributeName));
               }
            });
@@ -385,7 +385,7 @@ angular.module('myApp')
       column.phases.forEach(function(phase) {
         phase.isDone = true;
         phase.tasks.forEach(function(task) {
-          task.isDisabled = false;  // task is disabled as long as one of its details is required and not done
+          task.isDisabled = false;  // task is disabled as long as one of its details is shown and required and not done
           var unDoneCnt = 0; // automatically mark task done if all its details are done
           var doneCnt = 0;
           task.details.forEach(function(detail) {
@@ -394,7 +394,7 @@ angular.module('myApp')
             } else {
               detail.isShow = true;
             }
-            if (detail.isRequired && !detail.isDone) {
+            if (detail.isRequired && detail.isShow && !detail.isDone) {
               task.isDisabled = true;
               task.isDone = false;
             }
@@ -421,46 +421,61 @@ angular.module('myApp')
 
     this.setupOrderHeader = function (order) {
       var currentQuote = order.quotes[order.activeQuote];
-      var extraText = '';
+      var done = '';
+      var undone = '';
       if (typeof order.taskData !== 'undefined') {
-        for (var attr in order.taskData) {
-          if (order.taskData.hasOwnProperty(attr)) {
-            if (order.taskData[attr]) {
-              switch (attr) {
-                case 'isSurpriseParty':
-                  extraText += 'הפתעה,';
-                  break;
-                case 'isEquipRental':
-                  extraText += 'השכרת ציוד,';
-                  break;
-                case 'isCustomerEquipRental':
-                  extraText += 'השכרה לקוח,';
-                  break;
-                case 'isDisposableDishes':
-                  extraText += 'ח"פ,';
-                  break;
-                case 'isWaiters':
-                  extraText += 'מלצרים,';
-                  break;
-                case 'isEventManager':
-                  extraText += 'מנהל ארוע,';
-                  break;
-                case 'isLiquids':
-                  extraText += 'שתיה,';
-                  break;
-                case 'isOtherExtras':
-                  if (order.taskData.otherExtras) {
-                    console.log(order.taskData.otherExtras);
-                    extraText += (order.taskData.otherExtras + ',');
-                  }
-                  console.log(extraText);
-                  break;
-              }
-            }
+        var t = order.taskData;
+        if (t.isSurpriseParty) {
+          done += 'הפתעה,';
+        }
+        if (t.isEquipRental && !t.isEquipRentalDone) {
+          undone += 'השכרת ציוד,';
+        }
+        if (t.isEquipRental && t.isEquipRentalDone) {
+          done += 'השכרת ציוד,';
+        }
+        if (t.isCustomerEquipRental) {
+          done += 'השכרה לקוח,';
+        }
+        if (t.isDisposableDishes && !t.isDisposableDishesDone) {
+          undone += 'ח"פ,';
+        }
+        if (t.isDisposableDishes && t.isDisposableDishesDone) {
+          done += 'ח"פ,';
+        }
+        if (t.isWaiters && !t.isWaitersDone) {
+          undone += 'מלצרים,';
+        }
+        if (t.isWaiters && t.isWaitersDone) {
+          done += 'מלצרים,';
+        }
+        if (t.isEventManager && !t.isEventManagerDone) {
+          undone += 'מנהל ארוע,';
+        }
+        if (t.isEventManager && t.isEventManagerDone) {
+          done += 'מנהל ארוע,';
+        }
+        if (t.isLiquids && !t.isLiquidsDone) {
+          undone += 'שתיה,';
+        }
+        if (t.isLiquids && t.isLiquidsDone) {
+          done += 'שתיה,';
+        }
+        if (t.isOtherExtras && !t.isOtherExtrasDone) {
+          if (t.otherExtras) {
+            undone += (t.otherExtras + ',');
           }
         }
-        if (extraText.length) { // trim trailing ,
-          extraText = extraText.slice(0, extraText.length - 1)
+        if (t.isOtherExtras && t.isOtherExtrasDone) {
+          if (t.otherExtras) {
+            done += (t.otherExtras + ',');
+          }
+        }
+        if (undone.length) { // trim trailing ,
+          undone = undone.slice(0, undone.length - 1)
+        }
+        if (done.length) { // trim trailing ,
+          done = done.slice(0, done.length - 1)
         }
       }
       if (currentQuote) {
@@ -475,7 +490,8 @@ angular.module('myApp')
           'isHeavyweight': currentQuote.isHeavyweight,
           'activityDate': order.activities.length ? order.activities[0].date : undefined,
           'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined,
-          'extraText': extraText
+          'extraDone': done,
+          'extraUndone': undone
         };
       } else {  // no quotes maybe in case of lead
         order.header = {
@@ -489,7 +505,8 @@ angular.module('myApp')
           'isHeavyweight': false,
           'activityDate': order.activities.length ? order.activities[0].date : undefined,
           'activityText': order.activities.length ? order.activities[0].text.slice(0, 30) : undefined,
-          'extraText': extraText
+          'extraDone': done,
+          'extraUndone': undone
         };
       }
     };

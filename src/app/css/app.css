@@ -149,6 +149,9 @@ a:link, a:visited  {
 .taskDone {
   color: #80ee80
 }
+.taskNormal {
+  color: black
+}
 
 .bold
 {
