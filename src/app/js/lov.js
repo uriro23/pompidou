@@ -215,38 +215,68 @@ angular.module('myApp')
       },
       {
         id: 2,
-        name: 'בדיון',
+        name: 'סוכם',
         isSelectLead : false,
         isSelectDefault: true,
         isSelectNoDate: false
       },
       {
         id: 3,
-        name: 'סוכם',
+        name: 'תואם',
         isSelectLead : false,
         isSelectDefault: true,
         isSelectNoDate: false
       },
-       {
-         id: 4,
-         name: 'מקדמה',
-         isSelectLead : false,
-         isSelectDefault: true,
-         isSelectNoDate: false
-       },
-       {
-         id: 5,
-         name: 'שולם',
-         isSelectLead : false,
-         isSelectDefault: true,
-         isSelectNoDate: false
-       },
+      {
+        id: 4,
+        name: 'בביצוע',
+        isSelectLead : false,
+        isSelectDefault: true,
+        isSelectNoDate: false
+      },
+      {
+        id: 5,
+        name: 'היסטוריה',
+        isSelectLead : false,
+        isSelectDefault: true,
+        isSelectNoDate: false
+      },
       {
         id: 6,
         name: 'בוטל',
         isSelectLead : true,
         isSelectDefault: true,
         isSelectNoDate: true
+      }
+    ],
+    oldOrderStatuses: [
+      {
+        id: 0,
+        name: 'פניה'
+      },
+      {
+        id: 1,
+        name: 'הצעה'
+      },
+      {
+        id: 2,
+        name: 'בדיון'
+      },
+      {
+        id: 3,
+        name: 'סוכם'
+      },
+      {
+        id: 4,
+        name: 'מקדמה'
+      },
+      {
+        id: 5,
+        name: 'שולם'
+      },
+      {
+        id: 6,
+        name: 'בוטל'
       }
     ],
 
