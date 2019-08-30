@@ -18,7 +18,8 @@
               <table>
                 <tr ng-repeat="detail in task.details" ng-show="detail.isShow">
                   <td>
-                    <div ng-hide="(detail.type===2 || detail.type===4) && !detail.inputText && !detail.isRequired">
+                    <div ng-hide="((detail.type===2 || detail.type===4) && !detail.inputText && !detail.isRequired)
+                                  || detail.type===3">
                        <span ng-show="detail.type===5">
                         <input type="checkbox" ng-model="detail.boolean"
                                ng-change="tasksModel.detailBooleanSet(detail)"
@@ -36,6 +37,9 @@
                              placeholder="{{detail.description}}"
                              ng-disabled="tasksModel.readOnly.is">
                     </div>
+                    <div ng-show="detail.type===3">
+                      {{detail.inputText}}
+                   </div>
                     <div ng-show="detail.type===4">
                       <textarea rows="2" cols="32" ng-model="detail.inputText"
                                 ng-change="tasksModel.detailTextChanged(detail)"

@@ -273,6 +273,38 @@ angular.module('myApp')
       }
     ],
 
+    specialTypes: [
+      {
+        id: 1,
+        name: 'השכרת ציוד',
+        exist: 'isEquipRental',
+        desc: 'equipRental'
+      },
+      {
+        id: 2,
+        name: 'מלצרים',
+        exist: 'isWaiters',
+        desc: 'waiters'
+      },
+      {
+        id: 3,
+        name: 'מנהל אירוע',
+        exist: 'isEventManager',
+        desc: 'eventManager'
+      },
+      {
+        id: 4,
+        name: 'שתיה',
+        exist: 'isLiquids',
+        desc: 'liquids'
+      },
+      {
+        id: 5,
+        name: 'שונות',
+        exist: 'isOtherExtras',
+        desc: 'otherExtras'
+      }
+    ],
     documentTypes: [
       {
         id: 0,

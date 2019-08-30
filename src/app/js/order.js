@@ -74,10 +74,7 @@ angular.module('myApp')
                     item.price = item.priceBeforeVat;
                   }
                });
-               orderService.calcSubTotal(quote,
-                                          that.order.attributes.isBusinessEvent,
-                                          that.order.attributes.vatRate,
-                                          that.order.attributes.noOfParticipants);
+               orderService.calcTotal(quote,that.order);
               });
             orderService.orderChanged(that.order,'isBusinessEvent');
             break;
@@ -90,10 +87,7 @@ angular.module('myApp')
                     item.price = item.priceInclVat;
                   }
                 });
-                orderService.calcSubTotal(quote,
-                  that.order.attributes.isBusinessEvent,
-                  that.order.attributes.vatRate,
-                  that.order.attributes.noOfParticipants);
+                orderService.calcTotal(quote,that.order);
               });
               orderService.orderChanged(that.order,'isBusinessEvent');
               break;
@@ -506,10 +500,7 @@ angular.module('myApp')
             that.order.attributes.activeQuote = j;
             that.order.view.quote = quote;
           }
-          orderService.calcSubTotal(quote,
-            that.order.attributes.isBusinessEvent,
-            that.order.attributes.vatRate,
-            that.order.attributes.noOfParticipants);
+          orderService.calcTotal(quote,that.order);
 
           that.order.attributes.quotes.push(quote);
           j++;
