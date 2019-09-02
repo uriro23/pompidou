@@ -65,7 +65,7 @@ angular.module('myApp')
       quote.priceIncrease = Math.round(priceIncrease);
       quote.extraServices = Math.round(extraServices);
       quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
-      quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.attributes.participants);
+      quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.attributes.noOfParticipants);
       quote.boxEstimate = boxCount;
       quote.satietyIndex = satiety;
       quote.isHeavyweight = isHeavyweight;

@@ -172,26 +172,30 @@ angular.module('myApp')
       var thisItem = this.order.view.quote.items[ind];
       thisItem.isDescChanged = true;
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
+      orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
     this.setCosmeticChange = function (ind ) {
       var thisItem = this.order.view.quote.items[ind];
+      orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
     this.resetDescChange = function (ind) {
+      var that = this;
       var thisItem = this.order.view.quote.items[ind];
       api.queryCatalogById(thisItem.catalogId)
         .then(function(cat) {
           thisItem.productDescription = cat[0].attributes.productDescription;
           thisItem.isDescChanged = false;
+          orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
+          orderService.quoteChanged(that.order);
+          thisItem.isChanged = true;
         });
-      orderService.quoteChanged(this.order);
-      thisItem.isChanged = true;
-    };
+  };
 
     this.setQuantity = function (ind) {
       var thisOrder = this.order.attributes;
