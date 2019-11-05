@@ -79,10 +79,14 @@ angular.module('myApp')
     }
 
     this.setNoOfParticipants = function () {
+      var that = this;
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
       if (!this.order.view.errors.noOfParticipants) {
         orderService.upgradeOrderStatus(this.order);
+        this.order.attributes.quotes.forEach(function(quote) { // recalc all quotes to update price per person
+         orderService.calcTotal(quote,that.order);
+        })
       }
     };
 
