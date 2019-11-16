@@ -1258,6 +1258,31 @@ angular.module('myApp')
         });
     };
      */
+    this.updateHeader = function() {
+      var from = new Date(2019,0,1);
+      var to = new Date(2030,11,31);
+      api.queryOrdersByRange('eventDate',from,to)
+        .then(function(orders) {
+          console.log(orders.length + ' orders read');
+          var corrections = [];
+          orders.forEach(function (order) {
+            if (order.attributes.quotes.length) {
+              var quote = order.attributes.quotes[order.attributes.activeQuote];
+              if (quote.totalForStat !== order.attributes.header.totalForStat) {
+                console.log('order '+order.attributes.number+' old: '+order.attributes.header.totalForStat+', new: '+quote.totalForStat);
+                order.attributes.header.totalForStat = quote.totalForStat;
+                corrections.push(order);
+              }
+            }
+         });
+          console.log(corrections.length + ' corrections found');
+          console.log('updating');
+          api.saveObjects(corrections)
+            .then(function (o) {
+              console.log('done');
+            })
+        })
+    };
 // end conversions
 
   });
