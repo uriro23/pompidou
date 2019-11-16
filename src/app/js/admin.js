@@ -1210,7 +1210,7 @@ angular.module('myApp')
           alert('done');
         })
     };
-   */
+
     this.listExtra = function() {
       this.extraList = [];
       var totChange = 0;
@@ -1250,8 +1250,14 @@ angular.module('myApp')
           console.log(extCnt+' quotes with extra services');
           console.log(totChange+' totals changed');
           console.log(corrections.length+' corrections found');
+          console.log('updating');
+          api.saveObjects(corrections)
+            .then(function(o) {
+              console.log('done');
+            })
         });
     };
+     */
 // end conversions
 
   });
