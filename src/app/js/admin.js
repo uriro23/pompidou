@@ -5,7 +5,8 @@ angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
                                      measurementUnits, categories,sensitivities,
-                                     discountCauses, role, employees, pRoles, phases, taskTypes, taskDetails) {
+                                     discountCauses, role, employees, pRoles,
+                                     phases, taskTypes, taskDetails) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -1177,7 +1178,6 @@ angular.module('myApp')
           }
         });
     };
-   */
 
     this.copyTasks = function() {
       alert ('are we in prod?');
@@ -1209,6 +1209,48 @@ angular.module('myApp')
         .then(function() {
           alert('done');
         })
+    };
+   */
+    this.listExtra = function() {
+      this.extraList = [];
+      var totChange = 0;
+      var extCnt = 0;
+      var from = new Date(2019,0,1);
+      var to = new Date(2030,11,31);
+      api.queryOrdersByRange('eventDate',from,to)
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          var corrections = [];
+          orders.forEach(function(order) {
+            var oldOrder = angular.copy(order);
+            var change = false;
+            order.attributes.quotes.forEach(function(quote) {
+              var oldQuote = angular.copy(quote);
+              if (quote.extraServices) {
+                extCnt++;
+                console.log('order '+ order.attributes.number+' date '+ order.attributes.eventDate);
+                orderService.calcTotal(quote,order);
+                if (quote.total !== oldQuote.total) {
+                  totChange++;
+                  console.log('---------- total changed ----------');
+                }
+                if (quote.extraServices !== oldQuote.extraServices ||
+                    quote.totalForStat !== oldQuote.totalForStat ||
+                    quote.total !== oldQuote.total) {
+                  console.log('-- old: extra: '+oldQuote.extraServices+' totalForStat: '+oldQuote.totalForStat+' total: '+oldQuote.total)
+                  console.log('-- new: extra: '+quote.extraServices+' totalForStat: '+quote.totalForStat+' total: '+quote.total)
+                  if (!change) {
+                    change = true;
+                    corrections.push(order);
+                  }
+                }
+              }
+            });
+          });
+          console.log(extCnt+' quotes with extra services');
+          console.log(totChange+' totals changed');
+          console.log(corrections.length+' corrections found');
+        });
     };
 // end conversions
 

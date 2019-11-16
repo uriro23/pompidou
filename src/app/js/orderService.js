@@ -7,6 +7,7 @@ angular.module('myApp')
 
     this.calcTotal = function (quote, order) {
       var subTotal = 0;
+      var subTotalForStat = 0; // doest not include extra services, except disposables and liquids
       var foodPrice = 0;
       var transportation = 0;
       var priceIncrease = 0;
@@ -16,17 +17,23 @@ angular.module('myApp')
       var isHeavyweight = false;
       var priceIncreaseItem;
       lov.specialTypes.forEach(function(st) {
-        console.log(order);
-        delete order.attributes.taskData[st.exists];
-        delete order.attributes.taskData[st.desc];
+        if (order.attributes.taskData) {
+          delete order.attributes.taskData[st.exists];
+          delete order.attributes.taskData[st.desc];
+        }
       });
       quote.items.forEach(function(thisItem) {
         if (thisItem.category.type !== 4) {  // not priceIncrease
           if (!thisItem.isFreeItem) {
             if (thisItem.category.type === 5) {
+              // exclude extraServices from total for stats, except disposables and liquids
+              if (thisItem.specialType === 1 || thisItem.specialType === 5 ) {
+                subTotalForStat += thisItem.price;
+              }
               extraServices += thisItem.price;
-            } else if (thisItem.category.type < 4) {
+            } else  {
               subTotal += thisItem.price;
+              subTotalForStat += thisItem.price;
             }
             if (thisItem.category.type === 3) {  // just to display transportation  on order list
               transportation += thisItem.price;
@@ -73,12 +80,12 @@ angular.module('myApp')
       if(quote.isFixedPrice) {
         quote.total = quote.fixedPrice;
         quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
+        quote.totalForStat = quote.fixedPrice / (1 + order.attributes.vatRate);  // stat is before vat
       } else {
-        quote.totalForStat = quote.subTotal +
+        quote.totalForStat = subTotalForStat +
           quote.discount +
           quote.priceIncrease;
-        quote.totalBeforeVat = quote.totalForStat +
-          quote.extraServices;
+        quote.totalBeforeVat = quote.subTotal + quote.discount + quote.priceIncrease + quote.extraServices;;
         if (order.attributes.isBusinessEvent) {
           quote.vat = Math.round(quote.totalBeforeVat * order.attributes.vatRate);
           quote.total = quote.totalBeforeVat + quote.vat;
@@ -98,7 +105,7 @@ angular.module('myApp')
       quote.vatForInvoice = quote.totalBeforeVatForInvoice * order.attributes.vatRate;
 
 
-      this.checkTasks(order);
+      //this.checkTasks(order);
     };
 
     this.orderChanged = function (order, field) {
