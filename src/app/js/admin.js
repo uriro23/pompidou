@@ -1210,7 +1210,6 @@ angular.module('myApp')
           alert('done');
         })
     };
-     */
 
     this.listExtra = function() {
       this.extraList = [];
@@ -1321,6 +1320,7 @@ angular.module('myApp')
             })
         })
    };
+     */
 // end conversions
 
   });

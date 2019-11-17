@@ -108,7 +108,7 @@ angular.module('myApp')
       quote.vatForInvoice = quote.totalBeforeVatForInvoice * order.attributes.vatRate;
 
 
-      // this.checkTasks(order);
+      this.checkTasks(order);
     };
 
     this.orderChanged = function (order, field) {
