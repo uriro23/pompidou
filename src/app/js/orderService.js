@@ -50,6 +50,9 @@ angular.module('myApp')
             var specialType = lov.specialTypes.filter(function(st) {
               return st.id === thisItem.specialType;
             })[0];
+            if (!order.attributes.taskData) {
+              order.attributes.taskData = {};
+            }
             order.attributes.taskData[specialType.exist] = true;
             if (order.attributes.taskData[specialType.desc]) {
               order.attributes.taskData[specialType.desc] += (', ' + thisItem.productDescription);
@@ -105,7 +108,7 @@ angular.module('myApp')
       quote.vatForInvoice = quote.totalBeforeVatForInvoice * order.attributes.vatRate;
 
 
-      this.checkTasks(order);
+      // this.checkTasks(order);
     };
 
     this.orderChanged = function (order, field) {

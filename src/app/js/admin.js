@@ -1210,6 +1210,7 @@ angular.module('myApp')
           alert('done');
         })
     };
+     */
 
     this.listExtra = function() {
       this.extraList = [];
@@ -1224,28 +1225,30 @@ angular.module('myApp')
           orders.forEach(function(order) {
             var oldOrder = angular.copy(order);
             var change = false;
-            order.attributes.quotes.forEach(function(quote) {
+            if (order.attributes.quotes.length) {
+              var quote = order.attributes.quotes[order.attributes.activeQuote];
               var oldQuote = angular.copy(quote);
               if (quote.extraServices) {
                 extCnt++;
-                console.log('order '+ order.attributes.number+' date '+ order.attributes.eventDate);
-                orderService.calcTotal(quote,order);
+                console.log('order ' + order.attributes.number + ' date ' + order.attributes.eventDate);
+                orderService.calcTotal(quote, order);
                 if (quote.total !== oldQuote.total) {
                   totChange++;
                   console.log('---------- total changed ----------');
                 }
                 if (quote.extraServices !== oldQuote.extraServices ||
-                    quote.totalForStat !== oldQuote.totalForStat ||
-                    quote.total !== oldQuote.total) {
-                  console.log('-- old: extra: '+oldQuote.extraServices+' totalForStat: '+oldQuote.totalForStat+' total: '+oldQuote.total)
-                  console.log('-- new: extra: '+quote.extraServices+' totalForStat: '+quote.totalForStat+' total: '+quote.total)
+                  quote.totalForStat !== oldQuote.totalForStat ||
+                  quote.total !== oldQuote.total) {
+                  console.log('-- old: extra: ' + oldQuote.extraServices + ' totalForStat: ' + oldQuote.totalForStat + ' total: ' + oldQuote.total)
+                  console.log('-- new: extra: ' + quote.extraServices + ' totalForStat: ' + quote.totalForStat + ' total: ' + quote.total)
                   if (!change) {
                     change = true;
+                    order.attributes.header.totalForStat = quote.totalForStat;
                     corrections.push(order);
                   }
                 }
               }
-            });
+            }
           });
           console.log(extCnt+' quotes with extra services');
           console.log(totChange+' totals changed');
@@ -1257,7 +1260,6 @@ angular.module('myApp')
             })
         });
     };
-     */
     this.updateHeader = function() {
       var from = new Date(2019,0,1);
       var to = new Date(2030,11,31);
@@ -1283,6 +1285,42 @@ angular.module('myApp')
             })
         })
     };
+    this.specialTypes = function() {
+      api.queryCatalogByCategory(51)
+        .then(function(extraItems) {
+          console.log(extraItems.length+' catalog items read');
+          var from = new Date(2019,0,1);
+          var to = new Date(2030,11,31);
+          api.queryOrdersByRange('eventDate',from,to)
+            .then(function(orders) {
+              console.log(orders.length + ' orders read');
+              var corrections = [];
+              orders.forEach(function (order) {
+                if (order.attributes.quotes.length) {
+                  var quote = order.attributes.quotes[order.attributes.activeQuote];
+                  var isExtra = false;
+                  quote.items.forEach(function(item) {
+                    if (item.category.type===5 && !item.specialType) {
+                      item.specialType = extraItems.filter(function(cat) {
+                        return cat.id === item.catalogId;
+                      })[0].attributes.specialType;
+                      isExtra = true;
+                    }
+                  });
+                  if (isExtra) {
+                    corrections.push(order);
+                  }
+                }
+              });
+              console.log(corrections.length + ' corrections found');
+              console.log('updating');
+              api.saveObjects(corrections)
+                .then(function (o) {
+                  console.log('done');
+                })
+            })
+        })
+   };
 // end conversions
 
   });
