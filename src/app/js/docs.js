@@ -155,6 +155,9 @@ angular.module('myApp')
           },
           bidTextTypes: function () {
             return that.bidTextTypes;
+          },
+          user: function () {
+            return that.user;
           }
         },
         size: 'lg'

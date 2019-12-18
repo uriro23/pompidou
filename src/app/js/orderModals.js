@@ -91,7 +91,7 @@ angular.module('myApp')
   })
 
   .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov,
-                                        order, bids, bidTextTypes,
+                                        order, bids, bidTextTypes, user,
                                         pdfService, gmailClientLowLevel, $scope, $filter) {
     var that = this;
     this.order = order;
@@ -104,6 +104,7 @@ angular.module('myApp')
     this.bidTextTypes = bidTextTypes;
     this.documentTypes = lov.documentTypes;
     this.mail = {
+      from: user.attributes.email,
       to: '',
       cc: '',
       subject: 'אירוע פומפידו בתאריך '+ $filter('date')(order.attributes.eventDate,'dd/MM/yyyy'),

@@ -111,12 +111,13 @@
 
       return isInitialized.promise.then(function () {
         // return sendMessage(emailHeaders + '\r\n' + content);
+        console.log('from '+params.from);
         var mimeMsg =
           Mime.toMimeTxt({
             "to": params.to,
             "cc": params.cc,
             "subject": params.subject,
-            "from": "me",
+            "from": params.from,
             "body": params.text,
             "cids": [],
             "attaches": params.attachments
