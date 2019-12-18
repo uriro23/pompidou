@@ -359,7 +359,7 @@
          <td></td>
        </tr>
        </tbody>
-     </table>
+     </table><!--
      <div ng-show="adminModel.isCustomersExport">
        <div>
          <span>name,email,phone,pastSuccesses,futureOrders,lastEvent</span>
@@ -377,6 +377,17 @@
          <span>,</span>
          <span>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</span>
        </div>
+     </div>
+     -->
+     <div ng-show="adminModel.isCustomersExport">
+       <div>
+         <span>phone,firstName</span>
+       </div>
+       <div ng-repeat="customer in adminModel.customers">
+         <span>{{customer.attributes.mobilePhone}}</span>
+         <span>,</span>
+         <span>{{customer.attributes.firstName}}</span>
+     </div>
      </div>
    </tab>
    <tab heading="סביבה" active="adminModel.isEnvTabActive">

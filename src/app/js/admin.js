@@ -442,12 +442,12 @@ angular.module('myApp')
                     if (order.attributes.eventDate > customer.view.lastEventDate) {
                       customer.view.lastEventDate = order.attributes.eventDate;
                     }
-                    if (order.attributes.eventDate < new Date() &&
+                    if (order.attributes.eventDate < new Date(2019,10,1) && // since Nov 1st
                         order.attributes.orderStatus > 1 &&
                         order.attributes.orderStatus < 6) {
                       customer.view.pastSuccesses++;
                     }
-                    if (order.attributes.eventDate > new Date() &&
+                    if (order.attributes.eventDate > new Date(2019,10,1) &&
                         order.attributes.orderStatus < 6) {
                       customer.view.futureOrders++;
                     }
