@@ -244,7 +244,21 @@ angular.module('myApp')
         } else {
           that.order.view.contact = {};
         }
-       } else { // newOrder or newOrderByCustomer
+        if (that.order.attributes.referrer) {
+          api.queryCustomers(that.order.attributes.referrer)
+            .then(function (custs) {
+              if (!custs.length) {
+                alert('referrer not found');
+                console.log('referrer not found');
+                console.log(that.order.attributes.referrer);
+              }
+              that.order.view.referrer = custs[0].attributes;
+              that.order.view.referrer.id = custs[0].id;
+            });
+        } else {
+          that.order.view.referrer = {};
+        }
+      } else { // newOrder or newOrderByCustomer
         if ($state.current.name === 'newOrderByCustomer') {
           view.customer = customer.attributes;
           view.customer.id = customer.id;
@@ -252,6 +266,7 @@ angular.module('myApp')
           view.customer = {};
         }
         view.contact = {};
+        view.referrer = {};
         view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead

@@ -286,6 +286,13 @@ angular.module('myApp')
           order.delAttributes = {contact: true}
         }
       }
+      if (!thisOrder.referrer) {   // if referrer is changed to null, make sure it is deleted in parse. see api.saveObj
+        if (order.delAttributes) {
+          order.delAttributes.referrer = true
+        } else {
+          order.delAttributes = {referrer: true}
+        }
+      }
 
       this.setStatus(order);
 

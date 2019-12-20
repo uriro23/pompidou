@@ -35,15 +35,17 @@ angular.module('myApp')
           currentCustomerId: function () {
             if (custType === 1) {
               return that.order.view.customer.id;
-            } else {
+            } else if (custType === 1) {
               return that.order.view.contact.id;
+            } else {
+              return that.order.view.referrer.id;
             }
           },
           modalHeader: function () {
             return custHeader;
           },
           isOptionalSelect: function () {
-            return custType === 2; // for contact selection in modal is optional
+            return custType !== 1; // for contact or referrer selection in modal is optional
           }
         },
         size: 'lg'
@@ -62,8 +64,11 @@ angular.module('myApp')
           that.order.attributes.contact = cust.id;
           orderService.orderChanged(that.order,'customer');
           that.order.view.errors.contact = false;
-        } else {
-          alert('error - bad customer type: ' + custType);
+        } else {  // referrer
+          that.order.view.referrer = cust;
+          that.order.attributes.referrer = cust.id;
+          orderService.orderChanged(that.order,'referrer');
+          that.order.view.errors.referrer = false;
         }
       }), function () {
       };
