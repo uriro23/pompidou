@@ -15,9 +15,14 @@
   <th style="width: 7%">סטטוס</th>
   <th style="width: 7%">סכום</th>
   <th class="hidden-xs"
-      ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'"
+      ng-show="orderTableModel.queryType==='future'"
       style="width: 21%">
-שירותים מיוחדים
+    שירותים מיוחדים
+  </th>
+  <th class="hidden-xs"
+      ng-show="orderTableModel.queryType==='sales'"
+      style="width: 21%">
+    פעילות אחרונה
   </th>
 <th  class="hidden-xs" style="width: 6%">יוצר</th>
   </thead>
@@ -139,10 +144,15 @@
     </td>
     <td>{{order.attributes.header.total | currency}}</td>
      <td class="hidden-xs" style="overflow-wrap: break-word"
-         ng-show="orderTableModel.queryType==='future' || orderTableModel.queryType==='sales'">
+         ng-show="orderTableModel.queryType==='future'">
        <span class="taskRequired">{{order.attributes.header.extraUndone}}</span>
        <span class="taskNormal">{{order.attributes.header.extraDone}}</span>
      </td>
+    <td class="hidden-xs"
+      ng-show="orderTableModel.queryType==='sales'">
+      <span>{{order.attributes.header.activityDate | date:'dd/MM/yy'}}</span>
+      <span>{{order.attributes.header.activityText}}</span>
+    </td>
      <td class="hidden-xs">{{order.attributes.createdBy}}</td>
   </tr>
   </tbody>
