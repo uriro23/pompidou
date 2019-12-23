@@ -409,11 +409,15 @@ angular.module('myApp')
               if (detail.type === 1) {
                 detail.isDone = Boolean(eval(detail.attributeName));
               }
-              if (detail.type === 2 || detail.type === 3 || detail.type === 4) {
+              if (detail.type === 2 || detail.type === 3 || detail.type === 4) { // if source given and field not changed, copy source
+                if (detail.source && detail.changedAttribute &&
+                    !order.attributes.taskData[detail.changedAttribute] && Boolean(eval(detail.source))) {
+                  order.attributes.taskData[detail.attributeName] = eval(detail.source);
+                }
                 detail.inputText = order.attributes.taskData[detail.attributeName];
                 detail.isDone = Boolean(detail.inputText);
-              }
-           });
+             }
+         });
           });
         });
       });
@@ -430,7 +434,9 @@ angular.module('myApp')
           var unDoneCnt = 0; // automatically mark task done if all its details are done
           var doneCnt = 0;
           task.details.forEach(function(detail) {
-            if(detail.condition) {
+            if (detail.type === 21) { // save address button - show only is address was changed
+              detail.isShow = eval(order.attributes.taskData[detail.changedAttribute]);
+           } else if(detail.condition) {
               detail.isShow = Boolean(eval(detail.condition)); // evaluate condition to show detail
             } else {
               detail.isShow = true;

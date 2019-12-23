@@ -29,7 +29,9 @@ angular.module('myApp')
         this.order.attributes.taskData[detail.attributeName] = detail.inputText;
       }
       detail.isDone = Boolean(detail.inputText);
-      detail.isChanged = true;
+      if (detail.changedAttribute) {
+        this.order.attributes.taskData[detail.changedAttribute] = true;
+      }
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
@@ -57,14 +59,19 @@ angular.module('myApp')
       this.orderChanged('tasks');
     };
 
-  this.saveAddress = function() {
+  this.saveAddress = function(detail) {
     var that = this;
     api.queryCustomers(this.order.attributes.customer)
       .then(function(custs) {
         custs[0].attributes.address = that.order.attributes.taskData.address;
-        console.log('updated cust:');
-        console.log(custs[0]);
-        api.saveObj(custs[0]);
+       api.saveObj(custs[0])
+         .then(function(c) {
+           if (detail.changedAttribute) {
+             that.order.attributes.taskData[detail.changedAttribute] = false;
+           }
+           orderService.checkTasks(that.order);
+           that.orderChanged('tasks');
+         })
        });
   };
   });
