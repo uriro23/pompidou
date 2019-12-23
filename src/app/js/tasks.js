@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('TasksCtrl', function ($scope, orderService) {
+  .controller('TasksCtrl', function ($scope, orderService, api) {
 
     // references to members of parent order controller
     //objects
@@ -11,7 +11,6 @@ angular.module('myApp')
     this.phases = $scope.orderModel.phases;
     this.referralSources = $scope.orderModel.referralSources;
     this.cancelReasons = $scope.orderModel.cancelReasons;
-    this.foodTypes = $scope.orderModel.foodTypes;
     this.user = $scope.orderModel.user;
 
     this.tasks = this.order.view.tasks;
@@ -30,6 +29,7 @@ angular.module('myApp')
         this.order.attributes.taskData[detail.attributeName] = detail.inputText;
       }
       detail.isDone = Boolean(detail.inputText);
+      detail.isChanged = true;
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
@@ -50,23 +50,21 @@ angular.module('myApp')
       this.orderChanged('tasks');
     };
 
-    this.setFoodType = function(detail) {
-      if (this.order.view.foodType) {
-        this.order.attributes.foodType = this.order.view.foodType.tId;
-        detail.isDone = true;
-      } else {
-        delete this.order.attributes.foodType;
-        this.order.delAttributes = {foodType:true};
-      }
-      orderService.checkTasks(this.order);
-      this.orderChanged('tasks');
-    };
-
-    this.setCancelReason = function(detail) {
+  this.setCancelReason = function(detail) {
       this.order.attributes.cancelReason = this.order.view.cancelReason.tId;
       detail.isDone = true;
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 
+  this.saveAddress = function() {
+    var that = this;
+    api.queryCustomers(this.order.attributes.customer)
+      .then(function(custs) {
+        custs[0].attributes.address = that.order.attributes.taskData.address;
+        console.log('updated cust:');
+        console.log(custs[0]);
+        api.saveObj(custs[0]);
+       });
+  };
   });

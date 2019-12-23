@@ -101,10 +101,7 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
-        }],
-        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+       taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
         }],
         taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
@@ -163,9 +160,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
-        }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
         }],
         taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
@@ -227,10 +221,7 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
-        }],
-        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+       taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
         }],
         taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
@@ -290,10 +281,7 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
-        }],
-        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+       taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
         }],
         taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {

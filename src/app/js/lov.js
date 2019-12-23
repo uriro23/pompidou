@@ -108,14 +108,6 @@ angular.module('myApp')
     });
   })
 
-  .factory('foodTypesPromise', function (api) {
-    return api.queryFoodTypes().then(function (res) {
-      return res.map(function (obj) {
-        return obj.attributes;
-      });
-    });
-  })
-
   .factory('taskTypesPromise', function (api) {
     return api.queryTaskTypes().then(function (res) {
       return res.map(function (obj) {

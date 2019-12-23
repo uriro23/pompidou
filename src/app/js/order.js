@@ -6,7 +6,7 @@ angular.module('myApp')
                                      orderService, currentOrder, isFromNew, customer, lov, dater,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, cancelReasons,
-                                     menuTypes, colors, foodTypes, taskTypes, taskDetails, phases,
+                                     menuTypes, colors, taskTypes, taskDetails, phases,
                                      employees, pRoles, config) {
 
     $rootScope.menuStatus = 'show';
@@ -192,11 +192,6 @@ angular.module('myApp')
         if (attr.color) {
           view.color = colors.filter(function(obj) {
             return (obj.tId === that.order.attributes.color);
-          })[0];
-        }
-        if (attr.foodType) {
-          view.foodType = foodTypes.filter(function(obj) {
-            return (obj.tId === that.order.attributes.foodType);
           })[0];
         }
 
@@ -413,7 +408,6 @@ angular.module('myApp')
     this.referralSources = referralSources;
     this.cancelReasons = cancelReasons;
     this.menuTypes = menuTypes;
-    this.foodTypes = foodTypes;
     this.employees = employees;
     this.config = config;
     this.vatRate = config.vatRate;

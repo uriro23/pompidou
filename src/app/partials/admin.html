@@ -398,6 +398,11 @@
     <div>
       <button class="btn btn-default" ng-click="adminModel.switchEnv()">שנה</button>
     </div>
+     <p></p>
+     <div>
+       <button class="btn btn-warning"
+               ng-click="adminModel.copyTasks()" ng-hide="environment==='test'">העתק הגדרת משימות לייצור</button>
+     </div>
   </tab>
 </tabset>
 </div>

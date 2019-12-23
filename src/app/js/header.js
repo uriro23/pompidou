@@ -53,8 +53,11 @@ angular.module('myApp')
 
       selectCustomer.result.then(function (cust) {
         if (custType === 1) {
+          console.log('cust');
+          console.log(cust);
           that.order.view.customer = cust;
           that.order.attributes.customer = cust.id;
+          that.order.attributes.taskData.address = cust.address;
           orderService.orderChanged(that.order,'customer');
           orderService.upgradeOrderStatus(that.order);
           that.order.view.errors.customer = false;

@@ -26,7 +26,6 @@ angular.module('myApp')
   this.sensitivities = sensitivities;
 
 
-
     // vat
     // ---
 
@@ -145,7 +144,7 @@ angular.module('myApp')
         });
     };
 
-    // env
+    // env tab
 
     this.switchEnv = function () {
       if (api.getEnvironment()==='test') {
@@ -156,6 +155,62 @@ angular.module('myApp')
       }
       $state.go('login');
     };
+
+    // copy taskTypes and taskDetails from test to prod
+    // you have to start the app from test (localhost:) and change environment to prod
+    this.copyTasks = function() {
+      if (api.getEnvironment()==='test') {
+        alert ('switch to prod first');
+        return;
+      }
+      alert('want to copy task definitions from test to prod? if not close this page')
+      // first delete existing taskTypes and taskDetails
+      api.queryTaskTypes()
+        .then(function(types) {
+          api.deleteObjects(types)
+            .then(function() {
+              api.queryTaskDetails()
+                .then(function(details) {
+                  api.deleteObjects(details)
+                    .then(function() {
+                      alert('old prod task definitions deleted, press OK to continue');
+                      // now we create new taskTypes and taskDetails
+                      var tt = [];
+                      var p;
+                      var pc = 0;
+                      var tc = 0;
+                      var dc = 0;
+                      phases.forEach(function(h) {
+                        p = api.initPhase();
+                        p.attributes = h;
+                        tt.push(p);
+                        pc++;
+                      })
+                      taskTypes.forEach(function(t) {
+                        p = api.initTaskType();
+                        p.attributes = t;
+                        tt.push(p);
+                        tc++;
+                      })
+                      taskDetails.forEach(function(d) {
+                        p = api.initTaskDetail();
+                        p.attributes = d;
+                        tt.push(p);
+                        dc++;
+                      })
+                      alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
+                      api.saveObjects(tt)
+                        .then(function() {
+                          alert('done');
+                        })
+                    });
+                });
+            });
+        });
+
+  };
+
+//
 
     this.catalogReport = function() {
       var that = this;
@@ -1179,39 +1234,7 @@ angular.module('myApp')
         });
     };
 
-    this.copyTasks = function() {
-      alert ('are we in prod?');
-      var tt = [];
-      var p;
-      var pc = 0;
-      var tc = 0;
-      var dc = 0;
-      phases.forEach(function(h) {
-        p = api.initPhase();
-        p.attributes = h;
-        tt.push(p);
-        pc++;
-      })
-      taskTypes.forEach(function(t) {
-        p = api.initTaskType();
-        p.attributes = t;
-        tt.push(p);
-        tc++;
-      })
-      taskDetails.forEach(function(d) {
-        p = api.initTaskDetail();
-        p.attributes = d;
-        tt.push(p);
-        dc++;
-      })
-      alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
-      api.saveObjects(tt)
-        .then(function() {
-          alert('done');
-        })
-    };
-
-    this.listExtra = function() {
+  this.listExtra = function() {
       this.extraList = [];
       var totChange = 0;
       var extCnt = 0;

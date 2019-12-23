@@ -409,8 +409,9 @@ angular.module('myApp')
               if (detail.type === 1) {
                 detail.isDone = Boolean(eval(detail.attributeName));
               }
-              if (detail.type === 3) {
-                detail.inputText = order.attributes.taskData[detail.attributeName]
+              if (detail.type === 2 || detail.type === 3 || detail.type === 4) {
+                detail.inputText = order.attributes.taskData[detail.attributeName];
+                detail.isDone = Boolean(detail.inputText);
               }
            });
           });
@@ -420,6 +421,11 @@ angular.module('myApp')
       column.phases.forEach(function(phase) {
         phase.isDone = true;
         phase.tasks.forEach(function(task) {
+          if(task.condition) {
+            task.isShow = Boolean(eval(task.condition)); // evaluate condition to show task
+          } else {
+            task.isShow = true;
+          }
           task.isDisabled = false;  // task is disabled as long as one of its details is shown and required and not done
           var unDoneCnt = 0; // automatically mark task done if all its details are done
           var doneCnt = 0;
