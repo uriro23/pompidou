@@ -11,42 +11,49 @@
 		  <tbody>
 		  <tr>
 
-		    <td style="width:20%">
+		    <td>
 		      <label>
 		        הזמנה מס':
 		      </label>
 		      <span>{{exitListModel.currentOrder.number}}</span>
 		    </td>
 
-		    <td style="width:20%">
+        <td>
 		      <label>
 		        תאריך:
 		      </label>
 		      <span>{{exitListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}</span>
 		    </td>
 
-        <td style="width:20%">
+        <td>
           <label>
 שעת מסירה:
           </label>
           <span>{{exitListModel.currentOrder.eventTime | date: 'H:mm'}}</span>
         </td>
 
-        <td style="width:20%">
+        <td>
           <label>
 שעת יציאה:
           </label>
           <span>{{exitListModel.currentOrder.exitTime | date: 'H:mm'}}</span>
         </td>
 
-        <td style="width:20%">
-		      <label>
-		        משתתפים:
-		      </label>
-		      <span>{{exitListModel.currentOrder.noOfParticipants}}</span>
-		    </td>
+        <td>
+          <label>
+            משתתפים:
+          </label>
+          <span>{{exitListModel.currentOrder.noOfParticipants}}</span>
+        </td>
 
-		  </tr>
+        <td>
+          <label>
+            מתוכם ילדים:
+          </label>
+          <span>{{exitListModel.currentOrder.children}}</span>
+        </td>
+
+      </tr>
 
 
 		  <tr>
@@ -75,31 +82,65 @@
 		      <span>{{exitListModel.customer.workPhone}}</span>
 		    </td>
 		  </tr>
+      <tr></tr>
+      <tr>
+         <td ng-show="exitListModel.currentOrder.taskData.isSurpriseParty">
+          <h4>זוהי מסיבת הפתעה!!!</h4>
+        </td>
+        <td ng-show="exitListModel.currentOrder.taskData.surpriseContact">
+          <label>לדבר עם</label>
+          <span>{{exitListModel.currentOrder.taskData.surpriseContact}}</span>
+        </td>
+        <td ng-show="exitListModel.currentOrder.taskData.eventCause">
+          <label>מה חוגגים:</label>
+          <span>{{exitListModel.currentOrder.taskData.eventCause}}</span>
+        </td>
+      </tr>
 
 
 		  </tbody>
 		</table>
 
-
-		<div>
-		  <label>
-		    כתובת:
-		  </label>
-		  <span>{{exitListModel.customer.address}}</span>
-		</div>
-		<div>
-		  <label>
-		    מקום משלוח:
-		  </label>
-		  <span>{{exitListModel.currentOrder.deliveryLocation}}</span>
-		</div>
-		<div>
+  <div ng-show="exitListModel.currentOrder.taskData.kitchenInstructions">
+    <label>הוראות למטבח:</label>
+    <span>{{exitListModel.currentOrder.taskData.kitchenInstructions}}</span>
+  </div>
+<p></p>
+  <div ng-hide="exitListModel.currentOrder.taskData.isSelfDelivery">
+  <h4>הוראות לשליח:</h4>
+    <div>
+      <label>מיקום האירוע:</label>
+      <span>{{exitListModel.currentOrder.taskData.address}}</span>
+    </div>
+    <div ng-show="exitListModel.currentOrder.taskData.parking">
+      <label>גישה וחניה:</label>
+      <span>{{exitListModel.currentOrder.taskData.parking}}</span>
+    </div>
+    <div ng-show="exitListModel.currentOrder.taskData.isCustomerAbsent">
+      <label>הלקוח לא יהיה לקבל את המשלוח</label>
+      &nbsp;&nbsp;
+      <label>איש קשר:</label>
+      <span>{{exitListModel.currentOrder.taskData.contactPersonDetails}}</span>
+    </div>
+  </div>
+  <div ng-show="exitListModel.currentOrder.taskData.isSelfDelivery">
+    <h4>איסוף עצמי</h4>
+  </div>
+<p></p>
+    <h4 ng-show="exitListModel.currentOrder.taskData.isServiceOnSite">
+      נדרש סרוויס באירוע!
+    </h4>
+  <div ng-show="exitListModel.currentOrder.taskData.serviceRemarks">
+    <label>הערות לסרוויס:</label>
+    <span>{{exitListModel.currentOrder.taskData.serviceRemarks}}</span>
+  </div>
+		<div ng-show="exitListModel.currentOrder.remarks">
 		  <label>
 		    הערות:
 		  </label>
 		  <span>{{exitListModel.currentOrder.remarks}}</span>
 		</div>
-
+<p></p>
 
 		<table style="width:90%">
 		  <tbody>
