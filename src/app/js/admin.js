@@ -164,45 +164,51 @@ angular.module('myApp')
         return;
       }
       alert('want to copy task definitions from test to prod? if not close this page')
-      // first delete existing taskTypes and taskDetails
-      api.queryTaskTypes()
-        .then(function(types) {
-          api.deleteObjects(types)
+      // first delete existing phases, taskTypes and taskDetails
+      api.queryPhases()
+        .then(function(phases) {
+          api.deleteObjects(phases)
             .then(function() {
-              api.queryTaskDetails()
-                .then(function(details) {
-                  api.deleteObjects(details)
+              api.queryTaskTypes()
+                .then(function(types) {
+                  api.deleteObjects(types)
                     .then(function() {
-                      alert('old prod task definitions deleted, press OK to continue');
-                      // now we create new taskTypes and taskDetails
-                      var tt = [];
-                      var p;
-                      var pc = 0;
-                      var tc = 0;
-                      var dc = 0;
-                      phases.forEach(function(h) {
-                        p = api.initPhase();
-                        p.attributes = h;
-                        tt.push(p);
-                        pc++;
-                      })
-                      taskTypes.forEach(function(t) {
-                        p = api.initTaskType();
-                        p.attributes = t;
-                        tt.push(p);
-                        tc++;
-                      })
-                      taskDetails.forEach(function(d) {
-                        p = api.initTaskDetail();
-                        p.attributes = d;
-                        tt.push(p);
-                        dc++;
-                      })
-                      alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
-                      api.saveObjects(tt)
-                        .then(function() {
-                          alert('done');
-                        })
+                      api.queryTaskDetails()
+                        .then(function(details) {
+                          api.deleteObjects(details)
+                            .then(function() {
+                              alert('old prod task definitions deleted, press OK to continue');
+                              // now we create new taskTypes and taskDetails
+                              var tt = [];
+                              var p;
+                              var pc = 0;
+                              var tc = 0;
+                              var dc = 0;
+                              phases.forEach(function(h) {
+                                p = api.initPhase();
+                                p.attributes = h;
+                                tt.push(p);
+                                pc++;
+                              })
+                              taskTypes.forEach(function(t) {
+                                p = api.initTaskType();
+                                p.attributes = t;
+                                tt.push(p);
+                                tc++;
+                              })
+                              taskDetails.forEach(function(d) {
+                                p = api.initTaskDetail();
+                                p.attributes = d;
+                                tt.push(p);
+                                dc++;
+                              })
+                              alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
+                              api.saveObjects(tt)
+                                .then(function() {
+                                  alert('done');
+                                })
+                            });
+                        });
                     });
                 });
             });
