@@ -20,6 +20,18 @@
         <button class="btn btn-default" ng-click="orderModel.close()">סגור</button>
       </span>
     </div>
+    <div style="display: inline">
+      &nbsp;&nbsp;&nbsp;
+           <span ng-show="!orderModel.order.view.isChanged && orderModel.order.attributes.taskData.kitchenInstructions">
+            <label>הוראות למטבח:</label>
+            <span>{{orderModel.order.attributes.taskData.kitchenInstructions}}</span>
+          </span>
+      &nbsp;&nbsp;&nbsp;
+          <span ng-show="!orderModel.order.view.isChanged">
+            <label>מיקום:</label>
+            <span>{{orderModel.order.attributes.taskData.location}}</span>
+          </span>
+   </div>
     <p></p>
        <div>
           <ng-include src="'app/partials/order/header.html'"></ng-include>

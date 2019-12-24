@@ -401,6 +401,17 @@ angular.module('myApp')
     };
 
     this.checkTasks = function (order) {
+      var t = order.attributes.taskData;
+      // recalc location string
+      if (t.isSelfDelivery) {
+        t.location = 'איסוף עצמי';
+      } else if (t.address) {
+        var i1 = t.address.lastIndexOf(',')+1;
+        t.location = t.address.slice(i1);
+       } else {
+        t.location = 'טרם נקבע';
+      }
+
       var columns = order.view.columns;
       columns.forEach(function(column) {
         column.phases.forEach(function(phase) {
@@ -411,10 +422,10 @@ angular.module('myApp')
               }
               if (detail.type === 2 || detail.type === 3 || detail.type === 4) { // if source given and field not changed, copy source
                 if (detail.source && detail.changedAttribute &&
-                    !order.attributes.taskData[detail.changedAttribute] && Boolean(eval(detail.source))) {
-                  order.attributes.taskData[detail.attributeName] = eval(detail.source);
+                    !t[detail.changedAttribute] && Boolean(eval(detail.source))) {
+                  t[detail.attributeName] = eval(detail.source);
                 }
-                detail.inputText = order.attributes.taskData[detail.attributeName];
+                detail.inputText = t[detail.attributeName];
                 detail.isDone = Boolean(detail.inputText);
              }
          });
@@ -434,9 +445,7 @@ angular.module('myApp')
           var unDoneCnt = 0; // automatically mark task done if all its details are done
           var doneCnt = 0;
           task.details.forEach(function(detail) {
-            if (detail.type === 21) { // save address button - show only is address was changed
-              detail.isShow = eval(order.attributes.taskData[detail.changedAttribute]);
-           } else if(detail.condition) {
+            if(detail.condition) {
               detail.isShow = Boolean(eval(detail.condition)); // evaluate condition to show detail
             } else {
               detail.isShow = true;
@@ -474,6 +483,9 @@ angular.module('myApp')
         var t = order.taskData;
         if (t.isSurpriseParty) {
           done += 'הפתעה,';
+        }
+        if (t.isServiceOnSite) {
+          undone += 'סרוויס באירוע,';
         }
         if (t.isEquipRental && !t.isEquipRentalDone) {
           undone += 'השכרת ציוד,';
@@ -518,7 +530,10 @@ angular.module('myApp')
             done += (t.otherExtras + ',');
           }
         }
-        if (undone.length) { // trim trailing ,
+        if (t.location) {
+          done += ('מיקום: '+t.location+',');
+        }
+        if (!done.length && undone.length) { // trim trailing , only if undone is also the end of the list
           undone = undone.slice(0, undone.length - 1)
         }
         if (done.length) { // trim trailing ,

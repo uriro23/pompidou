@@ -59,11 +59,11 @@ angular.module('myApp')
       this.orderChanged('tasks');
     };
 
-  this.saveAddress = function(detail) {
+  this.saveCustomerAttribute = function(detail) {
     var that = this;
     api.queryCustomers(this.order.attributes.customer)
       .then(function(custs) {
-        custs[0].attributes.address = that.order.attributes.taskData.address;
+        custs[0].attributes[detail.attributeName] = that.order.attributes.taskData[detail.attributeName];
        api.saveObj(custs[0])
          .then(function(c) {
            if (detail.changedAttribute) {
