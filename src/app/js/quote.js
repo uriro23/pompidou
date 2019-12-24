@@ -161,7 +161,7 @@ angular.module('myApp')
           return cat.type === 5; // externalServices
         })[0];
         this.externalServicesItems = that.currentQuote.items.filter(function (item) {
-          return (item.category.type === 5);  // externalServices
+          return (item.category.type === 5 && !item.isFreeItem);  // externalServices
         });
         this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
           return prev + (currentItem.isFreeItem?0:currentItem.price);
