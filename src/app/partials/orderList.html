@@ -32,6 +32,7 @@
 <table style="width: 99%">
   <tr>
     <td style="width: 80%">
+      <span ng-hide="orderListModel.user.attributes.isKitchenStaff">
       <span>מכירות</span>
       <input type="radio" ng-model="orderListModel.queryType" value="sales"
              ng-change="orderListModel.setQuery()">
@@ -47,6 +48,7 @@
               ng-options="year for year in orderListModel.years">
         <option value=""></option>
       </select>
+      </span>
       &nbsp;&nbsp;
       &nbsp;&nbsp;<span>מבוטלים:</span>
       <input type="checkbox"

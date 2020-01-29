@@ -60,12 +60,14 @@
       <th style="text-align: left">username</th>
       <th style="text-align: left">email</th>
       <th>sales?</th>
+      <th>kitchen?</th>
       </thead>
       <tbody>
       <tr ng-repeat="user in adminModel.users">
         <td style="text-align: left">{{user.attributes.username}}</td>
         <td style="text-align: left">{{user.attributes.email}}</td>
         <td>{{user.attributes.isSalesPerson}}</td>
+        <td>{{user.attributes.isKitchenStaff}}</td>
         <td>
           <button class="btn btn-warning"
                   ng-hide="user.isInRole || adminModel.isUserRefresh"
@@ -99,6 +101,10 @@
       <input type="checkbox"
              ng-show="adminModel.isNewUser"
              ng-model="adminModel.user.attributes.isSalesPerson">
+      <span ng-show="adminModel.isNewUser">צוות מטבח?</span>
+      <input type="checkbox"
+             ng-show="adminModel.isNewUser"
+             ng-model="adminModel.user.attributes.isKitchenStaff">
       <button ng-show="adminModel.isNewUser"
               class="btn btn-primary btn-sm"
               ng-click="adminModel.createUser()">צור</button>

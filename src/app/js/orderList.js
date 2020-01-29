@@ -16,7 +16,12 @@ angular.module('myApp')
     }
     $rootScope.title = 'אירועים';
 
-     $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : 'show';
+     $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
+
+     // for kitchen staff force future query
+     if (user.attributes.isKitchenStaff && queryType !== 'future') {
+       $state.go('orderList',{'queryType':'future'});
+     }
 
     if (user.attributes.username === 'yuval' || user.attributes.username === 'uri') {
       orderService.generateOrderColors();

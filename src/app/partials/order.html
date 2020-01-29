@@ -40,32 +40,35 @@
         <tabset>
           <tab heading="בונוסים"
                ng-show="orderModel.order.view.orderStatus.id > 1 &&
-                        orderModel.order.view.orderStatus.id < 6">
+                        orderModel.order.view.orderStatus.id < 6 && !orderModel.user.attributes.isKitchenStaff">
             <ng-include src="'app/partials/order/bonuses.html'"></ng-include>
           </tab>
-            <tab heading="אירועים קודמים" ng-show="orderModel.order.attributes.customer"
+            <tab heading="אירועים קודמים" ng-show="orderModel.order.attributes.customer && !orderModel.user.attributes.isKitchenStaff"
               select="orderModel.getPrevOrders()">
               <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
             </tab>
           <tab heading="מסמכים"
-               ng-show="orderModel.order.view.orderStatus.id > 0">
+               ng-show="orderModel.order.view.orderStatus.id > 0 && !orderModel.user.attributes.isKitchenStaff">
           <ng-include src="'app/partials/order/docs.html'"></ng-include>
           </tab>
           <tab heading="תפריט מודפס"
                ng-show="orderModel.order.view.orderStatus.id > 1 &&
-                        orderModel.order.view.orderStatus.id < 6">
+                        orderModel.order.view.orderStatus.id < 6 && !orderModel.user.attributes.isKitchenStaff">
           <ng-include src="'app/partials/order/printedMenu.html'"></ng-include>
           </tab>
-            <tab heading="פעילויות">
+            <tab heading="פעילויות" ng-show="!orderModel.user.attributes.isKitchenStaff">
                 <ng-include src="'app/partials/order/activities.html'"></ng-include>
             </tab>
-          <tab heading="פרטים כלליים" active="orderModel.isActiveGeneralTab">
+          <tab heading="פרטים כלליים"
+               ng-show="!orderModel.user.attributes.isKitchenStaff"
+               active="orderModel.isActiveGeneralTab">
             <ng-include src="'app/partials/order/general.html'"></ng-include>
           </tab>
           <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:false}"
                style="font-style: italic; font-weight: 100"
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"
+               ng-show="!orderModel.user.attributes.isKitchenStaff"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
             </tab>
@@ -77,10 +80,14 @@
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
           </tab>
-          <tab heading="ניהול תפריטים:" active="orderModel.isActiveQuoteManagementTab">
+          <tab heading="ניהול תפריטים:"
+               ng-show="!orderModel.user.attributes.isKitchenStaff"
+               active="orderModel.isActiveQuoteManagementTab">
             <ng-include src="'app/partials/order/quoteManagement.html'"></ng-include>
           </tab>
-          <tab heading="משימות" active="orderModel.isActiveTasksTab">
+          <tab heading="משימות"
+               ng-show="!orderModel.user.attributes.isKitchenStaff"
+               active="orderModel.isActiveTasksTab">
             <ng-include src="'app/partials/order/tasks.html'"></ng-include>
           </tab>
         </tabset>

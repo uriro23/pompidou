@@ -9,13 +9,14 @@ angular.module('myApp')
                                      menuTypes, colors, taskTypes, taskDetails, phases,
                                      employees, pRoles, config) {
 
-    $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
       $rootScope.username = user.attributes.username;
     } else {
       $state.go('login');
     }
+
+    $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
 
     this.user = user;
 
@@ -366,7 +367,7 @@ angular.module('myApp')
       };
       window.onblur = function () {
       };
-      $rootScope.menuStatus = 'show';
+      $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
       this.order.attributes = angular.copy(this.order.backupOrderAttr);
       this.setupOrderView();
       if (typeof this.order.attributes.taskData === 'undefined') {
@@ -427,7 +428,15 @@ angular.module('myApp')
       // } else {
       //   this.isActiveGeneralTab = true;
       // }
-      this.isActiveTasksTab = true;
+      if (user.attributes.isKitchenStaff) {
+        if (this.order.attributes.quotes.length) {
+          this.isActiveQuoteTab = true;
+        } else {
+          this.isActiveQuoteManagementTab = true;
+        }
+      } else {
+        this.isActiveTasksTab = true;
+      }
        this.setReadOnly();
       this.order.attributes.empBonuses.forEach(function(role) {
         if (role.employee) {
@@ -465,7 +474,15 @@ angular.module('myApp')
       });
 
       this.setupOrderView();
-      this.isActiveTasksTab = true;
+      if (user.attributes.isKitchenStaff) {
+        if (this.order.attributes.quotes.length) {
+          this.isActiveQuoteTab = true;
+        } else {
+          this.isActiveQuoteManagementTab = true;
+        }
+      } else {
+        this.isActiveTasksTab = true;
+      }
       this.setReadOnly();
       this.handleVatRateChange();
       if (!this.order.view.quote.advance) {
@@ -519,7 +536,15 @@ angular.module('myApp')
       //   this.isActiveQuoteTab = false;
       //   this.isActiveGeneralTab = true;
       // }
-      this.isActiveTasksTab = true;
+      if (user.attributes.isKitchenStaff) {
+        if (this.order.attributes.quotes.length) {
+          this.isActiveQuoteTab = true;
+        } else {
+          this.isActiveQuoteManagementTab = true;
+        }
+      } else {
+        this.isActiveTasksTab = true;
+      }
       this.order.attributes.vatRate = this.vatRate;
       this.order.attributes.activities = [];
       this.setReadOnly();
@@ -532,7 +557,7 @@ angular.module('myApp')
     };
     window.onblur = function () {
     };
-    $rootScope.menuStatus = 'show';
+    $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
     this.order.backupOrderAttr = angular.copy(this.order.attributes);
 
 
