@@ -249,6 +249,13 @@
                     ng-change="catalogItemModel.setShortDescription()"></textarea>
         </td>
       </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>הוראות ללקוח</label></td>
+        <td>
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.instructions"
+                    ng-change="catalogItemModel.setChanged(true)"></textarea>
+        </td>
+      </tr>
     </table>
      <table>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
