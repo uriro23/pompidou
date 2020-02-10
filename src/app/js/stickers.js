@@ -14,6 +14,9 @@ angular.module('myApp')
 
     var ordCategories;
 
+    this.isOrderColors = config.isOrderColors;
+    this.isOrderNumbers = config.isOrderNumbers;
+
     function splitMenuItemsByCategory  (orders) {
       orders.forEach(function (order) {
         order.order.quotes[order.order.activeQuote].items.forEach(function (item) {
@@ -213,13 +216,16 @@ angular.module('myApp')
 
 
   .controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope,
-                                          catalog, categories, measurementUnits,
+                                          catalog, config, categories, measurementUnits,
                                           workOrder) {
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'חטיפים וקינוחים';
 
     var CATEGORY_SNACKS = 1;
     var CATEGORY_DESSERTS = 8;
+
+    this.isOrderColors = config.isOrderColors;
+    this.isOrderNumbers = config.isOrderNumbers;
 
     function editItems (order, category, catalog) {
       return order.order.quotes[order.order.activeQuote].items.filter(function(item) {

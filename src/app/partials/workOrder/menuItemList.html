@@ -60,7 +60,8 @@
       <span>{{order.attributes.customer.firstName}}</span>
       <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
       <span>{{order.attributes.order.exitTime | date:'HH:mm'}}</span>
-      <img src="app/img/smallColors/{{order.attributes.color.stickerColor}}.jpg"/>
+      <img ng-show="workOrderModel.isOrderColors" src="app/img/smallColors/{{order.attributes.color.stickerColor}}.jpg"/>
+      <label ng-show="workOrderModel.isOrderNumbers">[{{order.attributes.color.tId}}]</label>
     </th>
     </thead>
     <tbody>

@@ -45,6 +45,18 @@ angular.module('myApp')
       api.saveObj(config);
     };
 
+    // order identification
+    // determines how orders will be identified in stickers, exitlist, workorder: by color, numbers or both
+
+    this.isOrderColors = config.attributes.isOrderColors;
+    this.isOrderNumbers = config.attributes.isOrderNumbers;
+
+    this.setOrderIdent = function () {
+      config.attributes.isOrderColors = this.isOrderColors;
+      config.attributes.isOrderNumbers = this.isOrderNumbers;
+      api.saveObj(config);
+    };
+
     // pwd
     // ---
 

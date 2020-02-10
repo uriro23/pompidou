@@ -13,6 +13,7 @@
   <th ng-hide="orderTableModel.queryType==='sales'" style="width: 11%">תפריט</th>
   <th ng-show="orderTableModel.queryType==='sales'" style="width: 11%">פרטים</th>
   <th style="width: 7%">סטטוס</th>
+  <th ng-show="orderTableModel.isOrderNumbers && orderTableModel.queryType==='future'">זיהוי</th>
   <th style="width: 7%">סכום</th>
   <th class="hidden-xs"
       ng-show="orderTableModel.queryType==='future'"
@@ -91,7 +92,7 @@
                  order.view.orderStatus.id < 6 &&
                  !order.attributes.isDateUnknown &&
                  !orderTableModel.user.isSalesPerson">
-      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+      <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
               ng-change="orderListModel.setStatus(order)"
               ng-options=
   "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
@@ -103,7 +104,7 @@
                  order.view.orderStatus.id < 6 &&
                  order.attributes.isDateUnknown &&
                  !orderTableModel.user.isSalesPerson">
-      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+      <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
               ng-change="orderListModel.setStatus(order)"
               ng-options=
  "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectNoDate:true}"
@@ -114,7 +115,7 @@
                  orderTableModel.queryType==='sales') &&
                  order.view.orderStatus.id === 0 &&
                  !orderTableModel.user.isSalesPerson">
-      <select ng-model="order.view.orderStatus"  ng-style="order.view.color.style"
+      <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
               ng-change="orderListModel.setStatus(order)"
               ng-options=
    "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectLead:true}"
@@ -141,6 +142,9 @@
     <td ng-hide="orderTableModel.queryType==='future'||
                   orderTableModel.queryType==='sales'">
       {{order.view.orderStatus.name}}
+    </td>
+    <td ng-show="orderTableModel.isOrderNumbers && orderTableModel.queryType==='future'">
+      {{order.view.color.tId}}
     </td>
     <td>{{order.attributes.header.total | currency}}</td>
      <td class="hidden-xs" style="overflow-wrap: break-word"

@@ -3,8 +3,11 @@
 /* Controllers */
 angular.module('myApp')
   .controller('ExitListCtrl', function (api, $state, $filter, $rootScope,
-                                        order, catalog, lov,
+                                        order, catalog, lov, config,
                                         measurementUnits, categories, pRoles, colors) {
+
+    this.isOrderColors = config.isOrderColors;
+    this.isOrderNumbers = config.isOrderNumbers;
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;
     this.categories = categories;

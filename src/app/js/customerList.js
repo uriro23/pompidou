@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('CustomerListCtrl', function ($rootScope, $scope, $state, $modal, api,
-                                            customerService, lov, customers) {
+                                            customerService, lov, customers, config) {
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {

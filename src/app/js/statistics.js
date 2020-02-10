@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('StatisticsCtrl', function ($rootScope, $scope, lov, api, dater, categories,
-                                          menuTypes, referralSources, cancelReasons, customers) {
+                                          menuTypes, referralSources, cancelReasons, customers, config) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();

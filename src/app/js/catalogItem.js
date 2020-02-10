@@ -616,6 +616,7 @@ angular.module('myApp')
     model.categories = allCategories.filter(function(cat) {
       return cat.domain===currentDomain;
     });
+    model.isOrderNumbers = config.isOrderNumbers;
     model.measurementUnits = measurementUnits;
     model.sensitivities = sensitivities;
     model.timeUnits = lov.timeUnits;

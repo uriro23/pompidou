@@ -3,8 +3,9 @@
 		   רשימת יציאה -
       {{exitListModel.customer.firstName+' '+exitListModel.customer.lastName}}
       {{exitListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
-      <img src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
-		</h1>
+      <img ng-show="exitListModel.isOrderColors" src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+      <span ng-show="exitListModel.isOrderNumbers">[{{exitListModel.color.tId}}]</span>
+    </h1>
 
 
 		<table style="width:90%">
@@ -281,7 +282,8 @@
     -
     חטיפים
     &nbsp;
-    <img src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+    <img ng-show="exitListModel.isOrderColors" src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+    <span ng-show="exitListModel.isOrderNumbers">[{{exitListModel.color.tId}}]</span>
   </h3>
   <table style="width:60%">
     <thead>
@@ -308,7 +310,8 @@
     -
     קינוחים
     &nbsp;
-    <img src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+    <img ng-show="exitListModel.isOrderColors" src="app/img/bigColors/{{exitListModel.color.stickerColor}}.jpg"/>
+    <span ng-show="exitListModel.isOrderNumbers">[{{exitListModel.color.tId}}]</span>
   </h3>
   <table style="width:60%">
     <thead>

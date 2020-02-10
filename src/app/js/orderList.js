@@ -5,7 +5,7 @@ angular.module('myApp')
    .controller('OrderListCtrl', function ($rootScope, $state, $scope, $modal,
                                           api, lov, orderService, dater, queryType, customers,
                                           referralSources, cancelReasons,
-                                          recentOpenings, recentClosings, colors) {
+                                          recentOpenings, recentClosings, colors, config) {
       var that = this;
     var user = api.getCurrentUser();
     this.user = user;
@@ -292,6 +292,8 @@ angular.module('myApp')
         tabThis.orders = this.orders;
         tabThis.isDisableLink = false;
         tabThis.user = this.user.attributes;
+        tabThis.isOrderColors = config.isOrderColors;
+        tabThis.isOrderNumbers = config.isOrderNumbers;
       }
     };
 

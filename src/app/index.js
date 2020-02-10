@@ -54,6 +54,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }]
       }
     })
@@ -317,6 +320,9 @@ config(function($stateProvider, $urlRouterProvider) {
             .then(function (objs) {
               return objs;
             });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }]
         }
   })
@@ -332,6 +338,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
           return allCategoriesPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
@@ -390,6 +399,9 @@ config(function($stateProvider, $urlRouterProvider) {
           return api.queryCatalog(1).then(function (obj) {
             return obj;
           });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }],
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
@@ -628,6 +640,9 @@ config(function($stateProvider, $urlRouterProvider) {
         return api.queryCustomers().then(function (objs) {
           return objs;
         });
+      }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
       }]
     }
   })
@@ -753,6 +768,9 @@ config(function($stateProvider, $urlRouterProvider) {
         return api.queryCatalog(). then (function(catalog) {
           return catalog;
         });
+      }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
       }],
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
         return measurementUnitsPromise;

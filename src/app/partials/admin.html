@@ -39,6 +39,18 @@
            ng-class="adminModel.vatError?'bg-danger':null">
     <button class="btn btn-default" ng-click="adminModel.updateVat()">עדכן</button>
   </tab>
+   <tab heading="זיהוי אירועים">
+     <table style="width:15%">
+     <tr>
+       <td><label>צבעים</label></td>
+       <td><input type="checkbox" ng-model="adminModel.isOrderColors" ng-change="adminModel.setOrderIdent()"></td>
+     </tr>
+     <tr>
+       <td><label>מספרים</label></td>
+       <td><input type="checkbox" ng-model="adminModel.isOrderNumbers" ng-change="adminModel.setOrderIdent()"></td>
+     </tr>
+     </table>
+   </tab>
   <tab heading="שינוי סיסמה">
     <table>
       <tbody>
