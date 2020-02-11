@@ -31,7 +31,7 @@ angular.module('myApp')
     var totalPerParticipantFactor = 20;
 
     var fieldList = [
-      'orderStatus','noOfParticipants','eventDate','isDateUnknown',
+      'orderStatus','noOfParticipants','eventDate','isDateUnknown', 'closingDate',
       'customer','eventTime','number', 'exitTime','template', 'header',
       'vatRate', 'referralSource', 'cancelReason', 'createdBy', 'bidDate'
     ];
@@ -168,7 +168,6 @@ angular.module('myApp')
               tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
             }
             tempVec[segIndex].orders.push(order);
-            console.log('order '+orderAttr.number+', index '+segIndex+', tot '+orderAttr.header.totalForStat);
           }
         }
       });
@@ -181,7 +180,6 @@ angular.module('myApp')
           }
         });
       });
-      console.log(tempVec);
       segArray.splice(0,segArray.length); // clear output array
       tot.leads = 0;
       tot.bids = 0;
@@ -214,14 +212,19 @@ angular.module('myApp')
 
       // segmentation by months
       doSegmentation(this.monthStats, this.monthTot, this.monthAvg, function (ord) {
-        var orderDate = that.filterBy === 'eventDate' ? ord.attributes.eventDate : ord.createdAt;
-        return orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
+        var orderDate =
+          that.filterBy === 'eventDate' ? ord.attributes.eventDate :
+              that.filterBy === 'closingDate' ? ord.attributes.closingDate : ord.createdAt;
+        if (orderDate) {
+         return orderDate.getFullYear() * 12 + orderDate.getMonth() - dateBias;
+        } else {
+         return -1;
+        }
       },function (ind) {
         var dateLabel =  angular.copy(that.fromDate);
         dateLabel.setMonth(that.fromDate.getMonth()+ind);
         return dateLabel;
       });
-      console.log(this.monthStats);
       // segmentation by participants
       doSegmentation(this.participantStats, this.participantTot, this.participantAvg, function (ord) {
         if (ord.attributes.noOfParticipants) {
@@ -421,7 +424,9 @@ angular.module('myApp')
                 console.log(order);
               }
               if (!quote.isFixedPrice) {
-                var orderDate = that.filterBy === 'eventDate' ? order.attributes.eventDate : order.createdAt;
+                var orderDate =
+                  that.filterBy === 'eventDate' ? ord.attributes.eventDate :
+                    that.filterBy === 'closingDate' ? ord.attributes.closingDate : ord.createdAt;
                 var monthInd = orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
                 if (!that.categoryOrdersByMonth[monthInd]) {
                   var dateLabel =  angular.copy(that.fromDate);
@@ -462,6 +467,43 @@ angular.module('myApp')
             }
           });
         });
+    };
+
+    this.computeYtdIncrease = function () {
+      var that = this;
+      var date = new Date();
+      var day = new Date().getDate();
+      var month = new Date().getMonth();
+      var year = new Date().getFullYear();
+      var from = new Date(year-1,0,1); // Jan 1st last year
+      var to = new Date(year-1,month,day); // today a year ago
+      api.queryOrdersByRange('closingDate',from,to,fieldList)
+        .then(function(orders1) {
+          that.lastYearCloses = 0;
+          orders1.forEach(function(order) {
+            if (order.attributes.orderStatus === 2 ||
+                order.attributes.orderStatus === 3 ||
+                order.attributes.orderStatus === 4 ||
+                order.attributes.orderStatus === 5) {
+              that.lastYearCloses += order.attributes.header.totalForStat;
+            }
+          });
+          from = new Date(year,0,1); // Jan 1st this year
+          to = new Date(year,month,day);  // today
+         api.queryOrdersByRange('closingDate',from,to,fieldList)
+            .then(function(orders2) {
+              that.thisYearCloses = 0;
+            orders2.forEach(function(order) {
+              if (order.attributes.orderStatus === 2 ||
+                order.attributes.orderStatus === 3 ||
+                order.attributes.orderStatus === 4 ||
+                order.attributes.orderStatus === 5) {
+                that.thisYearCloses += order.attributes.header.totalForStat;
+              }
+            });
+          });
+        });
+
     };
 
     var tabThis;
