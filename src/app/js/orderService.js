@@ -405,11 +405,14 @@ angular.module('myApp')
       // recalc location string
       if (t.isSelfDelivery) {
         t.location = 'איסוף עצמי';
+        t.isShowLocation = true;
       } else if (t.address) {
         var i1 = t.address.lastIndexOf(',')+1;
         t.location = t.address.slice(i1);
+        t.isShowLocation = true;
        } else {
         t.location = 'טרם נקבע';
+        t.isShowLocation = false;
       }
 
       var columns = order.view.columns;
@@ -530,7 +533,7 @@ angular.module('myApp')
             done += (t.otherExtras + ',');
           }
         }
-        if (t.location) {
+        if (t.location && t.isShowLocation) {
           done += ('מיקום: '+t.location+',');
         }
         if (!done.length && undone.length) { // trim trailing , only if undone is also the end of the list
