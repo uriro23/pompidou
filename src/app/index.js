@@ -801,33 +801,55 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-.state ('sensitivityList', {
-    url: '/sensitivityList/:id',
-    templateUrl: 'app/partials/sensitivityList.html',
-    controller: 'SensitivityListCtrl as sensitivityListModel',
-    resolve: {
-      order: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryOrder ($stateParams.id).then (function (orders) {
-          return orders[0];
-        });
-      }],
-      sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
-        return sensitivitiesPromise;
-      }],
-      catalog: ['api', function(api) {
-        return api.queryCatalog(1). then (function(catalog) {
-          return catalog;
-        });
-      }],
-      customers: ['api', function (api) {
-        return api.queryCustomers().then(function (objs) {
-          return objs;
-        });
-      }],
-      colors: ['colorsPromise', function (colorsPromise) {
-        return colorsPromise;
-      }]
-    }
-  });
+    .state ('sensitivityList', {
+      url: '/sensitivityList/:id',
+      templateUrl: 'app/partials/sensitivityList.html',
+      controller: 'SensitivityListCtrl as sensitivityListModel',
+      resolve: {
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+          return sensitivitiesPromise;
+        }],
+        catalog: ['api', function(api) {
+          return api.queryCatalog(1). then (function(catalog) {
+            return catalog;
+          });
+        }],
+        customers: ['api', function (api) {
+          return api.queryCustomers().then(function (objs) {
+            return objs;
+          });
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }]
+      }
+    })
+.state ('instructionsList', {
+  url: '/instructionsList/:id',
+  templateUrl: 'app/partials/instructionsList.html',
+  controller: 'InstructionsListCtrl as instructionsListModel',
+  resolve: {
+    order: ['$stateParams', 'api', function ($stateParams, api) {
+      return api.queryOrder ($stateParams.id).then (function (orders) {
+        return orders[0];
+      });
+    }],
+   catalog: ['api', function(api) {
+      return api.queryCatalog(1). then (function(catalog) {
+        return catalog;
+      });
+    }],
+    customers: ['api', function (api) {
+      return api.queryCustomers().then(function (objs) {
+        return objs;
+      });
+    }]
+  }
+});
 });
 

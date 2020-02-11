@@ -1,0 +1,58 @@
+<div class="quoteMainContainer">
+
+  <div class="quoteMainContent">
+
+    <!-- Top Purple line  -->
+    <div class="purpleBG topQuoteLine"></div>
+
+
+    <!-- Header + main logo -->
+    <div class="quoteTextBox">
+      <h2 class="purpleText bold quoteMainTitle">
+        הוראות הכנה והגשה
+      </h2>
+      <div class="quoteLogo">
+        <img align="left" src="app/img/logo.png"/>
+      </div>
+    </div>
+
+    <!-- Customer's details + nice image -->
+    <div class="quoteTextBox quoteDetails">
+
+      <div class="floatRight">
+
+        <span class="bold">שם:</span>
+        <span>{{instructionsListModel.customer.attributes.firstName+' '+
+                instructionsListModel.customer.attributes.lastName}}</span>
+        <br>
+        <span class="bold">תאריך האירוע:</span>
+        <span>{{instructionsListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
+
+      </div>
+
+
+      <!-- image next to customer's details -->
+      <div class="quoteTitleImg floatLeft">
+        <div class="quotePhoneOnImg bold purpleText">טלפון: 054-7514061 </div>
+        <img align="left" src="app/img/box_1.jpg"/>
+      </div>
+
+    </div>
+
+    <div class="quoteTextBox quoteDetails">
+      <div class="floatRight">
+        <p></p>
+        <div ng-repeat="instructions in instructionsListModel.instructions">
+          <div>
+            <label>{{instructions.title}}</label>
+          </div>
+          <div>
+            <span>{{instructions.text}}</span>
+          </div>
+          <p></p>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

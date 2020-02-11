@@ -38,6 +38,8 @@
            ng-model="adminModel.vatRate"
            ng-class="adminModel.vatError?'bg-danger':null">
     <button class="btn btn-default" ng-click="adminModel.updateVat()">עדכן</button>
+    <p></p>
+    <div>יש לרענן את הדף (F5) אחרי השינוי</div>
   </tab>
    <tab heading="זיהוי אירועים">
      <table style="width:15%">
@@ -50,6 +52,8 @@
        <td><input type="checkbox" ng-model="adminModel.isOrderNumbers" ng-change="adminModel.setOrderIdent()"></td>
      </tr>
      </table>
+     <p></p>
+     <div>יש לרענן את הדף (F5) אחרי השינוי</div>
    </tab>
   <tab heading="שינוי סיסמה">
     <table>
