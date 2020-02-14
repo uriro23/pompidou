@@ -1,5 +1,6 @@
 <h2>
   <span ng-show="orderListModel.queryType==='future'">אירועים צפויים</span>&nbsp;&nbsp;
+  <span ng-show="orderListModel.queryType==='invoices'">הוצאת חשבוניות</span>
   <span ng-show="orderListModel.queryType==='year'">
     <span>אירועים בשנת</span>&nbsp;<span>{{orderListModel.queryYear}}</span>
   </span>
@@ -39,9 +40,12 @@
       <span>  עתידיים </span>
       <input type="radio" ng-model="orderListModel.queryType" value="future"
                                      ng-change="orderListModel.setQuery()">
-     <span>תבניות </span>
+     <span>חשבוניות </span>
+      <input type="radio" ng-model="orderListModel.queryType" value="invoices"
+             ng-change="orderListModel.setQuery()">
+       <span>תבניות </span>
       <input type="radio" ng-model="orderListModel.queryType" value="templates"
-                                     ng-change="orderListModel.setQuery()">
+             ng-change="orderListModel.setQuery()">
       <span>אירועי עבר משנת:</span>
       <select ng-model="orderListModel.queryYear"
               ng-change="orderListModel.setQueryYear()"

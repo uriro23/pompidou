@@ -9,12 +9,14 @@
   <th class="hidden-xs" ng-show="orderTableModel.queryType==='future'" style="width: 4%">יציאה</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width: 11%">לקוח</th>
   <th ng-hide="orderTableModel.queryType==='customer'" style="width:1%">טל'</th>
+  <th ng-show="orderTableModel.queryType==='invoices'" style="width:10%">חשבונית ע"ש</th>
   <th style="width: 5%">סועדים</th>
   <th ng-hide="orderTableModel.queryType==='sales'" style="width: 11%">תפריט</th>
   <th ng-show="orderTableModel.queryType==='sales'" style="width: 11%">פרטים</th>
   <th style="width: 7%">סטטוס</th>
   <th ng-show="orderTableModel.isOrderNumbers && orderTableModel.queryType==='future'">זיהוי</th>
-  <th style="width: 7%">סכום</th>
+  <th ng-hide="orderTableModel.queryType==='invoices'" style="width: 7%">סכום</th>
+  <th ng-show="orderTableModel.queryType==='invoices'" style="width: 7%">לפני מע"מ</th>
   <th class="hidden-xs"
       ng-show="orderTableModel.queryType==='future'"
       style="width: 21%">
@@ -25,6 +27,7 @@
       style="width: 21%">
     פעילות אחרונה
   </th>
+  <th ng-show="orderTableModel.queryType==='invoices'">בוצע</th>
 <th  class="hidden-xs" style="width: 6%">יוצר</th>
   </thead>
   <tbody>
@@ -74,6 +77,9 @@
       <a href="tel:{{order.view.customer.anyPhone}}">
         <img src="app/img/phone.png">
       </a>
+    </td>
+    <td ng-show="orderTableModel.queryType==='invoices'">
+      {{order.attributes.taskData.invoiceName}}
     </td>
     <td>{{order.attributes.noOfParticipants}}</td>
     <td ng-show="order.view.orderStatus.id === 0">
@@ -146,8 +152,13 @@
     <td ng-show="orderTableModel.isOrderNumbers && orderTableModel.queryType==='future'">
       {{order.view.color.tId}}
     </td>
-    <td>{{order.attributes.header.total | currency}}</td>
-     <td class="hidden-xs" style="overflow-wrap: break-word"
+    <td ng-hide="orderTableModel.queryType==='invoices'">
+      {{order.attributes.header.total | currency}}
+    </td>
+    <td ng-show="orderTableModel.queryType==='invoices'">
+      {{order.attributes.header.totalBeforeVatForInvoice | currency}}
+    </td>
+    <td class="hidden-xs" style="overflow-wrap: break-word"
          ng-show="orderTableModel.queryType==='future'">
        <span class="taskRequired">{{order.attributes.header.extraUndone}}</span>
        <span class="taskNormal">{{order.attributes.header.extraDone}}</span>
@@ -156,6 +167,9 @@
       ng-show="orderTableModel.queryType==='sales'">
       <span>{{order.attributes.header.activityDate | date:'dd/MM/yy'}}</span>
       <span>{{order.attributes.header.activityText}}</span>
+    </td>
+    <td ng-show="orderTableModel.queryType==='invoices'">
+      <input type="checkbox" ng-model="order.view.isInvoiceDone" ng-change="orderListModel.setInvoiceDone(order)">
     </td>
      <td class="hidden-xs">{{order.attributes.createdBy}}</td>
   </tr>

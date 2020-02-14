@@ -103,7 +103,7 @@ angular.module('myApp')
           if (bt) {
             b1 +=  bt.getHours()/24 + bt.getMinutes()/1440;
           }
-          return that.queryType === 'future' ? a1 - b1 : b1 - a1;
+          return that.queryType === 'future' || that.queryType === 'invoices' ? a1 - b1 : b1 - a1;
          }
       });
       this.setOrderTableParams();
@@ -141,7 +141,14 @@ angular.module('myApp')
             return cr.tId === fetchedOrder.attributes.cancelReason;
           })[0];
         }
-        fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today() ||
+        if (fetchedOrder.attributes.tasks) {
+          fetchedOrder.view.isInvoiceDone = fetchedOrder.attributes.tasks.filter(function (task) {
+            return task.tId === 16;  // !!! tId of invoice task  -- don't move it !!!
+          })[0].isDone;
+        } else {
+          fetchedOrder.view.isInvoiceDone = false;
+        }
+          fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today() ||
                                         fetchedOrder.view.orderStatus.id === 6;
       });
       this.noOfFetchedOrders = fetchedOrders.length;
@@ -164,7 +171,7 @@ angular.module('myApp')
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','isDateUnknown',
         'customer','eventTime','number', 'referralSource', 'cancelReason','cancelReasonText',
-        'exitTime','template','remarks','header', 'activities', 'color', 'createdBy'
+        'exitTime','template','remarks','header', 'activities', 'tasks', 'taskData', 'color', 'createdBy'
       ];
       if (this.queryType !== 'year') {
         this.queryYear = undefined;
@@ -187,6 +194,19 @@ angular.module('myApp')
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
               return !ord.attributes.template && !ord.attributes.isDateUnknown;
+            });
+            that.enrichOrders();
+          });
+          break;
+        case 'invoices':
+          api.queryFutureOrders(fieldList).then(function (orders) {
+            var CONST_INVOICE_PERIOD = 7;
+            var endDate = dater.today();
+            endDate.setDate(endDate.getDate() + CONST_INVOICE_PERIOD);
+            fetchedOrders = orders.filter (function (ord) {
+              return !ord.attributes.template && !ord.attributes.isDateUnknown &&
+                (ord.attributes.orderStatus === 3 || ord.attributes.orderStatus === 4 || ord.attributes.orderStatus === 5) &&
+                ord.attributes.eventDate < endDate;
             });
             that.enrichOrders();
           });
@@ -277,6 +297,14 @@ angular.module('myApp')
         orderService.setStatus(order);
         api.saveObj(order);
       }
+    };
+
+    this.setInvoiceDone = function (order) {
+      var invoiceTask = order.attributes.tasks.filter(function(task) {
+        return task.tId === 16; // !!! tId of invoice task  -- don't move it !!!
+      })[0];
+      invoiceTask.isDone = order.view.isInvoiceDone;
+      api.saveObj(order);
     };
 
     this.newOrder = function () {

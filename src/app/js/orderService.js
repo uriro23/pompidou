@@ -549,6 +549,7 @@ angular.module('myApp')
           'menuType': currentQuote.menuType,
           'total': currentQuote.total,
           'totalForStat': currentQuote.totalForStat,
+          'totalBeforeVatForInvoice': currentQuote.totalBeforeVatForInvoice,
           'balance': currentQuote.balance,
           'transportationInclVat': currentQuote.transportationInclVat,
           'discountRate': currentQuote.discountRate,
