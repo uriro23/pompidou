@@ -125,6 +125,16 @@
                ng-change="financialModel.setNoQuantities()">
     </td>
   </tr>
+  <tr ng-show="financialModel.order.view.quote.waitersFee">
+    <td> <label>למלצרים - לא לחשבונית</label></td>
+    <td></td>
+    <td>{{financialModel.order.view.quote.waitersFee | currency}}</td>
+  </tr>
+  <tr>
+    <td><label>לפני מע"מ לחשבונית</label></td>
+    <td></td>
+    <td>{{financialModel.order.view.quote.totalBeforeVatForInvoice | currency}}</td>
+  </tr>
   </tbody>
 </table>
 </div>
