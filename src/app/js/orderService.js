@@ -4,53 +4,40 @@ angular.module('myApp')
 
   .service('orderService', function ($rootScope, $state, api, lov, dater, colorsPromise) {
 
-    this.calcTotal = function (quote, isBusinessEvent, vatRate) {
-     if(quote.isFixedPrice) {
-        quote.total = quote.fixedPrice;
-        quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
-      } else {
-       quote.totalForStat = quote.subTotal +
-                            quote.discount +
-                            quote.priceIncrease;
-       quote.totalBeforeVat = quote.totalForStat +
-                              quote.extraServices;
-        if (isBusinessEvent) {
-           quote.vat = Math.round(quote.totalBeforeVat * vatRate);
-           quote.total = quote.totalBeforeVat + quote.vat;
-           quote.transportationInclVat = quote.transportation * (1 + vatRate); // just to display on order list
-         } else {
-           quote.vat = 0;
-           quote.total = quote.totalBeforeVat;
-           quote.totalForStat = quote.totalForStat / (1 + vatRate);  // stat is before vat
-           quote.transportationInclVat = quote.transportation;
-         }
-       }
 
-      quote.balance = quote.total - quote.advance;
-
-      // the following are for displaying vat in invoice even if non business event
-      quote.totalBeforeVatForInvoice = quote.total / (1 + vatRate);
-      quote.vatForInvoice = quote.totalBeforeVatForInvoice * vatRate;
-    };
-
-    this.calcSubTotal = function (quote, isBusinessEvent, vatRate, participants) {
-
+    this.calcTotal = function (quote, order) {
       var subTotal = 0;
+      var subTotalForStat = 0; // doest not include extra services, except disposables and liquids
       var foodPrice = 0;
       var transportation = 0;
       var priceIncrease = 0;
       var extraServices = 0;
+      var waitersFee = 0;
       var boxCount = 0;
       var satiety = 0;
       var isHeavyweight = false;
       var priceIncreaseItem;
+      lov.specialTypes.forEach(function(st) {
+        if (order.attributes.taskData) {
+          delete order.attributes.taskData[st.exists];
+          delete order.attributes.taskData[st.desc];
+        }
+      });
       quote.items.forEach(function(thisItem) {
         if (thisItem.category.type !== 4) {  // not priceIncrease
           if (!thisItem.isFreeItem) {
             if (thisItem.category.type === 5) {
+              // exclude extraServices from total for stats, except disposables and liquids
+              if (thisItem.specialType === 1 || thisItem.specialType === 5 ) {
+                subTotalForStat += thisItem.price;
+              }
               extraServices += thisItem.price;
-            } else if (thisItem.category.type < 4) {
+              if (thisItem.specialType === 3) {  // accumulate waiters fee which is deducted from invoice
+                waitersFee += thisItem.price;
+              }
+            } else  {
               subTotal += thisItem.price;
+              subTotalForStat += thisItem.price;
             }
             if (thisItem.category.type === 3) {  // just to display transportation  on order list
               transportation += thisItem.price;
@@ -62,6 +49,20 @@ angular.module('myApp')
           satiety += thisItem.satietyIndex;
           if (thisItem.category.type === 2) {  // heavy food category
             isHeavyweight = true;
+          }
+          if (thisItem.specialType) {
+            var specialType = lov.specialTypes.filter(function(st) {
+              return st.id === thisItem.specialType;
+            })[0];
+            if (!order.attributes.taskData) {
+              order.attributes.taskData = {};
+            }
+            order.attributes.taskData[specialType.exist] = true;
+            if (order.attributes.taskData[specialType.desc]) {
+              order.attributes.taskData[specialType.desc] += (', ' + thisItem.productDescription);
+            } else {
+              order.attributes.taskData[specialType.desc] = thisItem.productDescription;
+            }
           }
         } else {
           priceIncreaseItem = thisItem;
@@ -77,13 +78,41 @@ angular.module('myApp')
       quote.transportation = Math.round(transportation);
       quote.priceIncrease = Math.round(priceIncrease);
       quote.extraServices = Math.round(extraServices);
+      quote.waitersFee = Math.round(waitersFee);
       quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
-      quote.perPerson = Math.round((quote.subTotal + quote.discount) / participants);
+      quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.attributes.noOfParticipants);
       quote.boxEstimate = boxCount;
       quote.satietyIndex = satiety;
       quote.isHeavyweight = isHeavyweight;
 
-      this.calcTotal(quote, isBusinessEvent, vatRate);
+      if(quote.isFixedPrice) {
+        quote.total = quote.fixedPrice;
+        quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
+        quote.totalForStat = quote.fixedPrice / (1 + order.attributes.vatRate);  // stat is before vat
+      } else {
+        quote.totalForStat = subTotalForStat + quote.discount + quote.priceIncrease;
+        quote.totalBeforeVat = quote.subTotal + quote.discount + quote.priceIncrease + quote.extraServices;;
+        if (order.attributes.isBusinessEvent) {
+          quote.vat = Math.round(quote.totalBeforeVat * order.attributes.vatRate);
+          quote.total = quote.totalBeforeVat + quote.vat;
+          quote.transportationInclVat = quote.transportation * (1 + order.attributes.vatRate); // just to display on order list
+          quote.waitersFee = quote.waitersFee * (1 + order.attributes.vatRate);
+        } else {
+          quote.vat = 0;
+          quote.total = quote.totalBeforeVat;
+          quote.totalForStat = quote.totalForStat / (1 + order.attributes.vatRate);  // stat is before vat
+          quote.transportationInclVat = quote.transportation;
+        }
+      }
+
+      quote.balance = quote.total - quote.advance;
+
+      // the following are for displaying vat in invoice even if non business event
+      // waiters fee is not included in invoice
+       quote.totalBeforeVatForInvoice = (quote.total - quote.waitersFee) / (1 + order.attributes.vatRate);
+
+
+      this.checkTasks(order);
     };
 
     this.orderChanged = function (order, field) {
@@ -261,6 +290,13 @@ angular.module('myApp')
           order.delAttributes = {contact: true}
         }
       }
+      if (!thisOrder.referrer) {   // if referrer is changed to null, make sure it is deleted in parse. see api.saveObj
+        if (order.delAttributes) {
+          order.delAttributes.referrer = true
+        } else {
+          order.delAttributes = {referrer: true}
+        }
+      }
 
       this.setStatus(order);
 
@@ -369,6 +405,20 @@ angular.module('myApp')
     };
 
     this.checkTasks = function (order) {
+      var t = order.attributes.taskData;
+      // recalc location string
+      if (t.isSelfDelivery) {
+        t.location = 'איסוף עצמי';
+        t.isShowLocation = true;
+      } else if (t.address) {
+        var i1 = t.address.lastIndexOf(',')+1;
+        t.location = t.address.slice(i1);
+        t.isShowLocation = true;
+       } else {
+        t.location = 'טרם נקבע';
+        t.isShowLocation = false;
+      }
+
       var columns = order.view.columns;
       columns.forEach(function(column) {
         column.phases.forEach(function(phase) {
@@ -377,7 +427,15 @@ angular.module('myApp')
               if (detail.type === 1) {
                 detail.isDone = Boolean(eval(detail.attributeName));
               }
-           });
+              if (detail.type === 2 || detail.type === 3 || detail.type === 4) { // if source given and field not changed, copy source
+                if (detail.source && detail.changedAttribute &&
+                    !t[detail.changedAttribute] && Boolean(eval(detail.source))) {
+                  t[detail.attributeName] = eval(detail.source);
+                }
+                detail.inputText = t[detail.attributeName];
+                detail.isDone = Boolean(detail.inputText);
+             }
+         });
           });
         });
       });
@@ -385,6 +443,11 @@ angular.module('myApp')
       column.phases.forEach(function(phase) {
         phase.isDone = true;
         phase.tasks.forEach(function(task) {
+          if(task.condition) {
+            task.isShow = Boolean(eval(task.condition)); // evaluate condition to show task
+          } else {
+            task.isShow = true;
+          }
           task.isDisabled = false;  // task is disabled as long as one of its details is shown and required and not done
           var unDoneCnt = 0; // automatically mark task done if all its details are done
           var doneCnt = 0;
@@ -427,6 +490,9 @@ angular.module('myApp')
         var t = order.taskData;
         if (t.isSurpriseParty) {
           done += 'הפתעה,';
+        }
+        if (t.isServiceOnSite) {
+          undone += 'סרוויס באירוע,';
         }
         if (t.isEquipRental && !t.isEquipRentalDone) {
           undone += 'השכרת ציוד,';
@@ -471,7 +537,10 @@ angular.module('myApp')
             done += (t.otherExtras + ',');
           }
         }
-        if (undone.length) { // trim trailing ,
+        if (t.location && t.isShowLocation) {
+          done += ('מיקום: '+t.location+',');
+        }
+        if (!done.length && undone.length) { // trim trailing , only if undone is also the end of the list
           undone = undone.slice(0, undone.length - 1)
         }
         if (done.length) { // trim trailing ,
@@ -484,6 +553,7 @@ angular.module('myApp')
           'menuType': currentQuote.menuType,
           'total': currentQuote.total,
           'totalForStat': currentQuote.totalForStat,
+          'totalBeforeVatForInvoice': currentQuote.totalBeforeVatForInvoice,
           'balance': currentQuote.balance,
           'transportationInclVat': currentQuote.transportationInclVat,
           'discountRate': currentQuote.discountRate,

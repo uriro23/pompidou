@@ -374,6 +374,9 @@ angular.module('myApp')
      if (model.item.view.packageMeasurementUnit) {
        model.item.attributes.packageMeasurementUnit = model.item.view.packageMeasurementUnit.tId;
      }
+     if (model.item.view.specialType) {
+       model.item.attributes.specialType = model.item.view.specialType.id;
+     }
      model.item.attributes.minTimeUnit = model.item.view.minTimeUnit.id;
      model.item.attributes.maxTimeUnit = model.item.view.maxTimeUnit.id;
      model.item.attributes.muFactor = Number(model.item.attributes.muFactor);
@@ -489,6 +492,11 @@ angular.module('myApp')
         model.item.view.packageMeasurementUnit = model.measurementUnits.filter(function (mes) {
           return mes.tId === model.item.attributes.packageMeasurementUnit;
         }) [0];
+        if (typeof model.item.attributes.specialType === 'number') {
+          model.item.view.specialType = lov.specialTypes.filter(function (st) {
+            return st.id === model.item.attributes.specialType;
+          }) [0];
+        }
         if (typeof model.item.attributes.minTimeUnit === 'number') {
           model.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
             return tu.id === model.item.attributes.minTimeUnit;
@@ -608,9 +616,11 @@ angular.module('myApp')
     model.categories = allCategories.filter(function(cat) {
       return cat.domain===currentDomain;
     });
+    model.isOrderNumbers = config.isOrderNumbers;
     model.measurementUnits = measurementUnits;
     model.sensitivities = sensitivities;
     model.timeUnits = lov.timeUnits;
+    model.specialTypes = lov.specialTypes;
     model.isNewItem = $state.current.name==='newCatalogItem';
    if (model.isNewItem) {
      $rootScope.title = 'קטלוג - פריט חדש';

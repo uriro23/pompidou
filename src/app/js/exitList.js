@@ -3,8 +3,11 @@
 /* Controllers */
 angular.module('myApp')
   .controller('ExitListCtrl', function (api, $state, $filter, $rootScope,
-                                        order, catalog, lov,
+                                        order, catalog, lov, config,
                                         measurementUnits, categories, pRoles, colors) {
+
+    this.isOrderColors = config.isOrderColors;
+    this.isOrderNumbers = config.isOrderNumbers;
     this.catalog = catalog;
     this.measurementUnits = measurementUnits;
     this.categories = categories;
@@ -118,9 +121,10 @@ angular.module('myApp')
     //filter categories - only those in order and  are food
     this.filteredCategories = this.categories.filter(function (cat) {
       var categoryItems = exitListItems.filter(function (item) {
-        return (item.category.tId === cat.tId);
+        return (item.category.tId === cat.tId) &&
+               (cat.type < 3 || (cat.type === 5 && item.specialType === 1)); // include food and disposable dishes
       });
-      return (categoryItems.length > 0) && cat.type < 3; // is food category
+      return (categoryItems.length > 0);
     });
 
     this.vec = [];
@@ -141,7 +145,9 @@ angular.module('myApp')
       };
 
       var catItems = exitListItems.filter(function (item) {
-        return (item.category.tId === category.tId && !item.isExcludeWholeItem);
+        return (item.category.tId === category.tId &&
+          (category.type < 3 || (category.type === 5 && item.specialType === 1)) && // include food and disposable dishes
+          !item.isExcludeWholeItem);
       }).sort(function(a,b) {
         if (a.productName > b.productName) {
           return 1;

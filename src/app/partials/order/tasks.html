@@ -6,7 +6,7 @@
         <div ng-repeat="phase in column.phases">
         <h4 ng-class="phase.isDone?'taskDone':null">{{phase.description}}</h4>
         <table ng-disabled="tasksModel.readOnly.is">
-          <tr ng-repeat="task in phase.tasks">
+          <tr ng-repeat="task in phase.tasks" ng-show="task.isShow">
             <td style="vertical-align: top;" ng-disabled="">
               <input type="checkbox"
                      ng-model="task.isDone"
@@ -18,15 +18,15 @@
               <table>
                 <tr ng-repeat="detail in task.details" ng-show="detail.isShow">
                   <td>
-                    <div ng-hide="(detail.type===2 || detail.type===4) && !detail.inputText && !detail.isRequired">
+                    <div ng-hide="((detail.type===2 || detail.type===4) && !detail.inputText && !detail.isRequired)
+                                  || detail.type===3 || (detail.type===1 && detail.isDone) || detail.type===21 ">
                        <span ng-show="detail.type===5">
                         <input type="checkbox" ng-model="detail.boolean"
                                ng-change="tasksModel.detailBooleanSet(detail)"
                                ng-disabled="tasksModel.readOnly.is">
                       </span>
                       <span ng-show="detail.isRequired">*</span>
-                      <span ng-class="detail.isRequired && !detail.isDone?'taskRequired':
-                                      detail.type===1 && detail.isDone?'taskDone':null">
+                      <span ng-class="detail.isRequired && !detail.isDone?'taskRequired':null">
                         {{detail.description}}
                       </span>
                     </div>
@@ -36,8 +36,11 @@
                              placeholder="{{detail.description}}"
                              ng-disabled="tasksModel.readOnly.is">
                     </div>
+                    <div ng-show="detail.type===3">
+                      {{detail.inputText}}
+                   </div>
                     <div ng-show="detail.type===4">
-                      <textarea rows="2" cols="32" ng-model="detail.inputText"
+                      <textarea rows="3" cols="32" ng-model="detail.inputText"
                                 ng-change="tasksModel.detailTextChanged(detail)"
                                 placeholder="{{detail.description}}"
                                 ng-disabled="tasksModel.readOnly.is">
@@ -50,20 +53,18 @@
                               ng-disabled="tasksModel.readOnly.is"
                       ></select>
                     </div>
-                    <div ng-show="detail.type===12">
-                      <select ng-model="tasksModel.order.view.foodType"
-                              ng-change="tasksModel.setFoodType(detail)"
-                              ng-options="foodType.label for foodType in tasksModel.foodTypes"
-                              ng-disabled="tasksModel.readOnly.is">
-                        <option value=""></option>
-                      </select>
-                    </div>
-                    <div ng-show="detail.type===13">
+                  <div ng-show="detail.type===13">
                       <select ng-model="tasksModel.order.view.cancelReason"
                               ng-change="tasksModel.setCancelReason(detail)"
                               ng-options="cancelReason.label for cancelReason in tasksModel.cancelReasons"
                               ng-disabled="tasksModel.readOnly.is">
                       </select>
+                    </div>
+                    <div ng-show="detail.type===21">
+                      <button class="btn btn-default" ng-click="tasksModel.saveCustomerAttribute(detail)"
+                              ng-disabled="tasksModel.readOnly.is">
+                        {{detail.description}}
+                      </button>
                     </div>
                   </td>
                 </tr>

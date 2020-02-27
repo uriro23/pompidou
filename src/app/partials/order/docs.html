@@ -1,8 +1,8 @@
 <div ng-controller="DocumentsCtrl as documentsModel">
-  <table style="width:60%">
+  <table style="width:70%">
     <tbody>
     <tr>
-      <td style="width:20%">
+      <td style="width:15%">
         <button class="btn btn-default" ng-click="documentsModel.sendMail()"
                 ng-disabled="documentsModel.readOnly.is ||
                              documentsModel.order.view.isChanged ||
@@ -10,22 +10,27 @@
           שלח דוא"ל
         </button>
       </td>
-      <td style="width: 20%">
-        <a ng-href="#/menu/{{documentsModel.order.id}}"target="_blank">
+      <td style="width: 15%">
+        <a ng-href="#/menu/{{documentsModel.order.id}}" target="_blank">
           הדפס תפריט
         </a>
       </td>
-      <td style="width: 30%">
-        <a ng-href="#/sensitivityList/{{documentsModel.order.id}}"target="_blank">
-           רשימת רגישויות
+      <td style="width: 20%">
+        <a ng-href="#/sensitivityList/{{documentsModel.order.id}}" target="_blank">
+          רשימת רגישויות
         </a>
       </td>
-      <td style="width: 30%">
-        <a ng-href="#/exitList/{{documentsModel.order.id}}"target="_blank">
+      <td style="width: 20%">
+        <a ng-href="#/instructionsList/{{documentsModel.order.id}}" target="_blank">
+          רשימת הוראות
+        </a>
+      </td>
+      <td style="width: 15%">
+        <a ng-href="#/exitList/{{documentsModel.order.id}}" target="_blank">
            רשימת יציאה
         </a>
       </td>
-      <td>
+      <td style="width: 15%">
         <button class="btn btn-warning"
                 ng-click="documentsModel.createAccountingOrder()"
                 ng-disabled="documentsModel.order.attributes.orderStatus === 1 ||
@@ -61,28 +66,7 @@
       </td>
     </tr>
     </tbody>
-<!--
 </table>
-  <p></p>
-<table>
-    <thead>
-    <th>
-        הזמנה
-    </th>
-    </thead>
-    <tbody>
-    <tr ng-repeat="textType in documentsModel.bidTextTypes | filter: {documentType: 2}"
-        ng-class="documentsModel.order.view.changes.orderTextType?'bg-success':null">
-        <td>
-            <input type="checkbox" ng-model="textType.isInclude"
-                   ng-change="documentsModel.setOrderDocTextType()">
-        </td>
-        <td>{{textType.label}}</td>
-    </tr>
-    </tbody>
-</table>
--->
-
 <div ng-hide="documentsModel.order.view.isChanged">
   <label>
     צור מסמך חדש:
@@ -157,4 +141,5 @@
   </tr>
   </tbody>
 </table>
+
 </div>

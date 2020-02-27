@@ -5,7 +5,8 @@ angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
                                      measurementUnits, categories,sensitivities,
-                                     discountCauses, role, employees, pRoles, phases, taskTypes, taskDetails) {
+                                     discountCauses, role, employees, pRoles,
+                                     phases, taskTypes, taskDetails) {
 
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -25,7 +26,6 @@ angular.module('myApp')
   this.sensitivities = sensitivities;
 
 
-
     // vat
     // ---
 
@@ -42,6 +42,18 @@ angular.module('myApp')
         return;
       }
       config.attributes.vatRate = this.vatRate / 100;
+      api.saveObj(config);
+    };
+
+    // order identification
+    // determines how orders will be identified in stickers, exitlist, workorder: by color, numbers or both
+
+    this.isOrderColors = config.attributes.isOrderColors;
+    this.isOrderNumbers = config.attributes.isOrderNumbers;
+
+    this.setOrderIdent = function () {
+      config.attributes.isOrderColors = this.isOrderColors;
+      config.attributes.isOrderNumbers = this.isOrderNumbers;
       api.saveObj(config);
     };
 
@@ -144,7 +156,7 @@ angular.module('myApp')
         });
     };
 
-    // env
+    // env tab
 
     this.switchEnv = function () {
       if (api.getEnvironment()==='test') {
@@ -155,6 +167,68 @@ angular.module('myApp')
       }
       $state.go('login');
     };
+
+    // copy taskTypes and taskDetails from test to prod
+    // you have to start the app from test (localhost:) and change environment to prod
+    this.copyTasks = function() {
+      if (api.getEnvironment()==='test') {
+        alert ('switch to prod first');
+        return;
+      }
+      alert('want to copy task definitions from test to prod? if not close this page')
+      // first delete existing phases, taskTypes and taskDetails
+      api.queryPhases()
+        .then(function(phases) {
+          api.deleteObjects(phases)
+            .then(function() {
+              api.queryTaskTypes()
+                .then(function(types) {
+                  api.deleteObjects(types)
+                    .then(function() {
+                      api.queryTaskDetails()
+                        .then(function(details) {
+                          api.deleteObjects(details)
+                            .then(function() {
+                              alert('old prod task definitions deleted, press OK to continue');
+                              // now we create new taskTypes and taskDetails
+                              var tt = [];
+                              var p;
+                              var pc = 0;
+                              var tc = 0;
+                              var dc = 0;
+                              phases.forEach(function(h) {
+                                p = api.initPhase();
+                                p.attributes = h;
+                                tt.push(p);
+                                pc++;
+                              })
+                              taskTypes.forEach(function(t) {
+                                p = api.initTaskType();
+                                p.attributes = t;
+                                tt.push(p);
+                                tc++;
+                              })
+                              taskDetails.forEach(function(d) {
+                                p = api.initTaskDetail();
+                                p.attributes = d;
+                                tt.push(p);
+                                dc++;
+                              })
+                              alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
+                              api.saveObjects(tt)
+                                .then(function() {
+                                  alert('done');
+                                })
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+  };
+
+//
 
     this.catalogReport = function() {
       var that = this;
@@ -441,12 +515,12 @@ angular.module('myApp')
                     if (order.attributes.eventDate > customer.view.lastEventDate) {
                       customer.view.lastEventDate = order.attributes.eventDate;
                     }
-                    if (order.attributes.eventDate < new Date() &&
+                    if (order.attributes.eventDate < new Date(2019,10,1) && // since Nov 1st
                         order.attributes.orderStatus > 1 &&
                         order.attributes.orderStatus < 6) {
                       customer.view.pastSuccesses++;
                     }
-                    if (order.attributes.eventDate > new Date() &&
+                    if (order.attributes.eventDate > new Date(2019,10,1) &&
                         order.attributes.orderStatus < 6) {
                       customer.view.futureOrders++;
                     }
@@ -1177,39 +1251,117 @@ angular.module('myApp')
           }
         });
     };
-   */
 
-    this.copyTasks = function() {
-      alert ('are we in prod?');
-      var tt = [];
-      var p;
-      var pc = 0;
-      var tc = 0;
-      var dc = 0;
-      phases.forEach(function(h) {
-        p = api.initPhase();
-        p.attributes = h;
-        tt.push(p);
-        pc++;
-      })
-      taskTypes.forEach(function(t) {
-        p = api.initTaskType();
-        p.attributes = t;
-        tt.push(p);
-        tc++;
-      })
-      taskDetails.forEach(function(d) {
-        p = api.initTaskDetail();
-        p.attributes = d;
-        tt.push(p);
-        dc++;
-      })
-      alert ('ready to write '+pc+' phases, '+tc+' tasks and '+dc+' details?');
-      api.saveObjects(tt)
-        .then(function() {
-          alert('done');
+  this.listExtra = function() {
+      this.extraList = [];
+      var totChange = 0;
+      var extCnt = 0;
+      var from = new Date(2019,0,1);
+      var to = new Date(2030,11,31);
+      api.queryOrdersByRange('eventDate',from,to)
+        .then(function(orders) {
+          console.log(orders.length+' orders read');
+          var corrections = [];
+          orders.forEach(function(order) {
+            var oldOrder = angular.copy(order);
+            var change = false;
+            if (order.attributes.quotes.length) {
+              var quote = order.attributes.quotes[order.attributes.activeQuote];
+              var oldQuote = angular.copy(quote);
+              if (quote.extraServices) {
+                extCnt++;
+                console.log('order ' + order.attributes.number + ' date ' + order.attributes.eventDate);
+                orderService.calcTotal(quote, order);
+                if (quote.total !== oldQuote.total) {
+                  totChange++;
+                  console.log('---------- total changed ----------');
+                }
+                if (quote.extraServices !== oldQuote.extraServices ||
+                  quote.totalForStat !== oldQuote.totalForStat ||
+                  quote.total !== oldQuote.total) {
+                  console.log('-- old: extra: ' + oldQuote.extraServices + ' totalForStat: ' + oldQuote.totalForStat + ' total: ' + oldQuote.total)
+                  console.log('-- new: extra: ' + quote.extraServices + ' totalForStat: ' + quote.totalForStat + ' total: ' + quote.total)
+                  if (!change) {
+                    change = true;
+                    order.attributes.header.totalForStat = quote.totalForStat;
+                    corrections.push(order);
+                  }
+                }
+              }
+            }
+          });
+          console.log(extCnt+' quotes with extra services');
+          console.log(totChange+' totals changed');
+          console.log(corrections.length+' corrections found');
+          console.log('updating');
+          api.saveObjects(corrections)
+            .then(function(o) {
+              console.log('done');
+            })
+        });
+    };
+    this.updateHeader = function() {
+      var from = new Date(2019,0,1);
+      var to = new Date(2030,11,31);
+      api.queryOrdersByRange('eventDate',from,to)
+        .then(function(orders) {
+          console.log(orders.length + ' orders read');
+          var corrections = [];
+          orders.forEach(function (order) {
+            if (order.attributes.quotes.length) {
+              var quote = order.attributes.quotes[order.attributes.activeQuote];
+              if (quote.totalForStat !== order.attributes.header.totalForStat) {
+                console.log('order '+order.attributes.number+' old: '+order.attributes.header.totalForStat+', new: '+quote.totalForStat);
+                order.attributes.header.totalForStat = quote.totalForStat;
+                corrections.push(order);
+              }
+            }
+         });
+          console.log(corrections.length + ' corrections found');
+          console.log('updating');
+          api.saveObjects(corrections)
+            .then(function (o) {
+              console.log('done');
+            })
         })
     };
+    this.specialTypes = function() {
+      api.queryCatalogByCategory(51)
+        .then(function(extraItems) {
+          console.log(extraItems.length+' catalog items read');
+          var from = new Date(2019,0,1);
+          var to = new Date(2030,11,31);
+          api.queryOrdersByRange('eventDate',from,to)
+            .then(function(orders) {
+              console.log(orders.length + ' orders read');
+              var corrections = [];
+              orders.forEach(function (order) {
+                if (order.attributes.quotes.length) {
+                  var quote = order.attributes.quotes[order.attributes.activeQuote];
+                  var isExtra = false;
+                  quote.items.forEach(function(item) {
+                    if (item.category.type===5 && !item.specialType) {
+                      item.specialType = extraItems.filter(function(cat) {
+                        return cat.id === item.catalogId;
+                      })[0].attributes.specialType;
+                      isExtra = true;
+                    }
+                  });
+                  if (isExtra) {
+                    corrections.push(order);
+                  }
+                }
+              });
+              console.log(corrections.length + ' corrections found');
+              console.log('updating');
+              api.saveObjects(corrections)
+                .then(function (o) {
+                  console.log('done');
+                })
+            })
+        })
+   };
+     */
 // end conversions
 
   });

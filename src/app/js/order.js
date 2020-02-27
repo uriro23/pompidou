@@ -6,16 +6,17 @@ angular.module('myApp')
                                      orderService, currentOrder, isFromNew, customer, lov, dater,
                                      bidTextTypes, categories, measurementUnits,
                                      discountCauses, referralSources, cancelReasons,
-                                     menuTypes, colors, foodTypes, taskTypes, taskDetails, phases,
+                                     menuTypes, colors, taskTypes, taskDetails, phases,
                                      employees, pRoles, config) {
 
-    $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
       $rootScope.username = user.attributes.username;
     } else {
       $state.go('login');
     }
+
+    $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
 
     this.user = user;
 
@@ -74,10 +75,7 @@ angular.module('myApp')
                     item.price = item.priceBeforeVat;
                   }
                });
-               orderService.calcSubTotal(quote,
-                                          that.order.attributes.isBusinessEvent,
-                                          that.order.attributes.vatRate,
-                                          that.order.attributes.noOfParticipants);
+               orderService.calcTotal(quote,that.order);
               });
             orderService.orderChanged(that.order,'isBusinessEvent');
             break;
@@ -90,10 +88,7 @@ angular.module('myApp')
                     item.price = item.priceInclVat;
                   }
                 });
-                orderService.calcSubTotal(quote,
-                  that.order.attributes.isBusinessEvent,
-                  that.order.attributes.vatRate,
-                  that.order.attributes.noOfParticipants);
+                orderService.calcTotal(quote,that.order);
               });
               orderService.orderChanged(that.order,'isBusinessEvent');
               break;
@@ -200,11 +195,6 @@ angular.module('myApp')
             return (obj.tId === that.order.attributes.color);
           })[0];
         }
-        if (attr.foodType) {
-          view.foodType = foodTypes.filter(function(obj) {
-            return (obj.tId === that.order.attributes.foodType);
-          })[0];
-        }
 
         if (that.order.attributes.customer) {
           api.queryCustomers(that.order.attributes.customer)
@@ -250,7 +240,21 @@ angular.module('myApp')
         } else {
           that.order.view.contact = {};
         }
-       } else { // newOrder or newOrderByCustomer
+        if (that.order.attributes.referrer) {
+          api.queryCustomers(that.order.attributes.referrer)
+            .then(function (custs) {
+              if (!custs.length) {
+                alert('referrer not found');
+                console.log('referrer not found');
+                console.log(that.order.attributes.referrer);
+              }
+              that.order.view.referrer = custs[0].attributes;
+              that.order.view.referrer.id = custs[0].id;
+            });
+        } else {
+          that.order.view.referrer = {};
+        }
+      } else { // newOrder or newOrderByCustomer
         if ($state.current.name === 'newOrderByCustomer') {
           view.customer = customer.attributes;
           view.customer.id = customer.id;
@@ -258,6 +262,7 @@ angular.module('myApp')
           view.customer = {};
         }
         view.contact = {};
+        view.referrer = {};
         view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead
@@ -362,7 +367,7 @@ angular.module('myApp')
       };
       window.onblur = function () {
       };
-      $rootScope.menuStatus = 'show';
+      $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
       this.order.attributes = angular.copy(this.order.backupOrderAttr);
       this.setupOrderView();
       if (typeof this.order.attributes.taskData === 'undefined') {
@@ -404,7 +409,6 @@ angular.module('myApp')
     this.referralSources = referralSources;
     this.cancelReasons = cancelReasons;
     this.menuTypes = menuTypes;
-    this.foodTypes = foodTypes;
     this.employees = employees;
     this.config = config;
     this.vatRate = config.vatRate;
@@ -424,7 +428,15 @@ angular.module('myApp')
       // } else {
       //   this.isActiveGeneralTab = true;
       // }
-      this.isActiveTasksTab = true;
+      if (user.attributes.isKitchenStaff) {
+        if (this.order.attributes.quotes.length) {
+          this.isActiveQuoteTab = true;
+        } else {
+          this.isActiveQuoteManagementTab = true;
+        }
+      } else {
+        this.isActiveTasksTab = true;
+      }
        this.setReadOnly();
       this.order.attributes.empBonuses.forEach(function(role) {
         if (role.employee) {
@@ -462,7 +474,15 @@ angular.module('myApp')
       });
 
       this.setupOrderView();
-      this.isActiveTasksTab = true;
+      if (user.attributes.isKitchenStaff) {
+        if (this.order.attributes.quotes.length) {
+          this.isActiveQuoteTab = true;
+        } else {
+          this.isActiveQuoteManagementTab = true;
+        }
+      } else {
+        this.isActiveTasksTab = true;
+      }
       this.setReadOnly();
       this.handleVatRateChange();
       if (!this.order.view.quote.advance) {
@@ -506,10 +526,7 @@ angular.module('myApp')
             that.order.attributes.activeQuote = j;
             that.order.view.quote = quote;
           }
-          orderService.calcSubTotal(quote,
-            that.order.attributes.isBusinessEvent,
-            that.order.attributes.vatRate,
-            that.order.attributes.noOfParticipants);
+          orderService.calcTotal(quote,that.order);
 
           that.order.attributes.quotes.push(quote);
           j++;
@@ -519,7 +536,15 @@ angular.module('myApp')
       //   this.isActiveQuoteTab = false;
       //   this.isActiveGeneralTab = true;
       // }
-      this.isActiveTasksTab = true;
+      if (user.attributes.isKitchenStaff) {
+        if (this.order.attributes.quotes.length) {
+          this.isActiveQuoteTab = true;
+        } else {
+          this.isActiveQuoteManagementTab = true;
+        }
+      } else {
+        this.isActiveTasksTab = true;
+      }
       this.order.attributes.vatRate = this.vatRate;
       this.order.attributes.activities = [];
       this.setReadOnly();
@@ -532,7 +557,7 @@ angular.module('myApp')
     };
     window.onblur = function () {
     };
-    $rootScope.menuStatus = 'show';
+    $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
     this.order.backupOrderAttr = angular.copy(this.order.attributes);
 
 

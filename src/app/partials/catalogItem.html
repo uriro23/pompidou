@@ -249,6 +249,13 @@
                     ng-change="catalogItemModel.setShortDescription()"></textarea>
         </td>
       </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>הוראות ללקוח</label></td>
+        <td>
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.instructions"
+                    ng-change="catalogItemModel.setChanged(true)"></textarea>
+        </td>
+      </tr>
     </table>
      <table>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
@@ -365,13 +372,20 @@
           <input  type="text" size = 10 ng-model="catalogItemModel.item.attributes.stickerLabel"
                   ng-change="catalogItemModel.setChanged(true)">
         </td>
-      </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>מס' מדבקות</label></td>
         <td>
           <input  type="number" min="0" max="99" ng-model="catalogItemModel.item.attributes.stickerQuantity"
                   ng-change="catalogItemModel.setChanged(true)">
         </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1 && catalogItemModel.item.view.category.type===5">
+        <td><label>סוג שירות נלווה</label></td>
+        <td>
+          <select ng-model="catalogItemModel.item.view.specialType"
+                  ng-change="catalogItemModel.setChanged(true)"
+                  ng-options="specialType.name for specialType in catalogItemModel.specialTypes">
+            <option value=""></option>
+          </select>
       </tr>
     </table>
   </tab>

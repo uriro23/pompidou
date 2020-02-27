@@ -11,6 +11,10 @@
         <input type="radio" ng-model="statisticsModel.filterBy" value="createdAt">
       </td>
       <td>
+        <label>תאריך סגירה</label>
+        <input type="radio" ng-model="statisticsModel.filterBy" value="closingDate">
+      </td>
+      <td>
         <label>תאריך אירוע</label>
         <input type="radio" ng-model="statisticsModel.filterBy" value="eventDate">
       </td>
@@ -575,6 +579,25 @@
         </tbody>
       </table>
       </div>
+    </tab>
+    <tab heading="עמידה ביעד" select="statisticsModel.computeYtdIncrease()">
+      <div>סכום הסגירות מתחילת השנה עד היום בהשווואה לתקופה המקבילה אשתקד</div>
+      <table>
+        <tr>
+          <td>
+            <label>סגירות אשתקד:</label>
+            <span>{{statisticsModel.lastYearCloses | currency}}</span>
+          </td>
+          <td>
+            <label>סגירות השנה:</label>
+            <span>{{statisticsModel.thisYearCloses | currency}}</span>
+          </td>
+          <td>
+            <label>שינוי באחוזים:</label>
+            <span>{{(statisticsModel.thisYearCloses - statisticsModel.lastYearCloses) / statisticsModel.lastYearCloses * 100 | number:1}}%</span>
+          </td>
+        </tr>
+      </table>
     </tab>
   </tabset>
   <div ng-hide="statisticsModel.isHideOrders">

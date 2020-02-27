@@ -6,7 +6,8 @@
     -
     חטיפים
     &nbsp;
-    <img src="app/img/bigColors/{{order.color.stickerColor}}.jpg"/>
+    <img ng-show="snacksAndDessertsModel.isOrderColors" src="app/img/bigColors/{{order.color.stickerColor}}.jpg"/>
+    <span ng-show="snacksAndDessertsModel.isOrderNumbers">[{{order.color.tId}}]</span>
   </h3>
   <table style="width:60%">
     <thead>
@@ -33,7 +34,8 @@
     -
     קינוחים
     &nbsp;
-    <img src="app/img/bigColors/{{order.color.stickerColor}}.jpg"/>
+    <img ng-show="snacksAndDessertsModel.isOrderColors" src="app/img/bigColors/{{order.color.stickerColor}}.jpg"/>
+    <span ng-show="snacksAndDessertsModel.isOrderNumbers">[{{order.color.tId}}]</span>
   </h3>
   <table style="width:60%">
     <thead>

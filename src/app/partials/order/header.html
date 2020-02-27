@@ -40,46 +40,86 @@
     </tr>
         </table>
     </td>
-      <td style="width: 50%">
+      <td style="width: 50%" ng-hide="headerModel.order.attributes.referralSource===5">
+        <!-- hide if client referral, so we have space to show referring client selection -->
         <table>
           <tr>
-      <td><label>איש קשר</label></td>
-      <td>
-        <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
-                ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
-                class="btn btn-default"
-                ng-disabled="headerModel.readOnly.is"
-                ng-show="headerModel.order.view.contact.id">
-          {{headerModel.order.view.contact.firstName + ' ' + headerModel.order.view.contact.lastName}}
-        </button>
-        <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
-                ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
-                class="btn btn-default"
-                ng-disabled="headerModel.readOnly.is"
-                ng-hide="headerModel.order.view.contact.id">
-          בחר
-        </button>
-      </td>
-      <td>
-        <span ng-show="headerModel.order.view.contact.mobilePhone">טל' נייד: </span>
-        <a href="tel:{{headerModel.order.view.contact.mobilePhone}}">{{headerModel.order.view.contact.mobilePhone}}</a>
-      </td>
-      <td>
-        <span ng-show="headerModel.order.view.contact.homePhone">טל' בית: </span>
-        <a href="tel:{{headerModel.order.view.contact.homlePhone}}">{{headerModel.order.view.contact.homlePhone}}</a>
-      </td>
-      <td>
-        <span ng-show="headerModel.order.view.contact.workPhone">טל עבודה: </span>
-        <a href="tel:{{headerModel.order.view.contact.workPhone}}">{{headerModel.order.view.contact.workPhone}}</a>
-      </td>
-      <td>
-        <span ng-show="headerModel.order.view.contact.email">דואל: </span>
-        <a href="mailto:{{headerModel.order.view.contact.email}}">{{headerModel.order.view.contact.email}}</a>
-      </td>
+            <td><label>איש קשר</label></td>
+            <td>
+              <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
+                      ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
+                      class="btn btn-default"
+                      ng-disabled="headerModel.readOnly.is"
+                      ng-show="headerModel.order.view.contact.id">
+                {{headerModel.order.view.contact.firstName + ' ' + headerModel.order.view.contact.lastName}}
+              </button>
+              <button ng-click="headerModel.setCustomer(2,'בחירת איש קשר')"
+                      ng-class="headerModel.order.view.errors.contact?'bg-danger':null"
+                      class="btn btn-default"
+                      ng-disabled="headerModel.readOnly.is"
+                      ng-hide="headerModel.order.view.contact.id">
+                בחר
+              </button>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.contact.mobilePhone">טל' נייד: </span>
+              <a href="tel:{{headerModel.order.view.contact.mobilePhone}}">{{headerModel.order.view.contact.mobilePhone}}</a>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.contact.homePhone">טל' בית: </span>
+              <a href="tel:{{headerModel.order.view.contact.homlePhone}}">{{headerModel.order.view.contact.homlePhone}}</a>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.contact.workPhone">טל עבודה: </span>
+              <a href="tel:{{headerModel.order.view.contact.workPhone}}">{{headerModel.order.view.contact.workPhone}}</a>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.contact.email">דואל: </span>
+              <a href="mailto:{{headerModel.order.view.contact.email}}">{{headerModel.order.view.contact.email}}</a>
+            </td>
           </tr>
-          </table>
-  </td>
-   </tbody>
+        </table>
+      </td>
+      <td style="width: 50%" ng-show="headerModel.order.attributes.referralSource===5"><!--show only if client referral-->
+        <table>
+          <tr>
+            <td><label>לקוח מפנה</label></td>
+            <td>
+              <button ng-click="headerModel.setCustomer(3,'בחירת לקוח מפנה')"
+                      ng-class="headerModel.order.view.errors.referrer?'bg-danger':null"
+                      class="btn btn-default"
+                      ng-disabled="headerModel.readOnly.is"
+                      ng-show="headerModel.order.view.referrer.id">
+                {{headerModel.order.view.referrer.firstName + ' ' + headerModel.order.view.referrer.lastName}}
+              </button>
+              <button ng-click="headerModel.setCustomer(3,'בחירת לקוח מפנה')"
+                      ng-class="headerModel.order.view.errors.referrer?'bg-danger':null"
+                      class="btn btn-default"
+                      ng-disabled="headerModel.readOnly.is"
+                      ng-hide="headerModel.order.view.referrer.id">
+                בחר
+              </button>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.referrer.mobilePhone">טל' נייד: </span>
+              <a href="tel:{{headerModel.order.view.referrer.mobilePhone}}">{{headerModel.order.view.referrer.mobilePhone}}</a>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.referrer.homePhone">טל' בית: </span>
+              <a href="tel:{{headerModel.order.view.referrer.homlePhone}}">{{headerModel.order.view.referrer.homlePhone}}</a>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.referrer.workPhone">טל עבודה: </span>
+              <a href="tel:{{headerModel.order.view.referrer.workPhone}}">{{headerModel.order.view.referrer.workPhone}}</a>
+            </td>
+            <td>
+              <span ng-show="headerModel.order.view.referrer.email">דואל: </span>
+              <a href="mailto:{{headerModel.order.view.referrer.email}}">{{headerModel.order.view.referrer.email}}</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+  </tbody>
   </table>
 <table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">

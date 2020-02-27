@@ -24,8 +24,11 @@
   <button class="btn btn-default" ng-click="adminModel.quoteDate()">quote date</button>
   <button class="btn btn-default" ng-click="adminModel.prodMu()">prod measurement unit</button>
   <button class="btn btn-default" ng-click="adminModel.totForStat()">tot for stat</button>
-  -->
   <button class="btn btn-default" ng-click="adminModel.copyTasks()">copy tasks</button>
+  <button class="btn btn-default" ng-click="adminModel.updateHeader()">header</button>
+  <button class="btn btn-default" ng-click="adminModel.specialTypes()">special types</button>
+  <button class="btn btn-default" ng-click="adminModel.listExtra()">list Extra</button>
+    -->
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -35,7 +38,23 @@
            ng-model="adminModel.vatRate"
            ng-class="adminModel.vatError?'bg-danger':null">
     <button class="btn btn-default" ng-click="adminModel.updateVat()">עדכן</button>
+    <p></p>
+    <div>יש לרענן את הדף (F5) אחרי השינוי</div>
   </tab>
+   <tab heading="זיהוי אירועים">
+     <table style="width:15%">
+     <tr>
+       <td><label>צבעים</label></td>
+       <td><input type="checkbox" ng-model="adminModel.isOrderColors" ng-change="adminModel.setOrderIdent()"></td>
+     </tr>
+     <tr>
+       <td><label>מספרים</label></td>
+       <td><input type="checkbox" ng-model="adminModel.isOrderNumbers" ng-change="adminModel.setOrderIdent()"></td>
+     </tr>
+     </table>
+     <p></p>
+     <div>יש לרענן את הדף (F5) אחרי השינוי</div>
+   </tab>
   <tab heading="שינוי סיסמה">
     <table>
       <tbody>
@@ -57,12 +76,14 @@
       <th style="text-align: left">username</th>
       <th style="text-align: left">email</th>
       <th>sales?</th>
+      <th>kitchen?</th>
       </thead>
       <tbody>
       <tr ng-repeat="user in adminModel.users">
         <td style="text-align: left">{{user.attributes.username}}</td>
         <td style="text-align: left">{{user.attributes.email}}</td>
         <td>{{user.attributes.isSalesPerson}}</td>
+        <td>{{user.attributes.isKitchenStaff}}</td>
         <td>
           <button class="btn btn-warning"
                   ng-hide="user.isInRole || adminModel.isUserRefresh"
@@ -96,6 +117,10 @@
       <input type="checkbox"
              ng-show="adminModel.isNewUser"
              ng-model="adminModel.user.attributes.isSalesPerson">
+      <span ng-show="adminModel.isNewUser">צוות מטבח?</span>
+      <input type="checkbox"
+             ng-show="adminModel.isNewUser"
+             ng-model="adminModel.user.attributes.isKitchenStaff">
       <button ng-show="adminModel.isNewUser"
               class="btn btn-primary btn-sm"
               ng-click="adminModel.createUser()">צור</button>
@@ -356,7 +381,7 @@
          <td></td>
        </tr>
        </tbody>
-     </table>
+     </table><!--
      <div ng-show="adminModel.isCustomersExport">
        <div>
          <span>name,email,phone,pastSuccesses,futureOrders,lastEvent</span>
@@ -375,6 +400,17 @@
          <span>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</span>
        </div>
      </div>
+     -->
+     <div ng-show="adminModel.isCustomersExport">
+       <div>
+         <span>phone,firstName</span>
+       </div>
+       <div ng-repeat="customer in adminModel.customers">
+         <span>{{customer.attributes.mobilePhone}}</span>
+         <span>,</span>
+         <span>{{customer.attributes.firstName}}</span>
+     </div>
+     </div>
    </tab>
    <tab heading="סביבה" active="adminModel.isEnvTabActive">
     <div>
@@ -384,6 +420,11 @@
     <div>
       <button class="btn btn-default" ng-click="adminModel.switchEnv()">שנה</button>
     </div>
+     <p></p>
+     <div>
+       <button class="btn btn-warning"
+               ng-click="adminModel.copyTasks()" ng-hide="environment==='test'">העתק הגדרת משימות לייצור</button>
+     </div>
   </tab>
 </tabset>
 </div>

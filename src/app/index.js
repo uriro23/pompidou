@@ -54,6 +54,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }]
       }
     })
@@ -101,10 +104,7 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
-        }],
-        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+       taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
         }],
         taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
@@ -163,9 +163,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
-        }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
         }],
         taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
@@ -227,10 +224,7 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
-        }],
-        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+       taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
         }],
         taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
@@ -290,10 +284,7 @@ config(function($stateProvider, $urlRouterProvider) {
         colors: ['colorsPromise', function (colorsPromise) {
           return colorsPromise;
         }],
-        foodTypes: ['foodTypesPromise', function (foodTypesPromise) {
-          return foodTypesPromise;
-        }],
-        taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
+       taskTypes: ['taskTypesPromise', function (taskTypesPromise) {
           return taskTypesPromise;
         }],
         taskDetails: ['taskDetailsPromise', function (taskDetailsPromise) {
@@ -329,6 +320,9 @@ config(function($stateProvider, $urlRouterProvider) {
             .then(function (objs) {
               return objs;
             });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }]
         }
   })
@@ -344,6 +338,9 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
           return allCategoriesPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }],
         measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
           return measurementUnitsPromise;
@@ -402,6 +399,9 @@ config(function($stateProvider, $urlRouterProvider) {
           return api.queryCatalog(1).then(function (obj) {
             return obj;
           });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
         }],
         categories: ['categoriesPromise', function (categoriesPromise) {
           return categoriesPromise;
@@ -640,6 +640,9 @@ config(function($stateProvider, $urlRouterProvider) {
         return api.queryCustomers().then(function (objs) {
           return objs;
         });
+      }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
       }]
     }
   })
@@ -766,6 +769,9 @@ config(function($stateProvider, $urlRouterProvider) {
           return catalog;
         });
       }],
+      config: ['configPromise', function (configPromise) {
+        return configPromise;
+      }],
       measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
         return measurementUnitsPromise;
       }],
@@ -795,33 +801,55 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-.state ('sensitivityList', {
-    url: '/sensitivityList/:id',
-    templateUrl: 'app/partials/sensitivityList.html',
-    controller: 'SensitivityListCtrl as sensitivityListModel',
-    resolve: {
-      order: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryOrder ($stateParams.id).then (function (orders) {
-          return orders[0];
-        });
-      }],
-      sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
-        return sensitivitiesPromise;
-      }],
-      catalog: ['api', function(api) {
-        return api.queryCatalog(1). then (function(catalog) {
-          return catalog;
-        });
-      }],
-      customers: ['api', function (api) {
-        return api.queryCustomers().then(function (objs) {
-          return objs;
-        });
-      }],
-      colors: ['colorsPromise', function (colorsPromise) {
-        return colorsPromise;
-      }]
-    }
-  });
+    .state ('sensitivityList', {
+      url: '/sensitivityList/:id',
+      templateUrl: 'app/partials/sensitivityList.html',
+      controller: 'SensitivityListCtrl as sensitivityListModel',
+      resolve: {
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+          return sensitivitiesPromise;
+        }],
+        catalog: ['api', function(api) {
+          return api.queryCatalog(1). then (function(catalog) {
+            return catalog;
+          });
+        }],
+        customers: ['api', function (api) {
+          return api.queryCustomers().then(function (objs) {
+            return objs;
+          });
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }]
+      }
+    })
+.state ('instructionsList', {
+  url: '/instructionsList/:id',
+  templateUrl: 'app/partials/instructionsList.html',
+  controller: 'InstructionsListCtrl as instructionsListModel',
+  resolve: {
+    order: ['$stateParams', 'api', function ($stateParams, api) {
+      return api.queryOrder ($stateParams.id).then (function (orders) {
+        return orders[0];
+      });
+    }],
+   catalog: ['api', function(api) {
+      return api.queryCatalog(1). then (function(catalog) {
+        return catalog;
+      });
+    }],
+    customers: ['api', function (api) {
+      return api.queryCustomers().then(function (objs) {
+        return objs;
+      });
+    }]
+  }
+});
 });
 

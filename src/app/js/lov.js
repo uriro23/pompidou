@@ -108,14 +108,6 @@ angular.module('myApp')
     });
   })
 
-  .factory('foodTypesPromise', function (api) {
-    return api.queryFoodTypes().then(function (res) {
-      return res.map(function (obj) {
-        return obj.attributes;
-      });
-    });
-  })
-
   .factory('taskTypesPromise', function (api) {
     return api.queryTaskTypes().then(function (res) {
       return res.map(function (obj) {
@@ -273,6 +265,42 @@ angular.module('myApp')
       }
     ],
 
+    specialTypes: [
+      {
+        id: 1,
+        name: 'כלים חד פעמיים'
+     },
+      {
+        id: 2,
+        name: 'השכרת ציוד',
+        exist: 'isEquipRental',
+        desc: 'equipRental'
+      },
+      {
+        id: 3,
+        name: 'מלצרים',
+        exist: 'isWaiters',
+        desc: 'waiters'
+      },
+      {
+        id: 4,
+        name: 'מנהל אירוע',
+        exist: 'isEventManager',
+        desc: 'eventManager'
+      },
+      {
+        id: 5,
+        name: 'שתיה',
+        exist: 'isLiquids',
+        desc: 'liquids'
+      },
+      {
+        id: 6,
+        name: 'שונות',
+        exist: 'isOtherExtras',
+        desc: 'otherExtras'
+      }
+    ],
     documentTypes: [
       {
         id: 0,

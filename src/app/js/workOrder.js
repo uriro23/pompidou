@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
   .controller('WorkOrderCtrl', function (api, $state, $filter, $modal, $q, $rootScope,
-                                         lov, catalog, allCategories, measurementUnits, colors, dater,
+                                         lov, config, catalog, allCategories, measurementUnits, colors, dater,
                                          customers, woIndexes) {
 
 
@@ -695,7 +695,9 @@ angular.module('myApp')
     // main block
 
     var that = this;
-    this.catalog = catalog;
+    this.isOrderColors = config.isOrderColors;
+    this.isOrderNumbers = config.isOrderNumbers;
+   this.catalog = catalog;
     this.domains = lov.domains;
     this.woIndexes = woIndexes;
     this.woIndex = this.woIndexes.filter(function(index) {

@@ -35,15 +35,17 @@ angular.module('myApp')
           currentCustomerId: function () {
             if (custType === 1) {
               return that.order.view.customer.id;
-            } else {
+            } else if (custType === 1) {
               return that.order.view.contact.id;
+            } else {
+              return that.order.view.referrer.id;
             }
           },
           modalHeader: function () {
             return custHeader;
           },
           isOptionalSelect: function () {
-            return custType === 2; // for contact selection in modal is optional
+            return custType !== 1; // for contact or referrer selection in modal is optional
           }
         },
         size: 'lg'
@@ -51,8 +53,11 @@ angular.module('myApp')
 
       selectCustomer.result.then(function (cust) {
         if (custType === 1) {
+          console.log('cust');
+          console.log(cust);
           that.order.view.customer = cust;
           that.order.attributes.customer = cust.id;
+          that.order.attributes.taskData.address = cust.address;
           orderService.orderChanged(that.order,'customer');
           orderService.upgradeOrderStatus(that.order);
           that.order.view.errors.customer = false;
@@ -62,8 +67,11 @@ angular.module('myApp')
           that.order.attributes.contact = cust.id;
           orderService.orderChanged(that.order,'customer');
           that.order.view.errors.contact = false;
-        } else {
-          alert('error - bad customer type: ' + custType);
+        } else {  // referrer
+          that.order.view.referrer = cust;
+          that.order.attributes.referrer = cust.id;
+          orderService.orderChanged(that.order,'referrer');
+          that.order.view.errors.referrer = false;
         }
       }), function () {
       };
@@ -79,10 +87,14 @@ angular.module('myApp')
     }
 
     this.setNoOfParticipants = function () {
+      var that = this;
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
       if (!this.order.view.errors.noOfParticipants) {
         orderService.upgradeOrderStatus(this.order);
+        this.order.attributes.quotes.forEach(function(quote) { // recalc all quotes to update price per person
+         orderService.calcTotal(quote,that.order);
+        })
       }
     };
 

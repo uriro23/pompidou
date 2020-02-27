@@ -476,22 +476,7 @@ angular.module('myApp')
       return query(colorsQuery);
     };
 
-    // FoodType
-    // -------------
-
-    var FoodType = Parse.Object.extend("FoodType");
-
-    this.queryFoodTypes = function (id) {
-      var q = new Parse.Query(FoodType);
-      if (id) {
-        q.equalTo("tId", id);
-      }
-      q.ascending("order");
-      return query(q);
-    };
-
-
-    // TaskType
+     // TaskType
     // -------------
 
     var TaskType = Parse.Object.extend("TaskType");

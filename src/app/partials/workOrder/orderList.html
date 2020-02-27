@@ -3,30 +3,15 @@
 </h4>
 <table class="table table-hover" style="width:70%">
   <thead>
-  <th>
-    מספר
-  </th>
-  <th>
-    תאריך
-  </th>
-  <th>
-    מסירה
-  </th>
-  <th>
-יציאה
-  </th>
-  <th>
-    לקוח
-  </th>
-  <th>
-    סועדים
-  </th>
-  <th>
-    תפריט
-  </th>
-  <th>
-    סטטוס
-  </th>
+  <th>    מספר  </th>
+  <th>   תאריך  </th>
+  <th>    מסירה  </th>
+  <th>יציאה  </th>
+  <th>    לקוח  </th>
+  <th>    סועדים  </th>
+  <th>    תפריט  </th>
+  <th>    סטטוס  </th>
+  <th ng-show="workOrderModel.isOrderNumbers">זיהוי</th>
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.woOrders"
@@ -43,7 +28,10 @@
     <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
     <td>{{woItem.attributes.order.noOfParticipants}}</td>
     <td>{{woItem.attributes.order.header.title}}</td>
-    <td  ng-style="woItem.attributes.color.style">{{woItem.attributes.orderStatus.name}}</td>
+    <td  ng-style="workOrderModel.isOrderColors ? woItem.attributes.color.style : null">
+      {{woItem.attributes.orderStatus.name}}
+    </td>
+    <td ng-show="workOrderModel.isOrderNumbers">{{woItem.attributes.color.tId}}</td>
   </tr>
   </tbody>
 </table>
