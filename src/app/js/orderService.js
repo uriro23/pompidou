@@ -78,7 +78,7 @@ angular.module('myApp')
       quote.transportation = Math.round(transportation);
       quote.priceIncrease = Math.round(priceIncrease);
       quote.extraServices = Math.round(extraServices);
-      quote.waitersFee = Math(waitersFee);
+      quote.waitersFee = Math.round(waitersFee);
       quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
       quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.attributes.noOfParticipants);
       quote.boxEstimate = boxCount;
