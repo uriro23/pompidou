@@ -72,7 +72,7 @@ angular.module('myApp')
       if (priceIncreaseItem) {
         priceIncrease = priceIncreaseItem.price = subTotal * priceIncreaseItem.quantity / 100;
       }
-
+// test
       quote.subTotal = Math.round(subTotal);
       quote.foodPrice = Math.round(foodPrice);
       quote.transportation = Math.round(transportation);
