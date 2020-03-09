@@ -76,6 +76,14 @@
     <td></td>
     <td>{{financialModel.order.view.quote.vat | currency}}</td>
   </tr>
+  <tr ng-class="financialModel.order.view.quote.changes.showPrices?'bg-success':null">
+    <td><label>פירוט מחירים</label></td>
+    <td>
+      <input type="checkbox" ng-model="financialModel.order.view.quote.isShowPrices"
+             ng-disabled="financialModel.readOnly.is"
+             ng-change="financialModel.quoteChanged('showPrices')">
+    </td>
+  </tr>
   <tr ng-class="financialModel.order.view.quote.changes.fixedPrice?'bg-success':null">
     <td><label>מחיר קבוע</label></td>
     <td>

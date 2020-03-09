@@ -82,22 +82,50 @@
 			<!-- Regular items  -->
 			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems">
 
-			  <div style="width:80%;display:inline-block;">
-			    <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
-			    <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
-			    <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
-			  </div>
+        <div ng-show="!quoteModel.currentQuote.isNoQuantities  && quoteModel.currentQuote.isShowPrices">
+          <div style="width:60%;display:inline-block;">
+            <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+            <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+            <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+          </div>
 
-
-
-		  	  <div ng-hide="quoteModel.currentQuote.isNoQuantities"
+          <div ng-show="quoteModel.currentQuote.isShowPrices"
                style="width:20%" class="quoteQuantAndUnit">
-				  <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
-				  <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+            <span style="display:inline-block;"> {{item.price | currency}}</span>&nbsp;
+          </div>
 
-		      </div>
+          <div ng-hide="quoteModel.currentQuote.isNoQuantities"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
+            <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+          </div>
 
-			</div>
+        </div>
+
+        <div ng-hide="!quoteModel.currentQuote.isNoQuantities  && quoteModel.currentQuote.isShowPrices">
+          <div style="width:80%;display:inline-block;">
+            <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+            <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+            <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+          </div>
+
+          <div ng-show="quoteModel.currentQuote.isShowPrices"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.price | currency}}</span>&nbsp;
+          </div>
+
+          <div ng-hide="quoteModel.currentQuote.isNoQuantities"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
+            <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+          </div>
+
+        </div>
+
+
+
+
+      </div>
 			<!-- End of  regular items -->
 
     </div>
@@ -126,6 +154,9 @@
           <span class="bold" ng-show="item.isFreeItem">(ערך כספי</span>
           <span class="bold" ng-show="item.isFreeItem">{{item.price | currency}}</span>
           <span class="bold" ng-show="item.isFreeItem">)</span>
+          <div style="text-align: left" ng-show="quoteModel.currentQuote.isShowPrices && !item.isFreeItem">
+            {{item.price | currency}}
+          </div>
         </div>
       </div>
 
