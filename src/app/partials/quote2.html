@@ -1,0 +1,375 @@
+<div class="quoteMainContainer">
+
+  <div class="quoteMainContent">
+
+    <!-- Top Purple line  -->
+    <div class="purpleBG topQuoteLine"></div>
+
+
+    <!-- Header + main logo -->
+    <div class="quoteTextBox">
+      <h2 ng-show="quote2Model.bid.attributes.documentType===5"
+          class="purpleText bold quoteMainTitle">
+        הצעת תפריט חדשה
+      </h2>
+      <div class="quoteLogo">
+        <img align="left" src="app/img/logo.png"/>
+      </div>
+    </div>
+
+
+    <!-- Customer's details + nice image -->
+    <div class="quoteTextBox quoteDetails">
+
+      <div class="floatRight">
+
+        <span class="bold">שם:</span>
+        <span>{{quote2Model.bid.attributes.customer.firstName+' '+quote2Model.bid.attributes.customer.lastName}}</span>
+        <br>
+        <span class="bold">תאריך האירוע:</span>
+        <span ng-hide="quote2Model.bid.attributes.order.isDateUnknown">
+          {{quote2Model.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}
+        </span>
+        <span ng-show="quote2Model.bid.attributes.order.isDateUnknown">
+          טרם נקבע
+        </span>
+        <br>
+        <span class="bold" ng-show="quote2Model.eventTime">זמן האספקה:</span>
+        <span ng-show="quote2Model.eventTime">
+          {{quote2Model.eventTime | convertTimezone:'Asia/Jerusalem' | formatTime: 'H:mm'}}
+        </span>
+        <br>
+        <span class="bold">מספר המשתתפים:</span>
+        <span>{{quote2Model.bid.attributes.order.noOfParticipants}}</span>
+        <span ng-show="quote2Model.currentOrder.children">
+               &nbsp;&#40;<span>מתוכם</span>&nbsp;
+                <span >{{quote2Model.currentOrder.children}}</span>
+                &nbsp;<span>ילדים</span>&#41;
+         </span>
+        <br>
+
+      </div>
+
+
+      <!-- image next to customer's details -->
+      <div class="quoteTitleImg floatLeft">
+        <div class="quotePhoneOnImg bold purpleText">טלפון: 054-7514061 </div>
+        <img align="left" src="app/img/box_1.jpg"/>
+      </div>
+
+    </div>
+
+    <!-- Purple background event type header -->
+    <div class="purpleBG quoteTextBox bold">
+      <span>{{quote2Model.quoteHeading}}</span>
+    </div>
+
+    <!-- Starting event food items list by categeries -->
+    <div class="quoteTextBox greyWhiteAlternate" ng-repeat="category in quote2Model.filteredCategories" on-finish-render="ngRepeatFinished">
+
+      <!-- Food category header -->
+      <div class="bold quoteFoodCategoryName">
+        {{category.label}}
+      </div>
+
+      <!-- Food category description -->
+      <div class="bold">
+        {{category.description}}
+      </div>
+
+      {{quote2Model.setupCategoryItems(category.tId)}}
+
+      <!-- Regular items  -->
+      <div class="quoteTextItemLine"  ng-repeat="item in quote2Model.categoryItems">
+
+        <div ng-show="!quote2Model.currentQuote.isNoQuantities  && quote2Model.currentQuote.isShowPrices">
+          <div style="width:60%;display:inline-block;">
+            <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+            <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+            <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+          </div>
+
+          <div ng-show="quote2Model.currentQuote.isShowPrices"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.price | currency}}</span>&nbsp;
+          </div>
+
+          <div ng-hide="quote2Model.currentQuote.isNoQuantities"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
+            <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+          </div>
+
+        </div>
+
+        <div ng-hide="!quote2Model.currentQuote.isNoQuantities  && quote2Model.currentQuote.isShowPrices">
+          <div style="width:80%;display:inline-block;">
+            <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+            <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+            <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+          </div>
+
+          <div ng-show="quote2Model.currentQuote.isShowPrices"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.price | currency}}</span>&nbsp;
+          </div>
+
+          <div ng-hide="quote2Model.currentQuote.isNoQuantities"
+               style="width:20%" class="quoteQuantAndUnit">
+            <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
+            <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+          </div>
+
+        </div>
+
+
+
+
+      </div>
+      <!-- End of  regular items -->
+
+    </div>
+
+    <div class="quoteTextBox"
+         style="padding-right: 7%"
+         ng-show="!quote2Model.currentQuote.isFixedPrice &&
+                  quote2Model.currentQuote.isShowTransportationPrice">
+      <p></p>
+      <div style="width:77%;display: inline-block;">
+        <span class="bold">ס"ה מחיר האוכל</span>
+      </div>
+      <div class="quoteQuantAndUnit bold">{{quote2Model.currentQuote.foodPrice | currency}}</div>
+    </div>
+
+    {{quote2Model.setupTransportationItems()}}
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.transportationItems.length">
+      <P style="height: 0.5cm"></P>
+      <div class="bold">
+        {{quote2Model.category.description}}
+      </div>
+      <div ng-repeat="item in quote2Model.transportationItems">
+        <div style="width:77%;display:inline-block;">
+          <span class="bold" ng-show="item.isFreeItem">החלטנו לתת לך במתנה את המשלוח:</span>
+          <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+          <span class="bold" ng-show="item.isFreeItem">(ערך כספי</span>
+          <span class="bold" ng-show="item.isFreeItem">{{item.price | currency}}</span>
+          <span class="bold" ng-show="item.isFreeItem">)</span>
+          <div style="text-align: left" ng-show="quote2Model.currentQuote.isShowPrices && !item.isFreeItem">
+            {{item.price | currency}}
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-right: 1%" ng-show="!quote2Model.currentQuote.isFixedPrice &&
+                                              quote2Model.currentQuote.isShowTransportationPrice">
+        <div style="width:77%;display: inline-block;">
+          <span class="bold">מחיר</span>
+          <span class="bold">{{quote2Model.category.label}}</span>
+        </div>
+        <div class="quoteQuantAndUnit bold">{{quote2Model.categoryPrice | currency}}</div>
+      </div>
+
+    </div>
+
+
+    <div class="quoteTextBox purpleBG">
+
+      <div ng-hide="quote2Model.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          <span ng-show="quote2Model.transportationItems.length">
+            סה"כ אוכל ומשלוח
+          </span>
+          <span ng-hide="quote2Model.transportationItems.length">
+            סה"כ אוכל
+          </span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quote2Model.currentQuote.subTotal | currency}}
+        </div>
+      </div>
+
+      <div ng-show="quote2Model.currentQuote.discount && !quote2Model.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">הנחה מיוחדת</div>
+        <div class="quoteQuantAndUnit">
+          {{quote2Model.currentQuote.discount | currency}}
+        </div>
+      </div>
+
+      <div ng-show="quote2Model.currentQuote.discount && !quote2Model.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          <span>לאחר הנחה</span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quote2Model.currentQuote.subTotal + quote2Model.currentQuote.discount | currency}}
+        </div>
+      </div>
+
+      <div ng-hide="quote2Model.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription">
+          <span>(מחיר לסועד</span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quote2Model.currentQuote.perPerson | currency}})
+        </div>
+      </div>
+    </div>
+
+
+    {{quote2Model.setupBonusItems()}}
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.bonusItems.length === 1">
+      <P style="height: 0.5cm"></P>
+      <div ng-repeat="item in quote2Model.bonusItems">
+        <div style="width:77%;display:inline-block;" class="bold">
+          <span>החלטנו לצ'פר אותך ב</span>
+          <span>{{item.quantity}}</span>
+          <span>{{item.measurementUnit.label}}</span>
+          <span>{{item.productDescription}}</span>
+          <span>(ערך כספי:</span>
+          <span>{{item.price | currency}}</span>
+          <span>)</span>
+        </div>
+      </div>
+    </div>
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.bonusItems.length > 1">
+      <P style="height: 0.5cm"></P>
+      <div class="bold">
+        החלטנו לצ'פר אותך בפריטים הבאים:
+      </div>
+      <div ng-repeat="item in quote2Model.bonusItems">
+        <div style="width:77%;display:inline-block;" class="bold">
+          <span>{{item.quantity}}</span>
+          <span>{{item.measurementUnit.label}}</span>
+          <span>{{item.productDescription}}</span>
+          <span>(ערך כספי:</span>
+          <span>{{item.price | currency}}</span>
+          <span>)</span>
+        </div>
+      </div>
+    </div>
+
+
+    {{quote2Model.setupPriceIncreaseItems()}}
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.priceIncreaseItems.length">
+      <P style="height: 0.5cm"></P>
+      <div ng-repeat="item in quote2Model.priceIncreaseItems">
+        <div style="width:77%;display:inline-block;">
+          <span>{{item.productDescription}}</span>
+        </div>
+      </div>
+      <div style="padding-right: 1%" ng-hide="quote2Model.currentQuote.isFixedPrice">
+        <div style="width:77%;display: inline-block;">
+          <span class="bold">{{quote2Model.category.label}}</span>
+        </div>
+        <div class="quoteQuantAndUnit">{{quote2Model.categoryPrice | currency}}</div>
+      </div>
+    </div>
+
+
+    {{quote2Model.setupExternalServicesItems()}}
+    <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.externalServicesItems.length">
+      <P style="height: 0.5cm"></P>
+      <div class="bold quoteFoodCategoryName">
+        {{quote2Model.category.label}}
+      </div>
+      <div class="bold">
+        {{quote2Model.category.description}}
+      </div>
+      <div ng-repeat="item in quote2Model.externalServicesItems">
+        <div style="width:30%;display:inline-block;">
+          <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+          <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+          <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+        </div>
+        <div style="width:30%;display: inline-block;" class="externalQuantAndUnit">
+          <span style="display:inline-block;"> {{item.quantity}}</span>&nbsp;
+          <span style="display:inline-block;"> {{item.measurementUnit.label}}</span>
+        </div>
+        <div style="width:30%;display: inline-block;"
+             class="quoteQuantAndUnit"
+             ng-hide="quote2Model.currentQuote.isFixedPrice">
+          <span style="display:inline-block">{{item.price | currency}}</span>
+        </div>
+      </div>
+
+
+      <div style="padding-right: 1%" ng-show="!quote2Model.currentQuote.isFixedPrice &&
+                                              quote2Model.currentQuote.isShowTransportationPrice">
+        <div style="width:77%;display: inline-block;">
+          <span class="bold">מחיר</span>
+          <span class="bold">{{quote2Model.category.label}}</span>
+        </div>
+        <div class="quoteQuantAndUnit bold">{{quote2Model.categoryPrice | currency}}</div>
+      </div>
+
+    </div>
+
+
+    <p style="height: 0.5cm"></p>
+
+
+    <!-- Sum up of prices - purple BG  -->
+
+    <div class="quoteTextBox purpleBG" ng-hide="quote2Model.currentQuote.isNoTotal">
+
+
+      <div ng-show="quote2Model.currentOrder.isBusinessEvent && !quote2Model.currentQuote.isFixedPrice">
+        <div class="bold quoteItemDescription" >
+          <span>מע"מ בשיעור %</span>
+          <span>{{quote2Model.currentOrder.vatRate * 100}}</span>
+        </div>
+        <div class="quoteQuantAndUnit">
+          {{quote2Model.currentQuote.vat | currency}}
+        </div>
+      </div>
+
+      <div>
+        <div class="bold quoteItemDescription">סה"כ לתשלום</div>
+        <div class="quoteQuantAndUnit">
+          {{quote2Model.currentQuote.isFixedPrice ? quote2Model.currentQuote.fixedPrice : quote2Model.currentQuote.total | currency}}
+        </div>
+      </div>
+
+    </div>
+
+    <div ng-hide="quote2Model.currentQuote.isFixedPrice" class="quoteTextBox">
+		  <span>
+		    הקטלוג המלא שלנו נמצא
+		  </span>
+      <a href="http://pompidou.co.il" target="_blank">כאו.</a>
+      <span>
+		    ניתן להחליף מנה מסויימת באחרת ולבקש שינוי תמהיל.
+		  </span>
+    </div>
+
+
+    <p style="height: 0.5cm"></p>
+
+    <div ng-show="quote2Model.endBoxType.quoteEndBoxUrl">  <!-- show black box only if text exists -->
+      <div class="whyShould" class="quoteTextBox">
+
+        <div class="whyShouldChefImg">
+          <img src="app/img/portrait_yuval.jpg"/>
+        </div>
+
+
+        <div class="whyShouldText">
+          <!-- Content taken from src\app\bidTexts\chefMenuEndBox.html -->
+          <ng-include src="quote2Model.endBoxType.quoteEndBoxUrl"></ng-include>
+        </div>
+
+      </div>
+    </div>
+
+    <p style="height: 0.5cm"></p>
+
+    <div class="quoteTextBox" ng-bind-html="quote2Model.currentQuote.endText"></div>
+
+    <p style="height: 0.5cm"></p>
+
+
+    <p style="height: 0.5cm"></p>
+
+
+  </div>
+
+</div>

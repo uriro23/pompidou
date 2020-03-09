@@ -701,59 +701,113 @@ config(function($stateProvider, $urlRouterProvider) {
     }
   })
     .state ('quote', {
-    url: '/quote/:uuid',
-    templateUrl: 'app/partials/quote.html',
-    controller: 'QuoteCtrl as quoteModel',
-    resolve: {
-      bid: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
-          return bids[0];
-        });
-      }],
-      config: ['configPromise', function (configPromise) {
-        return configPromise;
-      }],
-      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
-        return bidTextTypesPromise;
-      }],
-      menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
-        return menuTypesPromise;
-      }],
-      categories: ['categoriesPromise', function (categoriesPromise) {
-        return categoriesPromise;
-      }],
-      isPrintQuote: [function () {
-        return false;
-      }]
-    }
-  })
+      url: '/quote/:uuid',
+      templateUrl: 'app/partials/quote.html',
+      controller: 'QuoteCtrl as quoteModel',
+      resolve: {
+        bid: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+            return bids[0];
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        isPrintQuote: [function () {
+          return false;
+        }]
+      }
+    })
     .state ('quotePrint', {
-    url: '/quotePrint/:uuid',
-    templateUrl: 'app/partials/quote.html',
-    controller: 'QuoteCtrl as quoteModel',
-    resolve: {
-      bid: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
-          return bids[0];
-        });
-      }],
-      config: ['configPromise', function (configPromise) {
-        return configPromise;
-      }],
-      bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
-        return bidTextTypesPromise;
-      }],
-      menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
-        return menuTypesPromise;
-      }],
-      categories: ['categoriesPromise', function (categoriesPromise) {
-        return categoriesPromise;
-      }],
-      isPrintQuote: [function () {
-        return true;
-      }]
-    }
-  })
+      url: '/quotePrint/:uuid',
+      templateUrl: 'app/partials/quote.html',
+      controller: 'QuoteCtrl as quoteModel',
+      resolve: {
+        bid: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+            return bids[0];
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        isPrintQuote: [function () {
+          return true;
+        }]
+      }
+    })
+    .state ('quote2', {
+      url: '/quote2/:uuid',
+      templateUrl: 'app/partials/quote2.html',
+      controller: 'Quote2Ctrl as quote2Model',
+      resolve: {
+        bid: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+            return bids[0];
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        isPrintQuote: [function () {
+          return false;
+        }]
+      }
+    })
+    .state ('quote2Print', {
+      url: '/quote2Print/:uuid',
+      templateUrl: 'app/partials/quote2.html',
+      controller: 'Quote2Ctrl as quote2Model',
+      resolve: {
+        bid: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+            return bids[0];
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        bidTextTypes: ['bidTextTypesPromise', function (bidTextTypesPromise) {
+          return bidTextTypesPromise;
+        }],
+        menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
+          return menuTypesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        isPrintQuote: [function () {
+          return true;
+        }]
+      }
+    })
     .state ('exitList', {
     url: '/exitList/:id',
     templateUrl: 'app/partials/exitList.html',

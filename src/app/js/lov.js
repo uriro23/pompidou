@@ -310,7 +310,7 @@ angular.module('myApp')
       {
         id: 1,
         label: 'הצעת מחיר ישנה',
-        isRealDocumentType: true,
+        isRealDocumentType: false,
         order: 1
       },
       {
@@ -327,9 +327,15 @@ angular.module('myApp')
       },
       {
         id: 4,
-        label: 'הצעת מחיר חדשה',
+        label: 'הצעת מחיר',
         isRealDocumentType: true,
         order:2
+      },
+      {
+        id: 5,
+        label: 'בפיתוח',
+        isRealDocumentType: true,
+        order:4
       }
     ],
 

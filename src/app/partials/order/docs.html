@@ -90,14 +90,7 @@
             {{documentType.label}}
         </button>
    </span>
-  <span>
-           <button ng-click="documentsModel.createBid(0)"
-                   ng-disabled="documentsModel.readOnly.is"
-                   class="btn btn-default">
-            גיבוי
-        </button>
-  </span>
-</div>
+ </div>
   <p></p>
 <table class="table table-hover" style="width: 60%">
   <thead>
@@ -116,8 +109,13 @@
         {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
-    <td ng-show="bid.attributes.documentType === 4 || bid.attributes.documentType === 2">
+    <td ng-show="bid.attributes.documentType === 4">
       <a ng-href="#/quote/{{bid.attributes.uuid}}" target="_blank">
+        {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      </a>
+    </td>
+    <td ng-show="bid.attributes.documentType === 5">
+      <a ng-href="#/quote2/{{bid.attributes.uuid}}" target="_blank">
         {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
