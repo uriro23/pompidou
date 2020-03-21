@@ -2,19 +2,6 @@
   "name": "pompidou",
   "version": "0.0.0",
   "dependencies": {
-    "browser-sync": "^2.18.13",
-    "browser-sync-spa": "^1.0.3",
-    "concat-stream": "^1.4.10",
-    "gulp": "^3.9.1",
-    "gulp-csso": "^1.0.1",
-    "gulp-replace": "^0.5.4",
-    "gulp-size": "^1.2.3",
-    "gulp-util": "^3.0.8",
-    "karma": "^0.12.37",
-    "karma-jasmine": "^0.3.8",
-    "loadash": "^1.0.0",
-    "merge-stream": "^0.1.8",
-    "wrench": "^1.5.9"
   },
   "scripts": {
     "test": "gulp test"
@@ -50,7 +37,7 @@
     "gulp-util": "~3.0.2",
     "http-proxy": "~1.8.0",
     "jshint-stylish": "~1.0.0",
-    "karma": "~0.12.31",
+    "karma": "^4.4.1",
     "karma-jasmine": "~0.3.1",
     "karma-ng-html2js-preprocessor": "~0.1.2",
     "karma-phantomjs-launcher": "~0.1.4",
