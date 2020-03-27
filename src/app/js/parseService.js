@@ -32,22 +32,24 @@ angular.module('myApp')
       }
       obj.delAttributes = undefined;
     }
+
+    var tempAttrs = JSON.parse(angular.toJson(obj.attributes));
     for (var attr in obj.attributes) {
       if (obj.attributes.hasOwnProperty(attr)) {
         obj.set(attr, obj.attributes[attr])
       }
     }
+
     var newObj = angular.copy(obj);  // to avoid parse error 121
-    newObj.save({}, {
-      success: function (o) {
+    console.log(newObj2);
+    newObj.save().then(function(o) {
         promise.resolve(o);
         $rootScope.$digest();
       },
-      error: function (model, error) {
+      function (error) {
         alert('Save Error ' + error.code + ", " + error.message);
         promise.reject(error);
         $rootScope.$digest();
-      }
     });
     return promise.promise;
   };
@@ -72,7 +74,7 @@ angular.module('myApp')
 
       promises.push(angular.copy(objs[i]).save()); // clone to avoid parse error 121
     }
-    return Parse.Promise.when(promises);
+    return Promise.all(promises);
   };
 
 
@@ -100,7 +102,7 @@ angular.module('myApp')
     for (var i = 0; i < objs.length; i++) {
       promises.push(objs[i].destroy());
     }
-    return Parse.Promise.when(promises);
+    return Promise.all(promises);
   };
 
     function query(qry) {
@@ -111,23 +113,37 @@ angular.module('myApp')
       var promise = $q.defer();
 
       // this function is called recursively to fetch a page of objects (up to 1000 - a limit set by Parse)
+      // function queryPage (sk) {
+      //   qry.skip(sk);
+      //   qry.find({
+      //     success: function (objs) {
+      //       results = results.concat(objs);
+      //       if (objs.length === pageSize) { // maybe more results needed
+      //         skip += pageSize;
+      //         queryPage(skip);
+      //       } else {
+      //         promise.resolve(results);
+      //         $rootScope.$digest();
+      //       }
+      //     },
+      //     error: function (err) {
+      //       promise.reject (err);
+      //       $rootScope.$digest();
+      //     }
+      //   });
+      // }
+      //
       function queryPage (sk) {
         qry.skip(sk);
-        qry.find({
-          success: function (objs) {
+        qry.find().then (function(objs) {
             results = results.concat(objs);
             if (objs.length === pageSize) { // maybe more results needed
               skip += pageSize;
               queryPage(skip);
             } else {
-             promise.resolve(results);
-             $rootScope.$digest();
+              promise.resolve(results);
+              $rootScope.$digest();
             }
-          },
-          error: function (err) {
-            promise.reject (err);
-            $rootScope.$digest();
-          }
         });
       }
 
@@ -594,21 +610,37 @@ angular.module('myApp')
     return promise.promise;
   };
 
-  this.userLogin = function (username, pwd) {
-    var promise = $q.defer();
-    Parse.User.logIn(username, pwd, {
-      success: function (user) {
-        promise.resolve(user);
-        $rootScope.$digest()
-      },
-      error: function (model, error) {
-        alert('Login error ' + error.code + ", " + error.message);
-        promise.reject(error);
-        $rootScope.$digest()
-      }
-    });
-    return promise.promise;
-  };
+    // this.userLogin = function (username, pwd) {
+    //   var promise = $q.defer();
+    //   Parse.User.logIn(username, pwd, {
+    //     success: function (user) {
+    //       promise.resolve(user);
+    //       $rootScope.$digest()
+    //     },
+    //     error: function (model, error) {
+    //       alert('Login error ' + error.code + ", " + error.message);
+    //       promise.reject(error);
+    //       $rootScope.$digest()
+    //     }
+    //   });
+    //   return promise.promise;
+    // };
+
+    this.userLogin = function (username, pwd) {
+      var promise = $q.defer();
+      Parse.User.logIn(username, pwd)
+        .then(function(user) {
+          promise.resolve(user);
+          console.log(new Date().getTime()+' resolved login promise');
+          $rootScope.$digest();
+      }, function(model, error) {
+          alert('Login error ' + error.code + ", " + error.message);
+          promise.reject(error);
+          $rootScope.$digest()
+        });
+      console.log(new Date().getTime()+' returning from login');
+      return promise.promise;
+    };
 
   this.userLogout = function () {
     Parse.User.logOut();
