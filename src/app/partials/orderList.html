@@ -12,7 +12,7 @@
 </h2>
 <table class="recents" ng-show="orderListModel.queryType==='sales' &&
                                 !orderListModel.user.attributes.isSalesPerson">
-  <tr ng-repeat="week in orderListModel.weeks">
+  <tr ng-repeat="week in orderListModel.weeks track by week.label">
     <td>{{week.label}}</td>
     <td>
       <span>יצרת</span>

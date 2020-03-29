@@ -8,7 +8,7 @@
 
 		<!-- Header + main logo -->
 		<div class="quoteTextBox">
-      <h2 ng-show="quoteModel.bid.attributes.documentType===4"
+      <h2 ng-show="quoteModel.bid.properties.documentType===4"
           class="purpleText bold quoteMainTitle">
         הצעת תפריט
       </h2>
@@ -24,13 +24,13 @@
 			<div class="floatRight">
 
 			  <span class="bold">שם:</span>
-			  <span>{{quoteModel.bid.attributes.customer.firstName+' '+quoteModel.bid.attributes.customer.lastName}}</span>
+			  <span>{{quoteModel.bid.properties.customer.firstName+' '+quoteModel.bid.properties.customer.lastName}}</span>
 			  <br>
 			  <span class="bold">תאריך האירוע:</span>
-        <span ng-hide="quoteModel.bid.attributes.order.isDateUnknown">
+        <span ng-hide="quoteModel.bid.properties.order.isDateUnknown">
           {{quoteModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}
         </span>
-        <span ng-show="quoteModel.bid.attributes.order.isDateUnknown">
+        <span ng-show="quoteModel.bid.properties.order.isDateUnknown">
           טרם נקבע
         </span>
         <br>
@@ -40,7 +40,7 @@
         </span>
 			  <br>
 			  <span class="bold">מספר המשתתפים:</span>
-			  <span>{{quoteModel.bid.attributes.order.noOfParticipants}}</span>
+			  <span>{{quoteModel.bid.properties.order.noOfParticipants}}</span>
         <span ng-show="quoteModel.currentOrder.children">
                &nbsp;&#40;<span>מתוכם</span>&nbsp;
                 <span >{{quoteModel.currentOrder.children}}</span>
@@ -65,7 +65,9 @@
 	    </div>
 
 	    <!-- Starting event food items list by categeries -->
-		<div class="quoteTextBox greyWhiteAlternate" ng-repeat="category in quoteModel.filteredCategories" on-finish-render="ngRepeatFinished">
+		<div class="quoteTextBox greyWhiteAlternate"
+         ng-repeat="category in quoteModel.filteredCategories track by category.tId"
+         on-finish-render="ngRepeatFinished">
 
 		  <!-- Food category header -->
 		  <div class="bold quoteFoodCategoryName">
@@ -80,7 +82,7 @@
 			{{quoteModel.setupCategoryItems(category.tId)}}
 
 			<!-- Regular items  -->
-			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems">
+			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems track by item.index">
 
         <div ng-show="!quoteModel.currentQuote.isNoQuantities  && quoteModel.currentQuote.isShowPrices">
           <div style="width:60%;display:inline-block;">
@@ -147,7 +149,7 @@
       <div class="bold">
         {{quoteModel.category.description}}
       </div>
-      <div ng-repeat="item in quoteModel.transportationItems">
+      <div ng-repeat="item in quoteModel.transportationItems track by item.index">
         <div style="width:77%;display:inline-block;">
           <span class="bold" ng-show="item.isFreeItem">החלטנו לתת לך במתנה את המשלוח:</span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
@@ -218,7 +220,7 @@
       {{quoteModel.setupBonusItems()}}
     <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.bonusItems.length === 1">
       <P style="height: 0.5cm"></P>
-      <div ng-repeat="item in quoteModel.bonusItems">
+      <div ng-repeat="item in quoteModel.bonusItems track by item.index">
         <div style="width:77%;display:inline-block;" class="bold">
           <span>החלטנו לצ'פר אותך ב</span>
           <span>{{item.quantity}}</span>
@@ -235,7 +237,7 @@
       <div class="bold">
         החלטנו לצ'פר אותך בפריטים הבאים:
       </div>
-      <div ng-repeat="item in quoteModel.bonusItems">
+      <div ng-repeat="item in quoteModel.bonusItems track by item.index">
         <div style="width:77%;display:inline-block;" class="bold">
           <span>{{item.quantity}}</span>
           <span>{{item.measurementUnit.label}}</span>
@@ -251,7 +253,7 @@
     {{quoteModel.setupPriceIncreaseItems()}}
     <div class="quoteTextBox greyWhiteAlternate" ng-show="quoteModel.priceIncreaseItems.length">
       <P style="height: 0.5cm"></P>
-      <div ng-repeat="item in quoteModel.priceIncreaseItems">
+      <div ng-repeat="item in quoteModel.priceIncreaseItems track by item.index">
         <div style="width:77%;display:inline-block;">
           <span>{{item.productDescription}}</span>
         </div>
@@ -274,7 +276,7 @@
       <div class="bold">
         {{quoteModel.category.description}}
       </div>
-      <div ng-repeat="item in quoteModel.externalServicesItems">
+      <div ng-repeat="item in quoteModel.externalServicesItems track by item.index">
         <div style="width:30%;display:inline-block;">
           <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>

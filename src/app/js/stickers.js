@@ -49,26 +49,26 @@ angular.module('myApp')
           var globalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
                                ordCategories[catInd].category.tId === CATEGORY_DESSERTS;
           if (globalCategory) {                       // for snacks and desserts produce category stickers
-            var boxComponent = catalogEntry.attributes.components.filter(function(comp) { // instead of item stickers
+            var boxComponent = catalogEntry.properties.components.filter(function(comp) { // instead of item stickers
               return comp.id === config.boxItem;
             });
             if (boxComponent.length > 0) {
               var thisOrd = ordCategories[catInd].orders.filter(function(ord) {
                 return ord.number === order.order.number;
               })[0];
-              thisOrd.quantity += item.quantity / catalogEntry.attributes.productionQuantity * boxComponent[0].quantity;
+              thisOrd.quantity += item.quantity / catalogEntry.properties.productionQuantity * boxComponent[0].quantity;
             }
           }
           var stickerItem = {
             number: order.order.number,
-            label: catalogEntry.attributes.stickerLabel,
+            label: catalogEntry.properties.stickerLabel,
             quantity: globalCategory ?                    // for global categories, count only exitList sub items
-                      catalogEntry.attributes.exitList.length :
+                      catalogEntry.properties.exitList.length :
               Math.ceil(
                 item.quantity /
-                catalogEntry.attributes.priceQuantity *
-                catalogEntry.attributes.stickerQuantity
-              ) + catalogEntry.attributes.exitList.length,
+                catalogEntry.properties.priceQuantity *
+                catalogEntry.properties.stickerQuantity
+              ) + catalogEntry.properties.exitList.length,
             eventDate: order.order.eventDate,
             customer: order.customer,
             color: order.color
@@ -119,6 +119,7 @@ angular.module('myApp')
       this.stickerPage[stickerP] = {
         seq: stickerP+1,
         lines: [{
+          seq: stickerI,
           stickers: []
         }]
       };
@@ -130,6 +131,7 @@ angular.module('myApp')
       stickerJ = 0;
       if (stickerI < STICKER_HEIGHT) {    // if last line on page, don't initialize it
         this.stickerPage[stickerP].lines[stickerI] = {
+          seq: stickerI,
           stickers: []
         };
       } else  {  // last line on page
@@ -206,6 +208,7 @@ angular.module('myApp')
     this.stickerPage[0] = {
       seq: 1,
       lines: [{
+        seq: stickerI,
         stickers: []
       }]
     };
@@ -233,8 +236,12 @@ angular.module('myApp')
       }).map(function(item) {
         var catalogItem = catalog.filter(function(cat) {
           return cat.id===item.catalogId;
-        })[0].attributes;
+        }).map(function(itm) {
+          itm.properties.id = itm.id;  // include id for ng-repeat uniqueness
+          return itm.properties;
+        })[0];
         return {
+          id: catalogItem.id,
           productName: catalogItem.productName,
           productDescription: item.productDescription,
           isDescChanged: item.isDescChanged & (!item.isCosmeticChange),

@@ -8,7 +8,7 @@
   <th></th>
   </thead>
   <tbody>
-  <tr ng-repeat="quote in quoteManagementModel.order.attributes.quotes track by quote.menuType.tId"
+  <tr ng-repeat="quote in quoteManagementModel.order.properties.quotes track by quote.menuType.tId"
       ng-class="quote.changes.management?'bg-success':null">
     <td>{{quote.menuType.label}}</td>
     <td>
@@ -33,7 +33,7 @@
   </tbody>
 </table>
 <div ng-show="quoteManagementModel.remainingMenuTypes.length"
-     ng-class="quoteManagementModel.order.attributes.quotes.length===0?bg-error:null">
+     ng-class="quoteManagementModel.order.properties.quotes.length===0?bg-error:null">
 <span>הוסף תפריט מסוג:</span>
 <select ng-model="quoteManagementModel.newMenuType"
         ng-change="quoteManagementModel.addQuote()"

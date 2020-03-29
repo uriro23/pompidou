@@ -8,7 +8,7 @@
     </td>
     <td style="width:60%;font-size: large" ng-hide="workOrderModel.isPrint">
       {{workOrderModel.domains[3].forWorkItem}}
-      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[3]">
+      <span ng-hide="workOrderModel.woIndex.properties.domainStatus[3]">
         --- לא מעודכן ---
       </span>
     </td>
@@ -21,28 +21,28 @@
     </td>
   </tr>
 </table>
-<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories"
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories track by cat.category.tId"
      ng-hide="workOrderModel.isPrint">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:30%">
     <tbody>
-    <tr ng-repeat="woItem in cat.list">
-      <td style="width: 80%">{{woItem.attributes.productName}}</td>
+    <tr ng-repeat="woItem in cat.list track by woItem.id">
+      <td style="width: 80%">{{woItem.properties.productName}}</td>
       <td>
-        {{woItem.attributes.quantity | number:2}}
+        {{woItem.properties.quantity | number:2}}
       </td>
-      <td style="width: 10%">{{woItem.attributes.measurementUnit.label}}</td>
+      <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
       <td>
         <button ng-click="workOrderModel.backInfo(woItem)"
-                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[3]"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[3]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
       <td>
         <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[3]"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[3]"
                 class="btn btn-default btn-sm">
           מחק
         </button>
@@ -52,14 +52,14 @@
   </table>
 </div>
 <div style="margin-right: 2%;margin-bottom: 2cm;margin-top: 1cm">
-<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories"
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[3].categories track by cat.category.tId"
      ng-show="workOrderModel.isPrint">
   <label ng-show="cat.isShow" style="font-size: x-large">{{cat.category.label}}</label>
   <div ng-show="cat.isShow" style="column-count: 2; width:90%">
-    <div ng-repeat="woItem in cat.list" style="font-size: large">
-      <span style="position: relative;right:0%">{{woItem.attributes.quantity | number:2}}</span>
-      <span style="position: relative;right:3%">{{woItem.attributes.measurementUnit.label}}</span>
-      <span style="position: relative;right:15%">{{woItem.attributes.productName}}</span>
+    <div ng-repeat="woItem in cat.list track by woItem.id" style="font-size: large">
+      <span style="position: relative;right:0%">{{woItem.properties.quantity | number:2}}</span>
+      <span style="position: relative;right:3%">{{woItem.properties.measurementUnit.label}}</span>
+      <span style="position: relative;right:15%">{{woItem.properties.productName}}</span>
     </div>
   </div>
   <p></p>

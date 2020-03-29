@@ -15,7 +15,7 @@ angular.module('myApp')
 
 
     this.setBusinessEvent = function () {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
 
       thisOrder.quotes.forEach(function(quote) {
         quote.items.forEach(function(item) {
@@ -44,7 +44,7 @@ angular.module('myApp')
     this.deleteOrder = function () {
       var that = this;
       if (this.user.attributes.isSalesPerson &&
-        this.user.attributes.username !== this.order.attributes.createdBy) {
+        this.user.attributes.username !== this.order.properties.createdBy) {
         alert ('אינך יכול לבטל אירוע שלא אתה יצרת');
         return;
       }
@@ -89,7 +89,7 @@ angular.module('myApp')
     this.employees = $scope.orderModel.employees;
 
     this.roleChanged = function(ind) {
-      this.order.attributes.empBonuses[ind].isChanged = true;
+      this.order.properties.empBonuses[ind].isChanged = true;
       orderService.orderChanged(this.order);
     };
   });

@@ -50,7 +50,7 @@
 <div ng-show="customerListModel.isShowOrders">
   <h3>
     <span>רשימת אירועים של </span>
-    {{customerListModel.currentCustomer.attributes.firstName+' '+ customerListModel.currentCustomer.attributes.lastName}}
+    {{customerListModel.currentCustomer.properties.firstName+' '+ customerListModel.currentCustomer.properties.lastName}}
   </h3>
   <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
 </div>
@@ -71,33 +71,33 @@
     <tbody>
     <tr ng-class="customerListModel.isCustomerChanged?'bg-success':null">
       <td>
-        <input type="text" size=15 ng-model="customerListModel.currentCustomer.attributes.firstName"
+        <input type="text" size=15 ng-model="customerListModel.currentCustomer.properties.firstName"
                ng-class="customerListModel.currentCustomer.isFirstNameError?'bg-danger':null"
                ng-change="customerListModel.firstNameChanged()">
       </td>
       <td>
-        <input type="text" size=15 ng-model="customerListModel.currentCustomer.attributes.lastName"
+        <input type="text" size=15 ng-model="customerListModel.currentCustomer.properties.lastName"
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=8 ng-model="customerListModel.currentCustomer.attributes.mobilePhone"
+        <input type="text" size=8 ng-model="customerListModel.currentCustomer.properties.mobilePhone"
                ng-class="customerListModel.currentCustomer.isMobilePhoneError?'bg-danger':null"
                ng-change="customerListModel.mobilePhoneChanged()">
       </td>
       <td>
-        <input type="text" size=8 ng-model="customerListModel.currentCustomer.attributes.homePhone"
+        <input type="text" size=8 ng-model="customerListModel.currentCustomer.properties.homePhone"
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=8 ng-model="customerListModel.currentCustomer.attributes.workPhone"
+        <input type="text" size=8 ng-model="customerListModel.currentCustomer.properties.workPhone"
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
-        <input style="text-align: left" type="text" size=27 ng-model="customerListModel.currentCustomer.attributes.email"
+        <input style="text-align: left" type="text" size=27 ng-model="customerListModel.currentCustomer.properties.email"
                ng-change="customerListModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=10 ng-model="customerListModel.currentCustomer.attributes.address"
+        <input type="text" size=10 ng-model="customerListModel.currentCustomer.properties.address"
                ng-change="customerListModel.customerChanged()">
       </td>
     </tr>
@@ -106,26 +106,26 @@
       <td style="cursor:pointer"
           ng-class="!customer.isSelected&&customer.matches.name?'bg-warning':null"
           ng-click="customerListModel.selectLine($index)">
-        {{customer.attributes.firstName}}
+        {{customer.properties.firstName}}
       </td>
       <td style="cursor:pointer"
           ng-class="!customer.isSelected&&customer.matches.name?'bg-warning':null"
           ng-click="customerListModel.selectLine($index)">
-        {{customer.attributes.lastName}}
+        {{customer.properties.lastName}}
       </td>
       <td ng-class="!customer.isSelected&&customer.matches.mobilePhone?'bg-warning':null">
-        <a href="tel:{{customer.attributes.mobilePhone}}">{{customer.attributes.mobilePhone}}</a>
+        <a href="tel:{{customer.properties.mobilePhone}}">{{customer.properties.mobilePhone}}</a>
       </td>
       <td ng-class="!customer.isSelected&&customer.matches.homePhone?'bg-warning':null">
-        <a href="tel:{{customer.attributes.homePhone}}">{{customer.attributes.homePhone}}</a>
+        <a href="tel:{{customer.properties.homePhone}}">{{customer.properties.homePhone}}</a>
       </td>
       <td ng-class="!customer.isSelected&&customer.matches.workPhone?'bg-warning':null">
-        <a href="tel:{{customer.attributes.workPhone}}">{{customer.attributes.workPhone}}</a>
+        <a href="tel:{{customer.properties.workPhone}}">{{customer.properties.workPhone}}</a>
       </td>
       <td  style="text-align: left"ng-class="!customer.isSelected&&customer.matches.email?'bg-warning':null">
-        <a href="mailto:{{customer.attributes.email}}">{{customer.attributes.email}}</a>
+        <a href="mailto:{{customer.properties.email}}">{{customer.properties.email}}</a>
       </td>
-      <td ng-click="customerListModel.selectLine($index)">{{customer.attributes.address}}</td>
+      <td ng-click="customerListModel.selectLine($index)">{{customer.properties.address}}</td>
       <td>{{customer.successOrderCount}}</td>
       <td>{{customer.failureOrderCount}}</td>
       <td ng-show="customer.lastDate>customerListModel.firstDate">{{customer.lastDate | date:'dd/MM/yyyy'}}</td>

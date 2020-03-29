@@ -75,7 +75,7 @@ angular.module('myApp')
       api.queryOrdersByRange(this.filterBy, this.fromDate, this.toDate, fieldList)
         .then(function(orders) {
           fetchedOrders = orders.filter(function(ord) {
-            return !ord.attributes.template;    // ignore templates
+            return !ord.properties.template;    // ignore templates
           });
           that.filterOrders();
           that.isHideOrders = true;
@@ -86,7 +86,7 @@ angular.module('myApp')
     this.filterOrders = function () {
         var that = this;
         filteredOrders = fetchedOrders.filter (function (ord) {
-          var currentOrder = ord.attributes;
+          var currentOrder = ord.properties;
           if (that.fromTotal) {
             if (currentOrder.header.totalForStat < that.fromTotal) {
               return false;
@@ -131,7 +131,7 @@ angular.module('myApp')
 
       var tempVec = [];
       filteredOrders.forEach(function(order) {
-        var orderAttr = order.attributes;
+        var orderAttr = order.properties;
         var segIndex = getIndex (order);
         if (segIndex > -1) {  // if no index for this order - skip it
           if (!tempVec[segIndex]) {  // first event for index
@@ -173,7 +173,7 @@ angular.module('myApp')
       });
       tempVec.forEach(function(line) {
         line.orders.sort(function(a,b) {
-          if(a.attributes.eventDate > b.attributes.eventDate) {
+          if(a.properties.eventDate > b.properties.eventDate) {
             return 1;
           } else {
             return -1;
@@ -213,8 +213,8 @@ angular.module('myApp')
       // segmentation by months
       doSegmentation(this.monthStats, this.monthTot, this.monthAvg, function (ord) {
         var orderDate =
-          that.filterBy === 'eventDate' ? ord.attributes.eventDate :
-              that.filterBy === 'closingDate' ? ord.attributes.closingDate : ord.createdAt;
+          that.filterBy === 'eventDate' ? ord.properties.eventDate :
+              that.filterBy === 'closingDate' ? ord.properties.closingDate : ord.createdAt;
         if (orderDate) {
          return orderDate.getFullYear() * 12 + orderDate.getMonth() - dateBias;
         } else {
@@ -227,8 +227,8 @@ angular.module('myApp')
       });
       // segmentation by participants
       doSegmentation(this.participantStats, this.participantTot, this.participantAvg, function (ord) {
-        if (ord.attributes.noOfParticipants) {
-          return Math.floor((ord.attributes.noOfParticipants + 1) / participantsFactor);
+        if (ord.properties.noOfParticipants) {
+          return Math.floor((ord.properties.noOfParticipants + 1) / participantsFactor);
         } else {
           return -1;  // for leads with no participants yet
         }
@@ -237,8 +237,8 @@ angular.module('myApp')
       });
       // segmentation by total
       doSegmentation(this.totalStats, this.totalTot, this.totalAvg, function (ord) {
-        if (ord.attributes.header.totalForStat) {
-          return Math.floor((ord.attributes.header.totalForStat + 1) / totalFactor);
+        if (ord.properties.header.totalForStat) {
+          return Math.floor((ord.properties.header.totalForStat + 1) / totalFactor);
         } else {
           return -1;
         }
@@ -250,9 +250,9 @@ angular.module('myApp')
                      this.totalPerParticipantTot,
                      this.totalPerParticipantAvg,
                      function (ord) {
-        if (ord.attributes.header.totalForStat) {
-          return Math.floor((ord.attributes.header.totalForStat /
-            ord.attributes.noOfParticipants + 1) / totalPerParticipantFactor);
+        if (ord.properties.header.totalForStat) {
+          return Math.floor((ord.properties.header.totalForStat /
+            ord.properties.noOfParticipants + 1) / totalPerParticipantFactor);
         } else {
           return -1;
         }
@@ -261,8 +261,8 @@ angular.module('myApp')
       });
       // segmentation by menuType
       doSegmentation(this.menuTypeStats, this.menuTypeTot, this.menuTypeAvg, function (ord) {
-        if (ord.attributes.header.menuType) {
-          return ord.attributes.header.menuType.tId;
+        if (ord.properties.header.menuType) {
+          return ord.properties.header.menuType.tId;
         } else {
           return -1;
         }
@@ -276,8 +276,8 @@ angular.module('myApp')
       });
       // segmentation by referralSource
       doSegmentation(this.referralSourceStats, this.referralSourceTot, this.referralSourceAvg, function (ord) {
-        if (ord.attributes.referralSource) {
-          return ord.attributes.referralSource;
+        if (ord.properties.referralSource) {
+          return ord.properties.referralSource;
         } else {
           return -1;
         }
@@ -291,8 +291,8 @@ angular.module('myApp')
         });
       // segmentation by cancelReason
       doSegmentation(this.cancelReasonStats, this.cancelReasonTot, this.cancelReasonAvg, function (ord) {
-        if (ord.attributes.cancelReason) {
-          return ord.attributes.cancelReason;
+        if (ord.properties.cancelReason) {
+          return ord.properties.cancelReason;
         } else {
           return -1;
         }
@@ -311,16 +311,16 @@ angular.module('myApp')
       this.ordersToShow.forEach(function(order) {
         order.view = {};
         order.view.customer = customers.filter(function (cust) {
-          return cust.id === order.attributes.customer;
+          return cust.id === order.properties.customer;
         })[0];
         order.view.customer.anyPhone =
-          order.view.customer.attributes.mobilePhone?order.view.customer.attributes.mobilePhone:
-            order.view.customer.attributes.homePhone?order.view.customer.attributes.homePhone:
-              order.view.customer.attributes.workPhone?order.view.customer.attributes.workPhone:undefined;
+          order.view.customer.properties.mobilePhone?order.view.customer.properties.mobilePhone:
+            order.view.customer.properties.homePhone?order.view.customer.properties.homePhone:
+              order.view.customer.properties.workPhone?order.view.customer.properties.workPhone:undefined;
         order.view.orderStatus = lov.orderStatuses.filter(function (stat) {
-          return stat.id === order.attributes.orderStatus;
+          return stat.id === order.properties.orderStatus;
         })[0];
-        order.view.isReadOnly = order.attributes.eventDate < dater.today() ||
+        order.view.isReadOnly = order.properties.eventDate < dater.today() ||
                                 order.view.orderStatus.id === 6;
       });
       lineArray.forEach(function(lin) {
@@ -350,8 +350,8 @@ angular.module('myApp')
       api.queryOrdersByRange('eventDate',from,dater.today(),fields)
         .then (function(orders) {
           orders.forEach(function(order) {
-            if (!order.attributes.template && order.attributes.orderStatus!==1 && order.attributes.orderStatus!==6) {
-              var calcMonth = order.attributes.eventDate.getFullYear()*12+order.attributes.eventDate.getMonth();
+            if (!order.properties.template && order.properties.orderStatus!==1 && order.properties.orderStatus!==6) {
+              var calcMonth = order.properties.eventDate.getFullYear()*12+order.properties.eventDate.getMonth();
               var monthInd = -1;
               that.empBonuses.forEach(function(line, lineInd) {
                 if (line.calcMonth === calcMonth) {
@@ -361,12 +361,12 @@ angular.module('myApp')
               if (monthInd === -1) {
                 that.empBonuses.push({
                   calcMonth: calcMonth,
-                  month: order.attributes.eventDate,
+                  month: order.properties.eventDate,
                   employees: []
                 });
                 monthInd = that.empBonuses.length-1;
               }
-              order.attributes.empBonuses.forEach(function(bonus) {
+              order.properties.empBonuses.forEach(function(bonus) {
                 if (bonus.isBonus && bonus.employee) {
                   var empInd = -1;
                   that.empBonuses[monthInd].employees.forEach(function(emp,empj) {
@@ -418,15 +418,15 @@ angular.module('myApp')
         .then(function(orders) {
           that.catProcessing = false;
           orders.forEach(function(order) {
-            if (!order.attributes.template && order.attributes.orderStatus>=2 && order.attributes.orderStatus<=5) {
-              var quote = order.attributes.quotes[order.attributes.activeQuote];
+            if (!order.properties.template && order.properties.orderStatus>=2 && order.properties.orderStatus<=5) {
+              var quote = order.properties.quotes[order.properties.activeQuote];
               if (!quote) {
                 console.log(order);
               }
               if (!quote.isFixedPrice) {
                 var orderDate =
-                  that.filterBy === 'eventDate' ? ord.attributes.eventDate :
-                    that.filterBy === 'closingDate' ? ord.attributes.closingDate : ord.createdAt;
+                  that.filterBy === 'eventDate' ? order.properties.eventDate :
+                    that.filterBy === 'closingDate' ? order.properties.closingDate : order.createdAt;
                 var monthInd = orderDate.getFullYear()*12+orderDate.getMonth()-dateBias;
                 if (!that.categoryOrdersByMonth[monthInd]) {
                   var dateLabel =  angular.copy(that.fromDate);
@@ -446,7 +446,7 @@ angular.module('myApp')
                     if (cat.tId === item.category.tId) {
                       cat.count++;
                       var price = item.category.type===4 ?
-                        item.price / (1 + order.attributes.vatRate) :
+                        item.price / (1 + order.properties.vatRate) :
                         item.priceBeforeVat;
                       if (quote.discountRate) {
                         price = price * (100 - quote.discountRate) / 100;
@@ -481,11 +481,11 @@ angular.module('myApp')
         .then(function(orders1) {
           that.lastYearCloses = 0;
           orders1.forEach(function(order) {
-            if (order.attributes.orderStatus === 2 ||
-                order.attributes.orderStatus === 3 ||
-                order.attributes.orderStatus === 4 ||
-                order.attributes.orderStatus === 5) {
-              that.lastYearCloses += order.attributes.header.totalForStat;
+            if (order.properties.orderStatus === 2 ||
+                order.properties.orderStatus === 3 ||
+                order.properties.orderStatus === 4 ||
+                order.properties.orderStatus === 5) {
+              that.lastYearCloses += order.properties.header.totalForStat;
             }
           });
           from = new Date(year,0,1); // Jan 1st this year
@@ -494,11 +494,11 @@ angular.module('myApp')
             .then(function(orders2) {
               that.thisYearCloses = 0;
             orders2.forEach(function(order) {
-              if (order.attributes.orderStatus === 2 ||
-                order.attributes.orderStatus === 3 ||
-                order.attributes.orderStatus === 4 ||
-                order.attributes.orderStatus === 5) {
-                that.thisYearCloses += order.attributes.header.totalForStat;
+              if (order.properties.orderStatus === 2 ||
+                order.properties.orderStatus === 3 ||
+                order.properties.orderStatus === 4 ||
+                order.properties.orderStatus === 5) {
+                that.thisYearCloses += order.properties.header.totalForStat;
               }
             });
           });

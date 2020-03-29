@@ -1,11 +1,11 @@
     <h3 style="display: inline">
       <span ng-show="orderModel.isNewOrder">אירוע חדש</span>
       <span ng-hide="orderModel.isNewOrder">
-        <span ng-hide="orderModel.order.attributes.template">אירוע מס' </span>
-        <span ng-show="orderModel.order.attributes.template">תבנית מס' </span>
-        <span>{{orderModel.order.attributes.number}}</span>
-        <span ng-show="orderModel.order.attributes.template">:</span>
-        <span ng-show="orderModel.order.attributes.template">{{orderModel.order.attributes.template}}</span>
+        <span ng-hide="orderModel.order.properties.template">אירוע מס' </span>
+        <span ng-show="orderModel.order.properties.template">תבנית מס' </span>
+        <span>{{orderModel.order.properties.number}}</span>
+        <span ng-show="orderModel.order.properties.template">:</span>
+        <span ng-show="orderModel.order.properties.template">{{orderModel.order.properties.template}}</span>
       </span>
       </h3>
     <div style="display: inline">
@@ -22,14 +22,14 @@
     </div>
     <div style="display: inline">
       &nbsp;&nbsp;&nbsp;
-           <span ng-show="!orderModel.order.view.isChanged && orderModel.order.attributes.taskData.kitchenInstructions">
+           <span ng-show="!orderModel.order.view.isChanged && orderModel.order.properties.taskData.kitchenInstructions">
             <label>הוראות למטבח:</label>
-            <span>{{orderModel.order.attributes.taskData.kitchenInstructions}}</span>
+            <span>{{orderModel.order.properties.taskData.kitchenInstructions}}</span>
           </span>
       &nbsp;&nbsp;&nbsp;
           <span ng-show="!orderModel.order.view.isChanged">
             <label>מיקום:</label>
-            <span>{{orderModel.order.attributes.taskData.location}}</span>
+            <span>{{orderModel.order.properties.taskData.location}}</span>
           </span>
    </div>
     <p></p>
@@ -43,7 +43,7 @@
                         orderModel.order.view.orderStatus.id < 6 && !orderModel.user.attributes.isKitchenStaff">
             <ng-include src="'app/partials/order/bonuses.html'"></ng-include>
           </tab>
-            <tab heading="אירועים קודמים" ng-show="orderModel.order.attributes.customer && !orderModel.user.attributes.isKitchenStaff"
+            <tab heading="אירועים קודמים" ng-show="orderModel.order.properties.customer && !orderModel.user.attributes.isKitchenStaff"
               select="orderModel.getPrevOrders()">
               <ng-include src="'app/partials/order/orderTable.html'"></ng-include>
             </tab>
@@ -64,19 +64,21 @@
                active="orderModel.isActiveGeneralTab">
             <ng-include src="'app/partials/order/general.html'"></ng-include>
           </tab>
-          <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:false}"
-               style="font-style: italic; font-weight: 100"
+          <tab ng-repeat="quote in orderModel.order.properties.quotes | filter : {isActive:false} track by quote.menuType.tId"
+               ng-style="quote.isActive ? {'font-style':'oblique', 'font-weight': 'bold'}
+                                        : {'font-style': 'italic', 'font-weight': 100}"
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"
                ng-show="!orderModel.user.attributes.isKitchenStaff"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
-            </tab>
-          <tab ng-repeat="quote in orderModel.order.attributes.quotes | filter: {isActive:true}"
-               style="font-style:oblique; font-weight: bold"
-               active="orderModel.isActiveQuoteTab"
+          </tab>
+          <tab ng-repeat="quote in orderModel.order.properties.quotes | filter : {isActive:true} track by quote.menuType.tId"
+               ng-style="quote.isActive ? {'font-style':'oblique', 'font-weight': 'bold'}
+                                        : {'font-style': 'italic', 'font-weight': 100}"
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"
+               ng-show="!orderModel.user.attributes.isKitchenStaff"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
           </tab>

@@ -79,7 +79,7 @@
       <th>kitchen?</th>
       </thead>
       <tbody>
-      <tr ng-repeat="user in adminModel.users">
+      <tr ng-repeat="user in adminModel.users track by user.id">
         <td style="text-align: left">{{user.attributes.username}}</td>
         <td style="text-align: left">{{user.attributes.email}}</td>
         <td>{{user.attributes.isSalesPerson}}</td>
@@ -141,26 +141,26 @@
             ng-change="adminModel.productTree()"
             ng-options="category.label for category in adminModel.categories"></select>
     <div>
-      <div ng-repeat="menuItem in adminModel.menuItems">
+      <div ng-repeat="menuItem in adminModel.menuItems track by menuItem.id">
         <div style="font-weight: bold;height: 0.6cm ; vertical-align: middle">
         <div style="cursor: pointer;width: 60%; display: inline-block"
              ng-click="adminModel.selectCatItem(menuItem.id)">
         <span>מנה:</span>
-        <span>{{menuItem.attributes.productName.substr(0,85)}}</span>
+        <span>{{menuItem.properties.productName.substr(0,85)}}</span>
         </div>
         <div style="width: 30%; display: inline-block">
           <span>כמות ייצור</span>
-          <span>{{menuItem.attributes.productionQuantity}}</span>
+          <span>{{menuItem.properties.productionQuantity}}</span>
           <span>{{menuItem.measurementUnit.label}}</span>
         </div>
         </div>
-        <div ng-repeat="prep in menuItem.preparations" style="margin-right: 2%">
+        <div ng-repeat="prep in menuItem.preparations track by prep.id" style="margin-right: 2%">
           <div style="color: red;height: 0.6cm ; vertical-align: middle">
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(prep.id)">
           <span>הכנה:</span>
-          <span ng-class="prep.attributes.isDeleted?'myCanceledEvent':'null'">
-            {{prep.attributes.productName}}
+          <span ng-class="prep.properties.isDeleted?'myCanceledEvent':'null'">
+            {{prep.properties.productName}}
           </span>
           </div>
           <div style="width: 18.4%;display: inline-block">
@@ -170,17 +170,17 @@
           </div>
           <div style="width: 20%;display: inline-block">
             <span>כמות יצור:</span>
-            <span>{{prep.attributes.productionQuantity}}</span>
+            <span>{{prep.properties.productionQuantity}}</span>
             <span>{{prep.measurementUnit.label}}</span>
           </div>
           </div>
-          <div ng-repeat="prepMaterial in prep.materials" style="margin-right: 3%">
+          <div ng-repeat="prepMaterial in prep.materials track by prepMaterial.id" style="margin-right: 3%">
             <div style="height: 0.6cm ; vertical-align: middle">
             <div style="cursor: pointer;width: 37.5%; display: inline-block"
                  ng-click="adminModel.selectCatItem(prepMaterial.id)">
             <span>חומר:</span>
-            <span ng-class="prepMaterial.attributes.isDeleted?'myCanceledEvent':'null'">
-              {{prepMaterial.attributes.productName}}
+            <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
+              {{prepMaterial.properties.productName}}
             </span>
             </div>
             <div style="width: 18.9%;display: inline-block">
@@ -191,13 +191,13 @@
             </div>
           </div>
         </div>
-        <div ng-repeat="material in menuItem.materials" style="margin-right: 2%">
+        <div ng-repeat="material in menuItem.materials track by material.id" style="margin-right: 2%">
           <div style="height: 0.6cm ; vertical-align: middle">
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(material.id)">
           <span>חומר:</span>
-          <span ng-class="material.attributes.isDeleted?'myCanceledEvent':'null'">
-            {{material.attributes.productName}}
+          <span ng-class="material.properties.isDeleted?'myCanceledEvent':'null'">
+            {{material.properties.productName}}
           </span>
           </div>
           <div style="width: 18.4%;display: inline-block">
@@ -218,10 +218,10 @@
       <th>קטגוריה</th>
       <th>שם</th>
       <th>אירועים</th>
-      <tr ng-repeat="catItem in adminModel.catalog">
+      <tr ng-repeat="catItem in adminModel.catalog track by catItem.id">
         <td>{{catItem.view.category.label}}</td>
         <td style="cursor: pointer" ng-click="adminModel.selectCatItem(catItem.id)">
-          {{catItem.attributes.productName}}</td>
+          {{catItem.properties.productName}}</td>
         <td>{{catItem.view.count}}</td>
       </tr>
     </table>
@@ -248,27 +248,27 @@
         -->
         <th>ביטול</th>
         <th>קטגוריה</th>
-        <th ng-repeat="sensitivity in adminModel.sensitivities"
+        <th ng-repeat="sensitivity in adminModel.sensitivities track by sensitivity.tId"
             ng-show="adminModel.productNamesDomain.id===1">
           {{sensitivity.label}}
         </th>
         <th></th>
         </thead>
         <tbody>
-        <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems"
+        <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems track by productNameItem.id"
             ng-class="productNameItem.errors ? 'bg-danger' :
                        productNameItem.isChanged ? 'bg-success' :
-                       productNameItem.attributes.isDeleted ? 'active myCanceledEvent' : bg-active">
-          <td>{{productNameItem.attributes.productName}}</td>
-          <td>{{productNameItem.attributes.priceQuantity}}</td>
+                       productNameItem.properties.isDeleted ? 'active myCanceledEvent' : bg-active">
+          <td>{{productNameItem.properties.productName}}</td>
+          <td>{{productNameItem.properties.priceQuantity}}</td>
           <td>{{productNameItem.measurementUnitLabel}}</td>
           <!--
           <td ng-show="adminModel.productNamesDomain.id===1">
-            <input type="text" ng-model="productNameItem.attributes.stickerLabel" size="10"
+            <input type="text" ng-model="productNameItem.properties.stickerLabel" size="10"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
           </td>
           <td ng-show="adminModel.productNamesDomain.id===1">
-            <input type="number" ng-model="productNameItem.attributes.stickerQuantity" min="0" max="99"
+            <input type="number" ng-model="productNameItem.properties.stickerQuantity" min="0" max="99"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
           </td>
           <td ng-show="adminModel.productNamesDomain.id===1">
@@ -277,14 +277,14 @@
           -->
           <td>
             <input type="checkbox"
-                   ng-model="productNameItem.attributes.isDeleted"
+                   ng-model="productNameItem.properties.isDeleted"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
           </td>
           <td>
             <select ng-model="productNameItem.categoryObject"
                     ng-change="adminModel.productNameItemChanged(productNameItem)"
                     ng-options="category.label for category in adminModel.categories"></select>          </td>
-         <td ng-repeat="potSens in productNameItem.sensArray"
+         <td ng-repeat="potSens in productNameItem.sensArray track by potSens.tId"
              ng-show="adminModel.productNamesDomain.id===1">
             <input type="checkbox" ng-model="potSens.isTrue"
                    ng-change="adminModel.productNameItemChanged(productNameItem)">
@@ -303,9 +303,9 @@
    <tab heading="קופסאות" select="adminModel.loadNoBoxes()">
      <h3>חטיפים וקינוחים שאין להם קישור לקופסת פומפידו בעץ המוצר</h3>
      <table class="table table-hover">
-      <tr ng-repeat="product in adminModel.noBoxes">
+      <tr ng-repeat="product in adminModel.noBoxes track by product.id">
         <td style="cursor: pointer" ng-click="adminModel.selectCatItem(product.id)">
-          {{product.attributes.productName}}
+          {{product.properties.productName}}
         </td>
       </tr>
      </table>
@@ -325,10 +325,10 @@
        <th>אירוע אחרון</th>
        </thead>
        <tbody>
-       <tr ng-repeat="customer in adminModel.customers">
-         <td>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</td>
-         <td>{{customer.attributes.email}}</td>
-         <td>{{customer.attributes.mobilePhone}}</td>
+       <tr ng-repeat="customer in adminModel.customers track by customer.id">
+         <td>{{customer.properties.firstName+' '+customer.properties.lastName}}</td>
+         <td>{{customer.properties.email}}</td>
+         <td>{{customer.properties.mobilePhone}}</td>
          <td>{{customer.view.noOfSuccesses}}</td>
          <td>{{customer.view.noOfFailures}}</td>
          <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
@@ -340,12 +340,12 @@
        <div>
          <span>name,email,phone,successes,failures,lastEvent</span>
        </div>
-       <div ng-repeat="customer in adminModel.customers">
-         <span>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</span>
+       <div ng-repeat="customer in adminModel.customers track by customer.id">
+         <span>{{customer.properties.firstName+' '+customer.properties.lastName}}</span>
          <span>,</span>
-         <span>{{customer.attributes.email}}</span>
+         <span>{{customer.properties.email}}</span>
          <span>,'</span>
-         <span>{{customer.attributes.mobilePhone}}</span>
+         <span>{{customer.properties.mobilePhone}}</span>
          <span>,</span>
          <span>{{customer.view.noOfSuccesses}}</span>
          <span>,</span>
@@ -371,10 +371,10 @@
        <th>אירוע אחרון</th>
        </thead>
        <tbody>
-       <tr ng-repeat="customer in adminModel.customers">
-         <td>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</td>
-         <td>{{customer.attributes.email}}</td>
-         <td>{{customer.attributes.mobilePhone}}</td>
+       <tr ng-repeat="customer in adminModel.customers track by customer.id">
+         <td>{{customer.properties.firstName+' '+customer.properties.lastName}}</td>
+         <td>{{customer.properties.email}}</td>
+         <td>{{customer.properties.mobilePhone}}</td>
          <td>{{customer.view.pastSuccesses}}</td>
          <td>{{customer.view.futureOrders}}</td>
          <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
@@ -387,11 +387,11 @@
          <span>name,email,phone,pastSuccesses,futureOrders,lastEvent</span>
        </div>
        <div ng-repeat="customer in adminModel.customers">
-         <span>{{customer.attributes.firstName+' '+customer.attributes.lastName}}</span>
+         <span>{{customer.properties.firstName+' '+customer.properties.lastName}}</span>
          <span>,</span>
-         <span>{{customer.attributes.email}}</span>
+         <span>{{customer.properties.email}}</span>
          <span>,'</span>
-         <span>{{customer.attributes.mobilePhone}}</span>
+         <span>{{customer.properties.mobilePhone}}</span>
          <span>,</span>
          <span>{{customer.view.pastSuccesses}}</span>
          <span>,</span>
@@ -405,10 +405,10 @@
        <div>
          <span>phone,firstName</span>
        </div>
-       <div ng-repeat="customer in adminModel.customers">
-         <span>{{customer.attributes.mobilePhone}}</span>
+       <div ng-repeat="customer in adminModel.customers track by customer.id">
+         <span>{{customer.properties.mobilePhone}}</span>
          <span>,</span>
-         <span>{{customer.attributes.firstName}}</span>
+         <span>{{customer.properties.firstName}}</span>
      </div>
      </div>
    </tab>

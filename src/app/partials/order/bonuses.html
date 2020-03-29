@@ -6,7 +6,7 @@
   <th>בונוס</th>
   </thead>
   <tbody>
-  <tr ng-repeat="role in bonusesModel.order.attributes.empBonuses"
+  <tr ng-repeat="role in bonusesModel.order.properties.empBonuses track by role.label"
       ng-class="role.isChanged?'bg-success':null">
     <td>{{role.label}}</td>
     <td>

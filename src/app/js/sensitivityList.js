@@ -22,7 +22,7 @@ angular.module('myApp')
       $state.go('login');
     }
 
-    var currentOrder = order.attributes;
+    var currentOrder = order.properties;
     var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
     var that = this;
 
@@ -45,7 +45,7 @@ angular.module('myApp')
       var catItem = catalog.filter(function(cat) {
         return cat.id === item.catalogId;
       })[0];
-      catItem.attributes.sensitivities.forEach(function(sen) {
+      catItem.properties.sensitivities.forEach(function(sen) {
         var currentSensitivity = that.sensitivities.filter(function(sen2) {
           return sen2.tId === sen.tId;
         })[0];

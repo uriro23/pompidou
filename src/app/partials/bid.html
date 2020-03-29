@@ -29,7 +29,7 @@
         <div>
             <label>תאריך: </label>
           <span ng-hide="bidModel.currentOrder.isDateUnknown">
-            {{bidModel.bid.attributes.date | date: 'dd/MM/yyyy'}}
+            {{bidModel.bid.properties.date | date: 'dd/MM/yyyy'}}
           </span>
           <span ng-show="bidModel.currentOrder.isDateUnknown">
             טרם נקבע
@@ -41,20 +41,20 @@
         </div>
 
 
-        <h1 ng-show="bidModel.bid.attributes.documentType===1">
+        <h1 ng-show="bidModel.bid.properties.documentType===1">
           <span>הצעת מחיר</span>
           <span ng-show="bidModel.currentOrder.quotes && bidModel.currentOrder.quotes.length > 1">
             <span> - </span>
           <span>{{bidModel.currentQuote.title}}</span>
         </span>
         </h1>
-        <h1 ng-show="bidModel.bid.attributes.documentType===2">הזמנה</h1>
+        <h1 ng-show="bidModel.bid.properties.documentType===2">הזמנה</h1>
 
         <!-- selected intro texts 1 and 2 -->
-        <div ng-show="bidModel.bid.attributes.documentType===1" >
+        <div ng-show="bidModel.bid.properties.documentType===1" >
             <ng-include src="bidModel.startBidTextType.url"></ng-include>
         </div>
-        <div ng-show="bidModel.bid.attributes.documentType===2" >
+        <div ng-show="bidModel.bid.properties.documentType===2" >
             <ng-include src="bidModel.config.orderStartTextUrl"></ng-include>
         </div>
 
@@ -110,14 +110,14 @@
 
 
 
-            <div ng-repeat="category in bidModel.filteredCategories">
+            <div ng-repeat="category in bidModel.filteredCategories track by category.tId">
 
                 <div class="bold">
                     {{category.label}}
                 </div>
 
                 {{bidModel.setupCategoryItems(category.tId)}}
-                <div style="padding-right:3%" ng-repeat="item in bidModel.categoryItems">
+                <div style="padding-right:3%" ng-repeat="item in bidModel.categoryItems track by item.index">
                     <div style="width:67%;display:inline-block;">
                       <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
                       <span>{{item.productDescription}}</span>
@@ -137,7 +137,7 @@
               השף בקופסא מגיע אלייך בדיוק ברגע הנכון לפני האורחים
             </div>
             <div style="padding-right:3%"
-                 ng-repeat="item in bidModel.transportationItems">
+                 ng-repeat="item in bidModel.transportationItems track by item.index">
               <div style="width:67%;display:inline-block;">
                 <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
                 <span>{{item.productDescription}}</span>
@@ -154,7 +154,7 @@
           <div ng-show="bidModel.priceIncreaseItems.length">
             <P style="height: 1cm"></P>
              <div style="padding-right:3%"
-                 ng-repeat="item in bidModel.priceIncreaseItems">
+                 ng-repeat="item in bidModel.priceIncreaseItems track by item.index">
               <div style="width:67%;display:inline-block;">
                 <span>{{item.productDescription}}</span>
               </div>
@@ -238,11 +238,11 @@
                 <!-- End of sum_up div -->
 
 
-        <div class="endText" ng-show="bidModel.bid.attributes.documentType===1" >
+        <div class="endText" ng-show="bidModel.bid.properties.documentType===1" >
             <ng-include src="bidModel.endBidTextType.url"></ng-include>
         </div>
-        <div class="endText" ng-show="bidModel.bid.attributes.documentType===2" >
-            <div ng-repeat="textType in bidModel.currentOrder.orderDocTextTypes">
+        <div class="endText" ng-show="bidModel.bid.properties.documentType===2" >
+            <div ng-repeat="textType in bidModel.currentOrder.orderDocTextTypes track by textType.tId">
                 <ng-include src="textType.url"></ng-include>
             </div>
         </div>

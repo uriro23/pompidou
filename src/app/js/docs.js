@@ -39,7 +39,7 @@ angular.module('myApp')
     };
 
     this.setOrderDocTextType = function () {
-      this.order.attributes.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
+      this.order.properties.orderDocTextTypes = angular.copy(this.bidTextTypes.filter(function (t) {
         return t.isInclude;
       }));
       orderService.orderChanged(this.order,'orderTextType');
@@ -47,20 +47,20 @@ angular.module('myApp')
 
     function createBidForQuote (quote, docType, bidDesc) {
       var bid = api.initBid();
-      bid.attributes.version = lov.version;
-      bid.attributes.documentType = docType;
-      bid.attributes.menuType = quote.menuType;
-      bid.attributes.orderId = that.order.id;
-      bid.attributes.date = new Date();
-      bid.attributes.order = that.order.attributes;
-      bid.attributes.total = that.total;
-      bid.attributes.customer = that.order.view.customer;
+      bid.properties.version = lov.version;
+      bid.properties.documentType = docType;
+      bid.properties.menuType = quote.menuType;
+      bid.properties.orderId = that.order.id;
+      bid.properties.date = new Date();
+      bid.properties.order = that.order.properties;
+      bid.properties.total = that.total;
+      bid.properties.customer = that.order.view.customer;
       if (docType === 0) {  // backup
-        bid.attributes.desc = bidDesc;
+        bid.properties.desc = bidDesc;
       } else {
-        bid.attributes.desc = bidDesc + ' ' + quote.title;
+        bid.properties.desc = bidDesc + ' ' + quote.title;
       }
-      bid.attributes.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      bid.properties.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -77,7 +77,7 @@ angular.module('myApp')
       if (docType === 0 || docType === 2 || this.isOnlyActiveQuote) { // if creating backup or order doc, pick active quote only
         bids.push(createBidForQuote(this.order.view.quote, docType, this.bidDesc));
       } else {
-        this.order.attributes.quotes.forEach(function (quote) {
+        this.order.properties.quotes.forEach(function (quote) {
           if (quote.items.length) { // skip empty quotes
             bids.push(createBidForQuote(quote, docType, that.bidDesc));
           }
@@ -102,19 +102,19 @@ angular.module('myApp')
       if (this.order.view.isChanged) {
         return;
       }
-      this.bidDesc = 'גיבוי לפני שחזור לתאריך ' + $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm');
+      this.bidDesc = 'גיבוי לפני שחזור לתאריך ' + $filter('date')(bid.properties.date, 'dd/MM/yyyy HH:mm');
       this.createBid(0)
         .then(function () {
-          that.order.attributes = bid.attributes.order;
+          that.order.properties = bid.properties.order;
           that.setupOrderView();
-          orderService.setupOrderHeader(that.order.attributes);
+          orderService.setupOrderHeader(that.order.properties);
           api.saveObj(that.order)
             .then(function () {
               api.queryOrder(that.order.id)   // requery order to get new update timestamp
                 .then(function(ord) {
                   that.order.updatedAt = ord[0].updatedAt;
-                  alert('האירוע שוחזר לגרסה ' + bid.attributes.desc + ' מתאריך ' +
-                  $filter('date')(bid.attributes.date, 'dd/MM/yyyy HH:mm'))
+                  alert('האירוע שוחזר לגרסה ' + bid.properties.desc + ' מתאריך ' +
+                  $filter('date')(bid.properties.date, 'dd/MM/yyyy HH:mm'))
                 });
             })
         })
@@ -136,7 +136,7 @@ angular.module('myApp')
     this.sendMail = function () {
       var that = this;
       if (this.user.attributes.isSalesPerson &&
-        this.user.attributes.username !== this.order.attributes.createdBy) {
+        this.user.attributes.username !== this.order.properties.createdBy) {
         alert ('אינך יכול לשלוח מייל באירוע שלא יצרת');
         return;
       }

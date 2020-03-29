@@ -19,14 +19,14 @@ angular.module('myApp')
 
     this.setCategory = function () {
       var that = this;
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       return api.queryCatalogByCategory(this.currentCategory.tId)
         .then(function (cat) {
           that.baseCatalog = cat.filter(function (c) {
-            return !c.attributes.isDeleted
+            return !c.properties.isDeleted
           });
           that.baseCatalog = that.baseCatalog.map(function (c) {
-            var cc = c.attributes;
+            var cc = c.properties;
             cc.id = c.id;
             cc.isInOrder = false; // check items already in order, just for attention
             var orderItems = that.order.view.quote.items;
@@ -85,7 +85,7 @@ angular.module('myApp')
 
     this.setProduct = function (catalogEntry) {
       var that = this;
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       var thisQuote = this.order.view.quote;
       var orderItems = thisQuote.items;
 
@@ -189,7 +189,7 @@ angular.module('myApp')
       var thisItem = this.order.view.quote.items[ind];
       api.queryCatalogById(thisItem.catalogId)
         .then(function(cat) {
-          thisItem.productDescription = cat[0].attributes.productDescription;
+          thisItem.productDescription = cat[0].properties.productDescription;
           thisItem.isDescChanged = false;
           orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
           orderService.quoteChanged(that.order);
@@ -198,7 +198,7 @@ angular.module('myApp')
   };
 
     this.setQuantity = function (ind) {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       var thisQuote = this.order.view.quote;
       var thisItem = thisQuote.items[ind];
 
@@ -219,7 +219,7 @@ angular.module('myApp')
     };
 
     this.setPrice = function (ind) {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       var thisQuote = this.order.view.quote;
       var thisItem = thisQuote.items[ind];
 
@@ -251,17 +251,17 @@ angular.module('myApp')
       api.queryTemplateOrders(['template','noOfParticipants','header','orderStatus'])
         .then(function (temps) {
           that.templates = temps.filter(function(t) {
-            return t.attributes.orderStatus !== 6 && t.attributes.template;
+            return t.properties.orderStatus !== 6 && t.properties.template;
           });
           that.templates.forEach(function(t) {
-            t.isCurrentMenuType = (t.attributes.header.menuType.tId === that.order.view.quote.menuType.tId);
+            t.isCurrentMenuType = (t.properties.header.menuType.tId === that.order.view.quote.menuType.tId);
           });
           that.templates.sort(function (a, b) {
-             if (a.attributes.header.menuType.label > b.attributes.header.menuType.label) {
+             if (a.properties.header.menuType.label > b.properties.header.menuType.label) {
               return 1;
-            } else if (a.attributes.header.menuType.label < b.attributes.header.menuType.label) {
+            } else if (a.properties.header.menuType.label < b.properties.header.menuType.label) {
               return -1;
-            } else return a.attributes.template > b.attributes.template ? 1 : -1;
+            } else return a.properties.template > b.properties.template ? 1 : -1;
             })
           });
     };
@@ -298,7 +298,7 @@ angular.module('myApp')
       var that = this;
       return api.queryOrder (template.id)
        .then(function (tmpl) {
-         var currTemplate = tmpl[0].attributes;
+         var currTemplate = tmpl[0].properties;
           that.addQuoteItems(currTemplate.quotes[currTemplate.activeQuote],false,currTemplate.noOfParticipants)
             .then(function() {
                that.isAddTemplate = false;
@@ -311,7 +311,7 @@ angular.module('myApp')
       if (set) {
         this.isAddQuote = true;
         var thisQuote = this.order.view.quote;
-        this.quotes = this.order.attributes.quotes.filter(function(quote) {  // exclude selected quote
+        this.quotes = this.order.properties.quotes.filter(function(quote) {  // exclude selected quote
           return quote.menuType.tId !== thisQuote.menuType.tId;
         });
       } else {
@@ -329,7 +329,7 @@ angular.module('myApp')
 
     this.addQuoteItems = function (sourceQuote,isSameOrder,sourceNoOfParticipants) {
       var that = this;
-      var targetOrder = this.order.attributes;
+      var targetOrder = this.order.properties;
       var targetQuote = this.order.view.quote;
       var targetItems = targetQuote.items;
       var sourceCatalogIds = sourceQuote.items.map(function (itm) {
@@ -338,7 +338,7 @@ angular.module('myApp')
       return api.queryCatalogByIds(sourceCatalogIds)
         .then(function (cat) {
           var sourceCatalogItems = cat.map(function (c) {
-            var ct = c.attributes;
+            var ct = c.properties;
             ct.id = c.id;
             return ct
           });

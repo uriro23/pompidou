@@ -35,7 +35,7 @@ angular.module('myApp')
     this.destroyWorkOrderDomains = function (domain) {
       var that = this;
       var woItemsToDelete = this.workOrder.filter(function (wo) {
-        return wo.attributes.domain >= domain;
+        return wo.properties.domain >= domain;
       });
       this.isProcessing = true;
       return api.deleteObjects(woItemsToDelete)
@@ -54,7 +54,7 @@ angular.module('myApp')
       var workItemInd;
       var that = this;
       this.workOrder.forEach(function(inWorkOrderItem) {
-        var inWorkItem = inWorkOrderItem.attributes;
+        var inWorkItem = inWorkOrderItem.properties;
         if (inWorkItem.domain === 0) {
           var items = inWorkItem.order.quotes[inWorkItem.order.activeQuote].items;
           items.forEach(function(item) {
@@ -64,7 +64,7 @@ angular.module('myApp')
             // change measurement unit to prod mu and adjust quantity
             var catItem = catalog.filter(function(cat) {
               return cat.id === item.catalogId;
-            })[0].attributes;
+            })[0].properties;
             if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
               item.measurementUnit = measurementUnits.filter(function(mu) {
                 return mu.tId === catItem.prodMeasurementUnit;
@@ -73,20 +73,20 @@ angular.module('myApp')
             }
             workItemInd = undefined;
             that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
-              if (workItem.attributes.domain === 1 && // unless their description is changed
-                !item.isDescChanged &&  !workItem.attributes.isDescChanged &&
-                workItem.attributes.catalogId === item.catalogId) {
+              if (workItem.properties.domain === 1 && // unless their description is changed
+                !item.isDescChanged &&  !workItem.properties.isDescChanged &&
+                workItem.properties.catalogId === item.catalogId) {
                 workItemInd = ind;
               }
             });
             if (workItemInd) {  // item already in list, just add quantity
               workItem = that.workOrder[workItemInd];
-              workItem.attributes.quantity += item.quantity;
-              if (inWorkOrderItem.attributes.order.orderStatus===2) {
-                workItem.attributes.notFinalQuantity += item.quantity;
+              workItem.properties.quantity += item.quantity;
+              if (inWorkOrderItem.properties.order.orderStatus===2) {
+                workItem.properties.notFinalQuantity += item.quantity;
               }
-              workItem.attributes.originalQuantity = workItem.attributes.quantity;
-              workItem.attributes.backTrace.push({
+              workItem.properties.originalQuantity = workItem.properties.quantity;
+              workItem.properties.backTrace.push({
                 id: inWorkOrderItem.id,
                 domain: 0,
                 quantity: item.quantity
@@ -96,34 +96,34 @@ angular.module('myApp')
                   orderInd = i;
                 }
               });
-              workItem.attributes.orderQuant[orderInd].quantity += item.quantity;
+              workItem.properties.orderQuant[orderInd].quantity += item.quantity;
                } else { // create new item
               workItem = api.initWorkOrder();
-              workItem.attributes.woId = woId;
-              workItem.attributes.catalogId = item.catalogId;
-              workItem.attributes.productName = item.productName;
-              workItem.attributes.isDescChanged = item.isDescChanged;
+              workItem.properties.woId = woId;
+              workItem.properties.catalogId = item.catalogId;
+              workItem.properties.productName = item.productName;
+              workItem.properties.isDescChanged = item.isDescChanged;
               if (item.isDescChanged) {
-                workItem.attributes.productDescription = item.productDescription;
+                workItem.properties.productDescription = item.productDescription;
               }
-              workItem.attributes.quantity = workItem.attributes.originalQuantity = item.quantity;
-              if (inWorkOrderItem.attributes.order.orderStatus===2) {
-                workItem.attributes.notFinalQuantity = item.quantity;
+              workItem.properties.quantity = workItem.properties.originalQuantity = item.quantity;
+              if (inWorkOrderItem.properties.order.orderStatus===2) {
+                workItem.properties.notFinalQuantity = item.quantity;
               }
-              workItem.attributes.category = item.category;
-              workItem.attributes.domain = 1;
-              workItem.attributes.measurementUnit = item.measurementUnit;
-              workItem.attributes.backTrace = [{
+              workItem.properties.category = item.category;
+              workItem.properties.domain = 1;
+              workItem.properties.measurementUnit = item.measurementUnit;
+              workItem.properties.backTrace = [{
                 id: inWorkOrderItem.id,
                 domain: 0,
                 quantity: item.quantity
               }];
-              workItem.attributes.orderQuant = []; // create array of order quantities for detailed menu item view
+              workItem.properties.orderQuant = []; // create array of order quantities for detailed menu item view
               for (var i=0;i<that.woOrders.length;i++) {  // initialize to all zero quantity
-                workItem.attributes.orderQuant[i] = {
+                workItem.properties.orderQuant[i] = {
                   id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
                   quantity: 0,
-                  status: that.woOrders[i].attributes.order.orderStatus
+                  status: that.woOrders[i].properties.order.orderStatus
                 };
               }
               that.woOrders.forEach(function(o,i) {
@@ -131,9 +131,9 @@ angular.module('myApp')
                   orderInd = i;
                 }
               });
-              workItem.attributes.orderQuant[orderInd].quantity = item.quantity;
+              workItem.properties.orderQuant[orderInd].quantity = item.quantity;
               if (item.isDescChanged) {
-                workItem.attributes.orderQuant[orderInd].productDescription = item.productDescription;
+                workItem.properties.orderQuant[orderInd].productDescription = item.productDescription;
               }
               that.workOrder.push(workItem);
             }
@@ -147,27 +147,27 @@ angular.module('myApp')
       var workItem;
       var that = this;
       this.workOrder.forEach(function(inWorkOrder) {
-        var inWorkItem = inWorkOrder.attributes;
+        var inWorkItem = inWorkOrder.properties;
         if (inWorkItem.domain > 0) {  // skip orders
           var inCatObj = catalog.filter(function (cat) {
             return cat.id === inWorkItem.catalogId;
           })[0];
           if (inCatObj) {
-            var inCatItem = inCatObj.attributes;
+            var inCatItem = inCatObj.properties;
             //for (var j = 0; j < inCatItem.components.length; j++) {
             inCatItem.components.forEach(function(component) {
               if (component.domain === targetDomain) {
                 var temp = that.workOrder.filter(function (workItem, ind) {
-                  if (workItem.attributes.catalogId === component.id) {
+                  if (workItem.properties.catalogId === component.id) {
                     workItemInd = ind;
                     return true;
                   }
                 });
                 if (temp.length > 0) {  // item already exists, just add quantity
                   workItem = that.workOrder[workItemInd];
-                  workItem.attributes.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                  workItem.attributes.originalQuantity = workItem.attributes.quantity;
-                  workItem.attributes.backTrace.push({
+                  workItem.properties.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.originalQuantity = workItem.properties.quantity;
+                  workItem.properties.backTrace.push({
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
                     quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
@@ -177,21 +177,21 @@ angular.module('myApp')
                     return cat.id === component.id;
                   })[0];
                   if (outCatObj) {    // if component has been deleted from catalog, skip it
-                    var outCatItem = outCatObj.attributes;
+                    var outCatItem = outCatObj.properties;
                     workItem = api.initWorkOrder();
-                    workItem.attributes.woId = woId;
-                    workItem.attributes.catalogId = component.id;
-                    workItem.attributes.productName = outCatItem.productName;
-                    workItem.attributes.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                    workItem.attributes.originalQuantity = workItem.attributes.quantity;
-                    workItem.attributes.category = allCategories.filter(function (cat) {
+                    workItem.properties.woId = woId;
+                    workItem.properties.catalogId = component.id;
+                    workItem.properties.productName = outCatItem.productName;
+                    workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                    workItem.properties.originalQuantity = workItem.properties.quantity;
+                    workItem.properties.category = allCategories.filter(function (cat) {
                       return cat.tId === outCatItem.category;
                     })[0];
-                    workItem.attributes.domain = targetDomain;
-                    workItem.attributes.measurementUnit = measurementUnits.filter(function (mes) {
+                    workItem.properties.domain = targetDomain;
+                    workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
                       return mes.tId === outCatItem.measurementUnit;
                     })[0];
-                    workItem.attributes.backTrace = [{
+                    workItem.properties.backTrace = [{
                       id: inWorkOrder.id,
                       domain: inWorkItem.domain,
                       quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
@@ -214,26 +214,26 @@ angular.module('myApp')
     this.createMenuItemView = function() {
       var that = this;
       this.workOrder.forEach(function(currentPrep) {
-        if(currentPrep.attributes.domain === 2) {
-          currentPrep.attributes.menuItems = [];
-          currentPrep.attributes.backTrace.forEach(function (currentBackTrace) {
+        if(currentPrep.properties.domain === 2) {
+          currentPrep.properties.menuItems = [];
+          currentPrep.properties.backTrace.forEach(function (currentBackTrace) {
             var currentMenuItem = {};
             currentMenuItem.id = currentBackTrace.id;
             currentMenuItem.quantity = currentBackTrace.quantity;
             var originalMenuItem = that.workOrder.filter(function (wo) {
               return wo.id === currentBackTrace.id;
             })[0];
-            currentMenuItem.productName = originalMenuItem.attributes.productName;
+            currentMenuItem.productName = originalMenuItem.properties.productName;
             currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
             for (var n = 0; n < that.woOrders.length; n++) {
               currentMenuItem.orders[n] = {seq: n, quantity: 0};
             }
             var totalQuantity = 0;
-            originalMenuItem.attributes.backTrace.forEach(function (ord) {
+            originalMenuItem.properties.backTrace.forEach(function (ord) {
               totalQuantity += ord.quantity;
             });
             var m;
-            originalMenuItem.attributes.backTrace.forEach(function (currentOrder) {
+            originalMenuItem.properties.backTrace.forEach(function (currentOrder) {
               var temp = that.woOrders.filter(function (ord, ind) {
                 if (ord.id === currentOrder.id) {
                   m = ind;
@@ -241,7 +241,7 @@ angular.module('myApp')
               });
               currentMenuItem.orders[m].quantity += currentBackTrace.quantity * currentOrder.quantity / totalQuantity;
             });
-            currentPrep.attributes.menuItems.push(currentMenuItem);
+            currentPrep.properties.menuItems.push(currentMenuItem);
           });
         }
       });
@@ -253,21 +253,21 @@ angular.module('myApp')
       api.queryFutureOrders()
         .then(function (futureOrders) {
           futureOrders.forEach(function(order) {
-            if (order.attributes.orderStatus > 1 && order.attributes.orderStatus < 6) {
+            if (order.properties.orderStatus > 1 && order.properties.orderStatus < 6) {
               var viewItem = api.initWorkOrder();
               // create the object for now, but we don't store it until user decides to include it in WO
-              viewItem.attributes.woId = woId;
-              viewItem.attributes.domain = 0;
-              viewItem.attributes.order = order.attributes;
-              viewItem.attributes.order.id = order.id;
-              viewItem.attributes.customer = customers.filter(function (cust) {
-                return cust.id === order.attributes.customer;
-              })[0].attributes;
-            viewItem.attributes.orderStatus = lov.orderStatuses.filter(function(st) {
-              return st.id === order.attributes.orderStatus;
+              viewItem.properties.woId = woId;
+              viewItem.properties.domain = 0;
+              viewItem.properties.order = order.properties;
+              viewItem.properties.order.id = order.id;
+              viewItem.properties.customer = customers.filter(function (cust) {
+                return cust.id === order.properties.customer;
+              })[0].properties;
+            viewItem.properties.orderStatus = lov.orderStatuses.filter(function(st) {
+              return st.id === order.properties.orderStatus;
             })[0];
-            viewItem.attributes.color = colors.filter(function(color) {  // copy order's color to wo
-              return color.tId === order.attributes.color;
+            viewItem.properties.color = colors.filter(function(color) {  // copy order's color to wo
+              return color.tId === order.properties.color;
             })[0];
             viewItem.isInWorkOrder = false;
             that.orderView.push(viewItem);
@@ -276,7 +276,7 @@ angular.module('myApp')
           var ordersToSave = [];  // now include all orders from prev order view in wo
           that.orderView.forEach(function(ovOrder){
             if (that.prevOrdersInWo.filter(function (po) {
-                return po.attributes.order.number === ovOrder.attributes.order.number;
+                return po.properties.order.number === ovOrder.properties.order.number;
               }).length > 0) { // order was in prev wo
                ordersToSave.push(ovOrder);
               ovOrder.isToBeTemporarilyDeleted = true;
@@ -295,13 +295,13 @@ angular.module('myApp')
                     that.orderView.push(o);
                   });
                   that.orderView.sort(function (a, b) {
-                    if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
+                    if (a.properties.order.eventDate > b.properties.order.eventDate) {
                       return 1;
-                    } else if (a.attributes.order.eventDate < b.attributes.order.eventDate){
+                    } else if (a.properties.order.eventDate < b.properties.order.eventDate){
                       return -1;
-                    } else if (a.attributes.order.exitTime > b.attributes.order.exitTime) {
+                    } else if (a.properties.order.exitTime > b.properties.order.exitTime) {
                       return 1;
-                    } else if (a.attributes.order.exitTime < b.attributes.order.exitTime) {
+                    } else if (a.properties.order.exitTime < b.properties.order.exitTime) {
                       return -1;
                     } else if (a.id > b.id) {
                       return 1;
@@ -323,19 +323,19 @@ angular.module('myApp')
       api.queryOrdersByRange('eventDate',this.fromDate,this.toDate)
         .then(function(ords) {
           var orders = ords.filter(function(ord) {
-            return ord.attributes.orderStatus !== 1 && ord.attributes.orderStatus !== 6;
+            return ord.properties.orderStatus !== 1 && ord.properties.orderStatus !== 6;
           });
           orders.forEach(function(ord) {
             var viewItem = api.initWorkOrder();
-            viewItem.attributes.woId = woId;
-            viewItem.attributes.domain = 0;
-            viewItem.attributes.order = ord.attributes;
-            viewItem.attributes.order.id = ord.id;
-            viewItem.attributes.customer = customers.filter(function (cust) {
-              return cust.id === ord.attributes.customer;
-            })[0].attributes;
-            viewItem.attributes.orderStatus = lov.orderStatuses.filter(function(st) {
-              return st.id === ord.attributes.orderStatus;
+            viewItem.properties.woId = woId;
+            viewItem.properties.domain = 0;
+            viewItem.properties.order = ord.properties;
+            viewItem.properties.order.id = ord.id;
+            viewItem.properties.customer = customers.filter(function (cust) {
+              return cust.id === ord.properties.customer;
+            })[0].properties;
+            viewItem.properties.orderStatus = lov.orderStatuses.filter(function(st) {
+              return st.id === ord.properties.orderStatus;
             })[0];
             viewItem.isInWorkOrder = true;
             that.orderView.push(viewItem);
@@ -357,15 +357,15 @@ angular.module('myApp')
 
     this.createSmallOrderView = function () {
       this.woOrders = this.workOrder.filter(function (wo) {
-        return wo.attributes.domain === 0;
+        return wo.properties.domain === 0;
       }).sort(function(a,b) {
-        if (a.attributes.order.eventDate > b.attributes.order.eventDate) {
+        if (a.properties.order.eventDate > b.properties.order.eventDate) {
           return 1;
-        } else if (a.attributes.order.eventDate < b.attributes.order.eventDate) {
+        } else if (a.properties.order.eventDate < b.properties.order.eventDate) {
           return -1;
-        } else if (a.attributes.order.exitTime > b.attributes.order.exitTime) {
+        } else if (a.properties.order.exitTime > b.properties.order.exitTime) {
           return 1;
-        } else if (a.attributes.order.exitTime < b.attributes.order.exitTime) {
+        } else if (a.properties.order.exitTime < b.properties.order.exitTime) {
           return -1;
         } else if (a.id > b.id) {   // just that sort results will be deterministic
           return 1;
@@ -396,13 +396,13 @@ angular.module('myApp')
           .then(function (obj) {
             // create new item with same content as deleted one so we can restore it in DB if user changes his mind
             var newItem = api.initWorkOrder();
-            newItem.attributes = obj.attributes;
+            newItem.properties = obj.properties;
             that.orderView[ind] = newItem;
             that.createSmallOrderView();
           });
       }
  //     for (var dd = 1; dd < 4; dd++) {                     // set all further domains as invalid
- //       this.woIndex.attributes.domainStatus[dd] = false;
+ //       this.woIndex.properties.domainStatus[dd] = false;
  //     }
  //     api.saveObj(this.woIndex);
     };
@@ -414,7 +414,7 @@ angular.module('myApp')
         controller: 'AckDelWorkOrderCtrl as ackDelWorkOrderModel',
         resolve: {
           workOrderType: function () {
-            return that.woIndex.attributes.label;
+            return that.woIndex.properties.label;
           }
         },
         size: 'sm'
@@ -425,7 +425,7 @@ angular.module('myApp')
           that.isActiveTab = [true, false, false, false]; // show orders tab
           // first keep orders in existing work order so they will be inserted in the new wo
           that.prevOrdersInWo = that.workOrder.filter(function (o) {
-            return o.attributes.domain === 0;
+            return o.properties.domain === 0;
           });
           that.orderView = [];
           that.destroyWorkOrderDomains(0)
@@ -433,11 +433,11 @@ angular.module('myApp')
               that.workOrder = [];
               that.hierarchicalWorkOrder = [];
               that.woOrders = [];
-              if (!that.woIndex.attributes.isQuery) {
+              if (!that.woIndex.properties.isQuery) {
                 that.createOrderView();
               }
               for (var dd = 0; dd < 4; dd++) {                     // all domains - invalid
-                that.woIndex.attributes.domainStatus[dd] = false;
+                that.woIndex.properties.domainStatus[dd] = false;
               }
               api.saveObj(that.woIndex);
             });
@@ -447,7 +447,7 @@ angular.module('myApp')
 
     this.saveWorkOrder = function (domain) {
       var woItemsToSave = this.workOrder.filter(function (wo) {
-        return wo.attributes.domain === domain;
+        return wo.properties.domain === domain;
       });
       this.isProcessing = true;
       return api.saveObjects(woItemsToSave)
@@ -470,7 +470,7 @@ angular.module('myApp')
         };
       }
       this.workOrder.forEach(function(woi) {
-        var wo = woi.attributes;
+        var wo = woi.properties;
         if (wo.domain > 0) {
           var catInd;
           var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
@@ -498,13 +498,13 @@ angular.module('myApp')
         });
         for (var c = 0; c < this.hierarchicalWorkOrder[d].categories.length; c++) {
           this.hierarchicalWorkOrder[d].categories[c].list.sort(function (a, b) {
-            if (a.attributes.productName > b.attributes.productName) {
+            if (a.properties.productName > b.properties.productName) {
               return 1;
-            } else if (a.attributes.productName < b.attributes.productName){
+            } else if (a.properties.productName < b.properties.productName){
               return -1;
-            } else if (!a.attributes.isDescChanged && b.attributes.isDescChanged) {
+            } else if (!a.properties.isDescChanged && b.properties.isDescChanged) {
               return -1;
-            }else if (a.attributes.isDescChanged && !b.attributes.isDescChanged) {
+            }else if (a.properties.isDescChanged && !b.properties.isDescChanged) {
               return 1;
             } else {
               return 0;
@@ -518,9 +518,9 @@ angular.module('myApp')
         cat.changedDescriptions = [];
         var descCnt = 0;
         cat.list.forEach(function(woItem) {
-          if (woItem.attributes.isDescChanged){
+          if (woItem.properties.isDescChanged){
             cat.changedDescriptions.push({
-              desc: woItem.attributes.productDescription,
+              desc: woItem.properties.productDescription,
               cnt: ++descCnt
             });
             woItem.descCnt = descCnt;
@@ -532,14 +532,14 @@ angular.module('myApp')
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
       if (targetDomain===1) { // clicking <compute menuItems> signifies that order selection is complete
-        this.woIndex.attributes.domainStatus[0] = true;
+        this.woIndex.properties.domainStatus[0] = true;
         api.saveObj(this.woIndex);
       }
       // destroy existing work order items of target and higher domains
       this.destroyWorkOrderDomains(targetDomain)
         .then(function () {
         that.workOrder = that.workOrder.filter(function (wo) {
-          return wo.attributes.domain < targetDomain;
+          return wo.properties.domain < targetDomain;
         });
         if (targetDomain === 1) {
           that.createOrderItems();
@@ -559,9 +559,9 @@ angular.module('myApp')
                   that.isActiveTab[d] = false;
                 }
                 that.isActiveTab[targetDomain] = true;
-                that.woIndex.attributes.domainStatus[targetDomain] = true; // the domain just created is valid
+                that.woIndex.properties.domainStatus[targetDomain] = true; // the domain just created is valid
                 for (var dd = targetDomain + 1; dd < 4; dd++) {                     // all further domains - invalid
-                  that.woIndex.attributes.domainStatus[dd] = false;
+                  that.woIndex.properties.domainStatus[dd] = false;
                 }
                 api.saveObj(that.woIndex);
               });
@@ -577,15 +577,15 @@ angular.module('myApp')
       this.saveWI (woItem)
         .then(function () {
         for (var dd = domain + 1; dd < 4; dd++) {                     // set all further domains as invalid
-          that.woIndex.attributes.domainStatus[dd] = false;
+          that.woIndex.properties.domainStatus[dd] = false;
         }
         api.saveObj(that.woIndex);
       });
     };
 
     this.setIsForToday = function (woItem) {
-      if (woItem.attributes.isForToday) {
-        woItem.attributes.quantityForToday = woItem.attributes.quantity;
+      if (woItem.properties.isForToday) {
+        woItem.properties.quantityForToday = woItem.properties.quantity;
       }
       this.saveWI(woItem);
     };
@@ -599,7 +599,7 @@ angular.module('myApp')
         });
         that.hierarchicalWorkOrder[dom].categories[cat].list.splice(item, 1);
         for (var dd = dom + 1; dd < 4; dd++) {                     // set all further domains as invalid
-          that.woIndex.attributes.domainStatus[dd] = false;
+          that.woIndex.properties.domainStatus[dd] = false;
         }
         api.saveObj(that.woIndex);
       });
@@ -636,7 +636,7 @@ angular.module('myApp')
         resolve: {
           todaysPreps: function () {
             return that.workOrder.filter(function(wo) {
-              return wo.attributes.domain===2 && wo.attributes.isForToday;
+              return wo.properties.domain===2 && wo.properties.isForToday;
             });
           }
         },
@@ -649,14 +649,14 @@ angular.module('myApp')
           var deleteList = [];
           for (var i=0;i<that.workOrder.length;i++) {
             var wo = that.workOrder[i];
-            if (wo.attributes.domain===2 && wo.attributes.isForToday) {
-              if (wo.attributes.quantityForToday >= wo.attributes.quantity) {
+            if (wo.properties.domain===2 && wo.properties.isForToday) {
+              if (wo.properties.quantityForToday >= wo.properties.quantity) {
                 deleteList.push(wo);
                 wo.isToDelete = true;
               } else {
-                wo.attributes.quantity -= wo.attributes.quantityForToday;
+                wo.properties.quantity -= wo.properties.quantityForToday;
                 wo.delAttributes = {quantityForToday: true}; // set to undefined on save
-                wo.attributes.isForToday = false;
+                wo.properties.isForToday = false;
                 saveList.push(wo);
               }
             }
@@ -669,7 +669,7 @@ angular.module('myApp')
                     return !wo.isToDelete;
                   });
                   that.splitWorkOrder();
-                  that.woIndex.attributes.domainStatus[3] = false;
+                  that.woIndex.properties.domainStatus[3] = false;
                   api.saveObj(that.woIndex);
                 });
             });
@@ -679,7 +679,7 @@ angular.module('myApp')
 
     this.switchWorkOrders = function () {
       var that = this;
-      woId = this.woIndex.attributes.woId;
+      woId = this.woIndex.properties.woId;
        this.isProcessing = true;
       api.queryWorkOrder(woId)
         .then(function(wo) {
@@ -701,7 +701,7 @@ angular.module('myApp')
     this.domains = lov.domains;
     this.woIndexes = woIndexes;
     this.woIndex = this.woIndexes.filter(function(index) {
-      return index.attributes.isDefault;
+      return index.properties.isDefault;
     })[0];
     this.colors = colors.map(function(color) {
       color.style = {

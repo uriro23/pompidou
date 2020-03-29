@@ -4,7 +4,7 @@ angular.module('myApp')
   .controller('AckDelOrderCtrl', function ($modalInstance, order, dater) {
   this.order = order;
   this.currentCustomer = order.view.currentCustomer;
-  this.days = parseInt((order.attributes.eventDate - dater.today()) / (24 * 3600 * 1000));  // need parseInt because of DST difference
+  this.days = parseInt((order.properties.eventDate - dater.today()) / (24 * 3600 * 1000));  // need parseInt because of DST difference
   this.daysDirection = 'בעוד';
   if (this.days < 0) {
     this.days = -this.days;
@@ -36,17 +36,17 @@ angular.module('myApp')
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
-      return (item.catalogPrice !== catEntry.attributes.price ||
-        item.catalogQuantity !== catEntry.attributes.priceQuantity);
+      return (item.catalogPrice !== catEntry.properties.price ||
+        item.catalogQuantity !== catEntry.properties.priceQuantity);
     });
     for (var i = 0; i < this.changedItems.length; i++) {
       var item = this.changedItems[i];
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
-      var priceInclVat = item.quantity * catEntry.attributes.price / catEntry.attributes.priceQuantity;
-      if (order.attributes.isBusinessEvent) {
-        item.newPrice = priceInclVat / (1 + order.attributes.vatRate);
+      var priceInclVat = item.quantity * catEntry.properties.price / catEntry.properties.priceQuantity;
+      if (order.properties.isBusinessEvent) {
+        item.newPrice = priceInclVat / (1 + order.properties.vatRate);
       } else {
         item.newPrice = priceInclVat;
       }
@@ -68,14 +68,14 @@ angular.module('myApp')
             return cat.id === item.catalogId;
           })[0];
           item.price = item.newPrice;
-          item.catalogPrice = catEntry.attributes.price;
-          item.catalogQuantity = catEntry.attributes.priceQuantity;
-          if (order.attributes.isBusinessEvent) {
-            item.priceInclVat = item.price * (1 + order.attributes.vatRate);
+          item.catalogPrice = catEntry.properties.price;
+          item.catalogQuantity = catEntry.properties.priceQuantity;
+          if (order.properties.isBusinessEvent) {
+            item.priceInclVat = item.price * (1 + order.properties.vatRate);
             item.priceBeforeVat = item.price;
           } else {
             item.priceInclVat = item.price;
-            item.priceBeforeVat = item.price / (1 + order.attributes.vatRate);
+            item.priceBeforeVat = item.price / (1 + order.properties.vatRate);
           }
           item.isForcedPrice = false;
           item.isChanged = true;
@@ -107,23 +107,23 @@ angular.module('myApp')
       from: user.attributes.email,
       to: '',
       cc: '',
-      subject: 'אירוע פומפידו בתאריך '+ $filter('date')(order.attributes.eventDate,'dd/MM/yyyy'),
+      subject: 'אירוע פומפידו בתאריך '+ $filter('date')(order.properties.eventDate,'dd/MM/yyyy'),
       text: ''
     };
     this.msg = '';
-    api.queryCustomers(order.attributes.customer)
+    api.queryCustomers(order.properties.customer)
       .then(function (custs) {
-        that.customer = custs[0].attributes;
+        that.customer = custs[0].properties;
         if (that.customer.email) {
           that.mail.to = that.customer.email;
           if (api.getEnvironment() === 'test') {
             that.mail.to = 'test.' + that.mail.to
           }
         }
-        if (order.attributes.contact) {
-          api.queryCustomers(order.attributes.contact)
+        if (order.properties.contact) {
+          api.queryCustomers(order.properties.contact)
             .then(function (conts) {
-              that.contact = conts[0].attributes;
+              that.contact = conts[0].properties;
               if (that.contact.email) {
                 that.mail.cc = that.contact.email;
                 if (api.getEnvironment() === 'test') {
@@ -140,7 +140,7 @@ angular.module('myApp')
     };
 
     this.isShowDocument = function (doc) {
-      return lov.documentTypes[doc.attributes.documentType].isRealDocumentType
+      return lov.documentTypes[doc.properties.documentType].isRealDocumentType
     };
 
     $scope.editorOptions = {
@@ -162,12 +162,12 @@ angular.module('myApp')
       bids.forEach(function(bid) {
         if (bid.isInclude) {
           that.mail.attachedBids.push({    // this is the original bid object without the content of the order
-            uuid: bid.attributes.uuid,
-            desc: bid.attributes.desc,
-            documentType: bid.attributes.documentType,
-            orderId: bid.attributes.orderId,
-            date: bid.attributes.date,
-            customer: bid.attributes.customer
+            uuid: bid.properties.uuid,
+            desc: bid.properties.desc,
+            documentType: bid.properties.documentType,
+            orderId: bid.properties.orderId,
+            date: bid.properties.date,
+            customer: bid.properties.customer
           });
           bidCnt++;
         }
@@ -200,16 +200,16 @@ angular.module('myApp')
           gmailClientLowLevel.doEmail(op,that.mail)
             .then(function () {
               var newMail = api.initMail();
-              newMail.attributes.orderId = order.id;
-              newMail.attributes.date = new Date();
-              newMail.attributes.customer = that.customer;
-              newMail.attributes.contact = that.contact;
-              newMail.attributes.to = that.mail.to;
-              newMail.attributes.cc = that.mail.cc;
-              newMail.attributes.subject = that.mail.subject;
-              newMail.attributes.text = that.mail.text;
-              newMail.attributes.attachmentType = that.attachmentType;
-              newMail.attributes.attachments = that.mail.attachedBids;
+              newMail.properties.orderId = order.id;
+              newMail.properties.date = new Date();
+              newMail.properties.customer = that.customer;
+              newMail.properties.contact = that.contact;
+              newMail.properties.to = that.mail.to;
+              newMail.properties.cc = that.mail.cc;
+              newMail.properties.subject = that.mail.subject;
+              newMail.properties.text = that.mail.text;
+              newMail.properties.attachmentType = that.attachmentType;
+              newMail.properties.attachments = that.mail.attachedBids;
               api.saveObj(newMail)
                 .then(function (mail) {
                   var activity = {
@@ -217,11 +217,11 @@ angular.module('myApp')
                     text: 'נשלח דואל עם ' + bidCnt + ' הצעות מחיר',
                     mail: mail.id
                   };
-                  order.attributes.activities.splice(0, 0, activity);
-                  if (typeof order.attributes.mailCount === 'undefined') {
-                    order.attributes.mailCount = 1;  // this is needed for tasks
+                  order.properties.activities.splice(0, 0, activity);
+                  if (typeof order.properties.mailCount === 'undefined') {
+                    order.properties.mailCount = 1;  // this is needed for tasks
                   } else {
-                    order.attributes.mailCount++;
+                    order.properties.mailCount++;
                   }
                   orderService.checkTasks(order);
                   orderService.saveOrder(order);
@@ -264,12 +264,12 @@ angular.module('myApp')
 
   .controller('CancelReasonCtrl', function ($modalInstance, order, cancelReasons) {
     this.cancelReasons = cancelReasons;
-    if (order.attributes.cancelReason) {
+    if (order.properties.cancelReason) {
       this.cancelReason = cancelReasons.filter(function (cr) {
-        return cr.tId === order.attributes.cancelReason;
+        return cr.tId === order.properties.cancelReason;
       })[0];
     }
-    this.cancelReasonText = order.attributes.cancelReasonText;
+    this.cancelReasonText = order.properties.cancelReasonText;
 
     this.save = function () {
       var res = {

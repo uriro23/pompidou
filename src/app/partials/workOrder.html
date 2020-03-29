@@ -2,14 +2,14 @@
   <tr>
     <td style="width: 30%;font-size: x-large">
   פקודת עבודה
-<span>{{workOrderModel.woIndex.attributes.label}}</span>
+<span>{{workOrderModel.woIndex.properties.label}}</span>
       </td>
     <td style="width: 30%">
 <button ng-click="workOrderModel.createNewWorkOrder()"
         ng-disabled="workOrderModel.isProcessing"
         class="btn btn-default">
 <span>צור פקודה</span>
-  <span>{{workOrderModel.woIndex.attributes.label}}</span>
+  <span>{{workOrderModel.woIndex.properties.label}}</span>
   <span>חדשה</span>
 </button>
       </td>
@@ -17,7 +17,7 @@
   <span>החלף סוג פקודה:</span>
   <select ng-model="workOrderModel.woIndex" ng-change="workOrderModel.switchWorkOrders()"
           ng-disabled="workOrderModel.isProcessing"
-          ng-options="woIndex.attributes.label for woIndex in workOrderModel.woIndexes"></select>
+          ng-options="woIndex.properties.label for woIndex in workOrderModel.woIndexes"></select>
     </td>
   </tr>
 </table>
@@ -25,8 +25,8 @@
   המתן...
 </h4>
 <div style="font-size: large"
-  ng-show="workOrderModel.woIndex.attributes.isQuery &&
-            workOrderModel.woIndex.attributes.domainStatus[0] &&
+  ng-show="workOrderModel.woIndex.properties.isQuery &&
+            workOrderModel.woIndex.properties.domainStatus[0] &&
             !workOrderModel.isProcessing">
   <span>כל האירועים שהתקיימו בפועל מתאריך</span>
   <span>{{workOrderModel.fromDate | date:'dd/MM/yy'}}</span>
@@ -48,11 +48,11 @@
   </tab>
   <tab heading="{{workOrderModel.domains[0].forWorkItem}}"
        active="workOrderModel.isActiveTab[0]">
-    <ng-include ng-show="workOrderModel.woIndex.attributes.domainStatus[0]"
+    <ng-include ng-show="workOrderModel.woIndex.properties.domainStatus[0]"
                 src="'app/partials/workOrder/orderList.html'"></ng-include>
-    <ng-include ng-show="!workOrderModel.woIndex.attributes.domainStatus[0] && !workOrderModel.woIndex.attributes.isQuery"
+    <ng-include ng-show="!workOrderModel.woIndex.properties.domainStatus[0] && !workOrderModel.woIndex.properties.isQuery"
                 src="'app/partials/workOrder/selectOrders.html'"></ng-include>
-    <ng-include ng-show="!workOrderModel.woIndex.attributes.domainStatus[0] && workOrderModel.woIndex.attributes.isQuery"
+    <ng-include ng-show="!workOrderModel.woIndex.properties.domainStatus[0] && workOrderModel.woIndex.properties.isQuery"
                 src="'app/partials/workOrder/queryOrders.html'"></ng-include>
   </tab>
   </tabset>

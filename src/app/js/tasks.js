@@ -26,11 +26,11 @@ angular.module('myApp')
 
     this.detailTextChanged = function(detail) {
       if (detail.attributeName) {
-        this.order.attributes.taskData[detail.attributeName] = detail.inputText;
+        this.order.properties.taskData[detail.attributeName] = detail.inputText;
       }
       detail.isDone = Boolean(detail.inputText);
       if (detail.changedAttribute) {
-        this.order.attributes.taskData[detail.changedAttribute] = true;
+        this.order.properties.taskData[detail.changedAttribute] = true;
       }
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
@@ -38,7 +38,7 @@ angular.module('myApp')
 
     this.detailBooleanSet = function(detail) {
       if (detail.attributeName) {
-        this.order.attributes.taskData[detail.attributeName] = detail.boolean;
+        this.order.properties.taskData[detail.attributeName] = detail.boolean;
       }
       detail.isDone = detail.boolean;
       orderService.checkTasks(this.order);
@@ -46,14 +46,14 @@ angular.module('myApp')
     };
 
     this.setReferralSource = function(detail) {
-      this.order.attributes.referralSource = this.order.view.referralSource.tId;
+      this.order.properties.referralSource = this.order.view.referralSource.tId;
       detail.isDone = true;
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
     };
 
   this.setCancelReason = function(detail) {
-      this.order.attributes.cancelReason = this.order.view.cancelReason.tId;
+      this.order.properties.cancelReason = this.order.view.cancelReason.tId;
       detail.isDone = true;
       orderService.checkTasks(this.order);
       this.orderChanged('tasks');
@@ -61,13 +61,13 @@ angular.module('myApp')
 
   this.saveCustomerAttribute = function(detail) {
     var that = this;
-    api.queryCustomers(this.order.attributes.customer)
+    api.queryCustomers(this.order.properties.customer)
       .then(function(custs) {
-        custs[0].attributes[detail.attributeName] = that.order.attributes.taskData[detail.attributeName];
+        custs[0].properties[detail.attributeName] = that.order.properties.taskData[detail.attributeName];
        api.saveObj(custs[0])
          .then(function(c) {
            if (detail.changedAttribute) {
-             that.order.attributes.taskData[detail.changedAttribute] = false;
+             that.order.properties.taskData[detail.changedAttribute] = false;
            }
            orderService.checkTasks(that.order);
            that.orderChanged('tasks');

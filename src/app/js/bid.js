@@ -15,25 +15,25 @@ angular.module('myApp')
 
       this.categories = categories;
       this.config = config;
-      this.currentOrder = this.bid.attributes.order;
+      this.currentOrder = this.bid.properties.order;
 
 
       this.eventDate = moment(this.currentOrder.eventDate);
       if (this.currentOrder.eventTime) {
         this.eventTime = moment(this.currentOrder.eventTime);
       }
-      if (this.bid.attributes.version >= 4) { // bid with menuType
+      if (this.bid.properties.version >= 4) { // bid with menuType
         this.currentQuote = this.currentOrder.quotes.filter(function (q) {  // find relevant quote in order
-          return q.menuType.tId===that.bid.attributes.menuType.tId;
+          return q.menuType.tId===that.bid.properties.menuType.tId;
         })[0];
-      } else if (this.bid.attributes.version === 3) { // bid w/o menuType but with quotes array
+      } else if (this.bid.properties.version === 3) { // bid w/o menuType but with quotes array
         this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote]; // use active quote of order
       } else {  // bid w/o quotes array
         this.currentQuote = this.currentOrder; // use body of order
       }
 
 
-      this.customer = bid.attributes.customer;
+      this.customer = bid.properties.customer;
 
       this.isYuvalTest = this.customer.accessKey==='176'; // set prod debug option for customer Yuval
 
@@ -43,7 +43,7 @@ angular.module('myApp')
         ' - הצעת מחיר ' +
       (this.customer.firstName ? this.customer.firstName : '') +
        ' ' + (this.customer.lastName ? this.customer.lastName : '') +
-       ' ' + this.bid.attributes.desc;
+       ' ' + this.bid.properties.desc;
 
       //fetch start bid text type
       if (that.currentOrder.startBidTextType) {

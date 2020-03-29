@@ -14,7 +14,7 @@ angular.module('myApp')
     }
 
 
-    var currentOrder = order.attributes;
+    var currentOrder = order.properties;
     var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
     this.categories = categories;
 

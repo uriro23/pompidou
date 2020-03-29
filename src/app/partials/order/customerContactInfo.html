@@ -6,34 +6,34 @@
   <tbody>
   <tr>
     <td>שם:</td>
-    <td>{{customerContactInfoModel.customer.attributes.firstName+' '+customerContactInfoModel.customer.attributes.lastName}}</td>
+    <td>{{customerContactInfoModel.customer.properties.firstName+' '+customerContactInfoModel.customer.properties.lastName}}</td>
   </tr>
-  <tr ng-show="customerContactInfoModel.customer.attributes.mobilePhone">
+  <tr ng-show="customerContactInfoModel.customer.properties.mobilePhone">
     <td>טלפון נייד:</td>
     <td>
-      <a href="tel:{{customerContactInfoModel.customer.attributes.mobilePhone}}">
-        {{customerContactInfoModel.customer.attributes.mobilePhone}}</a>
+      <a href="tel:{{customerContactInfoModel.customer.properties.mobilePhone}}">
+        {{customerContactInfoModel.customer.properties.mobilePhone}}</a>
     </td>
   </tr>
-  <tr ng-show="customerContactInfoModel.customer.attributes.homePhone">
+  <tr ng-show="customerContactInfoModel.customer.properties.homePhone">
     <td>טלפון בית:</td>
     <td>
-      <a href="tel:{{customerContactInfoModel.customer.attributes.homePhone}}">
-        {{customerContactInfoModel.customer.attributes.homePhone}}
+      <a href="tel:{{customerContactInfoModel.customer.properties.homePhone}}">
+        {{customerContactInfoModel.customer.properties.homePhone}}
     </td>
   </tr>
-  <tr ng-show="customerContactInfoModel.customer.attributes.workPhone">
+  <tr ng-show="customerContactInfoModel.customer.properties.workPhone">
     <td>טלפון עבודה:</td>
     <td>
-      <a href="tel:{{customerContactInfoModel.customer.attributes.workPhone}}">
-      {{customerContactInfoModel.customer.attributes.workPhone}}
+      <a href="tel:{{customerContactInfoModel.customer.properties.workPhone}}">
+      {{customerContactInfoModel.customer.properties.workPhone}}
     </td>
   </tr>
-  <tr ng-show="customerContactInfoModel.customer.attributes.email">
+  <tr ng-show="customerContactInfoModel.customer.properties.email">
     <td>דואל:</td>
     <td>
-      <a href="mailto:{{customerContactInfoModel.customer.attributes.email}}">
-      {{customerContactInfoModel.customer.attributes.email}}
+      <a href="mailto:{{customerContactInfoModel.customer.properties.email}}">
+      {{customerContactInfoModel.customer.properties.email}}
     </td>
   </tr>
   </tbody>

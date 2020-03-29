@@ -56,20 +56,20 @@ angular.module('myApp')
           console.log('cust');
           console.log(cust);
           that.order.view.customer = cust;
-          that.order.attributes.customer = cust.id;
-          that.order.attributes.taskData.address = cust.address;
+          that.order.properties.customer = cust.id;
+          that.order.properties.taskData.address = cust.address;
           orderService.orderChanged(that.order,'customer');
           orderService.upgradeOrderStatus(that.order);
           that.order.view.errors.customer = false;
           that.getPrevOrders();
        } else if (custType === 2) {
           that.order.view.contact = cust;
-          that.order.attributes.contact = cust.id;
+          that.order.properties.contact = cust.id;
           orderService.orderChanged(that.order,'customer');
           that.order.view.errors.contact = false;
         } else {  // referrer
           that.order.view.referrer = cust;
-          that.order.attributes.referrer = cust.id;
+          that.order.properties.referrer = cust.id;
           orderService.orderChanged(that.order,'referrer');
           that.order.view.errors.referrer = false;
         }
@@ -79,7 +79,7 @@ angular.module('myApp')
     };
 
     function checkParticipants (order) {
-      var thisOrder = order.attributes;
+      var thisOrder = order.properties;
       return (order.view.orderStatus.id > 0 && order.view.orderStatus.id < 6 &&
         (!Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0)) ||
         ((order.view.orderStatus.id === 0 || order.view.orderStatus.id === 6) &&
@@ -92,14 +92,14 @@ angular.module('myApp')
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
       if (!this.order.view.errors.noOfParticipants) {
         orderService.upgradeOrderStatus(this.order);
-        this.order.attributes.quotes.forEach(function(quote) { // recalc all quotes to update price per person
+        this.order.properties.quotes.forEach(function(quote) { // recalc all quotes to update price per person
          orderService.calcTotal(quote,that.order);
         })
       }
     };
 
     this.setChildren = function () {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.children = thisOrder.children < 0;
     };
@@ -109,17 +109,17 @@ angular.module('myApp')
       // if (orderStatus.id === 6) {
       //   $scope.orderModel.isActiveGeneralTab = true;
       //   this.order.view.errors.cancelReason = !this.order.view.cancelReason &&
-      //                                         !this.order.attributes.template;
+      //                                         !this.order.properties.template;
       // }
       if (orderStatus.id > 1 && orderStatus.id < 6) {
-        if(this.order.attributes.isDateUnknown) {
-          this.order.attributes.eventDate = undefined;
-          this.order.attributes.isDateUnknown = false;
+        if(this.order.properties.isDateUnknown) {
+          this.order.properties.eventDate = undefined;
+          this.order.properties.isDateUnknown = false;
           this.order.view.errors.eventDate = true;
         }
       }
       if (orderStatus.id > 0 && orderStatus.id < 6) {
-        this.order.view.errors.customer = !this.order.attributes.customer;
+        this.order.view.errors.customer = !this.order.properties.customer;
       }
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
        this.setReadOnly();
@@ -127,14 +127,14 @@ angular.module('myApp')
     };
 
     this.setEventDate = function () {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < dater.today();  // past dates not allowed
       this.setReadOnly();
     };
 
     this.setKnownDate = function () {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
       if (!thisOrder.isUnknownDate) { // isUnknownDate should always be false here
         thisOrder.eventDate = undefined;
@@ -143,7 +143,7 @@ angular.module('myApp')
     };
 
     this.setEventTime = function () {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       if (thisOrder.isExitTimeExplicit) {
         this.order.view.errors.exitTime = true; // let user reconsider exit time
       } else {
@@ -154,7 +154,7 @@ angular.module('myApp')
     };
 
     this.setExitTime = function () {
-      var thisOrder = this.order.attributes;
+      var thisOrder = this.order.properties;
       thisOrder.isExitTimeExplicit = true;
       this.order.view.errors.exitTime = Boolean(thisOrder.exitTime > thisOrder.eventTime);
       orderService.orderChanged(this.order,'header');

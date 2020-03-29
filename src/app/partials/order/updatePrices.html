@@ -28,7 +28,7 @@
                ng-change="updatePricesModel.setChangeAll()">
       </td>
     </tr>
-    <tr ng-repeat="item in updatePricesModel.changedItems">
+    <tr ng-repeat="item in updatePricesModel.changedItems track by item.index">
       <td>{{item.productName}}</td>
       <td>{{item.price | currency}}</td>
       <td>{{item.newPrice | currency}}</td>

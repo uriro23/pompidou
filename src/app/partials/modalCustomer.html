@@ -43,33 +43,33 @@
     <tbody>
     <tr ng-class="modalCustomerModel.isCustomerChanged?'bg-success':null">
       <td>
-        <input type="text" size=3 ng-model="modalCustomerModel.currentCustomer.attributes.firstName"
+        <input type="text" size=3 ng-model="modalCustomerModel.currentCustomer.properties.firstName"
                ng-class="modalCustomerModel.currentCustomer.isFirstNameError?'bg-danger':null"
                ng-change="modalCustomerModel.firstNameChanged()">
       </td>
      <td>
-        <input type="text" size=4 ng-model="modalCustomerModel.currentCustomer.attributes.lastName"
+        <input type="text" size=4 ng-model="modalCustomerModel.currentCustomer.properties.lastName"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.mobilePhone"
+        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.properties.mobilePhone"
                ng-class="modalCustomerModel.currentCustomer.isMobilePhoneError?'bg-danger':null"
                ng-change="modalCustomerModel.mobilePhoneChanged()">
        </td>
       <td>
-        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.homePhone"
+        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.properties.homePhone"
                ng-change="modalCustomerModel.customerChanged()">
        </td>
       <td>
-        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.attributes.workPhone"
+        <input type="text" size=7 ng-model="modalCustomerModel.currentCustomer.properties.workPhone"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
       <td>
-        <input style="text-align: left" type="text" size=27 ng-model="modalCustomerModel.currentCustomer.attributes.email"
+        <input style="text-align: left" type="text" size=27 ng-model="modalCustomerModel.currentCustomer.properties.email"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
       <td>
-        <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.attributes.address"
+        <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.properties.address"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
     </tr>
@@ -78,26 +78,26 @@
       <td style="cursor:pointer"
           ng-class="!customer.isSelected&&customer.matches.name?'bg-warning':null"
           ng-click="modalCustomerModel.selectLine($index)">
-        {{customer.attributes.firstName}}
+        {{customer.properties.firstName}}
       </td>
       <td style="cursor:pointer"
           ng-class="!customer.isSelected&&customer.matches.name?'bg-warning':null"
           ng-click="modalCustomerModel.selectLine($index)">
-        {{customer.attributes.lastName}}
+        {{customer.properties.lastName}}
       </td>
       <td ng-class="!customer.isSelected&&customer.matches.mobilePhone?'bg-warning':null">
-        <a href="tel:{{customer.attributes.mobilePhone}}">{{customer.attributes.mobilePhone}}</a>
+        <a href="tel:{{customer.properties.mobilePhone}}">{{customer.properties.mobilePhone}}</a>
       </td>
       <td ng-class="!customer.isSelected&&customer.matches.homePhone?'bg-warning':null">
-        <a href="tel:{{customer.attributes.homePhone}}">{{customer.attributes.homePhone}}</a>
+        <a href="tel:{{customer.properties.homePhone}}">{{customer.properties.homePhone}}</a>
       </td>
       <td ng-class="!customer.isSelected&&customer.matches.workPhone?'bg-warning':null">
-        <a href="tel:{{customer.attributes.workPhone}}">{{customer.attributes.workPhone}}</a>
+        <a href="tel:{{customer.properties.workPhone}}">{{customer.properties.workPhone}}</a>
       </td>
       <td style="text-align: left" ng-class="!customer.isSelected&&customer.matches.email?'bg-warning':null">
-        <a href="mailto:{{customer.attributes.email}}">{{customer.attributes.email}}</a>
+        <a href="mailto:{{customer.properties.email}}">{{customer.properties.email}}</a>
       </td>
-      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.attributes.address}}</td>
+      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.properties.address}}</td>
     </tr>
     </tbody>
   </table>

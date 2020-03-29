@@ -19,7 +19,7 @@
                 class="btn btn-sm btn-default">צור</button>
     </td>
   </tr>
-  <tr ng-repeat="activity in activitiesModel.order.attributes.activities track by activity.date">
+  <tr ng-repeat="activity in activitiesModel.order.properties.activities track by activity.date">
     <td>{{activity.date | date: 'dd/MM/yyyy HH:mm'}}</td>
     <td>{{activity.text}}</td>
     <td>
@@ -43,11 +43,11 @@
     </tr>
     <tr>
       <td><label>תאריך הצעה ראשונה</label></td>
-      <td>{{activitiesModel.order.attributes.bidDate | date:'dd/MM/yyyy'}}</td>
+      <td>{{activitiesModel.order.properties.bidDate | date:'dd/MM/yyyy'}}</td>
     </tr>
     <tr>
       <td><label>תאריך סגירה</label></td>
-      <td>{{activitiesModel.order.attributes.closingDate | date:'dd/MM/yyyy'}}</td>
+      <td>{{activitiesModel.order.properties.closingDate | date:'dd/MM/yyyy'}}</td>
     </tr>
   </table>
 </div>

@@ -537,11 +537,11 @@
         <th style="width:90%">עובדים</th>
         </thead>
         <tbody>
-        <tr ng-repeat="line in statisticsModel.empBonuses">
+        <tr ng-repeat="line in statisticsModel.empBonuses track by line.calcMonth">
           <td>{{line.month | date:'MM.yy'}}</td>
           <td>
             <table>
-              <tr ng-repeat="employee in line.employees">
+              <tr ng-repeat="employee in line.employees track by employee.tId">
                 <td>{{employee.name}}</td>
                 <td>
                   <span>(</span>

@@ -22,8 +22,8 @@
       <div class="floatRight">
 
         <span class="bold">שם:</span>
-        <span>{{instructionsListModel.customer.attributes.firstName+' '+
-                instructionsListModel.customer.attributes.lastName}}</span>
+        <span>{{instructionsListModel.customer.properties.firstName+' '+
+                instructionsListModel.customer.properties.lastName}}</span>
         <br>
         <span class="bold">תאריך האירוע:</span>
         <span>{{instructionsListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
@@ -42,7 +42,7 @@
     <div class="quoteTextBox quoteDetails">
       <div class="floatRight">
         <p></p>
-        <div ng-repeat="instructions in instructionsListModel.instructions">
+        <div ng-repeat="instructions in instructionsListModel.instructions track by instructions.id">
           <div>
             <label>{{instructions.title}}</label>
           </div>

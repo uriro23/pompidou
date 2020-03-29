@@ -21,7 +21,7 @@ angular.module('myApp')
     var CATEGORY_DESSERTS = 8;
     var CATEGORY_ACCESSORIES = 50;
 
-    this.currentOrder = order.attributes;
+    this.currentOrder = order.properties;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
 
 
@@ -30,7 +30,7 @@ angular.module('myApp')
     var that = this;
     api.queryCustomers(that.currentOrder.customer)
       .then(function (customers) {
-      that.customer = customers[0].attributes;
+      that.customer = customers[0].properties;
     });
 
     // fetch order's color
@@ -45,7 +45,7 @@ angular.module('myApp')
     this.currentQuote.items.forEach(function(item) {
       var catItem = that.catalog.filter(function (cat) {
         return cat.id === item.catalogId;
-      })[0].attributes;
+      })[0].properties;
        if (catItem.groupLabel) {
         var found = false;
         that.groups.forEach(function(group) {
@@ -72,13 +72,13 @@ angular.module('myApp')
     this.currentQuote.items.forEach(function(item) {
       var catItem = that.catalog.filter(function (cat) {
         return cat.id === item.catalogId;
-      })[0].attributes;
+      })[0].properties;
       catItem.components.forEach(function(comp) {
         if (comp.domain === 3) {
           var shoppingItem = that.catalog.filter(function(cat) {
             return cat.id === comp.id;
           })[0];
-          if (shoppingItem.attributes.category === CATEGORY_ACCESSORIES) {
+          if (shoppingItem.properties.category === CATEGORY_ACCESSORIES) {
             var found = false;
             that.accessories.forEach(function(acc) {
               if (acc.id === shoppingItem.id) {
@@ -89,9 +89,9 @@ angular.module('myApp')
             if (!found) {
               var acc = {
                 id: shoppingItem.id,
-                name: shoppingItem.attributes.productName,
+                name: shoppingItem.properties.productName,
                 measurementUnit: measurementUnits.filter(function(mu) {
-                  return mu.tId === shoppingItem.attributes.measurementUnit;
+                  return mu.tId === shoppingItem.properties.measurementUnit;
                 })[0],
                 quantity: comp.quantity / catItem.productionQuantity * item.quantity
               };
@@ -109,7 +109,7 @@ angular.module('myApp')
       if(item.category.tId === CATEGORY_SNACKS || item.category.tId === CATEGORY_DESSERTS) {
         var exitList = that.catalog.filter(function(cat) {
           return cat.id === item.catalogId;
-        })[0].attributes.exitList;
+        })[0].properties.exitList;
         if (exitList.length === 0) {
           item.isExcludeWholeItem = true; // if no sub items dont print item at all
         } else {
@@ -183,7 +183,7 @@ angular.module('myApp')
       category.items.forEach(function(item) {
         var catItem = that.catalog.filter(function (cat) {
           return cat.id === item.catalogId;
-        })[0].attributes;
+        })[0].properties;
         // convert basic measurement unit to prod measurement unit, if needed
         if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
           item.measurementUnit = measurementUnits.filter(function(mu) {
@@ -220,18 +220,19 @@ angular.module('myApp')
       var thisItem = this.catalog.filter(function (item) {
         return item.id === catId
       })[0];
-      this.exitList = thisItem.attributes.exitList;
+      this.exitList = thisItem.properties.exitList;
     };
 
 
     function editItems (order, category, catalog) {
-      return order.attributes.quotes[order.attributes.activeQuote].items.filter(function(item) {
+      return order.properties.quotes[order.properties.activeQuote].items.filter(function(item) {
         return item.category.tId === category;
       }).map(function(item) {
         var catalogItem = catalog.filter(function(cat) {
           return cat.id===item.catalogId;
-        })[0].attributes;
+        })[0].properties;
         return {
+          index: item.index,
           productName: catalogItem.productName,
           productDescription: item.productDescription,
           isDescChanged: item.isDescChanged & (!item.isCosmeticChange),

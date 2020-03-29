@@ -14,15 +14,15 @@ angular.module('myApp')
       this.bid = bid;
       this.categories = categories;
       this.config = config;
-      this.currentOrder = this.bid.attributes.order;
+      this.currentOrder = this.bid.properties.order;
       this.eventDate = moment(this.currentOrder.eventDate);
       if (this.currentOrder.eventTime) {
         this.eventTime = moment(this.currentOrder.eventTime);
       }
       if (this.currentOrder.quotes) {
-        if (this.bid.attributes.menuType) {
+        if (this.bid.properties.menuType) {
           this.currentQuote = this.currentOrder.quotes.filter(function (q) {
-            return q.menuType.tId===that.bid.attributes.menuType.tId;
+            return q.menuType.tId===that.bid.properties.menuType.tId;
           })[0];
         } else { // bid before multiple quotes era -- use active quote
           this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
@@ -31,13 +31,13 @@ angular.module('myApp')
         this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
       }
 
-      this.customer = bid.attributes.customer;
+      this.customer = bid.properties.customer;
 
       $rootScope.title = lov.company    // set title so PDF file will be named correctly
         + ' - הצעת מחיר '
         + (this.customer.firstName ? this.customer.firstName : '')
         + ' ' + (this.customer.lastName ? this.customer.lastName : '')
-        + ' ' + this.bid.attributes.desc;
+        + ' ' + this.bid.properties.desc;
 
 
       //fetch menu type
@@ -70,7 +70,7 @@ angular.module('myApp')
         })[0];
       }
 
-      this.quoteHeading = this.bid.attributes.order.eventName || '';
+      this.quoteHeading = this.bid.properties.order.eventName || '';
       if (this.quoteHeading && this.currentQuote.title) {
         this.quoteHeading += ' - ';
       }
@@ -106,15 +106,15 @@ angular.module('myApp')
       this.bid = bid;
       this.categories = categories;
       this.config = config;
-      this.currentOrder = this.bid.attributes.order;
+      this.currentOrder = this.bid.properties.order;
       this.eventDate = moment(this.currentOrder.eventDate);
       if (this.currentOrder.eventTime) {
         this.eventTime = moment(this.currentOrder.eventTime);
       }
       if (this.currentOrder.quotes) {
-        if (this.bid.attributes.menuType) {
+        if (this.bid.properties.menuType) {
           this.currentQuote = this.currentOrder.quotes.filter(function (q) {
-            return q.menuType.tId===that.bid.attributes.menuType.tId;
+            return q.menuType.tId===that.bid.properties.menuType.tId;
           })[0];
         } else { // bid before multiple quotes era -- use active quote
           this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
@@ -123,13 +123,13 @@ angular.module('myApp')
         this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
       }
 
-      this.customer = bid.attributes.customer;
+      this.customer = bid.properties.customer;
 
       $rootScope.title = lov.company    // set title so PDF file will be named correctly
       + ' - הצעת מחיר '
       + (this.customer.firstName ? this.customer.firstName : '')
       + ' ' + (this.customer.lastName ? this.customer.lastName : '')
-      + ' ' + this.bid.attributes.desc;
+      + ' ' + this.bid.properties.desc;
 
 
       //fetch menu type
@@ -162,7 +162,7 @@ angular.module('myApp')
         })[0];
       }
 
-      this.quoteHeading = this.bid.attributes.order.eventName || '';
+      this.quoteHeading = this.bid.properties.order.eventName || '';
       if (this.quoteHeading && this.currentQuote.title) {
         this.quoteHeading += ' - ';
       }

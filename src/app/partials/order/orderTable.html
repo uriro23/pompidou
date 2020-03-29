@@ -31,9 +31,9 @@
 <th  class="hidden-xs" style="width: 6%">יוצר</th>
   </thead>
   <tbody>
-  <tr ng-repeat="order in orderTableModel.orders"
-      ng-class="order.view.orderStatus.id<2 && order.attributes.header.activityDate &&
-                            (orderTableModel.today - order.attributes.header.activityDate)/(24*3600000)>2
+  <tr ng-repeat="order in orderTableModel.orders track by order.id"
+      ng-class="order.view.orderStatus.id<2 && order.properties.header.activityDate &&
+                            (orderTableModel.today - order.properties.header.activityDate)/(24*3600000)>2
                               ? 'myAlertEvent' :
                         order.view.orderStatus.id===1?'bg-active':
                         order.view.orderStatus.id===2?'bg-warning':
@@ -41,27 +41,27 @@
                         order.view.orderStatus.id===6?'active myCanceledEvent':null">
      <td ng-hide="orderTableModel.isDisableLink">
       <a  ng-href="#/editOrderView/{{order.id}}/0">
-        {{order.attributes.number}}
+        {{order.properties.number}}
       </a>
     </td>
     <td ng-show="orderTableModel.isDisableLink">
-      {{order.attributes.number}}
+      {{order.properties.number}}
     </td>
     <td ng-show="orderTableModel.queryType==='sales'">
       {{order.createdAt | date: 'dd/MM'}}
     </td>
-    <td ng-hide="order.attributes.isDateUnknown">
-      {{order.attributes.eventDate | date: 'EEE dd/MM/yy'}}
+    <td ng-hide="order.properties.isDateUnknown">
+      {{order.properties.eventDate | date: 'EEE dd/MM/yy'}}
     </td>
-    <td ng-show="order.attributes.isDateUnknown">
+    <td ng-show="order.properties.isDateUnknown">
       <span>אין תאריך</span>
     </td>
     <td ng-show="orderTableModel.queryType==='future'">
-      {{order.attributes.eventTime | date: 'HH:mm'}}</td>
+      {{order.properties.eventTime | date: 'HH:mm'}}</td>
     <td class="hidden-xs" ng-show="orderTableModel.queryType==='future'">
-      {{order.attributes.exitTime | date: 'HH:mm'}}</td>
+      {{order.properties.exitTime | date: 'HH:mm'}}</td>
     <td ng-hide="orderTableModel.queryType==='customer'">
-      {{order.view.customer.attributes.firstName+' '+order.view.customer.attributes.lastName}}
+      {{order.view.customer.properties.firstName+' '+order.view.customer.properties.lastName}}
     </td>
     <td class="hidden-xs"
         ng-show="orderTableModel.queryType!=='customer' && order.view.customer"
@@ -79,9 +79,9 @@
       </a>
     </td>
     <td ng-show="orderTableModel.queryType==='invoices'">
-      {{order.attributes.taskData.invoiceName}}
+      {{order.properties.taskData.invoiceName}}
     </td>
-    <td>{{order.attributes.noOfParticipants}}</td>
+    <td>{{order.properties.noOfParticipants}}</td>
     <td ng-show="order.view.orderStatus.id === 0">
       {{order.view.referralSource.label}}
     </td>
@@ -89,14 +89,14 @@
       {{order.view.cancelReason.label}}
     </td>
    <td ng-show="order.view.orderStatus.id > 0 && order.view.orderStatus.id < 6">
-      {{order.attributes.header.title}}
+      {{order.properties.header.title}}
     </td>
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='sales') &&
                  order.view.orderStatus.id > 0 &&
                  order.view.orderStatus.id < 6 &&
-                 !order.attributes.isDateUnknown &&
+                 !order.properties.isDateUnknown &&
                  !orderTableModel.user.isSalesPerson">
       <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
               ng-change="orderListModel.setStatus(order)"
@@ -108,7 +108,7 @@
         ng-show="orderTableModel.queryType==='sales' &&
                  order.view.orderStatus.id > 0 &&
                  order.view.orderStatus.id < 6 &&
-                 order.attributes.isDateUnknown &&
+                 order.properties.isDateUnknown &&
                  !orderTableModel.user.isSalesPerson">
       <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
               ng-change="orderListModel.setStatus(order)"
@@ -153,25 +153,25 @@
       {{order.view.color.tId}}
     </td>
     <td ng-hide="orderTableModel.queryType==='invoices'">
-      {{order.attributes.header.total | currency}}
+      {{order.properties.header.total | currency}}
     </td>
     <td ng-show="orderTableModel.queryType==='invoices'">
-      {{order.attributes.header.totalBeforeVatForInvoice | currency}}
+      {{order.properties.header.totalBeforeVatForInvoice | currency}}
     </td>
     <td class="hidden-xs" style="overflow-wrap: break-word"
          ng-show="orderTableModel.queryType==='future'">
-       <span class="taskRequired">{{order.attributes.header.extraUndone}}</span>
-       <span class="taskNormal">{{order.attributes.header.extraDone}}</span>
+       <span class="taskRequired">{{order.properties.header.extraUndone}}</span>
+       <span class="taskNormal">{{order.properties.header.extraDone}}</span>
      </td>
     <td class="hidden-xs"
       ng-show="orderTableModel.queryType==='sales'">
-      <span>{{order.attributes.header.activityDate | date:'dd/MM/yy'}}</span>
-      <span>{{order.attributes.header.activityText}}</span>
+      <span>{{order.properties.header.activityDate | date:'dd/MM/yy'}}</span>
+      <span>{{order.properties.header.activityText}}</span>
     </td>
     <td ng-show="orderTableModel.queryType==='invoices'">
       <input type="checkbox" ng-model="order.view.isInvoiceDone" ng-change="orderListModel.setInvoiceDone(order)">
     </td>
-     <td class="hidden-xs">{{order.attributes.createdBy}}</td>
+     <td class="hidden-xs">{{order.properties.createdBy}}</td>
   </tr>
   </tbody>
 </table>
@@ -186,17 +186,17 @@
       <th style="width: 45%">הערות</th>
       </thead>
       <tbody>
-      <tr ng-repeat="order in orderTableModel.orders"
+      <tr ng-repeat="order in orderTableModel.orders track by order.id"
           ng-class="order.view.orderStatus.id===6?'active myCanceledEvent':null">
         <td>
-          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.header.menuType.label}}</a>
+          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.properties.header.menuType.label}}</a>
         </td>
         <td>
-          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.attributes.template}}</a>
+          <a ng-href="#/editOrderView/{{order.id}}/0">{{order.properties.template}}</a>
         </td>
-        <td>{{order.attributes.noOfParticipants}}</td>
-        <td>{{order.attributes.header.total | currency}}</td>
-        <td>{{order.attributes.remarks}}</td>
+        <td>{{order.properties.noOfParticipants}}</td>
+        <td>{{order.properties.header.total | currency}}</td>
+        <td>{{order.properties.remarks}}</td>
       </tr>
       </tbody>
     </table>

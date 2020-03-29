@@ -8,7 +8,7 @@
 
     <!-- Header + main logo -->
     <div class="quoteTextBox">
-      <h2 ng-show="quote2Model.bid.attributes.documentType===5"
+      <h2 ng-show="quote2Model.bid.properties.documentType===5"
           class="purpleText bold quoteMainTitle">
         הצעת תפריט חדשה
       </h2>
@@ -24,13 +24,13 @@
       <div class="floatRight">
 
         <span class="bold">שם:</span>
-        <span>{{quote2Model.bid.attributes.customer.firstName+' '+quote2Model.bid.attributes.customer.lastName}}</span>
+        <span>{{quote2Model.bid.properties.customer.firstName+' '+quote2Model.bid.properties.customer.lastName}}</span>
         <br>
         <span class="bold">תאריך האירוע:</span>
-        <span ng-hide="quote2Model.bid.attributes.order.isDateUnknown">
+        <span ng-hide="quote2Model.bid.properties.order.isDateUnknown">
           {{quote2Model.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}
         </span>
-        <span ng-show="quote2Model.bid.attributes.order.isDateUnknown">
+        <span ng-show="quote2Model.bid.properties.order.isDateUnknown">
           טרם נקבע
         </span>
         <br>
@@ -40,7 +40,7 @@
         </span>
         <br>
         <span class="bold">מספר המשתתפים:</span>
-        <span>{{quote2Model.bid.attributes.order.noOfParticipants}}</span>
+        <span>{{quote2Model.bid.properties.order.noOfParticipants}}</span>
         <span ng-show="quote2Model.currentOrder.children">
                &nbsp;&#40;<span>מתוכם</span>&nbsp;
                 <span >{{quote2Model.currentOrder.children}}</span>
@@ -65,7 +65,9 @@
     </div>
 
     <!-- Starting event food items list by categeries -->
-    <div class="quoteTextBox greyWhiteAlternate" ng-repeat="category in quote2Model.filteredCategories" on-finish-render="ngRepeatFinished">
+    <div class="quoteTextBox greyWhiteAlternate"
+         ng-repeat="category in quote2Model.filteredCategories track by category.tId"
+         on-finish-render="ngRepeatFinished">
 
       <!-- Food category header -->
       <div class="bold quoteFoodCategoryName">
@@ -80,7 +82,7 @@
       {{quote2Model.setupCategoryItems(category.tId)}}
 
       <!-- Regular items  -->
-      <div class="quoteTextItemLine"  ng-repeat="item in quote2Model.categoryItems">
+      <div class="quoteTextItemLine"  ng-repeat="item in quote2Model.categoryItems track by item.index">
 
         <div ng-show="!quote2Model.currentQuote.isNoQuantities  && quote2Model.currentQuote.isShowPrices">
           <div style="width:60%;display:inline-block;">
@@ -147,7 +149,7 @@
       <div class="bold">
         {{quote2Model.category.description}}
       </div>
-      <div ng-repeat="item in quote2Model.transportationItems">
+      <div ng-repeat="item in quote2Model.transportationItems track by item.index">
         <div style="width:77%;display:inline-block;">
           <span class="bold" ng-show="item.isFreeItem">החלטנו לתת לך במתנה את המשלוח:</span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
@@ -218,7 +220,7 @@
     {{quote2Model.setupBonusItems()}}
     <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.bonusItems.length === 1">
       <P style="height: 0.5cm"></P>
-      <div ng-repeat="item in quote2Model.bonusItems">
+      <div ng-repeat="item in quote2Model.bonusItems track by item.index">
         <div style="width:77%;display:inline-block;" class="bold">
           <span>החלטנו לצ'פר אותך ב</span>
           <span>{{item.quantity}}</span>
@@ -235,7 +237,7 @@
       <div class="bold">
         החלטנו לצ'פר אותך בפריטים הבאים:
       </div>
-      <div ng-repeat="item in quote2Model.bonusItems">
+      <div ng-repeat="item in quote2Model.bonusItems track by item.index">
         <div style="width:77%;display:inline-block;" class="bold">
           <span>{{item.quantity}}</span>
           <span>{{item.measurementUnit.label}}</span>
@@ -251,7 +253,7 @@
     {{quote2Model.setupPriceIncreaseItems()}}
     <div class="quoteTextBox greyWhiteAlternate" ng-show="quote2Model.priceIncreaseItems.length">
       <P style="height: 0.5cm"></P>
-      <div ng-repeat="item in quote2Model.priceIncreaseItems">
+      <div ng-repeat="item in quote2Model.priceIncreaseItems track by item.index">
         <div style="width:77%;display:inline-block;">
           <span>{{item.productDescription}}</span>
         </div>
@@ -274,7 +276,7 @@
       <div class="bold">
         {{quote2Model.category.description}}
       </div>
-      <div ng-repeat="item in quote2Model.externalServicesItems">
+      <div ng-repeat="item in quote2Model.externalServicesItems track by item.index">
         <div style="width:30%;display:inline-block;">
           <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>

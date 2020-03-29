@@ -11,7 +11,7 @@ angular.module('myApp')
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
-      $rootScope.username = user.attributes.username;
+      $rootScope.username = user.get('username');
     } else {
       $state.go('login');
     }
@@ -54,9 +54,9 @@ angular.module('myApp')
 
     model.setProductName = function () {
        model.item.errors.productName =
-        !model.item.attributes.productName || model.item.attributes.productName.length === 0;
+        !model.item.properties.productName || model.item.properties.productName.length === 0;
       if (!model.item.errors.productName) {
-        if (isNameInUse(model.item.attributes.productName,model.item.id)) {
+        if (isNameInUse(model.item.properties.productName,model.item.id)) {
           model.item.errors.productName = 'dup';
         }
       }
@@ -65,81 +65,81 @@ angular.module('myApp')
 
     model.setProductDescription = function () {
       model.item.errors.productDescription =
-        !model.item.attributes.productDescription || model.item.attributes.productDescription.length === 0;
+        !model.item.properties.productDescription || model.item.properties.productDescription.length === 0;
       if (model.currentDomain.id === 1 && model.item.isCopyToShortDesc) {
-        model.item.attributes.shortDescription = model.item.attributes.productDescription;
+        model.item.properties.shortDescription = model.item.properties.productDescription;
       }
       model.setChanged(true);
     };
 
     model.setShortDescription = function () {
       model.item.isCopyToShortDesc =
-        model.item.attributes.productDescription === model.item.attributes.shortDescription;
+        model.item.properties.productDescription === model.item.properties.shortDescription;
       model.setChanged(true);
     };
 
     model.setMeasurementUnit = function () {
       model.item.view.prodMeasurementUnit = model.item.view.measurementUnit;
-      model.item.attributes.muFactor = 1;
+      model.item.properties.muFactor = 1;
       model.setChanged(true);
     };
 
     model.setProdMeasurementUnit = function () {
       if (model.item.view.prodMeasurementUnit.tId === model.item.view.measurementUnit.tId) {
-        model.item.attributes.muFactor = 1;
+        model.item.properties.muFactor = 1;
       }
       model.setChanged(true);
     };
 
     model.setMuFactor = function () {
       model.item.errors.muFactor =
-        (model.currentDomain.id === 1 || Boolean(model.item.attributes.muFactor)) &&
-        ((model.item.attributes.muFactor != Number(model.item.attributes.muFactor) ||
-          Number(model.item.attributes.muFactor) <= 0));
+        (model.currentDomain.id === 1 || Boolean(model.item.properties.muFactor)) &&
+        ((model.item.properties.muFactor != Number(model.item.properties.muFactor) ||
+          Number(model.item.properties.muFactor) <= 0));
       model.setChanged(true);
     };
 
     model.setPriceQuantity = function () {
       model.item.errors.priceQuantity =
-        (model.currentDomain.id === 1 || Boolean(model.item.attributes.priceQuantity)) &&
-        ((model.item.attributes.priceQuantity != Number(model.item.attributes.priceQuantity) ||
-          Number(model.item.attributes.priceQuantity) <= 0));
+        (model.currentDomain.id === 1 || Boolean(model.item.properties.priceQuantity)) &&
+        ((model.item.properties.priceQuantity != Number(model.item.properties.priceQuantity) ||
+          Number(model.item.properties.priceQuantity) <= 0));
       model.setChanged(true);
     };
 
     model.setPrice = function () {
       model.item.errors.price =
-        (model.currentDomain.id === 1 || Boolean(model.item.attributes.price)) &&
-        ((model.item.attributes.price != Number(model.item.attributes.price) ||
-        Number(model.item.attributes.price) <= 0));
+        (model.currentDomain.id === 1 || Boolean(model.item.properties.price)) &&
+        ((model.item.properties.price != Number(model.item.properties.price) ||
+        Number(model.item.properties.price) <= 0));
       model.setChanged(true);
     };
 
     model.setProductionQuantity = function () {
       model.item.errors.productionQuantity =
-        model.item.attributes.productionQuantity != Number(model.item.attributes.productionQuantity) ||
-        Number(model.item.attributes.productionQuantity) <= 0;
+        model.item.properties.productionQuantity != Number(model.item.properties.productionQuantity) ||
+        Number(model.item.properties.productionQuantity) <= 0;
        model.setChanged(true);
     };
 
     model.setMinTime = function (ind) {
       model.item.errors.minTime =
-        model.item.attributes.minTime != Number(model.item.attributes.minTime) ||
-        Number(model.item.attributes.minTime) < 0;
+        model.item.properties.minTime != Number(model.item.properties.minTime) ||
+        Number(model.item.properties.minTime) < 0;
       model.setChanged(true);
     };
 
     model.setMaxTime = function (ind) {
       model.item.errors.maxTime =
-        model.item.attributes.maxTime != Number(model.item.attributes.maxTime) ||
-        Number(model.item.attributes.maxTime) < 0;
+        model.item.properties.maxTime != Number(model.item.properties.maxTime) ||
+        Number(model.item.properties.maxTime) < 0;
       model.setChanged(true);
     };
 
     // Exit List Tab
 
     model.addExitListItem = function () {
-      model.item.attributes.exitList.push({
+      model.item.properties.exitList.push({
         item: '',
         measurementUnit: measurementUnits[0]
       });
@@ -147,7 +147,7 @@ angular.module('myApp')
     };
 
     model.delExitListItem = function (ind) {
-      model.item.attributes.exitList.splice(ind, 1);
+      model.item.properties.exitList.splice(ind, 1);
       model.setChanged(true);
     };
 
@@ -157,24 +157,24 @@ angular.module('myApp')
     api.queryCatalogByCategory(comDomain.currentCategory.tId)
       .then(function(res) {
         comDomain.categoryItems = res.filter(function(itm) {
-          return !itm.attributes.isDeleted;
+          return !itm.properties.isDeleted;
         }).map(function(itm) {
           itm.view = {};
           itm.view.compQuantity = null;
           itm.view.category = comDomain.currentCategory;
           itm.view.measurementUnit = measurementUnits.filter(function(mes) {
-            return mes.tId===itm.attributes.measurementUnit;
+            return mes.tId===itm.properties.measurementUnit;
           })[0];
           itm.view.prodMeasurementUnit = measurementUnits.filter(function(mes) {
-            return mes.tId===itm.attributes.prodMeasurementUnit;
+            return mes.tId===itm.properties.prodMeasurementUnit;
           })[0];
           itm.view.packageMeasurementUnit = measurementUnits.filter(function(mes) {
-            return mes.tId===itm.attributes.packageMeasurementUnit;
+            return mes.tId===itm.properties.packageMeasurementUnit;
           })[0];
           itm.isError = true;  // has to specify quantity
           return itm;
         }).sort(function(a,b) {
-          if (a.attributes.productName > b.attributes.productName) {
+          if (a.properties.productName > b.properties.productName) {
             return 1;
           } else {
             return -1;
@@ -190,7 +190,7 @@ angular.module('myApp')
        return item.id === compDomain.currentItem.id;
      });
      if (temp.length) {
-       alert (compDomain.currentItem.attributes.productName+ ' כבר נמצא ברשימה')
+       alert (compDomain.currentItem.properties.productName+ ' כבר נמצא ברשימה')
      } else {
        compDomain.compItems.push(compDomain.currentItem);
        model.setChanged(true);
@@ -222,7 +222,7 @@ angular.module('myApp')
        dom.compItems = [];
        model.setCompCategory(dom);
      });
-     var ids = model.item.attributes.components.map(function(comp) {
+     var ids = model.item.properties.components.map(function(comp) {
        return comp.id;
      }).filter(function(id) {
        return id !== config.unhandledItemComponent && id !== config.unhandledItemMaterial;
@@ -232,24 +232,24 @@ angular.module('myApp')
        .then(function(res) {
          res.forEach(function(comp) {
            comp.view = {};
-           comp.view.compQuantity = model.item.attributes.components.filter(function(comp2) {
+           comp.view.compQuantity = model.item.properties.components.filter(function(comp2) {
              return comp2.id===comp.id;
            })[0].quantity;
            comp.view.category = allCategories.filter(function(cat) {
-             return cat.tId===comp.attributes.category;
+             return cat.tId===comp.properties.category;
            })[0];
            comp.view.measurementUnit = measurementUnits.filter(function(mes) {
-             return mes.tId===comp.attributes.measurementUnit;
+             return mes.tId===comp.properties.measurementUnit;
            })[0];
            comp.view.prodMeasurementUnit = measurementUnits.filter(function(mes) {
-             return mes.tId===comp.attributes.prodMeasurementUnit;
+             return mes.tId===comp.properties.prodMeasurementUnit;
            })[0];
            comp.view.packageMeasurementUnit = measurementUnits.filter(function(mes) {
-             return mes.tId===comp.attributes.packageMeasurementUnit;
+             return mes.tId===comp.properties.packageMeasurementUnit;
            })[0];
            comp.isError = false;
            var ourDomain = model.compDomains.filter(function(d) {
-             return d.id===comp.attributes.domain;
+             return d.id===comp.properties.domain;
            })[0];
            ourDomain.compItems.push(comp);
          });
@@ -264,7 +264,7 @@ angular.module('myApp')
 
     model.filterAvailableSensitivities = function () {
       model.sensitivities = sensitivities.filter(function(sen) {
-        var temp = model.item.attributes.sensitivities.filter(function(s) {
+        var temp = model.item.properties.sensitivities.filter(function(s) {
           return s.tId === sen.tId;
         });
         return (temp.length===0);
@@ -273,13 +273,13 @@ angular.module('myApp')
     };
 
     model.addSensitivity = function () {
-      model.item.attributes.sensitivities.push(model.sensitivity);
+      model.item.properties.sensitivities.push(model.sensitivity);
       model.filterAvailableSensitivities();
       model.setChanged(true);
     };
 
     model.delSensitivity = function (ind) {
-      model.item.attributes.sensitivities.splice(ind,1);
+      model.item.properties.sensitivities.splice(ind,1);
       model.filterAvailableSensitivities();
       model.setChanged(true);
     };
@@ -291,8 +291,8 @@ angular.module('myApp')
         .then(function(catalog) {
           model.usages = catalog.filter(function(cat) {
             var isUsage = false;
-            if (!cat.attributes.isDeleted) {    // don't show deleted usages
-              cat.attributes.components.forEach(function (comp) {
+            if (!cat.properties.isDeleted) {    // don't show deleted usages
+              cat.properties.components.forEach(function (comp) {
                 if (comp.id === model.item.id) {
                   cat.quantity = comp.quantity;   // extract quantity of usage
                   isUsage = true;
@@ -302,18 +302,18 @@ angular.module('myApp')
             return isUsage;
           });
           model.usages.forEach(function(usage) {
-            usage.domain = usage.attributes.domain;   // for view ng-repeat filtering by domain
+            usage.domain = usage.properties.domain;   // for view ng-repeat filtering by domain
             usage.category = allCategories.filter(function(category) {
-              return category.tId === usage.attributes.category;
+              return category.tId === usage.properties.category;
             })[0];
             usage.measurementUnit = measurementUnits.filter(function(mu) {
-              return mu.tId === usage.attributes.measurementUnit;
+              return mu.tId === usage.properties.measurementUnit;
             })[0];
             usage.prodMeasurementUnit = measurementUnits.filter(function(mu) {
-              return mu.tId === usage.attributes.prodMeasurementUnit;
+              return mu.tId === usage.properties.prodMeasurementUnit;
             })[0];
             usage.packageMeasurementUnit = measurementUnits.filter(function(mu) {
-              return mu.tId === usage.attributes.packageMeasurementUnit;
+              return mu.tId === usage.properties.packageMeasurementUnit;
             })[0];
           });
         });
@@ -351,13 +351,13 @@ angular.module('myApp')
        alert('Missing category');
        return;
      } else {
-       model.item.attributes.category = model.item.view.category.tId;
+       model.item.properties.category = model.item.view.category.tId;
      }
      if (!model.item.view.measurementUnit.tId) {
        alert('Missing measurement unit');
        return;
      }
-     if (model.item.attributes.domain === 1 && !model.item.view.prodMeasurementUnit.tId) {
+     if (model.item.properties.domain === 1 && !model.item.view.prodMeasurementUnit.tId) {
        alert('Missing prod measurement unit');
        return;
      }
@@ -367,43 +367,43 @@ angular.module('myApp')
      if (!model.item.view.maxTimeUnit) {
        model.item.view.maxTimeUnit = lov.timeUnits[0];
      }
-     model.item.attributes.measurementUnit = model.item.view.measurementUnit.tId;
-     if (model.item.attributes.domain === 1) {
-       model.item.attributes.prodMeasurementUnit = model.item.view.prodMeasurementUnit.tId;
+     model.item.properties.measurementUnit = model.item.view.measurementUnit.tId;
+     if (model.item.properties.domain === 1) {
+       model.item.properties.prodMeasurementUnit = model.item.view.prodMeasurementUnit.tId;
      }
      if (model.item.view.packageMeasurementUnit) {
-       model.item.attributes.packageMeasurementUnit = model.item.view.packageMeasurementUnit.tId;
+       model.item.properties.packageMeasurementUnit = model.item.view.packageMeasurementUnit.tId;
      }
      if (model.item.view.specialType) {
-       model.item.attributes.specialType = model.item.view.specialType.id;
+       model.item.properties.specialType = model.item.view.specialType.id;
      }
-     model.item.attributes.minTimeUnit = model.item.view.minTimeUnit.id;
-     model.item.attributes.maxTimeUnit = model.item.view.maxTimeUnit.id;
-     model.item.attributes.muFactor = Number(model.item.attributes.muFactor);
-     model.item.attributes.priceQuantity = Number(model.item.attributes.priceQuantity);
-     model.item.attributes.price = Number(model.item.attributes.price);
-     model.item.attributes.productionQuantity = Number(model.item.attributes.productionQuantity);
-     model.item.attributes.minTime = Number(model.item.attributes.minTime);
-     model.item.attributes.maxTime = Number(model.item.attributes.maxTime);
-     model.item.attributes.components = [];
+     model.item.properties.minTimeUnit = model.item.view.minTimeUnit.id;
+     model.item.properties.maxTimeUnit = model.item.view.maxTimeUnit.id;
+     model.item.properties.muFactor = Number(model.item.properties.muFactor);
+     model.item.properties.priceQuantity = Number(model.item.properties.priceQuantity);
+     model.item.properties.price = Number(model.item.properties.price);
+     model.item.properties.productionQuantity = Number(model.item.properties.productionQuantity);
+     model.item.properties.minTime = Number(model.item.properties.minTime);
+     model.item.properties.maxTime = Number(model.item.properties.maxTime);
+     model.item.properties.components = [];
      model.compDomains.forEach(function(d) {
        d.compItems.forEach(function(c) {
          var comp = {
            id: c.id,
-           domain: c.attributes.domain,
+           domain: c.properties.domain,
            quantity: c.view.compQuantity
          };
-         model.item.attributes.components.push(comp);
+         model.item.properties.components.push(comp);
        });
      });
      // if no components/materials were specified insert dummy
-     if (model.currentDomain.id === 1 && model.item.attributes.components.length === 0) {
-       model.item.attributes.components.push({
+     if (model.currentDomain.id === 1 && model.item.properties.components.length === 0) {
+       model.item.properties.components.push({
          id: config.unhandledItemComponent,
          domain: 2,
          quantity: 1
        });
-       model.item.attributes.components.push({
+       model.item.properties.components.push({
          id: config.unhandledItemMaterial,
          domain: 3,
          quantity: 1
@@ -424,9 +424,9 @@ angular.module('myApp')
 
    model.dupItem = function() {
      var tempItem = api.initCatalog();
-     tempItem.attributes = model.item.attributes;
+     tempItem.properties = model.item.properties;
      model.item = tempItem;
-     model.item.isCopyToShortDesc = model.item.attributes.productDescription===model.item.attributes.shortDescription;
+     model.item.isCopyToShortDesc = model.item.properties.productDescription===model.item.properties.shortDescription;
      model.setupItemView();
      model.setChanged(false);
      model.loadComponentItems();
@@ -436,12 +436,12 @@ angular.module('myApp')
 
    model.setIsDeleted = function() {
      model.setChanged(true);
-     if (model.item.attributes.isDeleted) {
+     if (model.item.properties.isDeleted) {
        if (model.item.errors.productName === 'dup') { // if its deleted, never mind its being duplicate
          model.item.errors.productName = false;
        }
      } else {  // if it isn't deleted any more, productName must be unique in domain
-       if (isNameInUse(model.item.attributes.productName,model.item.id)) {
+       if (isNameInUse(model.item.properties.productName,model.item.id)) {
          model.item.errors.productName = 'dup';
        }
      }
@@ -481,43 +481,43 @@ angular.module('myApp')
         model.item.isCopyToShortDesc = true;
       } else {
         model.item.view.category = model.categories.filter(function (cat) {
-          return cat.tId === model.item.attributes.category;
+          return cat.tId === model.item.properties.category;
         }) [0];
         model.item.view.measurementUnit = model.measurementUnits.filter(function (mes) {
-          return mes.tId === model.item.attributes.measurementUnit;
+          return mes.tId === model.item.properties.measurementUnit;
         }) [0];
         model.item.view.prodMeasurementUnit = model.measurementUnits.filter(function (mes) {
-          return mes.tId === model.item.attributes.prodMeasurementUnit;
+          return mes.tId === model.item.properties.prodMeasurementUnit;
         }) [0];
         model.item.view.packageMeasurementUnit = model.measurementUnits.filter(function (mes) {
-          return mes.tId === model.item.attributes.packageMeasurementUnit;
+          return mes.tId === model.item.properties.packageMeasurementUnit;
         }) [0];
-        if (typeof model.item.attributes.specialType === 'number') {
+        if (typeof model.item.properties.specialType === 'number') {
           model.item.view.specialType = lov.specialTypes.filter(function (st) {
-            return st.id === model.item.attributes.specialType;
+            return st.id === model.item.properties.specialType;
           }) [0];
         }
-        if (typeof model.item.attributes.minTimeUnit === 'number') {
+        if (typeof model.item.properties.minTimeUnit === 'number') {
           model.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === model.item.attributes.minTimeUnit;
+            return tu.id === model.item.properties.minTimeUnit;
           }) [0];
         }
-        if (typeof model.item.attributes.maxTimeUnit === 'number') {
+        if (typeof model.item.properties.maxTimeUnit === 'number') {
           model.item.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === model.item.attributes.maxTimeUnit;
+            return tu.id === model.item.properties.maxTimeUnit;
           }) [0];
         }
-        model.item.attributes.exitList.forEach(function(ex) {
+        model.item.properties.exitList.forEach(function(ex) {
           ex.measurementUnit = measurementUnits.filter(function(mu) {
             return mu.tId === ex.measurementUnit.tId;
           })[0];
         });
       }
-      model.backupItemAttr = angular.copy(model.item.attributes);
+      model.backupItemAttr = angular.copy(model.item.properties);
     };
 
     model.cancel = function () {
-      model.item.attributes = angular.copy(model.backupItemAttr);
+      model.item.properties = angular.copy(model.backupItemAttr);
       model.setupItemView();
       model.loadComponentItems();
       model.setChanged(false);
@@ -542,11 +542,11 @@ angular.module('myApp')
           api.queryOrdersByRange('eventDate',from,to,fieldList)
             .then(function (orders) {
               model.orders = orders.filter(function (ord) {
-                if (ord.attributes.orderStatus===6) {
+                if (ord.properties.orderStatus===6) {
                   return false;
                 } else {
               var res= false;
-              ord.attributes.quotes.forEach(function(q) {
+              ord.properties.quotes.forEach(function(q) {
                     q.items.forEach(function(itm) {
                       if (itm.catalogId===model.item.id) {
                         res = true;
@@ -559,22 +559,22 @@ angular.module('myApp')
               model.orders.forEach(function(ord) {
                 ord.view = {
                   'customer': custs.filter(function(cust) {
-                    return cust.id === ord.attributes.customer;
+                    return cust.id === ord.properties.customer;
                   })[0],
                   'orderStatus': lov.orderStatuses.filter (function(st) {
-                    return st.id === ord.attributes.orderStatus;
+                    return st.id === ord.properties.orderStatus;
                   })[0]
                     };
                 ord.view.customer.anyPhone =
-                  ord.view.customer.attributes.mobilePhone?ord.view.customer.attributes.mobilePhone:
-                    ord.view.customer.attributes.homePhone?ord.view.customer.attributes.homePhone:
-                      ord.view.customer.attributes.workPhone?ord.view.customer.attributes.workPhone:undefined;
+                  ord.view.customer.properties.mobilePhone?ord.view.customer.properties.mobilePhone:
+                    ord.view.customer.properties.homePhone?ord.view.customer.properties.homePhone:
+                      ord.view.customer.properties.workPhone?ord.view.customer.properties.workPhone:undefined;
               });
               model.orders.sort(function(a,b) {
-                var ad = a.attributes.eventDate;
-                var at = a.attributes.eventTime;
-                var bd = b.attributes.eventDate;
-                var bt = b.attributes.eventTime;
+                var ad = a.properties.eventDate;
+                var at = a.properties.eventTime;
+                var bd = b.properties.eventDate;
+                var bt = b.properties.eventTime;
                 var a1 = ad.getDate() - 1 + ad.getMonth()*31 + (ad.getFullYear()-2010)*372;
                 if (at) {
                   a1 +=  at.getHours()/24 + at.getMinutes()/1440;
@@ -625,27 +625,27 @@ angular.module('myApp')
    if (model.isNewItem) {
      $rootScope.title = 'קטלוג - פריט חדש';
      model.item = api.initCatalog();
-     model.item.attributes.domain = lov.domains.filter(function(dom) {
+     model.item.properties.domain = lov.domains.filter(function(dom) {
        return dom.id===currentDomain;
      })[0].id;
-     model.item.attributes.muFactor = 1;
-     model.item.attributes.priceQuantity = null;
-     model.item.attributes.price = null;
-     model.item.attributes.productionQuantity = null;
-     model.item.attributes.minTime = null;
-     model.item.attributes.maxTime = null;
+     model.item.properties.muFactor = 1;
+     model.item.properties.priceQuantity = null;
+     model.item.properties.price = null;
+     model.item.properties.productionQuantity = null;
+     model.item.properties.minTime = null;
+     model.item.properties.maxTime = null;
      if (model.currentDomain.id === 1) {
-       model.item.attributes.isInMenu = true;
+       model.item.properties.isInMenu = true;
      }
-     model.item.attributes.exitList = [];
-     model.item.attributes.components = [];
-     model.item.attributes.sensitivities = [];
+     model.item.properties.exitList = [];
+     model.item.properties.components = [];
+     model.item.properties.sensitivities = [];
    } else {
-     $rootScope.title = 'קטלוג - ' + currentItem.attributes.productName;
+     $rootScope.title = 'קטלוג - ' + currentItem.properties.productName;
      model.item = currentItem;
      }
 
-   model.item.isCopyToShortDesc = model.item.attributes.productDescription===model.item.attributes.shortDescription;
+   model.item.isCopyToShortDesc = model.item.properties.productDescription===model.item.properties.shortDescription;
    model.setupItemView();
    model.setChanged(false);
    model.loadComponentItems();

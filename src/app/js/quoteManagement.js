@@ -13,24 +13,24 @@ angular.module('myApp')
 
 
     this.setQuoteChanged = function (ind) {
-      this.order.attributes.quotes[ind].changes.management = true;
+      this.order.properties.quotes[ind].changes.management = true;
       orderService.orderChanged(this.order);
     };
 
-    this.setActiveQuote = function (ind) {
-      this.order.attributes.quotes.forEach(function (quote) {
+     this.setActiveQuote = function (ind) {
+      this.order.properties.quotes.forEach(function (quote) {
         quote.isActive = false;
       });
-      this.order.attributes.quotes[ind].isActive = true;
-      this.order.attributes.activeQuote = ind;
-      this.order.view.quote = this.order.attributes.quotes[ind];
+      this.order.properties.quotes[ind].isActive = true;
+      this.order.properties.activeQuote = ind;
+      this.order.view.quote = this.order.properties.quotes[ind];
       this.setQuoteChanged(ind);
     };
 
     this.setRemainingMenuTypes = function () {  // build array of all menu types not in use in quotes
       var that = this;
       this.remainingMenuTypes = this.menuTypes.filter(function (mt) {
-        var temp = that.order.attributes.quotes.filter(function (q) {
+        var temp = that.order.properties.quotes.filter(function (q) {
           return mt.tId === q.menuType.tId;
         });
         return temp.length === 0;
@@ -42,8 +42,8 @@ angular.module('myApp')
         var quote = orderService.initQuote(this.newMenuType, this.categories,this.discountCauses[0]);
         quote.changes.management = true;
         orderService.calcTotal(quote,this.order);
-       this.order.attributes.quotes.push(quote);
-       if (this.order.attributes.quotes.length===1) { // first quote - make it active
+       this.order.properties.quotes.push(quote);
+       if (this.order.properties.quotes.length===1) { // first quote - make it active
          this.setActiveQuote(0);
        }
         this.setRemainingMenuTypes();
@@ -54,10 +54,10 @@ angular.module('myApp')
 
     this.delQuote = function (ind) {
       var that = this;
-      this.order.attributes.quotes.splice(ind, 1);
-      this.order.attributes.quotes.forEach(function (q, ind) { // active quote may have shifted, locate it again
+      this.order.properties.quotes.splice(ind, 1);
+      this.order.properties.quotes.forEach(function (q, ind) { // active quote may have shifted, locate it again
         if (q.isActive) {
-          that.order.attributes.activeQuote = ind;
+          that.order.properties.activeQuote = ind;
         }
       });
       this.setRemainingMenuTypes();

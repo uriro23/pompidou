@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';  // removed to allow assignment to obj.attributes in save
 
 angular.module('myApp')
 
@@ -24,6 +24,14 @@ angular.module('myApp')
 
   this.saveObj = function (obj) {
     var promise = $q.defer();
+
+
+    for (var propName in obj.properties) {
+      if (obj.properties.hasOwnProperty(propName)) {
+        obj.set(propName, obj.properties[propName])
+      }
+    }
+
     if (obj.delAttributes) {  // unset attributes
       for (var delAttr in obj.delAttributes) {
         if (obj.delAttributes.hasOwnProperty(delAttr)) {
@@ -33,16 +41,7 @@ angular.module('myApp')
       obj.delAttributes = undefined;
     }
 
-    var tempAttrs = JSON.parse(angular.toJson(obj.attributes));
-    for (var attr in obj.attributes) {
-      if (obj.attributes.hasOwnProperty(attr)) {
-        obj.set(attr, obj.attributes[attr])
-      }
-    }
-
-    var newObj = angular.copy(obj);  // to avoid parse error 121
-    console.log(newObj2);
-    newObj.save().then(function(o) {
+    obj.save().then(function(o) {
         promise.resolve(o);
         $rootScope.$digest();
       },
@@ -58,6 +57,11 @@ angular.module('myApp')
   this.saveObjects = function (objs) {
     var promises = [];
     for (var i = 0; i < objs.length; i++) {
+      for (var propName in objs[i].properties) {
+        if (objs[i].properties.hasOwnProperty(propName)) {
+          objs[i].set(propName, objs[i].properties[propName])
+        }
+      }
       if (objs[i].delAttributes) {  // unset attributes
         for (var delAttr in objs[i].delAttributes) {
           if (objs[i].delAttributes.hasOwnProperty(delAttr)) {
@@ -65,11 +69,6 @@ angular.module('myApp')
           }
         }
         objs[i].delAttributes = undefined;
-      }
-      for (var attr in objs[i].attributes) {
-        if (objs[i].attributes.hasOwnProperty(attr)) {
-          objs[i].set(attr, objs[i].attributes[attr]);
-        }
       }
 
       promises.push(angular.copy(objs[i]).save()); // clone to avoid parse error 121
@@ -80,18 +79,14 @@ angular.module('myApp')
 
   this.deleteObj = function (obj) {
     var promise = $q.defer();
-    obj.destroy({
-      success: function (o) {
-        //console.log('object '+ o.id+' deleted');
+    obj.destroy().then( function(o) {
         promise.resolve(o);
         $rootScope.$digest();
       },
-      error: function (model, error) {
-        console.log(error);
+      function (error) {
         alert('delete Error ' + error.code + ", " + error.message);
         promise.reject(error);
         $rootScope.$digest();
-      }
     });
     return promise.promise;
   };
@@ -136,6 +131,9 @@ angular.module('myApp')
       function queryPage (sk) {
         qry.skip(sk);
         qry.find().then (function(objs) {
+          objs.forEach(function(obj) {
+            obj.properties = angular.copy(obj.attributes);
+          });
             results = results.concat(objs);
             if (objs.length === pageSize) { // maybe more results needed
               skip += pageSize;
@@ -152,13 +150,17 @@ angular.module('myApp')
 
     }
 
+
+
   // Order
   // -----
 
   var Order = Parse.Object.extend("Order");
 
   this.initOrder = function () {
-    return new Order();
+    var t = new Order();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
     this.queryOrder = function (id) {
@@ -232,7 +234,9 @@ angular.module('myApp')
   var Bid = Parse.Object.extend("Bid");
 
   this.initBid = function () {
-    return new Bid();
+    var t = new Bid();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
   this.queryBidsByOrder = function (orderId) {
@@ -262,7 +266,9 @@ angular.module('myApp')
   var Mail = Parse.Object.extend("Mail");
 
   this.initMail = function () {
-    return new Mail();
+    var t = new Mail();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
   this.queryMails = function (id) {
@@ -286,7 +292,9 @@ angular.module('myApp')
   var Customer = Parse.Object.extend("Customer");
 
   this.initCustomer = function () {
-    return new Customer();
+    var t = new Customer();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
   this.queryCustomers = function (id) {
@@ -304,7 +312,9 @@ angular.module('myApp')
   var WorkOrder = Parse.Object.extend("WorkOrder");
 
   this.initWorkOrder = function () {
-    return new WorkOrder();
+    var t = new WorkOrder();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
   this.queryWorkOrder = function (woId,domain) {
@@ -335,7 +345,9 @@ angular.module('myApp')
   var Catalog = Parse.Object.extend("Catalog");
 
   this.initCatalog = function () {
-    return new Catalog();
+    var t = new Catalog();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
     this.queryCatalog = function (domain,fields) {
@@ -498,7 +510,9 @@ angular.module('myApp')
     var TaskType = Parse.Object.extend("TaskType");
 
     this.initTaskType = function () {
-      return new TaskType();
+      var t = new TaskType();
+      t.properties = angular.copy(t.attributes);
+      return t;
     };
 
     this.queryTaskTypes = function (id) {
@@ -517,7 +531,9 @@ angular.module('myApp')
     var TaskDetail = Parse.Object.extend("TaskDetail");
 
     this.initTaskDetail = function () {
-      return new TaskDetail();
+      var t = new TaskDetail();
+      t.properties = angular.copy(t.attributes);
+      return t;
     };
 
     this.queryTaskDetails = function (id) {
@@ -537,7 +553,9 @@ angular.module('myApp')
     var Phase = Parse.Object.extend("Phase");
 
     this.initPhase = function () {
-      return new Phase();
+      var t = new Phase();
+      t.properties = angular.copy(t.attributes);
+      return t;
     };
 
 
@@ -586,26 +604,25 @@ angular.module('myApp')
   // ----
 
   this.initUser = function () {
-    return new Parse.User();
+    var t = new Parse.User();
+    t.properties = angular.copy(t.attributes);
+    return t;
   };
 
   this.userSignUp = function (obj) {
     var promise = $q.defer();
-    for (var attr in obj.attributes) {
-      if (obj.attributes.hasOwnProperty(attr)) {
-        obj.set(attr, obj.attributes[attr])
+    for (var propName in obj.properties) {
+      if (obj.properties.hasOwnProperty(propName)) {
+        obj.set(propName, obj.properties[propName])
       }
     }
-    obj.signUp({}, {
-      success: function (o) {
+    obj.signUp().then(function (o) {
         promise.resolve(o);
         $rootScope.$digest();
-      },
-      error: function (model, error) {
+      }, function (error) {
         alert('SignUp Error ' + error.code + ", " + error.message);
         promise.reject(error);
         $rootScope.$digest();
-      }
     });
     return promise.promise;
   };
@@ -631,14 +648,12 @@ angular.module('myApp')
       Parse.User.logIn(username, pwd)
         .then(function(user) {
           promise.resolve(user);
-          console.log(new Date().getTime()+' resolved login promise');
           $rootScope.$digest();
-      }, function(model, error) {
+      }, function(error) {
           alert('Login error ' + error.code + ", " + error.message);
           promise.reject(error);
           $rootScope.$digest()
         });
-      console.log(new Date().getTime()+' returning from login');
       return promise.promise;
     };
 
@@ -648,16 +663,14 @@ angular.module('myApp')
 
   this.userPasswordReset = function (email) {
     var promise = $q.defer();
-    Parse.User.requestPasswordReset(email, {
-      success: function () {
+    Parse.User.requestPasswordReset(email)
+      .then(function () {
         promise.resolve();
         $rootScope.$digest()
-      },
-      error: function (error) {
+      }, function (error) {
         alert('Password reset error ' + error.code + ", " + error.message);
         promise.reject(error);
         $rootScope.$digest()
-      }
     });
     return promise.promise;
   };
@@ -720,16 +733,13 @@ angular.module('myApp')
       var promise = $q.defer();
       var acl = role.get('ACL').setReadAccess(user,true);
       role.getUsers().add(user);
-      role.save({}, {
-        success: function (r) {
+      role.save().then(function (r) {
           promise.resolve(r);
           $rootScope.$digest();
-        },
-        error: function (model, error) {
+        }, function (error) {
           alert('Role Save Error ' + error.code + ", " + error.message);
           promise.reject();
           $rootScope.$digest();
-        }
       });
       return promise.promise;
     };

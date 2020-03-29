@@ -38,7 +38,7 @@ angular.module('myApp')
         this.currentCustomer = this.filteredCustomers[ind];
         this.backupCustomer = angular.copy(this.currentCustomer);
         this.state = 'selected';
-        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
+        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
       }
       this.isCustomerChanged = false;
     };
@@ -46,16 +46,16 @@ angular.module('myApp')
     this.customerChanged = function () {
       this.currentCustomer.isError = this.currentCustomer.isFirstNameError || this.currentCustomer.isMobilePhoneError;
       this.isCustomerChanged = true;
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,true);
     };
 
     this.firstNameChanged = function () {
-      this.currentCustomer.isFirstNameError = this.currentCustomer.attributes.firstName.length === 0;
+      this.currentCustomer.isFirstNameError = this.currentCustomer.properties.firstName.length === 0;
       this.customerChanged();
     };
 
     this.mobilePhoneChanged = function () {
-      var mobile = this.currentCustomer.attributes.mobilePhone;
+      var mobile = this.currentCustomer.properties.mobilePhone;
       var mobileRegExp = RegExp('^05[0-9]{8}$');
       this.currentCustomer.isMobilePhoneError = mobile.length>0 && !mobileRegExp.test(mobile);
       this.customerChanged();
@@ -70,7 +70,7 @@ angular.module('myApp')
             that.currentCustomer = that.customers[ind] = angular.copy(that.backupCustomer);   // undo changes
           }
         });
-        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
+        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
         this.isCustomerChanged = false;
       }
     };
@@ -83,7 +83,7 @@ angular.module('myApp')
         this.state = 'selected';
       }
       customerService.sortList(this.customers);
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
       return api.saveObj(this.currentCustomer)
         .then(function (obj) {
         that.currentCustomer = obj;
@@ -104,22 +104,22 @@ angular.module('myApp')
         });
       }
       this.currentCustomer = api.initCustomer();
-      this.currentCustomer.attributes.firstName = '';
-      this.currentCustomer.attributes.lastName = '';
-      this.currentCustomer.attributes.mobilePhone = '';
-      this.currentCustomer.attributes.homePhone = '';
-      this.currentCustomer.attributes.workPhone = '';
-      this.currentCustomer.attributes.email = '';
-      this.currentCustomer.attributes.address = '';
+      this.currentCustomer.properties.firstName = '';
+      this.currentCustomer.properties.lastName = '';
+      this.currentCustomer.properties.mobilePhone = '';
+      this.currentCustomer.properties.homePhone = '';
+      this.currentCustomer.properties.workPhone = '';
+      this.currentCustomer.properties.email = '';
+      this.currentCustomer.properties.address = '';
       this.state = 'new';
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,true);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,true);
       this.isCustomerChanged = false;
       this.currentCustomer.isFirstNameError = true;
     };
 
    this.doSelect = function () {
       if (this.currentCustomer.id) {
-        var cust = this.currentCustomer.attributes;
+        var cust = this.currentCustomer.properties;
         cust.id = this.currentCustomer.id;
         $modalInstance.close(cust);
       } else if (isOptionalSelect) {
@@ -136,13 +136,13 @@ angular.module('myApp')
     // make customers array easy for filtering - no undefined fields
     this.customers = customers.map(function (cust) {
       var c = cust;
-      c.attributes.firstName = cust.attributes.firstName ? cust.attributes.firstName : '';
-      c.attributes.lastName = cust.attributes.lastName ? cust.attributes.lastName : '';
-      c.attributes.mobilePhone = cust.attributes.mobilePhone ? cust.attributes.mobilePhone : '';
-      c.attributes.homePhone = cust.attributes.homePhone ? cust.attributes.homePhone : '';
-      c.attributes.workPhone = cust.attributes.workPhone ? cust.attributes.workPhone : '';
-      c.attributes.email = cust.attributes.email ? cust.attributes.email : '';
-      c.attributes.address = cust.attributes.address ? cust.attributes.address : '';
+      c.properties.firstName = cust.properties.firstName ? cust.properties.firstName : '';
+      c.properties.lastName = cust.properties.lastName ? cust.properties.lastName : '';
+      c.properties.mobilePhone = cust.properties.mobilePhone ? cust.properties.mobilePhone : '';
+      c.properties.homePhone = cust.properties.homePhone ? cust.properties.homePhone : '';
+      c.properties.workPhone = cust.properties.workPhone ? cust.properties.workPhone : '';
+      c.properties.email = cust.properties.email ? cust.properties.email : '';
+      c.properties.address = cust.properties.address ? cust.properties.address : '';
       c.isSelected = false;
       return c;
     });
@@ -157,7 +157,7 @@ angular.module('myApp')
         }
       })[0];
       this.state = 'selected';
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.attributes,false);
+      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
     } else {
       this.currentCustomer = {};
       this.newCustomer();

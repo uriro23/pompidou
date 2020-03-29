@@ -178,7 +178,7 @@
 
   <table style="width:90%;height:20px" border="1">
     <tr>
-      <td ng-repeat="role in exitListModel.pRoles" style="width: 25%">
+      <td ng-repeat="role in exitListModel.pRoles track by role.tId" style="width: 25%">
         <label>{{role.label}}</label>
       </td>
     </tr>
@@ -190,7 +190,7 @@
     <th style="width: 50%"></th>
     <th style="width: 25%"></th>
     <th style="width: 25%"></th>
-    <tr ng-repeat="line in exitListModel.vec">
+    <tr ng-repeat="line in exitListModel.vec track by line.ind">
       <td ng-show="line.level===0">
         <label>{{line.data.label}}</label></td>
       <td ng-show="line.level===1 && !line.data.isExcludeMainItem" style="font-weight: bold">
@@ -230,7 +230,7 @@
     <div><label>אביזרים נלווים</label></div>
     <table>
       <tbody>
-      <tr ng-repeat="accessory in exitListModel.accessories">
+      <tr ng-repeat="accessory in exitListModel.accessories track by accessory.id">
         <td>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
           {{accessory.name}}
@@ -246,7 +246,7 @@
 
   <table>
     <tbody>
-    <tr ng-repeat="group in exitListModel.groups" style="font-weight: bold">
+    <tr ng-repeat="group in exitListModel.groups track by group.id" style="font-weight: bold">
       <td>
         סה"כ
         {{group.label}}
@@ -280,7 +280,7 @@
     <th style="width:15%"></th>
     </thead>
     <tbody>
-    <tr ng-repeat="item in exitListModel.snacks">
+    <tr ng-repeat="item in exitListModel.snacks track by item.index">
       <td>{{item.productName}}
         <div ng-show="item.isDescChanged">
           <label>התאמה אישית:</label>
@@ -308,7 +308,7 @@
     <th style="width:15%"></th>
     </thead>
     <tbody>
-    <tr ng-repeat="item in exitListModel.desserts">
+    <tr ng-repeat="item in exitListModel.desserts track by item.index">
       <td>{{item.productName}}
         <div ng-show="item.isDescChanged">
           <label>התאמה אישית:</label>

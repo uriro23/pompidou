@@ -11,7 +11,7 @@ angular.module('myApp')
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
-      $rootScope.username = user.attributes.username;
+      $rootScope.username = user.get('username');
     } else {
       $state.go('login');
     }
@@ -29,7 +29,7 @@ angular.module('myApp')
     // vat
     // ---
 
-    this.vatRate = config.attributes.vatRate * 100;
+    this.vatRate = config.properties.vatRate * 100;
     this.vatError = false;
 
     this.setVat = function () {
@@ -41,19 +41,19 @@ angular.module('myApp')
         alert('מע"מ שגוי. יש לתקן לפני העדכון');
         return;
       }
-      config.attributes.vatRate = this.vatRate / 100;
+      config.properties.vatRate = this.vatRate / 100;
       api.saveObj(config);
     };
 
     // order identification
     // determines how orders will be identified in stickers, exitlist, workorder: by color, numbers or both
 
-    this.isOrderColors = config.attributes.isOrderColors;
-    this.isOrderNumbers = config.attributes.isOrderNumbers;
+    this.isOrderColors = config.properties.isOrderColors;
+    this.isOrderNumbers = config.properties.isOrderNumbers;
 
     this.setOrderIdent = function () {
-      config.attributes.isOrderColors = this.isOrderColors;
-      config.attributes.isOrderNumbers = this.isOrderNumbers;
+      config.properties.isOrderColors = this.isOrderColors;
+      config.properties.isOrderNumbers = this.isOrderNumbers;
       api.saveObj(config);
     };
 
@@ -76,7 +76,7 @@ angular.module('myApp')
         this.pwd1 = this.pwd2 = null;
         return;
       }
-      user.attributes.password = this.pwd1;
+      user.set('password',this.pwd1);
       var that = this;
       api.saveObj(user)
         .then(function () {
@@ -138,7 +138,7 @@ angular.module('myApp')
 
     /*  only first time
     this.createRole = function () {
-      if (api.getCurrentUser().attributes.username !== 'uri') {
+      if (api.getCurrentUser().properties.username !== 'uri') {
         alert('current user not allowed to create role');
       } else {
         api.queryUsers()
@@ -150,7 +150,7 @@ angular.module('myApp')
     */
 
     this.resetPwd = function (usr) {
-      api.userPasswordReset(usr.attributes.email)
+      api.userPasswordReset(usr.properties.email)
         .then(function () {
           alert('נשלח מייל להחלפת סיסמה');
         });
@@ -198,19 +198,19 @@ angular.module('myApp')
                               var dc = 0;
                               phases.forEach(function(h) {
                                 p = api.initPhase();
-                                p.attributes = h;
+                                p.properties = h;
                                 tt.push(p);
                                 pc++;
                               })
                               taskTypes.forEach(function(t) {
                                 p = api.initTaskType();
-                                p.attributes = t;
+                                p.properties = t;
                                 tt.push(p);
                                 tc++;
                               })
                               taskDetails.forEach(function(d) {
                                 p = api.initTaskDetail();
-                                p.attributes = d;
+                                p.properties = d;
                                 tt.push(p);
                                 dc++;
                               })
@@ -235,17 +235,17 @@ angular.module('myApp')
       api.queryCatalog(1)
         .then(function(catItems) {
           var noCompItems = catItems.filter(function(cat) {  // return only items with no components
-            var comps = cat.attributes.components.filter(function(comp) {
-              return comp.id !== config.attributes.unhandledItemComponent &&
-                     comp.id !== config.attributes.unhandledItemMaterial  &&
-                      comp.id !== config.attributes.satietyIndexItem;
+            var comps = cat.properties.components.filter(function(comp) {
+              return comp.id !== config.properties.unhandledItemComponent &&
+                     comp.id !== config.properties.unhandledItemMaterial  &&
+                      comp.id !== config.properties.satietyIndexItem;
             });
             return !comps.length;
           }).map(function(cat) {
             cat.view = {};
             cat.view.count = 0;
             cat.view.category = categories.filter(function(c) {
-              return c.tId===cat.attributes.category;
+              return c.tId===cat.properties.category;
             })[0];
             return cat;
           });
@@ -254,14 +254,16 @@ angular.module('myApp')
           api.queryOrdersByRange('eventDate',from,to)
             .then(function(ords) {
               ords.forEach(function(ord) {
-                var ordItems = ord.attributes.quotes[ord.attributes.activeQuote].items;
-                ordItems.forEach(function(itm) {
-                  noCompItems.forEach(function(noComp) {
-                    if (noComp.id===itm.catalogId) {
-                      noComp.view.count++;
-                    }
+                if (ord.properties.quotes.length) {
+                  var ordItems = ord.properties.quotes[ord.properties.activeQuote].items;
+                  ordItems.forEach(function (itm) {
+                    noCompItems.forEach(function (noComp) {
+                      if (noComp.id === itm.catalogId) {
+                        noComp.view.count++;
+                      }
+                    });
                   });
-                });
+                }
               });
               that.catalog = noCompItems.filter(function(cat) {
                 return cat.view.count;
@@ -302,14 +304,14 @@ angular.module('myApp')
       api.queryCatalogByCategory(this.productTreeCategory.tId)
         .then(function(res) {
           that.menuItems = res.filter(function(cat) {  // return only items with components
-            var comps = cat.attributes.components.filter(function(comp) {
-              return comp.id !== config.attributes.unhandledItemComponent &&
-                comp.id !== config.attributes.unhandledItemMaterial  &&
-                comp.id !== config.attributes.satietyIndexItem;
+            var comps = cat.properties.components.filter(function(comp) {
+              return comp.id !== config.properties.unhandledItemComponent &&
+                comp.id !== config.properties.unhandledItemMaterial  &&
+                comp.id !== config.properties.satietyIndexItem;
             });
-            return comps.length && !cat.attributes.isDeleted;
+            return comps.length && !cat.properties.isDeleted;
           }).sort(function(a,b) {
-            if (a.attributes.productDescription > b.attributes.productDescription) {
+            if (a.properties.productDescription > b.properties.productDescription) {
               return 1;
             } else {
               return -1;
@@ -319,29 +321,29 @@ angular.module('myApp')
             menuItem.preparations = [];
             menuItem.materials = [];
             menuItem.measurementUnit = measurementUnits.filter(function(mu) {
-              return mu.tId === menuItem.attributes.measurementUnit;
+              return mu.tId === menuItem.properties.measurementUnit;
             })[0];
-            menuItem.attributes.components.filter(function(comp) {
-              return comp.id !== config.attributes.unhandledItemComponent &&
-                comp.id !== config.attributes.unhandledItemMaterial  &&
-                comp.id !== config.attributes.satietyIndexItem;
+            menuItem.properties.components.filter(function(comp) {
+              return comp.id !== config.properties.unhandledItemComponent &&
+                comp.id !== config.properties.unhandledItemMaterial  &&
+                comp.id !== config.properties.satietyIndexItem;
             }).forEach(function(component) {
               var compCatalog = angular.copy(that.catalog.filter(function(cat) {
                 return cat.id === component.id;
               })[0]);
               compCatalog.quantity = component.quantity;
               compCatalog.measurementUnit = measurementUnits.filter(function(mu) {
-                return mu.tId === compCatalog.attributes.measurementUnit;
+                return mu.tId === compCatalog.properties.measurementUnit;
               })[0];
               if (component.domain === 2) {
                 compCatalog.materials = [];
-                compCatalog.attributes.components.forEach(function(prepMaterial) {
+                compCatalog.properties.components.forEach(function(prepMaterial) {
                   var materialCatalog = angular.copy(that.catalog.filter(function(cat) {
                     return cat.id === prepMaterial.id;
                   })[0]);
                   materialCatalog.quantity = prepMaterial.quantity;
                   materialCatalog.measurementUnit = measurementUnits.filter(function(mu) {
-                    return mu.tId === materialCatalog.attributes.measurementUnit;
+                    return mu.tId === materialCatalog.properties.measurementUnit;
                   })[0];
                   compCatalog.materials.push(materialCatalog);
                 });
@@ -362,25 +364,25 @@ angular.module('myApp')
       api.queryCategories(this.productNamesDomain.id)
         .then(function(categories) {
           that.categories = categories.map(function(cat) {
-            return cat.attributes;
+            return cat.properties;
           });
           api.queryCatalog(that.productNamesDomain.id)
             .then(function(catalog) {
               console.log(catalog.length+' menu items loaded');
               catalog.forEach(function(cat) {
-                cat.category = cat.attributes.category; // for ng-repeat filter
+                cat.category = cat.properties.category; // for ng-repeat filter
                 cat.measurementUnitObj = measurementUnits.filter(function(mu) {
-                  return mu.tId === cat.attributes.measurementUnit;
+                  return mu.tId === cat.properties.measurementUnit;
                 })[0];
                 if (!cat.measurementUnitObj) {
-                  console.log('MU not found for '+cat.attributes.productName);
+                  console.log('MU not found for '+cat.properties.productName);
                 } else {
                   cat.measurementUnitLabel = cat.measurementUnitObj.label;
                 }
                  cat.categoryObject = that.categories.filter(function(cat2) {
-                  return cat2.tId === cat.attributes.category;
+                  return cat2.tId === cat.properties.category;
                 })[0];
-                cat.exitListLength = cat.attributes.exitList.length;
+                cat.exitListLength = cat.properties.exitList.length;
               });
               that.productNameItems = catalog;
               that.productNameCategoryItems = [];
@@ -392,9 +394,9 @@ angular.module('myApp')
     this.filterProductNameCategory = function() {
       var that = this;
       this.productNameCategoryItems = this.productNameItems.filter(function(cat) {
-        return cat.attributes.category === that.productNamesCategory.tId;
+        return cat.properties.category === that.productNamesCategory.tId;
       }).sort(function(a,b) {
-        if (a.attributes.productName > b.attributes.productName) {
+        if (a.properties.productName > b.properties.productName) {
           return 1;
         } else {
           return -1;
@@ -402,7 +404,7 @@ angular.module('myApp')
       });
       this.productNameCategoryItems.forEach(function(item) {
         item.sensArray = angular.copy(sensitivities);
-        item.attributes.sensitivities.forEach(function(trueSens) {
+        item.properties.sensitivities.forEach(function(trueSens) {
           item.sensArray.forEach(function(potSens) {
             if (potSens.tId === trueSens.tId) {
               potSens.isTrue = true;
@@ -413,11 +415,11 @@ angular.module('myApp')
     };
 
     this.productNameItemChanged = function(cat) {
-      cat.errors = !cat.attributes.productName || cat.attributes.productName.length===0;
-      if (!cat.errors && !cat.attributes.isDeleted) {
+      cat.errors = !cat.properties.productName || cat.properties.productName.length===0;
+      if (!cat.errors && !cat.properties.isDeleted) {
         var tmp = this.productNameItems.filter(function(cat2) {
-          return (cat2.attributes.productName === cat.attributes.productName) &&
-            (cat2.id !== cat.id) && !cat2.attributes.isDeleted;
+          return (cat2.properties.productName === cat.properties.productName) &&
+            (cat2.id !== cat.id) && !cat2.properties.isDeleted;
         });
         cat.errors = (tmp.length>0);
       }
@@ -425,8 +427,8 @@ angular.module('myApp')
     };
 
     this.saveProductNameitem = function(cat) {
-      cat.category = cat.attributes.category = cat.categoryObject.tId;
-      cat.attributes.sensitivities = cat.sensArray.filter(function(sen) {
+      cat.category = cat.properties.category = cat.categoryObject.tId;
+      cat.properties.sensitivities = cat.sensArray.filter(function(sen) {
         return sen.isTrue;
       });
       api.saveObj(cat);
@@ -439,19 +441,19 @@ angular.module('myApp')
       api.queryCatalog(1)
         .then(function(catalog) {
           var snacksAndDesserts = catalog.filter(function(cat) {
-            return cat.attributes.category === 1 || cat.attributes.category === 8;
+            return cat.properties.category === 1 || cat.properties.category === 8;
           });
           that.noBoxes = snacksAndDesserts.filter(function(cat2) {
-            var tmp = cat2.attributes.components.filter(function(comp) {
-              return comp.id === config.attributes.boxItem;
+            var tmp = cat2.properties.components.filter(function(comp) {
+              return comp.id === config.properties.boxItem;
             });
             if (tmp.length === 0) return true;
           }).sort(function(a,b) {
-            if (a.attributes.category > b.attributes.category) {
+            if (a.properties.category > b.properties.category) {
               return 1;
-            } else if (a.attributes.category < b.attributes.category) {
+            } else if (a.properties.category < b.properties.category) {
               return -1;
-            } else if (a.attributes.productName > b.attributes.productName) {
+            } else if (a.properties.productName > b.properties.productName) {
               return 1;
             } else {
               return -1;
@@ -475,13 +477,13 @@ angular.module('myApp')
                   lastEventDate : new Date(2000,1,1)
                 };
                 orders.forEach(function(order) {
-                  if (order.attributes.customer === customer.id) {
-                    if (order.attributes.eventDate > customer.view.lastEventDate) {
-                      customer.view.lastEventDate = order.attributes.eventDate;
+                  if (order.properties.customer === customer.id) {
+                    if (order.properties.eventDate > customer.view.lastEventDate) {
+                      customer.view.lastEventDate = order.properties.eventDate;
                     }
-                    if (order.attributes.orderStatus === 0 ||
-                        order.attributes.orderStatus === 1 ||
-                        order.attributes.orderStatus === 6) {
+                    if (order.properties.orderStatus === 0 ||
+                        order.properties.orderStatus === 1 ||
+                        order.properties.orderStatus === 6) {
                       customer.view.noOfFailures++;
                     } else {
                       customer.view.noOfSuccesses++;
@@ -511,17 +513,17 @@ angular.module('myApp')
                   lastEventDate : new Date(2000,1,1)
                 };
                 orders.forEach(function(order) {
-                  if (order.attributes.customer === customer.id) {
-                    if (order.attributes.eventDate > customer.view.lastEventDate) {
-                      customer.view.lastEventDate = order.attributes.eventDate;
+                  if (order.properties.customer === customer.id) {
+                    if (order.properties.eventDate > customer.view.lastEventDate) {
+                      customer.view.lastEventDate = order.properties.eventDate;
                     }
-                    if (order.attributes.eventDate < new Date(2019,10,1) && // since Nov 1st
-                        order.attributes.orderStatus > 1 &&
-                        order.attributes.orderStatus < 6) {
+                    if (order.properties.eventDate < new Date(2019,10,1) && // since Nov 1st
+                        order.properties.orderStatus > 1 &&
+                        order.properties.orderStatus < 6) {
                       customer.view.pastSuccesses++;
                     }
-                    if (order.attributes.eventDate > new Date(2019,10,1) &&
-                        order.attributes.orderStatus < 6) {
+                    if (order.properties.eventDate > new Date(2019,10,1) &&
+                        order.properties.orderStatus < 6) {
                       customer.view.futureOrders++;
                     }
                    }
@@ -545,7 +547,7 @@ angular.module('myApp')
         .then (function(orders) {
         console.log('read '+orders.length+' orders');
         for (var i=0;i<orders.length;i++) {
-          var order = orders[i].attributes;
+          var order = orders[i].properties;
           var quote = {};
           quote.name = 'תפריט';
           quote.items = order.items;
@@ -592,7 +594,7 @@ angular.module('myApp')
         .then (function(orders) {
         console.log('read '+orders.length+' orders');
         for (var i=0;i<orders.length;i++) {
-          orderService.setupOrderHeader(orders[i].attributes);
+          orderService.setupOrderHeader(orders[i].properties);
 		}
        console.log('updating orders');
         api.saveObjects(orders)
@@ -610,11 +612,11 @@ angular.module('myApp')
         .then(function(orders) {
           console.log('read '+orders.length+' orders');
           orders.forEach(function(order) {
-            order.attributes.version = lov.version; // set version to current
-            if (order.attributes.quotes.length > 1) {  // already new version, maybe corrupt but don't handle it
-              console.log('multiple quotes on order '+order.attributes.number);
+            order.properties.version = lov.version; // set version to current
+            if (order.properties.quotes.length > 1) {  // already new version, maybe corrupt but don't handle it
+              console.log('multiple quotes on order '+order.properties.number);
             } else {
-              var quote = order.attributes.quotes[0];
+              var quote = order.properties.quotes[0];
               quote.isActive = true;
               if (!quote.menuType) {
                 quote.menuType = menuTypes.filter(function(mt) {
@@ -632,7 +634,7 @@ angular.module('myApp')
                 })[0];
               }
               if (typeof quote.menuType === 'number') {
-                console.log('order '+order.attributes.number+' old mt '+quote.menuType);
+                console.log('order '+order.properties.number+' old mt '+quote.menuType);
                 quote.menuType = menuTypes.filter(function (obj) {
                   return (obj.tId === quote.menuType);
                 })[0];
@@ -660,12 +662,12 @@ angular.module('myApp')
                 .then(function(bids) {
                   console.log('read '+bids.length+' bids');
                   bids.forEach(function(bid) {
-                    if (bid.attributes.menuType) {
-                      bid.attributes.version = 4;
-                    } else if (bid.attributes.order.quotes) {
-                      bid.attributes.version = 3;
+                    if (bid.properties.menuType) {
+                      bid.properties.version = 4;
+                    } else if (bid.properties.order.quotes) {
+                      bid.properties.version = 3;
                     } else {
-                      bid.attributes.version = 2;
+                      bid.properties.version = 2;
                     }
                   });
                   console.log('updating bids');
@@ -684,21 +686,21 @@ angular.module('myApp')
       api.queryCatalog()
         .then(function(catalog) {
           catalog.forEach(function(cat) { // generate names
-            if (cat.attributes.domain === 1) {
-              var match = cat.attributes.productDescription.match(/^\s*\S+\s+\S+\s+\S+\s*\S+/); // extract first 4 words of desc
-              cat.attributes.productName = match ? match[0] : cat.attributes.productDescription;
+            if (cat.properties.domain === 1) {
+              var match = cat.properties.productDescription.match(/^\s*\S+\s+\S+\s+\S+\s*\S+/); // extract first 4 words of desc
+              cat.properties.productName = match ? match[0] : cat.properties.productDescription;
             } else {
-              cat.attributes.productName = cat.attributes.productDescription;
+              cat.properties.productName = cat.properties.productDescription;
             }
           });
           catalog.sort(function(a,b) {  // sort to look for duplicates
-            if (a.attributes.domain < b.attributes.domain) {
+            if (a.properties.domain < b.properties.domain) {
               return -1;
-            } else if (a.attributes.domain > b.attributes.domain) {
+            } else if (a.properties.domain > b.properties.domain) {
               return 1;
-            } else if(a.attributes.productName < b.attributes.productName) {
+            } else if(a.properties.productName < b.properties.productName) {
               return -1;
-            } else if (a.attributes.productName > b.attributes.productName) {
+            } else if (a.properties.productName > b.properties.productName) {
               return 1;
             } else {
               return 0;
@@ -707,9 +709,9 @@ angular.module('myApp')
           var cnt = 0;
           for (var i=0;i<catalog.length;i++) {  // eliminate duplicates
             for (var j=i+1;j<catalog.length;j++) {
-              if (catalog[i].attributes.domain === catalog[j].attributes.domain &&
-                catalog[i].attributes.productName === catalog[j].attributes.productName) {
-                catalog[j].attributes.productName += String(j-i);
+              if (catalog[i].properties.domain === catalog[j].properties.domain &&
+                catalog[i].properties.productName === catalog[j].properties.productName) {
+                catalog[j].properties.productName += String(j-i);
                 cnt++;
               }
             }
@@ -733,13 +735,13 @@ angular.module('myApp')
             var found = 0;
             var notFound = 0;
             orders.forEach(function(order) {
-              order.attributes.quotes.forEach(function(quote) {
+              order.properties.quotes.forEach(function(quote) {
                 quote.items.forEach(function(item) {
                   var tmp = catalog.filter(function(cat) {
                     return cat.id === item.catalogId;
                   });
                   if (tmp.length > 0) {
-                    item.productName = tmp[0].attributes.productName;
+                    item.productName = tmp[0].properties.productName;
                     found++;
                   } else {
                     notFound++;
@@ -782,7 +784,7 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-            order.attributes.header.title = order.attributes.quotes[order.attributes.activeQuote].title;
+            order.properties.header.title = order.properties.quotes[order.properties.activeQuote].title;
           });
           console.log('writing '+orders.length+' orders');
           api.saveObjects(orders)
@@ -798,7 +800,7 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-            order.attributes.header.menuType = order.attributes.quotes[order.attributes.activeQuote].menuType;
+            order.properties.header.menuType = order.properties.quotes[order.properties.activeQuote].menuType;
           });
           console.log('writing '+orders.length+' orders');
           api.saveObjects(orders)
@@ -814,8 +816,8 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-            delete  order.attributes.header.priceIncreaseRate;
-            order.attributes.quotes.forEach(function(quote) {
+            delete  order.properties.header.priceIncreaseRate;
+            order.properties.quotes.forEach(function(quote) {
               delete quote.priceIncrease;
               delete quote.priceIncreaseRate;
               delete quote.priceIncreaseCause;
@@ -840,7 +842,7 @@ angular.module('myApp')
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
             var isForced = false;
-            order.attributes.quotes.forEach(function (quote) {
+            order.properties.quotes.forEach(function (quote) {
               quote.items.forEach(function (item) {
                 itemCnt++;
                 if (Math.round(item.priceInclVat)
@@ -875,7 +877,7 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-            order.attributes.quotes.forEach(function (quote) {
+            order.properties.quotes.forEach(function (quote) {
               quote.isHeavyweight = false;
               quote.items.forEach(function (item) {
                 itemCnt++;
@@ -888,8 +890,8 @@ angular.module('myApp')
                 }
               });
             });
-            order.attributes.header.isHeavyweight = order.attributes.quotes[order.attributes.activeQuote].isHeavyweight;
-            if (order.attributes.header.isHeavyweight) {
+            order.properties.header.isHeavyweight = order.properties.quotes[order.properties.activeQuote].isHeavyweight;
+            if (order.properties.header.isHeavyweight) {
               hOrderCnt++;
               hOrders.push(order);
             }
@@ -907,8 +909,8 @@ angular.module('myApp')
         .then(function(catalog) {
           console.log('read '+catalog.length+' catalog items');
           catalog.forEach(function(cat) {
-            cat.attributes.packageMeasurementUnit = 0;
-            cat.attributes.exitList.forEach(function(ex) {
+            cat.properties.packageMeasurementUnit = 0;
+            cat.properties.exitList.forEach(function(ex) {
               ex.measurementUnit = measurementUnits[0];
             });
           });
@@ -939,13 +941,13 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-            if (order.attributes.eventDate > new Date(2018,3,0)) {
+            if (order.properties.eventDate > new Date(2018,3,0)) {
               newOrd++;
-              order.attributes.empBonuses = empBonuses;
+              order.properties.empBonuses = empBonuses;
             }
             else {
               oldOrd++;
-              order.attributes.empBonuses =[];
+              order.properties.empBonuses =[];
             }
              });
           console.log('handled '+oldOrd+' old events, '+newOrd+' new Events');
@@ -965,9 +967,9 @@ angular.module('myApp')
         .then(function(catalog) {
           console.log(catalog.length+' items loaded');
           catalog.forEach(function(cat) { // generate names
-              var match = cat.attributes.productName.match(/^\s*\S+\s+\S+/); // extract first 2 words of name
-              cat.attributes.stickerLabel = match ? match[0] : cat.attributes.productName;
-              cat.attributes.stickerQuantity = 1;
+              var match = cat.properties.productName.match(/^\s*\S+\s+\S+/); // extract first 2 words of name
+              cat.properties.stickerLabel = match ? match[0] : cat.properties.productName;
+              cat.properties.stickerQuantity = 1;
           });
             api.saveObjects(catalog)
             .then(function() {
@@ -983,7 +985,7 @@ angular.module('myApp')
         .then(function(orders) {
           console.log(orders.length+' orders read');
           orders.forEach(function(order) {
-            order.attributes.createdBy = 'yuval';
+            order.properties.createdBy = 'yuval';
            });
             api.saveObjects(orders)
             .then(function() {
@@ -997,7 +999,7 @@ angular.module('myApp')
         .then(function(catalog) {
           console.log(catalog.length+' items loaded');
           catalog.forEach(function(cat) {
-            cat.attributes.sensitivities = [];
+            cat.properties.sensitivities = [];
           });
           api.saveObjects(catalog)
             .then(function() {
@@ -1011,10 +1013,10 @@ angular.module('myApp')
         .then(function(catalog) {
           console.log('read '+catalog.length+' catalog items');
           catalog.forEach(function(cat) {
-            cat.attributes.exitList.forEach(function(ex) {
+            cat.properties.exitList.forEach(function(ex) {
               if (!ex.measurementUnit) {
                 ex.measurementUnit = measurementUnits[0];
-                console.log(cat.attributes.productName);
+                console.log(cat.properties.productName);
               }
             });
           });
@@ -1102,7 +1104,7 @@ angular.module('myApp')
           .then(function(orders) {
             console.log('read '+orders.length+' orders');
             orders.forEach(function(order) {
-              if (!fixQuotes(order.attributes.quotes)) {
+              if (!fixQuotes(order.properties.quotes)) {
                 console.log('bad order');
                 console.log(order);
               }
@@ -1127,8 +1129,8 @@ angular.module('myApp')
           .then(function(bids) {
             console.log('read '+bids.length+' bids');
             bids.forEach(function(bid) {
-              if (bid.attributes.order.quotes) {
-                if (!fixQuotes(bid.attributes.order.quotes)) {
+              if (bid.properties.order.quotes) {
+                if (!fixQuotes(bid.properties.order.quotes)) {
                   console.log('bad bid');
                   console.log(bid);
                 }
@@ -1162,36 +1164,36 @@ angular.module('myApp')
           var leadMinNum = 0;
           var bidCnt = 0;
           orders.forEach(function(order) {
-            if (order.attributes.activities.length) {
-              if (order.attributes.activities[order.attributes.activities.length-1].text.includes('פניה')) {
+            if (order.properties.activities.length) {
+              if (order.properties.activities[order.properties.activities.length-1].text.includes('פניה')) {
                 leadCnt++;
                 if (order.createdAt < leadMinDate) {
                   leadMinDate = order.createdAt;
-                  leadMinNum = order.attributes.number;
+                  leadMinNum = order.properties.number;
                 }
                 var isBid = false;
-                order.attributes.activities.forEach(function(activity) {
+                order.properties.activities.forEach(function(activity) {
                   if (activity.text.includes('הצעה')) {
                     isBid = true;
-                    order.attributes.bidDate = activity.date;
+                    order.properties.bidDate = activity.date;
                   }
                 });
                 if (isBid) {
                   bidCnt++;
-                  if (order.attributes.orderStatus === 0) {
-                    console.log('orderStatus conflict 1, order '+order.attributes.number);
+                  if (order.properties.orderStatus === 0) {
+                    console.log('orderStatus conflict 1, order '+order.properties.number);
                   }
                 } else {
-                  if (order.attributes.orderStatus !== 0 && order.attributes.orderStatus !== 6 ) {
-                    console.log('orderStatus conflict 2, order '+order.attributes.number);
+                  if (order.properties.orderStatus !== 0 && order.properties.orderStatus !== 6 ) {
+                    console.log('orderStatus conflict 2, order '+order.properties.number);
                   }
 
                 }
               } else {
-                order.attributes.bidDate = order.createdAt;
+                order.properties.bidDate = order.createdAt;
               }
             } else {
-              order.attributes.bidDate = order.createdAt;
+              order.properties.bidDate = order.createdAt;
             }
           });
           console.log(leadCnt+' lead orders');
@@ -1211,8 +1213,8 @@ angular.module('myApp')
         .then(function(items) {
           console.log('read '+items.length+' items');
           items.forEach(function(item) {
-           item.attributes.prodMeasurementUnit = item.attributes.measurementUnit;
-           item.attributes.muFactor = 1;
+           item.properties.prodMeasurementUnit = item.properties.measurementUnit;
+           item.properties.muFactor = 1;
           });
           console.log('updating');
           api.saveObjects(items)
@@ -1229,17 +1231,17 @@ angular.module('myApp')
           console.log ('read '+orders.length+' orders');
           var badCount = 0;
           orders.forEach(function(order) {
-            var quote = order.attributes.quotes[order.attributes.activeQuote];
+            var quote = order.properties.quotes[order.properties.activeQuote];
             if (quote) {
               if (typeof quote.priceIncrease === 'undefined') {
                 quote.priceIncrease = 0;
               }
-              quote.totalForStat = (quote.subTotal + quote.discount + quote.priceIncrease) / (1+order.attributes.vatRate);
+              quote.totalForStat = (quote.subTotal + quote.discount + quote.priceIncrease) / (1+order.properties.vatRate);
               if (typeof quote.totalForStat !== 'number') {
-                console.log('bad quote, order ' + order.attributes.number);
+                console.log('bad quote, order ' + order.properties.number);
                 badCount++;
               }
-              order.attributes.header.totalForStat = quote.totalForStat;
+              order.properties.header.totalForStat = quote.totalForStat;
             }
          });
           if (!badCount) {
@@ -1265,12 +1267,12 @@ angular.module('myApp')
           orders.forEach(function(order) {
             var oldOrder = angular.copy(order);
             var change = false;
-            if (order.attributes.quotes.length) {
-              var quote = order.attributes.quotes[order.attributes.activeQuote];
+            if (order.properties.quotes.length) {
+              var quote = order.properties.quotes[order.properties.activeQuote];
               var oldQuote = angular.copy(quote);
               if (quote.extraServices) {
                 extCnt++;
-                console.log('order ' + order.attributes.number + ' date ' + order.attributes.eventDate);
+                console.log('order ' + order.properties.number + ' date ' + order.properties.eventDate);
                 orderService.calcTotal(quote, order);
                 if (quote.total !== oldQuote.total) {
                   totChange++;
@@ -1283,7 +1285,7 @@ angular.module('myApp')
                   console.log('-- new: extra: ' + quote.extraServices + ' totalForStat: ' + quote.totalForStat + ' total: ' + quote.total)
                   if (!change) {
                     change = true;
-                    order.attributes.header.totalForStat = quote.totalForStat;
+                    order.properties.header.totalForStat = quote.totalForStat;
                     corrections.push(order);
                   }
                 }
@@ -1308,11 +1310,11 @@ angular.module('myApp')
           console.log(orders.length + ' orders read');
           var corrections = [];
           orders.forEach(function (order) {
-            if (order.attributes.quotes.length) {
-              var quote = order.attributes.quotes[order.attributes.activeQuote];
-              if (quote.totalForStat !== order.attributes.header.totalForStat) {
-                console.log('order '+order.attributes.number+' old: '+order.attributes.header.totalForStat+', new: '+quote.totalForStat);
-                order.attributes.header.totalForStat = quote.totalForStat;
+            if (order.properties.quotes.length) {
+              var quote = order.properties.quotes[order.properties.activeQuote];
+              if (quote.totalForStat !== order.properties.header.totalForStat) {
+                console.log('order '+order.properties.number+' old: '+order.properties.header.totalForStat+', new: '+quote.totalForStat);
+                order.properties.header.totalForStat = quote.totalForStat;
                 corrections.push(order);
               }
             }
@@ -1336,14 +1338,14 @@ angular.module('myApp')
               console.log(orders.length + ' orders read');
               var corrections = [];
               orders.forEach(function (order) {
-                if (order.attributes.quotes.length) {
-                  var quote = order.attributes.quotes[order.attributes.activeQuote];
+                if (order.properties.quotes.length) {
+                  var quote = order.properties.quotes[order.properties.activeQuote];
                   var isExtra = false;
                   quote.items.forEach(function(item) {
                     if (item.category.type===5 && !item.specialType) {
                       item.specialType = extraItems.filter(function(cat) {
                         return cat.id === item.catalogId;
-                      })[0].attributes.specialType;
+                      })[0].properties.specialType;
                       isExtra = true;
                     }
                   });

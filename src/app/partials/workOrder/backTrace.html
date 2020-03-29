@@ -3,10 +3,10 @@
         שורשיו של פריט בפקודת עבודה
         </h3>
     <label>פריט</label>
-    <span>{{workOrderBackTraceModel.workOrderItem.attributes.productName}}</span>
+    <span>{{workOrderBackTraceModel.workOrderItem.properties.productName}}</span>
     <label>כמות</label>
-    <span>{{workOrderBackTraceModel.workOrderItem.attributes.quantity | number:2}}</span>
-    <span>{{workOrderBackTraceModel.workOrderItem.attributes.measurementUnit.label}}</span>
+    <span>{{workOrderBackTraceModel.workOrderItem.properties.quantity | number:2}}</span>
+    <span>{{workOrderBackTraceModel.workOrderItem.properties.measurementUnit.label}}</span>
 </div>
 <div class="modal-body">
     <table class="table table-hover">
@@ -36,11 +36,11 @@
                 | filter:workOrderBackTraceModel.isShowItem track by item.seq">
             <td ng-click="workOrderBackTraceModel.setExpand(item)"><b style="cursor: pointer">{{item.expand}}</b></td>
              <td>{{item.ident+item.domain.label}}</td>
-            <td>{{item.attributes.category.label}}</td>
-            <td>{{item.attributes.productName}}</td>
+            <td>{{item.properties.category.label}}</td>
+            <td>{{item.properties.productName}}</td>
             <td>{{item.quantity | number:2}}</td>
-            <td>{{item.attributes.quantity | number:2}}</td>
-            <td>{{item.attributes.measurementUnit.label}}</td>
+            <td>{{item.properties.quantity | number:2}}</td>
+            <td>{{item.properties.measurementUnit.label}}</td>
         </tr>
         </tbody>
     </table>

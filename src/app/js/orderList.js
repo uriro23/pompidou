@@ -44,16 +44,16 @@ angular.module('myApp')
 
     this.weeks.forEach(function(week) {
        week.openings = recentOpenings.filter(function(order) {
-         return !order.attributes.template && order.createdAt>=week.start && order.createdAt<week.end;
+         return !order.properties.template && order.createdAt>=week.start && order.createdAt<week.end;
        }).length;
        week.closingVec = recentClosings.filter(function(order) {
-         return !order.attributes.template &&
-           order.attributes.closingDate>=week.start && order.attributes.closingDate<week.end;
+         return !order.properties.template &&
+           order.properties.closingDate>=week.start && order.properties.closingDate<week.end;
        });
        week.closings = week.closingVec.length;
        week.closingTotal = 0;
        week.closingVec.forEach(function(cl) {
-         week.closingTotal += (cl.attributes.header.total / (1 + cl.attributes.vatRate));
+         week.closingTotal += (cl.properties.header.total / (1 + cl.properties.vatRate));
        });
        week.closingTotal = Math.round(week.closingTotal);
      });
@@ -64,14 +64,14 @@ angular.module('myApp')
       var that = this;
         this.orders = fetchedOrders.filter(function (ord) {
           return (!that.filterByCustomer.id ||
-            ord.attributes.customer === that.filterByCustomer.id ||
-            ord.attributes.contact === that.filterByCustomer.id) &&
-            (!that.filterByStatus || ord.attributes.orderStatus === that.filterByStatus.id)
+            ord.properties.customer === that.filterByCustomer.id ||
+            ord.properties.contact === that.filterByCustomer.id) &&
+            (!that.filterByStatus || ord.properties.orderStatus === that.filterByStatus.id)
         });
 
       if (!this.isIncludecanceled) {
         this.orders = this.orders.filter(function (ord) {
-          return ord.attributes.orderStatus!==6
+          return ord.properties.orderStatus!==6
         })
       }
 
@@ -79,11 +79,11 @@ angular.module('myApp')
 
       this.orders.sort(function (a, b) {
         if (that.queryType === 'templates') {
-          if (a.attributes.header.menuType.label > b.attributes.header.menuType.label) {
+          if (a.properties.header.menuType.label > b.properties.header.menuType.label) {
             return 1;
-          } else if (a.attributes.header.menuType.label < b.attributes.header.menuType.label) {
+          } else if (a.properties.header.menuType.label < b.properties.header.menuType.label) {
             return -1;
-          } else if (a.attributes.template > b.attributes.template) {
+          } else if (a.properties.template > b.properties.template) {
             return 1
           } else {
             return -1
@@ -91,10 +91,10 @@ angular.module('myApp')
         } else if(that.queryType === 'sales') {
           return b.createdAt - a.createdAt;
         } else {
-          var ad = a.attributes.eventDate;
-          var at = a.attributes.eventTime;
-          var bd = b.attributes.eventDate;
-          var bt = b.attributes.eventTime;
+          var ad = a.properties.eventDate;
+          var at = a.properties.eventTime;
+          var bd = b.properties.eventDate;
+          var bt = b.properties.eventTime;
           var a1 = ad.getDate() - 1 + ad.getMonth()*31 + (ad.getFullYear()-2010)*372;
           if (at) {
             a1 +=  at.getHours()/24 + at.getMinutes()/1440;
@@ -114,41 +114,41 @@ angular.module('myApp')
       var that = this;
       fetchedOrders.forEach(function(fetchedOrder) {
         fetchedOrder.view = {};
-        if (fetchedOrder.attributes.customer) {
+        if (fetchedOrder.properties.customer) {
           fetchedOrder.view.customer = customers.filter(function (cust) {
-            return cust.id === fetchedOrder.attributes.customer;
+            return cust.id === fetchedOrder.properties.customer;
           })[0];
           fetchedOrder.view.customer.anyPhone =
-            fetchedOrder.view.customer.attributes.mobilePhone ? fetchedOrder.view.customer.attributes.mobilePhone :
-              fetchedOrder.view.customer.attributes.homePhone ? fetchedOrder.view.customer.attributes.homePhone :
-                fetchedOrder.view.customer.attributes.workPhone ? fetchedOrder.view.customer.attributes.workPhone : undefined;
+            fetchedOrder.view.customer.properties.mobilePhone ? fetchedOrder.view.customer.properties.mobilePhone :
+              fetchedOrder.view.customer.properties.homePhone ? fetchedOrder.view.customer.properties.homePhone :
+                fetchedOrder.view.customer.properties.workPhone ? fetchedOrder.view.customer.properties.workPhone : undefined;
         }
         fetchedOrder.view.orderStatus = lov.orderStatuses.filter(function (stat) {
-          return stat.id === fetchedOrder.attributes.orderStatus;
+          return stat.id === fetchedOrder.properties.orderStatus;
         })[0];
-        if (fetchedOrder.attributes.color) {
+        if (fetchedOrder.properties.color) {
           fetchedOrder.view.color = that.colors.filter(function (color) {
-            return color.tId === fetchedOrder.attributes.color;
+            return color.tId === fetchedOrder.properties.color;
           })[0];
         }
-        if (fetchedOrder.attributes.referralSource) {
+        if (fetchedOrder.properties.referralSource) {
           fetchedOrder.view.referralSource = referralSources.filter(function (rs) {
-            return rs.tId === fetchedOrder.attributes.referralSource;
+            return rs.tId === fetchedOrder.properties.referralSource;
           })[0];
         }
-        if (fetchedOrder.attributes.cancelReason) {
+        if (fetchedOrder.properties.cancelReason) {
           fetchedOrder.view.cancelReason = cancelReasons.filter(function (cr) {
-            return cr.tId === fetchedOrder.attributes.cancelReason;
+            return cr.tId === fetchedOrder.properties.cancelReason;
           })[0];
         }
-        if (fetchedOrder.attributes.tasks) {
-          fetchedOrder.view.isInvoiceDone = fetchedOrder.attributes.tasks.filter(function (task) {
+        if (fetchedOrder.properties.tasks) {
+          fetchedOrder.view.isInvoiceDone = fetchedOrder.properties.tasks.filter(function (task) {
             return task.tId === 16;  // !!! tId of invoice task  -- don't move it !!!
           })[0].isDone;
         } else {
           fetchedOrder.view.isInvoiceDone = false;
         }
-          fetchedOrder.view.isReadOnly = fetchedOrder.attributes.eventDate < dater.today() ||
+          fetchedOrder.view.isReadOnly = fetchedOrder.properties.eventDate < dater.today() ||
                                         fetchedOrder.view.orderStatus.id === 6;
       });
       this.noOfFetchedOrders = fetchedOrders.length;
@@ -182,10 +182,10 @@ angular.module('myApp')
         case 'sales':
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template &&
-                      (ord.attributes.orderStatus === 0 ||
-                        ord.attributes.orderStatus === 1 ||
-                        ord.attributes.orderStatus === 6);
+              return !ord.properties.template &&
+                      (ord.properties.orderStatus === 0 ||
+                        ord.properties.orderStatus === 1 ||
+                        ord.properties.orderStatus === 6);
             });
             that.enrichOrders();
            });
@@ -193,7 +193,7 @@ angular.module('myApp')
         case 'future':
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template && !ord.attributes.isDateUnknown;
+              return !ord.properties.template && !ord.properties.isDateUnknown;
             });
             that.enrichOrders();
           });
@@ -204,9 +204,9 @@ angular.module('myApp')
             var endDate = dater.today();
             endDate.setDate(endDate.getDate() + CONST_INVOICE_PERIOD);
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.attributes.template && !ord.attributes.isDateUnknown &&
-                (ord.attributes.orderStatus === 3 || ord.attributes.orderStatus === 4 || ord.attributes.orderStatus === 5) &&
-                ord.attributes.eventDate < endDate;
+              return !ord.properties.template && !ord.properties.isDateUnknown &&
+                (ord.properties.orderStatus === 3 || ord.properties.orderStatus === 4 || ord.properties.orderStatus === 5) &&
+                ord.properties.eventDate < endDate;
             });
             that.enrichOrders();
           });
@@ -214,7 +214,7 @@ angular.module('myApp')
         case 'templates':
           api.queryTemplateOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) { // filter templates with empty string names
-              return ord.attributes.template;
+              return ord.properties.template;
             });
             that.enrichOrders();
           });
@@ -227,7 +227,7 @@ angular.module('myApp')
           api.queryOrdersByRange('eventDate',fromDate2,toDate2,fieldList)
             .then(function(orders) {
               fetchedOrders = orders.filter(function(ord) {
-                return !ord.attributes.template;
+                return !ord.properties.template;
               });
               that.enrichOrders();
             });
@@ -272,7 +272,7 @@ angular.module('myApp')
     };
 
     this.setStatus = function (order) {
-      if (order.view.orderStatus.id === 6 && !order.attributes.template) {
+      if (order.view.orderStatus.id === 6 && !order.properties.template) {
         var cancelReasonModal = $modal.open({
           templateUrl: 'app/partials/order/cancelReason.html',
           controller: 'CancelReasonCtrl as cancelReasonModel',
@@ -288,8 +288,8 @@ angular.module('myApp')
         });
 
         cancelReasonModal.result.then(function (res) {
-          order.attributes.cancelReason = res.cancelReason;
-          order.attributes.cancelReasonText = res.cancelReasonText;
+          order.properties.cancelReason = res.cancelReason;
+          order.properties.cancelReasonText = res.cancelReasonText;
           orderService.setStatus(order);
           api.saveObj(order);
         });
@@ -300,7 +300,7 @@ angular.module('myApp')
     };
 
     this.setInvoiceDone = function (order) {
-      var invoiceTask = order.attributes.tasks.filter(function(task) {
+      var invoiceTask = order.properties.tasks.filter(function(task) {
         return task.tId === 16; // !!! tId of invoice task  -- don't move it !!!
       })[0];
       invoiceTask.isDone = order.view.isInvoiceDone;
@@ -379,7 +379,7 @@ angular.module('myApp')
       api.queryBidsByOrder(order.id)
         .then(function (bids) {
           if (bids.length > 0) {
-            window.open("#/bid/" + bids[0].attributes.uuid, "_blank");
+            window.open("#/bid/" + bids[0].properties.uuid, "_blank");
           } else {
             alert('אין הצעות מחיר לאירוע')
           }

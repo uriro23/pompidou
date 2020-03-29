@@ -13,7 +13,7 @@ angular.module('myApp')
       $state.go('login');
     }
 
-    var currentOrder = order.attributes;
+    var currentOrder = order.properties;
     var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
     var that = this;
 

@@ -20,7 +20,7 @@ angular.module('myApp')
         filteredCustomers = customers;
       } else {
         filteredCustomers = customers.filter(function (cust) {
-          var custAttr = cust.attributes;
+          var custAttr = cust.properties;
           cust.matches = {};
           cust.matches.name = (filterAttr.firstName && custAttr.firstName === filterAttr.firstName &&
                               !(filterAttr.lastName && custAttr.lastName && custAttr.lastName !== filterAttr.lastName)) ||
@@ -72,7 +72,7 @@ angular.module('myApp')
 
      this.sortList = function (customers) {
       customers.sort(function (a, b) {
-        if (a.attributes.firstName + a.attributes.lastName < b.attributes.firstName + b.attributes.lastName) {
+        if (a.properties.firstName + a.properties.lastName < b.properties.firstName + b.properties.lastName) {
           return -1;
         } else {
           return 1;

@@ -8,7 +8,7 @@ angular.module('myApp')
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
     if (user) {
-      $rootScope.username = user.attributes.username;
+      $rootScope.username = user.get('username');
     } else {
       $state.go('login');
     }
@@ -24,9 +24,9 @@ angular.module('myApp')
      this.filterItems = function(){
       var that = this;
       this.categoryItems = this.catalog.filter(function(cat) {
-        return (cat.attributes.productName+' '+cat.attributes.productDescription).indexOf(that.filterText)>-1 &&
-            (that.includeDeleted || !cat.attributes.isDeleted) &&
-          (!that.isOnlyRemarks || cat.attributes.remarks);
+        return (cat.properties.productName+' '+cat.properties.productDescription).indexOf(that.filterText)>-1 &&
+            (that.includeDeleted || !cat.properties.isDeleted) &&
+          (!that.isOnlyRemarks || cat.properties.remarks);
       });
     };
 
@@ -40,7 +40,7 @@ angular.module('myApp')
       return api.queryCategories(that.currentDomain.id)
         .then(function (results) {
           that.categories = results.map(function (cat) {
-            return cat.attributes;
+            return cat.properties;
           });
           that.currentCategory = that.categories[0];
           that.setCategory();
@@ -53,22 +53,22 @@ angular.module('myApp')
       this.catalog.forEach(function(cat) {
         cat.view = {};
         cat.view.category = that.categories.filter(function (categ) {
-          return categ.tId === cat.attributes.category;
+          return categ.tId === cat.properties.category;
         }) [0];
         cat.view.measurementUnit = that.measurementUnits.filter(function (mes) {
-          return mes.tId === cat.attributes.measurementUnit;
+          return mes.tId === cat.properties.measurementUnit;
         }) [0];
         cat.view.prodMeasurementUnit = that.measurementUnits.filter(function (mes) {
-          return mes.tId === cat.attributes.prodMeasurementUnit;
+          return mes.tId === cat.properties.prodMeasurementUnit;
         }) [0];
-        if (typeof cat.attributes.minTimeUnit === 'number') {
+        if (typeof cat.properties.minTimeUnit === 'number') {
           cat.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === cat.attributes.minTimeUnit;
+            return tu.id === cat.properties.minTimeUnit;
           }) [0];
         }
-        if (typeof cat.attributes.maxTimeUnit === 'number') {
+        if (typeof cat.properties.maxTimeUnit === 'number') {
           cat.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === cat.attributes.maxTimeUnit;
+            return tu.id === cat.properties.maxTimeUnit;
           }) [0];
         }
         cat.isChanged = false;
@@ -83,7 +83,7 @@ angular.module('myApp')
       return api.queryCategories(that.currentDomain.id)
         .then(function (results) {
           that.categories = results.map(function (cat) {
-            return cat.attributes;
+            return cat.properties;
           });
             that.currentCategory = that.categories.filter(function(cat) {
               return cat.tId === currentCategory;
@@ -92,7 +92,7 @@ angular.module('myApp')
           return api.queryCatalogByCategory(that.currentCategory.tId)
             .then(function (results) {
               that.catalog = results.sort(function (a, b) {
-                if (a.attributes.productName > b.attributes.productName) {
+                if (a.properties.productName > b.properties.productName) {
                   return 1;
                 } else {
                   return -1;
@@ -111,15 +111,15 @@ angular.module('myApp')
           that.catalog = results.filter(function(cat) {
             var bool = false;
             if (that.searchText.length) {
-              bool = (cat.attributes.productName+' '+cat.attributes.productDescription).indexOf(that.searchText)>-1;
+              bool = (cat.properties.productName+' '+cat.properties.productDescription).indexOf(that.searchText)>-1;
             } else bool = true;
             return bool;
           }).sort(function (a, b) {
-            if (a.attributes.category > b.attributes.category) {
+            if (a.properties.category > b.properties.category) {
               return 1;
-            } else if (a.attributes.category < b.attributes.category) {
+            } else if (a.properties.category < b.properties.category) {
               return -1
-            } else if (a.attributes.productName > b.attributes.productName) {
+            } else if (a.properties.productName > b.properties.productName) {
               return 1;
             } else {
               return -1;

@@ -51,37 +51,37 @@
     <th>יחידה</th>
     </thead>
       <tbody>
-      <tr ng-repeat="catalogItem in catalogListModel.categoryItems"
-          ng-class="catalogItem.attributes.isDeleted?'myCanceledEvent':null">
+      <tr ng-repeat="catalogItem in catalogListModel.categoryItems track by catalogItem.id"
+          ng-class="catalogItem.properties.isDeleted?'myCanceledEvent':null">
         <td>{{catalogItem.view.category.label}}</td>
         <td style="cursor: pointer" ng-click="catalogListModel.editItem(catalogItem.id)">
-          {{catalogItem.attributes.productName}}
+          {{catalogItem.properties.productName}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===1">
-          {{catalogItem.attributes.productDescription}}
+          {{catalogItem.properties.productDescription}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===1">
-          {{catalogItem.attributes.priceQuantity | number:2}}
+          {{catalogItem.properties.priceQuantity | number:2}}
         </td>
         <td>{{catalogItem.view.measurementUnit.label}}</td>
         <td ng-show="catalogListModel.currentDomain.id===1">ב</td>
         <td ng-show="catalogListModel.currentDomain.id===1">
-          {{catalogItem.attributes.price | currency}}
+          {{catalogItem.properties.price | currency}}
         </td>
         <td ng-hide="catalogListModel.currentDomain.id===3">
-          {{catalogItem.attributes.productionQuantity | number:2}}
+          {{catalogItem.properties.productionQuantity | number:2}}
         </td>
         <td ng-hide="catalogListModel.currentDomain.id===3">
           {{catalogItem.view.prodMeasurementUnit.label}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
-          {{catalogItem.attributes.minTime | number:0}}
+          {{catalogItem.properties.minTime | number:0}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
           {{catalogItem.view.minTimeUnit.label}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
-          {{catalogItem.attributes.maxTime | number:0}}
+          {{catalogItem.properties.maxTime | number:0}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
           {{catalogItem.view.maxTimeUnit.label}}
@@ -91,9 +91,9 @@
     </table>
 </div>
 <div ng-show="catalogListModel.isForExport" style="margin-right: 1%">
-  <div ng-repeat="catalogItem in catalogListModel.categoryItems">
+  <div ng-repeat="catalogItem in catalogListModel.categoryItems track by catalogItem.id">
     <span>{{catalogItem.view.category.label}}</span>
     <span>,</span>
-    <span>{{catalogItem.attributes.productName}}</span>
+    <span>{{catalogItem.properties.productName}}</span>
   </div>
 </div>

@@ -14,7 +14,7 @@ angular.module('myApp')
       $state.go('login');
     }
 
-    var currentOrder = order.attributes;
+    var currentOrder = order.properties;
     var currentQuote = currentOrder.quotes[currentOrder.activeQuote];
     var that = this;
 
@@ -30,10 +30,11 @@ angular.module('myApp')
       var catItem = catalog.filter(function(cat) {
         return cat.id === item.catalogId;
       })[0];
-      if (catItem.attributes.instructions) {
+      if (catItem.properties.instructions) {
         that.instructions.push({
-          title: catItem.attributes.shortDescription,
-          text: catItem.attributes.instructions
+          id: catItem.id,
+          title: catItem.properties.shortDescription,
+          text: catItem.properties.instructions
         })
       }
    });

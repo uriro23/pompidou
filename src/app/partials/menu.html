@@ -3,26 +3,26 @@
     <img class="moveLeft" id="printed_menu_background" src="app/img/empty_menu-page-001.jpg" />
 
     <div id="printed_menu_list">
-    	
-        <div id="printed_menu_category" ng-repeat="category in menuModel.filteredCategories">
+
+        <div id="printed_menu_category" ng-repeat="category in menuModel.filteredCategories track by category.tId">
            <label id="printed_menu_header">
               {{category.label}}
            </label>
            <input type="button" class="moveLeft hideInPrint"  value="הזז שמאלה" />
               {{menuModel.setupCategoryItems(category.tId)}}
            <ul>
-              <li ng-repeat="item in menuModel.categoryItems">
+              <li ng-repeat="item in menuModel.categoryItems track by item.index">
                   {{item.shortDescription}}
               </li>
            </ul>
         </div>
-     
+
     </div>
-    
+
     <div id="printed_menu_leftColumn" >
 		<!-- user chooses what to pass here from the right side content -->
     </div>
-    
+
 </div>
 
 

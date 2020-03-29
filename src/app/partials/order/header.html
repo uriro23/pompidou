@@ -1,5 +1,5 @@
 <div ng-controller="HeaderCtrl as headerModel">
-<table ng-hide="orderModel.order.attributes.template" style="width: 95%">
+<table ng-hide="orderModel.order.properties.template" style="width: 95%">
   <tbody>
     <tr ng-class="headerModel.order.view.changes.customer?'bg-success':null">
       <td style="width: 50%">
@@ -40,7 +40,7 @@
     </tr>
         </table>
     </td>
-      <td style="width: 50%" ng-hide="headerModel.order.attributes.referralSource===5">
+      <td style="width: 50%" ng-hide="headerModel.order.properties.referralSource===5">
         <!-- hide if client referral, so we have space to show referring client selection -->
         <table>
           <tr>
@@ -80,7 +80,7 @@
           </tr>
         </table>
       </td>
-      <td style="width: 50%" ng-show="headerModel.order.attributes.referralSource===5"><!--show only if client referral-->
+      <td style="width: 50%" ng-show="headerModel.order.properties.referralSource===5"><!--show only if client referral-->
         <table>
           <tr>
             <td><label>לקוח מפנה</label></td>
@@ -123,36 +123,36 @@
   </table>
 <table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
-    <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
+    <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
          style="width: 22%">
-      <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.attributes.eventDate"
+      <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.properties.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'bg-danger':null">
     </td>
-    <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
+    <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
          style="width: 12%">
     <label>מסירה:</label>&nbsp
-      <input type="time" ng-model="headerModel.order.attributes.eventTime"
+      <input type="time" ng-model="headerModel.order.properties.eventTime"
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.setEventTime()">
     </td>
-    <td  ng-hide="orderModel.order.attributes.template || orderModel.order.attributes.isDateUnknown"
+    <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
          style="width: 12%">
       <label>יציאה:</label>&nbsp
-      <input type="time" ng-model="headerModel.order.attributes.exitTime"
+      <input type="time" ng-model="headerModel.order.properties.exitTime"
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.setExitTime()"
                                ng-class="headerModel.order.view.errors.exitTime?'bg-danger':null">
     </td>
-    <td style="width: 46%" ng-show="orderModel.order.attributes.isDateUnknown">
+    <td style="width: 46%" ng-show="orderModel.order.properties.isDateUnknown">
       <label>תאריך לא ידוע:</label>
-      <input type="checkbox" ng-model="headerModel.order.attributes.isDateUnknown"
+      <input type="checkbox" ng-model="headerModel.order.properties.isDateUnknown"
              ng-disabled="headerModel.readOnly.is"
              ng-change="headerModel.setKnownDate()">
     </td>
     <td style="width: 14%">
       <label>משתתפים:</label>&nbsp;<input type="number" min=1 max="9999"
-                                          ng-model="headerModel.order.attributes.noOfParticipants"
+                                          ng-model="headerModel.order.properties.noOfParticipants"
                                           ng-change="headerModel.setNoOfParticipants()"
                                           ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.noOfParticipants?'bg-danger':null">
@@ -160,12 +160,12 @@
     <td style="width: 12%">
       <label>ילדים:</label>&nbsp;<input type="number" min="-999" max="9999"
                                           placeholder="מתוכם"
-                                          ng-model="headerModel.order.attributes.children"
+                                          ng-model="headerModel.order.properties.children"
                                           ng-change="headerModel.setChildren()"
                                           ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.children?'bg-danger':null">
     </td>
-    <td  ng-show="!orderModel.order.attributes.template"
+    <td  ng-show="!orderModel.order.properties.template"
          style="width: 15%">
       <label>סטטוס:</label>&nbsp;
       <select ng-model="headerModel.order.view.orderStatus"
@@ -173,40 +173,40 @@
               ng-options="orderStatus.name for orderStatus in headerModel.orderStatuses">
       </select>
     </td>
-    <td  ng-show="orderModel.order.attributes.template"></td>
+    <td  ng-show="orderModel.order.properties.template"></td>
   </tr>
-    <tr ng-show="headerModel.order.attributes.quotes.length">
+    <tr ng-show="headerModel.order.properties.quotes.length">
       <td>
         <label>
         {{(headerModel.order.view.quote?headerModel.order.view.quote.title:
-        headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].title)+':'}}
+        headerModel.order.properties.quotes[headerModel.order.properties.activeQuote].title)+':'}}
         </label>
       </td>
     <td>
       <label>סכום: </label>&nbsp;<span>
       {{headerModel.order.view.quote?headerModel.order.view.quote.total:
-            headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].total | currency}}
+            headerModel.order.properties.quotes[headerModel.order.properties.activeQuote].total | currency}}
     </span>
     </td>
     <td>
       <label>קופסאות: </label>&nbsp;<span>
       {{headerModel.order.view.quote?headerModel.order.view.quote.boxEstimate:
-            headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].boxEstimate | number:2}}
+            headerModel.order.properties.quotes[headerModel.order.properties.activeQuote].boxEstimate | number:2}}
     </span>
     </td>
     <td>
       <label>שובע: </label>&nbsp;<span>
       {{headerModel.order.view.quote?
-          headerModel.order.view.quote.satietyIndex / headerModel.order.attributes.noOfParticipants:
-          headerModel.order.attributes.quotes[headerModel.order.attributes.activeQuote].satietyIndex /
-              headerModel.order.attributes.noOfParticipants | number:2}}
+          headerModel.order.view.quote.satietyIndex / headerModel.order.properties.noOfParticipants:
+          headerModel.order.properties.quotes[headerModel.order.properties.activeQuote].satietyIndex /
+              headerModel.order.properties.noOfParticipants | number:2}}
       </span>
     </td>
   </tr>
-  <tr ng-hide="headerModel.order.attributes.quotes.length"
+  <tr ng-hide="headerModel.order.properties.quotes.length"
       ng-class="(headerModel.order.view.orderStatus.id > 0 &&
                 headerModel.order.view.orderStatus.id < 6) ||
-                headerModel.order.attributes.template ? 'bg-danger' : null">
+                headerModel.order.properties.template ? 'bg-danger' : null">
     <td>אין תפריטים</td>
   </tr>
 </table>

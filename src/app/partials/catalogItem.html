@@ -18,9 +18,9 @@
 <div ng-hide="catalogItemModel.isMainTabActive || catalogItemModel.isNewItem">
   <span>{{catalogItemModel.currentDomain.single}}</span>
   <span>:&nbsp;</span>
-  <span>{{catalogItemModel.item.attributes.productName}}</span>
+  <span>{{catalogItemModel.item.properties.productName}}</span>
   <span>&nbsp;&nbsp;כמות ייצור:</span>
-  <span>{{catalogItemModel.item.attributes.productionQuantity}}</span>
+  <span>{{catalogItemModel.item.properties.productionQuantity}}</span>
   <span>{{catalogItemModel.item.view.prodMeasurementUnit.label}}</span>
 </div>
 <tabset>
@@ -47,13 +47,13 @@
             <th><label>במנה</label></th>
             </thead>
             <tbody>
-            <tr ng-repeat="usage in catalogItemModel.usages | filter:{domain:1}">
+            <tr ng-repeat="usage in catalogItemModel.usages track by usage.id | filter:{domain:1}">
               <td>{{usage.category.label}}</td>
               <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.editItem(usage.id)">
-                {{usage.attributes.productName}}</td>
-              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productName}}</td>
-              <td>{{usage.attributes.productionQuantity}}</td>
+                {{usage.properties.productName}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{usage.properties.productName}}</td>
+              <td>{{usage.properties.productionQuantity}}</td>
               <td>{{usage.measurementUnit.label}}</td>
               <td>{{usage.quantity}}</td>
               <td>{{catalogItemModel.item.view.measurementUnit.label}}</td>
@@ -73,13 +73,13 @@
             <th><label>במנה</label></th>
             </thead>
             <tbody>
-            <tr ng-repeat="usage in catalogItemModel.usages | filter:{domain:2}">
+            <tr ng-repeat="usage in catalogItemModel.usages track by usage.id | filter:{domain:2}">
               <td>{{usage.category.label}}</td>
               <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.editItem(usage.id)">
-                {{usage.attributes.productName}}</td>
-              <td ng-show="catalogItemModel.item.isChanged">{{usage.attributes.productName}}</td>
-              <td>{{usage.attributes.productionQuantity}}</td>
+                {{usage.properties.productName}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{usage.properties.productName}}</td>
+              <td>{{usage.properties.productionQuantity}}</td>
               <td>{{usage.measurementUnit.label}}</td>
               <td>{{usage.quantity}}</td>
               <td>{{catalogItemModel.item.view.measurementUnit.label}}</td>
@@ -112,7 +112,7 @@
       <tr>
         <td><label>הערות</label></td>
         <td>
-      <textarea rows="8" cols="48" ng-model="catalogItemModel.item.attributes.remarks"
+      <textarea rows="8" cols="48" ng-model="catalogItemModel.item.properties.remarks"
                 ng-change="catalogItemModel.setChanged(true)"
       ></textarea>
         </td>
@@ -121,10 +121,10 @@
         <td><label>סמן פריט כמבוטל</label></td>
         <td>
           <input type="checkbox"
-                 ng-model="catalogItemModel.item.attributes.isDeleted"
+                 ng-model="catalogItemModel.item.properties.isDeleted"
                  ng-change="catalogItemModel.setIsDeleted(true)">
         </td>
-        <td ng-show="catalogItemModel.item.attributes.isDeleted">
+        <td ng-show="catalogItemModel.item.properties.isDeleted">
 הפריט סומן במבוטל. ניתן לצפות בפריטים מבוטלים ולבטל את ביטולם ע"י סימון מבוטלים בחלון הקטלוג הראשי
         </td>
       </tr>
@@ -141,7 +141,7 @@
               ng-options="sensitivity.label for sensitivity in catalogItemModel.sensitivities"></select>
       </td>
       </tr>
-      <tr ng-repeat="sensitivity in catalogItemModel.item.attributes.sensitivities">
+      <tr ng-repeat="sensitivity in catalogItemModel.item.properties.sensitivities track by sensitivity.tId">
         <td></td>
         <td>{{sensitivity.label}}</td>
         <td>
@@ -156,7 +156,7 @@
     <table style="width: 95%">
       <tr>
         <td style="width: 50%; vertical-align: top"
-            ng-repeat="compDomain in catalogItemModel.compDomains">
+            ng-repeat="compDomain in catalogItemModel.compDomains track by compDomain.id">
           <h4>{{compDomain.label}}</h4>
           <span>הוסף:</span>&nbsp;
            <select ng-model="compDomain.currentCategory"
@@ -165,7 +165,7 @@
                                 for category in compDomain.categories"></select>
             <select ng-model="compDomain.currentItem"
                     ng-change="catalogItemModel.setCompItem(compDomain)"
-                    ng-options="item.attributes.productName
+                    ng-options="item.properties.productName
                               for item in compDomain.categoryItems"></select>
           <button class="btn btn-sm btn-default"ng-disabled="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.addItem(compDomain.id,compDomain.currentCategory.tId)">
@@ -185,8 +185,8 @@
               <td>{{component.view.category.label}}</td>
               <td style="cursor: pointer" ng-hide="catalogItemModel.item.isChanged"
                   ng-click="catalogItemModel.editItem(component.id)">
-                {{component.attributes.productName}}</td>
-              <td ng-show="catalogItemModel.item.isChanged">{{component.attributes.productName}}</td>
+                {{component.properties.productName}}</td>
+              <td ng-show="catalogItemModel.item.isChanged">{{component.properties.productName}}</td>
               <td>
               <input type="number" min=0 max=99999
                        ng-model="component.view.compQuantity"
@@ -207,7 +207,7 @@
     <button class="btn btn-default" ng-click="catalogItemModel.addExitListItem()">הוסף</button>
     <table class="table table-hover" style="width:40%">
       <tbody>
-      <tr ng-repeat="listItem in catalogItemModel.item.attributes.exitList track by listItem.item">
+      <tr ng-repeat="listItem in catalogItemModel.item.properties.exitList track by listItem.item">
         <td>
           <input type="text" size=60 ng-model="listItem.item"
                  ng-change="catalogItemModel.setChanged(true)">
@@ -230,7 +230,7 @@
       <tr ng-class="catalogItemModel.item.errors.productName?'bg-danger':null">
         <td><label>שם</label></td>
         <td>
-        <input  type="text" size = 40 ng-model="catalogItemModel.item.attributes.productName"
+        <input  type="text" size = 40 ng-model="catalogItemModel.item.properties.productName"
                   ng-change="catalogItemModel.setProductName()">
           <span ng-show="catalogItemModel.item.errors.productName==='dup'">&nbsp;שם פריט כפול</span>
         </td>
@@ -238,21 +238,21 @@
       <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null">
         <td><label>תיאור</label></td>
         <td>
-        <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.productDescription"
+        <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.productDescription"
                   ng-change="catalogItemModel.setProductDescription()"></textarea>
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>תיאור לתפריט</label></td>
         <td>
-          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.shortDescription"
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.shortDescription"
                     ng-change="catalogItemModel.setShortDescription()"></textarea>
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>הוראות ללקוח</label></td>
         <td>
-          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.attributes.instructions"
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.instructions"
                     ng-change="catalogItemModel.setChanged(true)"></textarea>
         </td>
       </tr>
@@ -260,7 +260,7 @@
      <table>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>האם לכלול בתפריט?</label></td>
-        <td><input type="checkbox" ng-model="catalogItemModel.item.attributes.isInMenu"
+        <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isInMenu"
                     ng-change="catalogItemModel.setChanged(true)"></td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
@@ -281,7 +281,7 @@
           <label>פקטור</label>
         </td>
         <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
-          <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.muFactor"
+          <input type="text" size = 4 ng-model="catalogItemModel.item.properties.muFactor"
                  ng-change="catalogItemModel.setMuFactor()">
 
         </td>
@@ -301,7 +301,7 @@
           ng-class="catalogItemModel.item.errors.priceQuantity?'bg-danger':null">
         <td><label>כמות להצעת מחיר</label></td>
         <td>
-        <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.priceQuantity"
+        <input type="text" size = 4 ng-model="catalogItemModel.item.properties.priceQuantity"
                ng-change="catalogItemModel.setPriceQuantity()">
 
         </td>
@@ -311,7 +311,7 @@
           ng-class="catalogItemModel.item.errors.price?'bg-danger':null">
         <td><label>מחיר הכמות</label></td>
         <td>
-        <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.attributes.price"
+        <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.properties.price"
                ng-change="catalogItemModel.setPrice()">
 
         </td>
@@ -321,7 +321,7 @@
         <td><label>כמות ייצור</label></td>
         <td>
         <input type="text" size = 4
-               ng-model="catalogItemModel.item.attributes.productionQuantity"
+               ng-model="catalogItemModel.item.properties.productionQuantity"
                ng-change="catalogItemModel.setProductionQuantity()">
         </td>
         <td>{{catalogItemModel.item.view.prodMeasurementUnit.label}}</td>
@@ -330,7 +330,7 @@
           ng-class="catalogItemModel.item.errors.minTime?'bg-danger':null">
         <td><label>זמן מינימלי</label></td>
         <td>
-          <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.minTime"
+          <input type="text" size = 4 ng-model="catalogItemModel.item.properties.minTime"
                  ng-change="catalogItemModel.setMinTime()">
           &nbsp;
           <select ng-model="catalogItemModel.item.view.minTimeUnit"
@@ -342,7 +342,7 @@
           ng-class="catalogItemModel.item.errors.maxTime?'bg-danger':null">
         <td><label>זמן מקסימלי</label></td>
         <td>
-          <input type="text" size = 4 ng-model="catalogItemModel.item.attributes.maxTime"
+          <input type="text" size = 4 ng-model="catalogItemModel.item.properties.maxTime"
                  ng-change="catalogItemModel.setMaxTime()">
           &nbsp;
           <select ng-model="catalogItemModel.item.view.maxTimeUnit"
@@ -353,7 +353,7 @@
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>קבוצה</label></td>
         <td>
-          <input  type="text" size = 10 ng-model="catalogItemModel.item.attributes.groupLabel"
+          <input  type="text" size = 10 ng-model="catalogItemModel.item.properties.groupLabel"
                   ng-change="catalogItemModel.setChanged(true)">
          </td>
       </tr>
@@ -369,12 +369,12 @@
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>שם למדבקה</label></td>
         <td>
-          <input  type="text" size = 10 ng-model="catalogItemModel.item.attributes.stickerLabel"
+          <input  type="text" size = 10 ng-model="catalogItemModel.item.properties.stickerLabel"
                   ng-change="catalogItemModel.setChanged(true)">
         </td>
         <td><label>מס' מדבקות</label></td>
         <td>
-          <input  type="number" min="0" max="99" ng-model="catalogItemModel.item.attributes.stickerQuantity"
+          <input  type="number" min="0" max="99" ng-model="catalogItemModel.item.properties.stickerQuantity"
                   ng-change="catalogItemModel.setChanged(true)">
         </td>
       </tr>

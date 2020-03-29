@@ -12,7 +12,7 @@
     <th>ערך נבחר</th>
     </thead>
     <tbody>
-    <tr ng-repeat="field in customerMergeModel.fieldList | filter: {valueSelect: '!none'}">
+    <tr ng-repeat="field in customerMergeModel.fieldList track by field.name | filter: {valueSelect: '!none'}">
       <td>{{field.label}}</td>
       <td ng-show="field.isAttribute">
         <input type="radio" ng-model="field.valueSelect" value="source"

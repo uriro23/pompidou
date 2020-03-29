@@ -39,21 +39,21 @@ angular.module('myApp')
     };
 
     this.setReadOnly = function () {
-      this.readOnly.is = (this.order.attributes.eventDate &&
-                        this.order.attributes.eventDate < dater.today() &&
-                        !this.order.attributes.template) ||
+      this.readOnly.is = (this.order.properties.eventDate &&
+                        this.order.properties.eventDate < dater.today() &&
+                        !this.order.properties.template) ||
                       this.order.view.orderStatus.id === 6;  // canceled
     };
 
     this.handleVatRateChange = function () {
-      if (this.order.attributes.vatRate !== this.vatRate && !this.readOnly.is) {
+      if (this.order.properties.vatRate !== this.vatRate && !this.readOnly.is) {
         var that = this;
         var vatChangeModal = $modal.open({
           templateUrl: 'app/partials/order/vatChange.html',
           controller: 'VatChangeCtrl as vatChangeModel',
           resolve: {
             orderVat: function () {
-              return that.order.attributes.vatRate;
+              return that.order.properties.vatRate;
             },
             currentVat: function () {
               return that.vatRate;
@@ -67,11 +67,11 @@ angular.module('myApp')
             case '0':   // don't change vatRate
               break;
             case '1':   // change vatRate, don't change prices
-              that.order.attributes.vatRate = that.vatRate;
-              that.order.attributes.quotes.forEach(function(quote) {
+              that.order.properties.vatRate = that.vatRate;
+              that.order.properties.quotes.forEach(function(quote) {
                 quote.items.forEach(function(item) {
                   item.priceBeforeVat = item.priceInclVat / (1 + that.vatRate);
-                  if (that.order.attributes.isBusinessEvent) {
+                  if (that.order.properties.isBusinessEvent) {
                     item.price = item.priceBeforeVat;
                   }
                });
@@ -80,11 +80,11 @@ angular.module('myApp')
             orderService.orderChanged(that.order,'isBusinessEvent');
             break;
             case '2':   // change vatRate, change prices
-              that.order.attributes.vatRate = that.vatRate;
-              that.order.attributes.quotes.forEach(function(quote) {
+              that.order.properties.vatRate = that.vatRate;
+              that.order.properties.quotes.forEach(function(quote) {
                 quote.items.forEach(function(item) {
                   item.priceInclVat = item.priceBeforeVat * (1 + that.vatRate);
-                  if (!that.order.attributes.isBusinessEvent) {
+                  if (!that.order.properties.isBusinessEvent) {
                     item.price = item.priceInclVat;
                   }
                 });
@@ -116,7 +116,7 @@ angular.module('myApp')
             that.prevOrders.forEach(function(ord) {
               ord.view = {
                 'orderStatus': lov.orderStatuses.filter (function(st) {
-                  return st.id === ord.attributes.orderStatus;
+                  return st.id === ord.properties.orderStatus;
                 })[0]
               }
             });
@@ -130,7 +130,7 @@ angular.module('myApp')
       api.queryBidsByOrder(order.id)
         .then(function (bids) {
           if (bids.length > 0) {
-            window.open("#/bid/" + bids[0].attributes.uuid, "_blank");
+            window.open("#/bid/" + bids[0].properties.uuid, "_blank");
           } else {
             alert('אין הצעות מחיר לאירוע')
           }
@@ -143,7 +143,7 @@ angular.module('myApp')
 
     this.saveOrder = function () {
       if (this.user.attributes.isSalesPerson &&
-          this.user.attributes.username !== this.order.attributes.createdBy) {
+          this.user.attributes.username !== this.order.properties.createdBy) {
         alert('אינך יכול לעדכן אירוע שלא אתה יצרת');
       } else {
         orderService.saveOrder(this.order);
@@ -155,7 +155,7 @@ angular.module('myApp')
       var that = this;
       this.order.view = {};
       var view = this.order.view;
-      var attr = this.order.attributes;
+      var attr = this.order.properties;
       view.errors = {};
       view.changes = {};
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
@@ -176,79 +176,79 @@ angular.module('myApp')
           })[0];
         }
         view.startBidTextType = bidTextTypes.filter(function (obj) {
-          return (obj.tId === that.order.attributes.startBidTextType);
+          return (obj.tId === that.order.properties.startBidTextType);
         })[0];
         view.endBidTextType = bidTextTypes.filter(function (obj) {
-          return (obj.tId === that.order.attributes.endBidTextType);
+          return (obj.tId === that.order.properties.endBidTextType);
         })[0];
         view.orderStatus = this.orderStatuses.filter(function (obj) {
-          return (obj.id === that.order.attributes.orderStatus);
+          return (obj.id === that.order.properties.orderStatus);
         })[0];
         view.referralSource = referralSources.filter(function (obj) {
-          return (obj.tId === that.order.attributes.referralSource);
+          return (obj.tId === that.order.properties.referralSource);
         })[0];
         view.cancelReason = cancelReasons.filter(function (obj) {
-          return (obj.tId === that.order.attributes.cancelReason);
+          return (obj.tId === that.order.properties.cancelReason);
         })[0];
         if (attr.color) {
           view.color = colors.filter(function(obj) {
-            return (obj.tId === that.order.attributes.color);
+            return (obj.tId === that.order.properties.color);
           })[0];
         }
 
-        if (that.order.attributes.customer) {
-          api.queryCustomers(that.order.attributes.customer)
+        if (that.order.properties.customer) {
+          api.queryCustomers(that.order.properties.customer)
             .then(function (custs) {
               if (!custs.length) {
                 alert('customer not found');
                 console.log('customer not found');
-                console.log(that.order.attributes.customer);
+                console.log(that.order.properties.customer);
               }
-              that.order.view.customer = custs[0].attributes;
+              that.order.view.customer = custs[0].properties;
               that.order.view.customer.id = custs[0].id;
-              if (that.order.attributes.template) {
-                $rootScope.title = ' תבנית ' + that.order.attributes.template;
+              if (that.order.properties.template) {
+                $rootScope.title = ' תבנית ' + that.order.properties.template;
               } else {
                 $rootScope.title = ' - אירוע ' +
                   that.order.view.customer.firstName + ' ' +
                   that.order.view.customer.lastName + ' ' +
-                  that.order.attributes.eventDate.getDate() + '/' + (that.order.attributes.eventDate.getMonth() + 1);
+                  that.order.properties.eventDate.getDate() + '/' + (that.order.properties.eventDate.getMonth() + 1);
               }
             });
         } else {
           that.order.view.customer = {};
-          if (that.order.attributes.template) {
-            $rootScope.title = ' תבנית ' + that.order.attributes.template;
+          if (that.order.properties.template) {
+            $rootScope.title = ' תבנית ' + that.order.properties.template;
           } else {
             $rootScope.title = ' - אירוע ' +
               that.order.view.customer.firstName + ' ' +
               that.order.view.customer.lastName + ' ' +
-              that.order.attributes.eventDate.getDate() + '/' + (that.order.attributes.eventDate.getMonth() + 1);
+              that.order.properties.eventDate.getDate() + '/' + (that.order.properties.eventDate.getMonth() + 1);
           }
         }
-        if (that.order.attributes.contact) {
-          api.queryCustomers(that.order.attributes.contact)
+        if (that.order.properties.contact) {
+          api.queryCustomers(that.order.properties.contact)
             .then(function (custs) {
               if (!custs.length) {
                 alert('contact not found');
                 console.log('contact not found');
-                console.log(that.order.attributes.contact);
+                console.log(that.order.properties.contact);
               }
-              that.order.view.contact = custs[0].attributes;
+              that.order.view.contact = custs[0].properties;
               that.order.view.contact.id = custs[0].id;
             });
         } else {
           that.order.view.contact = {};
         }
-        if (that.order.attributes.referrer) {
-          api.queryCustomers(that.order.attributes.referrer)
+        if (that.order.properties.referrer) {
+          api.queryCustomers(that.order.properties.referrer)
             .then(function (custs) {
               if (!custs.length) {
                 alert('referrer not found');
                 console.log('referrer not found');
-                console.log(that.order.attributes.referrer);
+                console.log(that.order.properties.referrer);
               }
-              that.order.view.referrer = custs[0].attributes;
+              that.order.view.referrer = custs[0].properties;
               that.order.view.referrer.id = custs[0].id;
             });
         } else {
@@ -256,7 +256,7 @@ angular.module('myApp')
         }
       } else { // newOrder or newOrderByCustomer
         if ($state.current.name === 'newOrderByCustomer') {
-          view.customer = customer.attributes;
+          view.customer = customer.properties;
           view.customer.id = customer.id;
         } else {
           view.customer = {};
@@ -319,18 +319,16 @@ angular.module('myApp')
           });
         });
       });
-      console.log('columns view:');
-      console.log(view.columns);
-     };
+      };
 
     this.selectQuote = function (mt) {
       var ind;
-      this.order.attributes.quotes.forEach(function(q,i) { // find relevant quote in array
+      this.order.properties.quotes.forEach(function(q,i) { // find relevant quote in array
         if (q.menuType.tId===mt.tId) {
           ind = i;
         }
       });
-      this.order.view.quote = this.order.attributes.quotes[ind];
+      this.order.view.quote = this.order.properties.quotes[ind];
       this.filteredCategories = orderService.filterCategories(this.order.view.quote);
       // make endBoxType point to member of menuTypes array, so select control in quoteParams view will work correctly
       if (this.order.view.quote.endBoxType) {
@@ -352,14 +350,14 @@ angular.module('myApp')
 
     this.deselectQuote = function (mt)  {
       var ind;
-      this.order.attributes.quotes.forEach(function(q,i) { // find relevant quote in array
+      this.order.properties.quotes.forEach(function(q,i) { // find relevant quote in array
         if (q.menuType.tId===mt.tId) {
           ind = i;
         }
       });
       // if we leave a quote tab to a non quote tab (like "docs"), load active quote to view
       // if another quote tab was selected, this will be overridden by selectQuote()
-      this.order.view.quote = this.order.attributes.quotes[this.order.attributes.activeQuote];
+      this.order.view.quote = this.order.properties.quotes[this.order.properties.activeQuote];
     };
 
     this.cancel = function () {
@@ -368,12 +366,12 @@ angular.module('myApp')
       window.onblur = function () {
       };
       $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
-      this.order.attributes = angular.copy(this.order.backupOrderAttr);
+      this.order.properties = angular.copy(this.order.backupOrderAttr);
       this.setupOrderView();
-      if (typeof this.order.attributes.taskData === 'undefined') {
-        this.order.attributes.taskData = {};
+      if (typeof this.order.properties.taskData === 'undefined') {
+        this.order.properties.taskData = {};
       }
-      this.order.attributes.empBonuses.forEach(function(role) {
+      this.order.properties.empBonuses.forEach(function(role) {
         if (role.employee) {
           role.employee = employees.filter(function(emp) {
             return emp.tId === role.employee.tId;
@@ -420,8 +418,8 @@ angular.module('myApp')
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
       this.setupOrderView();
-      if (typeof this.order.attributes.taskData === 'undefined') {
-        this.order.attributes.taskData = {};
+      if (typeof this.order.properties.taskData === 'undefined') {
+        this.order.properties.taskData = {};
       }
       // if (this.order.view.quote && this.order.view.orderStatus.id < 6) {
       //   this.isActiveQuoteTab = true;
@@ -429,7 +427,7 @@ angular.module('myApp')
       //   this.isActiveGeneralTab = true;
       // }
       if (user.attributes.isKitchenStaff) {
-        if (this.order.attributes.quotes.length) {
+        if (this.order.properties.quotes.length) {
           this.isActiveQuoteTab = true;
         } else {
           this.isActiveQuoteManagementTab = true;
@@ -438,7 +436,7 @@ angular.module('myApp')
         this.isActiveTasksTab = true;
       }
        this.setReadOnly();
-      this.order.attributes.empBonuses.forEach(function(role) {
+      this.order.properties.empBonuses.forEach(function(role) {
         if (role.employee) {
           role.employee = employees.filter(function(emp) {
             return emp.tId === role.employee.tId;
@@ -453,18 +451,18 @@ angular.module('myApp')
     } else if ($state.current.name === 'dupOrder') {
       $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
-      this.order.attributes = currentOrder.attributes;
-      this.order.attributes.createdBy = this.user.attributes.username;
-      this.order.attributes.isDateUnknown = true;
-      this.order.attributes.eventDate = new Date(2199,11,31,0,0,0,0);
-      this.order.attributes.eventTime = undefined;
-      this.order.attributes.exitTime = undefined;
-      this.order.attributes.activities = [];
-      this.order.attributes.taskData = {};
+      this.order.properties = currentOrder.properties;
+      this.order.properties.createdBy = this.user.attributes.username;
+      this.order.properties.isDateUnknown = true;
+      this.order.properties.eventDate = new Date(2199,11,31,0,0,0,0);
+      this.order.properties.eventTime = undefined;
+      this.order.properties.exitTime = undefined;
+      this.order.properties.activities = [];
+      this.order.properties.taskData = {};
 
       // initialize employee bonuses array
-      this.order.attributes.empBonuses = angular.copy(pRoles);
-      this.order.attributes.empBonuses.forEach(function(role) {
+      this.order.properties.empBonuses = angular.copy(pRoles);
+      this.order.properties.empBonuses.forEach(function(role) {
         var temp = employees.filter(function(emp) {
           return emp.defaultRole === role.tId;
         });
@@ -475,7 +473,7 @@ angular.module('myApp')
 
       this.setupOrderView();
       if (user.attributes.isKitchenStaff) {
-        if (this.order.attributes.quotes.length) {
+        if (this.order.properties.quotes.length) {
           this.isActiveQuoteTab = true;
         } else {
           this.isActiveQuoteManagementTab = true;
@@ -491,24 +489,24 @@ angular.module('myApp')
     } else {  // new order or new order by customer
       $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
-      this.order.attributes.isDateUnknown = true;
-      this.order.attributes.eventDate = new Date(2199,11,31,0,0,0,0);
-      this.order.attributes.createdBy = this.user.attributes.username;
+      this.order.properties.isDateUnknown = true;
+      this.order.properties.eventDate = new Date(2199,11,31,0,0,0,0);
+      this.order.properties.createdBy = this.user.attributes.username;
       if ($state.current.name === 'newOrderByCustomer') {
-        this.order.attributes.customer = customer.id;
+        this.order.properties.customer = customer.id;
       }
       this.setupOrderView();
-      this.order.attributes.version = lov.version;
-      this.order.attributes.includeRemarksInBid = false;
-      this.order.attributes.eventName = '';
-      this.order.attributes.quotes = [];
-      this.order.attributes.taskData = {};
+      this.order.properties.version = lov.version;
+      this.order.properties.includeRemarksInBid = false;
+      this.order.properties.eventName = '';
+      this.order.properties.quotes = [];
+      this.order.properties.taskData = {};
 
 
 
       // initialize employee bonuses array
-      this.order.attributes.empBonuses = angular.copy(pRoles);
-      this.order.attributes.empBonuses.forEach(function(role) {
+      this.order.properties.empBonuses = angular.copy(pRoles);
+      this.order.properties.empBonuses.forEach(function(role) {
         var temp = employees.filter(function(emp) {
           return emp.defaultRole === role.tId;
         });
@@ -523,12 +521,12 @@ angular.module('myApp')
           var quote = orderService.initQuote(mt, that.categories, that.discountCauses[0]);
           if (mt.isDefault) {
             quote.isActive = true;
-            that.order.attributes.activeQuote = j;
+            that.order.properties.activeQuote = j;
             that.order.view.quote = quote;
           }
           orderService.calcTotal(quote,that.order);
 
-          that.order.attributes.quotes.push(quote);
+          that.order.properties.quotes.push(quote);
           j++;
         }
       });
@@ -537,7 +535,7 @@ angular.module('myApp')
       //   this.isActiveGeneralTab = true;
       // }
       if (user.attributes.isKitchenStaff) {
-        if (this.order.attributes.quotes.length) {
+        if (this.order.properties.quotes.length) {
           this.isActiveQuoteTab = true;
         } else {
           this.isActiveQuoteManagementTab = true;
@@ -545,8 +543,8 @@ angular.module('myApp')
       } else {
         this.isActiveTasksTab = true;
       }
-      this.order.attributes.vatRate = this.vatRate;
-      this.order.attributes.activities = [];
+      this.order.properties.vatRate = this.vatRate;
+      this.order.properties.activities = [];
       this.setReadOnly();
     }
 
@@ -558,7 +556,7 @@ angular.module('myApp')
     window.onblur = function () {
     };
     $rootScope.menuStatus = user.attributes.isSalesPerson ? 'small' : user.attributes.isKitchenStaff ? 'small' : 'show';
-    this.order.backupOrderAttr = angular.copy(this.order.attributes);
+    this.order.backupOrderAttr = angular.copy(this.order.properties);
 
 
   });

@@ -8,17 +8,17 @@
     </td>
     <td style="width:20%;font-size: large">
   {{workOrderModel.domains[1].forWorkItem}}
-      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[1]">
+      <span ng-hide="workOrderModel.woIndex.properties.domainStatus[1]">
         --- לא מעודכן ---
       </span>
     </td>
     <td style="width: 15%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
-              ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
-        <a href="#/stickers/{{workOrderModel.woIndex.attributes.woId}}" target="_blank"
+              ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
+        <a href="#/stickers/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
-           ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
+           ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
           מדבקות
         </a>
       </button>
@@ -26,10 +26,10 @@
     <td style="width: 15%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
-              ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
-        <a href="#/snacksAndDesserts/{{workOrderModel.woIndex.attributes.woId}}" target="_blank"
+              ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
+        <a href="#/snacksAndDesserts/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
-           ng-show="workOrderModel.woIndex.attributes.domainStatus[1]">
+           ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
           חטיפים וקינוחים
         </a>
       </button>
@@ -37,7 +37,7 @@
     <td style="width:10%">
   <button class="btn btn-default"
           ng-disabled="workOrderModel.isProcessing"
-          ng-show="workOrderModel.woIndex.attributes.domainStatus[1]"
+          ng-show="workOrderModel.woIndex.properties.domainStatus[1]"
           ng-click="workOrderModel.createWorkOrderDomain(2)">
     {{'חשב '+workOrderModel.domains[2].forWorkItem}}
   </button>
@@ -47,7 +47,7 @@
 <div ng-show="workOrderModel.woOrders.length>15">
   יותר מ 15 אירועים בפקודה - לא מוצג פירוט אירועים
 </div>
-<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
@@ -55,35 +55,35 @@
     <th>מנה</th>
     <th>כמות</th>
     <th></th>
-    <th ng-repeat="order in workOrderModel.woOrders"
+    <th ng-repeat="order in workOrderModel.woOrders track by order.id"
         ng-hide="workOrderModel.woOrders.length>15">
-      <span>{{order.attributes.customer.firstName}}</span>
-      <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
-      <span>{{order.attributes.order.exitTime | date:'HH:mm'}}</span>
-      <img ng-show="workOrderModel.isOrderColors" src="app/img/smallColors/{{order.attributes.color.stickerColor}}.jpg"/>
-      <label ng-show="workOrderModel.isOrderNumbers">[{{order.attributes.color.tId}}]</label>
+      <span>{{order.properties.customer.firstName}}</span>
+      <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
+      <span>{{order.properties.order.exitTime | date:'HH:mm'}}</span>
+      <img ng-show="workOrderModel.isOrderColors" src="app/img/smallColors/{{order.properties.color.stickerColor}}.jpg"/>
+      <label ng-show="workOrderModel.isOrderNumbers">[{{order.properties.color.tId}}]</label>
     </th>
     </thead>
     <tbody>
-    <tr ng-repeat="woItem in cat.list">
+    <tr ng-repeat="woItem in cat.list track by woItem.id">
       <td style="width: 60%">
-        {{woItem.attributes.productName}}
-        <div ng-show="woItem.attributes.isDescChanged">
+        {{woItem.properties.productName}}
+        <div ng-show="woItem.properties.isDescChanged">
           <label>התאמה אישית מס' {{woItem.descCnt}}</label>
         </div>
       </td>
-      <td ng-class="woItem.attributes.notFinalQuantity?'bg-warning':null">{{woItem.attributes.quantity}}</td>
-      <td style="width: 20%">{{woItem.attributes.measurementUnit.label}}</td>
+      <td ng-class="woItem.properties.notFinalQuantity?'bg-warning':null">{{woItem.properties.quantity}}</td>
+      <td style="width: 20%">{{woItem.properties.measurementUnit.label}}</td>
       <!--
       <td ng-hide="workOrderModel.isShowMenuItemOrders">
         <input type="text" money size="5"
-               ng-model="woItem.attributes.quantity"
+               ng-model="woItem.properties.quantity"
                ng-change="workOrderModel.setQuantity(woItem,1)"
-               ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]">
+               ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]">
       </td>
       -->
-      <td ng-repeat="order in woItem.attributes.orderQuant"
-          ng-hide="woItem.attributes.orderQuant.length>15"
+      <td ng-repeat="order in woItem.properties.orderQuant track by order.id"
+          ng-hide="woItem.properties.orderQuant.length>15"
           ng-class="order.quantity && order.status===2?'bg-warning':null"> <!-- mark events not in final status -->
          <span>
            {{order.quantity ? order.quantity : 0}}
@@ -91,14 +91,14 @@
        </td>
       <td>
         <button ng-click="workOrderModel.backInfo(woItem)"
-                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
       <td>
         <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[1]"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]"
                 class="btn btn-default btn-sm">
           מחק
         </button>
@@ -107,7 +107,7 @@
     </tbody>
   </table>
 
-  <div ng-repeat="changed in cat.changedDescriptions" ng-show="cat.isShow">
+  <div ng-repeat="changed in cat.changedDescriptions track by changed.cnt" ng-show="cat.isShow">
       <label>התאמה אישית מס' {{changed.cnt}}:</label>
       <label>{{changed.desc}}</label>
   </div>

@@ -1,5 +1,5 @@
 <div style="margin-right: 2%">
-<div ng-repeat="order in snacksAndDessertsModel.woOrders">
+<div ng-repeat="order in snacksAndDessertsModel.woOrders track by order.order.number">
   <h3>
     {{' '+order.customer.firstName+' '+order.customer.lastName}}
     {{order.order.eventDate | date:'dd/MM/yy EEEE'}}
@@ -16,7 +16,7 @@
     <th style="width:15%"></th>
     </thead>
     <tbody>
-    <tr ng-repeat="item in order.snacks">
+    <tr ng-repeat="item in order.snacks track by item.id">
       <td>{{item.productName}}
       <div ng-show="item.isDescChanged">
         <label>התאמה אישית:</label>
@@ -44,7 +44,7 @@
     <th style="width:15%"></th>
     </thead>
     <tbody>
-    <tr ng-repeat="item in order.desserts">
+    <tr ng-repeat="item in order.desserts track by item.id">
       <td>{{item.productName}}
         <div ng-show="item.isDescChanged">
           <label>התאמה אישית:</label>

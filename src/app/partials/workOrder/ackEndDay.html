@@ -5,10 +5,10 @@
   <span>האם לגרוע את ההכנות הבאות מפקודת העבודה?</span>
   <table class="table table-hover">
     <tbody>
-    <tr ng-repeat="prep in ackEndDayModel.todaysPreps">
-      <td>{{prep.attributes.productName}}</td>
-      <td>{{prep.attributes.quantityForToday}}</td>
-      <td>{{prep.attributes.measurementUnit.label}}</td>
+    <tr ng-repeat="prep in ackEndDayModel.todaysPreps track by prep.id">
+      <td>{{prep.properties.productName}}</td>
+      <td>{{prep.properties.quantityForToday}}</td>
+      <td>{{prep.properties.measurementUnit.label}}</td>
     </tr>
     </tbody>
   </table>

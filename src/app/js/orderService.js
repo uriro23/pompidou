@@ -18,9 +18,9 @@ angular.module('myApp')
       var isHeavyweight = false;
       var priceIncreaseItem;
       lov.specialTypes.forEach(function(st) {
-        if (order.attributes.taskData) {
-          delete order.attributes.taskData[st.exists];
-          delete order.attributes.taskData[st.desc];
+        if (order.properties.taskData) {
+          delete order.properties.taskData[st.exists];
+          delete order.properties.taskData[st.desc];
         }
       });
       quote.items.forEach(function(thisItem) {
@@ -54,14 +54,14 @@ angular.module('myApp')
             var specialType = lov.specialTypes.filter(function(st) {
               return st.id === thisItem.specialType;
             })[0];
-            if (!order.attributes.taskData) {
-              order.attributes.taskData = {};
+            if (!order.properties.taskData) {
+              order.properties.taskData = {};
             }
-            order.attributes.taskData[specialType.exist] = true;
-            if (order.attributes.taskData[specialType.desc]) {
-              order.attributes.taskData[specialType.desc] += (', ' + thisItem.productDescription);
+            order.properties.taskData[specialType.exist] = true;
+            if (order.properties.taskData[specialType.desc]) {
+              order.properties.taskData[specialType.desc] += (', ' + thisItem.productDescription);
             } else {
-              order.attributes.taskData[specialType.desc] = thisItem.productDescription;
+              order.properties.taskData[specialType.desc] = thisItem.productDescription;
             }
           }
         } else {
@@ -80,7 +80,7 @@ angular.module('myApp')
       quote.extraServices = Math.round(extraServices);
       quote.waitersFee = Math.round(waitersFee);
       quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
-      quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.attributes.noOfParticipants);
+      quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.properties.noOfParticipants);
       quote.boxEstimate = boxCount;
       quote.satietyIndex = satiety;
       quote.isHeavyweight = isHeavyweight;
@@ -88,19 +88,19 @@ angular.module('myApp')
       if(quote.isFixedPrice) {
         quote.total = quote.fixedPrice;
         quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
-        quote.totalForStat = quote.fixedPrice / (1 + order.attributes.vatRate);  // stat is before vat
+        quote.totalForStat = quote.fixedPrice / (1 + order.properties.vatRate);  // stat is before vat
       } else {
         quote.totalForStat = subTotalForStat + quote.discount + quote.priceIncrease;
         quote.totalBeforeVat = quote.subTotal + quote.discount + quote.priceIncrease + quote.extraServices;;
-        if (order.attributes.isBusinessEvent) {
-          quote.vat = Math.round(quote.totalBeforeVat * order.attributes.vatRate);
+        if (order.properties.isBusinessEvent) {
+          quote.vat = Math.round(quote.totalBeforeVat * order.properties.vatRate);
           quote.total = quote.totalBeforeVat + quote.vat;
-          quote.transportationInclVat = quote.transportation * (1 + order.attributes.vatRate); // just to display on order list
-          quote.waitersFee = quote.waitersFee * (1 + order.attributes.vatRate);
+          quote.transportationInclVat = quote.transportation * (1 + order.properties.vatRate); // just to display on order list
+          quote.waitersFee = quote.waitersFee * (1 + order.properties.vatRate);
         } else {
           quote.vat = 0;
           quote.total = quote.totalBeforeVat;
-          quote.totalForStat = quote.totalForStat / (1 + order.attributes.vatRate);  // stat is before vat
+          quote.totalForStat = quote.totalForStat / (1 + order.properties.vatRate);  // stat is before vat
           quote.transportationInclVat = quote.transportation;
         }
       }
@@ -109,7 +109,7 @@ angular.module('myApp')
 
       // the following are for displaying vat in invoice even if non business event
       // waiters fee is not included in invoice
-       quote.totalBeforeVatForInvoice = (quote.total - quote.waitersFee) / (1 + order.attributes.vatRate);
+       quote.totalBeforeVatForInvoice = (quote.total - quote.waitersFee) / (1 + order.properties.vatRate);
 
 
       this.checkTasks(order);
@@ -202,7 +202,7 @@ angular.module('myApp')
 
     this.saveOrder = function (order) {
 
-      var thisOrder = order.attributes;
+      var thisOrder = order.properties;
       var view = order.view;
 
       // check if any quote has been created
@@ -275,13 +275,8 @@ angular.module('myApp')
         });
       });
       });
-      console.log('task to save:');
-      console.log(thisOrder.tasks);
-      console.log('details to save:');
-      console.log(thisOrder.taskDetails);
 
-      console.log(view);
-      // thisOrder.customer = view.customer.id;
+     // thisOrder.customer = view.customer.id;
       // thisOrder.contact = view.contact.id;
       if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
         if (order.delAttributes) {
@@ -342,13 +337,13 @@ angular.module('myApp')
         return api.queryOrderNum()
           //  II. bump counter and assign it to order
           .then(function (results) {
-            order.attributes.number = results[0].attributes.lastOrder + 1;
-            results[0].attributes.lastOrder = order.attributes.number;
+            order.properties.number = results[0].properties.lastOrder + 1;
+            results[0].properties.lastOrder = order.properties.number;
             return api.saveObj(results[0]);
           })
           //  III. save order
           .then(function () {
-            that.setupOrderHeader(order.attributes);
+            that.setupOrderHeader(order.properties);
             return api.saveObj(order);
           })
           //  IV. change state to editOrder
@@ -359,11 +354,11 @@ angular.module('myApp')
             };
             $rootScope.menuStatus = 'show';
             //  backup order for future cancel
-            order.backupOrderAttr = angular.copy(order.attributes);
+            order.backupOrderAttr = angular.copy(order.properties);
             $state.go('editOrder', {id: ord.id, isFromNew: 1});
           });
       } else {  // not new order
-        this.setupOrderHeader(order.attributes);
+        this.setupOrderHeader(order.properties);
         // check if order in DB was updated since we retrieved it
         api.queryOrder(order.id)
           .then(function(ord) {
@@ -374,7 +369,8 @@ angular.module('myApp')
                 .then(function() {
                   api.queryOrder(order.id)  // requery order to get current update time
                     .then(function(ord2) {
-                      order.updatedAt = ord2[0].updatedAt;
+                      // order.updatedAt = ord2[0].updatedAt;
+                      // todo: check consequences of not updatins order's updatedAt
                       view.isChanged = false;
                       view.changes = {};
                       window.onbeforeunload = function () {
@@ -383,7 +379,7 @@ angular.module('myApp')
                       };
                       $rootScope.menuStatus = 'show';
                       //  backup order for future cancel
-                      order.backupOrderAttr = angular.copy(order.attributes);
+                      order.backupOrderAttr = angular.copy(order.properties);
                     });
                 })
             }
@@ -395,8 +391,8 @@ angular.module('myApp')
     this.upgradeOrderStatus = function(order) {
       if (order.view.orderStatus.id === 0) {
         if (order.view.customer.id &&
-            order.attributes.noOfParticipants &&
-            order.attributes.quotes.length) {
+            order.properties.noOfParticipants &&
+            order.properties.quotes.length) {
           order.view.orderStatus = lov.orderStatuses.filter(function(os) {
             return os.id === 1;
           })[0];
@@ -405,7 +401,7 @@ angular.module('myApp')
     };
 
     this.checkTasks = function (order) {
-      var t = order.attributes.taskData;
+      var t = order.properties.taskData;
       // recalc location string
       if (t.isSelfDelivery) {
         t.location = 'איסוף עצמי';
@@ -582,23 +578,23 @@ angular.module('myApp')
     };
 
     this.setStatus = function(order) {
-      if (order.view.orderStatus.id !== order.attributes.orderStatus) {
-        var txt = ((typeof(order.attributes.orderStatus) === 'undefined')
+      if (order.view.orderStatus.id !== order.properties.orderStatus) {
+        var txt = ((typeof(order.properties.orderStatus) === 'undefined')
           ?  'האירוע נוצר בסטטוס ' : 'סטטוס האירוע שונה ל- ') +
                   order.view.orderStatus.name;
-        order.attributes.activities.splice(0, 0, {date: new Date(), text: txt});
-        if (order.attributes.header) {
+        order.properties.activities.splice(0, 0, {date: new Date(), text: txt});
+        if (order.properties.header) {
           // if called from orderList we  have to update header fields directly
-          order.attributes.header.activityDate = order.attributes.activities[0].date;
-          order.attributes.header.activityText = order.attributes.activities[0].text;
+          order.properties.header.activityDate = order.properties.activities[0].date;
+          order.properties.header.activityText = order.properties.activities[0].text;
         }
         // in transition from not closed to closed, set closure date
         if (order.view.orderStatus.id >= 2 && order.view.orderStatus.id <= 5) {    // new status
-          if (order.attributes.orderStatus === undefined ||
-              order.attributes.orderStatus === 0 ||
-              order.attributes.orderStatus === 1 ||
-              order.attributes.orderStatus === 6) { // prev status
-            order.attributes.closingDate = new Date();
+          if (order.properties.orderStatus === undefined ||
+              order.properties.orderStatus === 0 ||
+              order.properties.orderStatus === 1 ||
+              order.properties.orderStatus === 6) { // prev status
+            order.properties.closingDate = new Date();
           }
         } else {
           if (order.delAttributes) {
@@ -608,10 +604,10 @@ angular.module('myApp')
           }
         }
         if (order.view.orderStatus.id >= 1 && order.view.orderStatus.id <= 5 && // new status
-            !order.attributes.bidDate) {
-          order.attributes.bidDate = new Date();
+            !order.properties.bidDate) {
+          order.properties.bidDate = new Date();
         }
-        order.attributes.orderStatus = order.view.orderStatus.id;
+        order.properties.orderStatus = order.view.orderStatus.id;
       }
     };
 
@@ -626,18 +622,18 @@ angular.module('myApp')
        api.queryOrdersByRange('eventDate',from,to,fields)
         .then(function(orders) {
             var newOrders = orders.filter(function(order) { // find orders without color assignment
-            return  !order.attributes.template &&
-              order.attributes.orderStatus >= 2 &&
-              order.attributes.orderStatus <= 5 &&
-              !order.attributes.color;
+            return  !order.properties.template &&
+              order.properties.orderStatus >= 2 &&
+              order.properties.orderStatus <= 5 &&
+              !order.properties.color;
           });
           if (newOrders.length > 0) {
             console.log('found '+newOrders.length+' orders in immediate future without colors');
             newOrders.sort(function(a,b) {
-              var ad = a.attributes.eventDate;
-              var at = a.attributes.eventTime;
-              var bd = b.attributes.eventDate;
-              var bt = b.attributes.eventTime;
+              var ad = a.properties.eventDate;
+              var at = a.properties.eventTime;
+              var bd = b.properties.eventDate;
+              var bt = b.properties.eventTime;
               var a1 = ad.getDate() - 1 + ad.getMonth()*31 + (ad.getFullYear()-2010)*372;
               if (at) {
                 a1 +=  at.getHours()/24 + at.getMinutes()/1440;
@@ -649,9 +645,9 @@ angular.module('myApp')
               return a1 - b1;
             });
             var existingColors = orders.filter(function(order) {
-              return order.attributes.color;
+              return order.properties.color;
             }).map(function(order) {
-              return order.attributes.color;
+              return order.properties.color;
             });
                colorsPromise.then(function(allColors) {
                  // find a new color for each new order
@@ -664,12 +660,12 @@ angular.module('myApp')
                    });
                    if (remainingColors.length) {  // check if there are any colors to assigns to order
                      var selectedColor = remainingColors[0].tId;
-                     console.log('selected color '+selectedColor+' for order '+newOrder.attributes.number);
-                     newOrder.attributes.color = selectedColor;
+                     console.log('selected color '+selectedColor+' for order '+newOrder.properties.number);
+                     newOrder.properties.color = selectedColor;
                      existingColors.push(selectedColor);
                      api.saveObj(newOrder);
                    } else {
-                     console.log('no color available for order ' + newOrder.attributes.number);
+                     console.log('no color available for order ' + newOrder.properties.number);
                    }
                  });
                });

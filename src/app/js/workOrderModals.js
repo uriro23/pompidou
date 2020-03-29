@@ -38,20 +38,20 @@ angular.module('myApp')
 
 
     function generateTrace(root, gen, quantity, workOrder, backTrace) {
-    root.expand = seq === 0 ? '-' : root.attributes.domain === 0 ? '' : '+';      // initially expand root item
+    root.expand = seq === 0 ? '-' : root.properties.domain === 0 ? '' : '+';      // initially expand root item
     root.seq = seq++;
     root.generation = gen;
     root.ident = ident[gen];
     root.isShow = gen < 2; // initially show root once expanded
     root.quantity = quantity;
-    root.domain = domains[root.attributes.domain];
-    if (root.attributes.domain === 0) {
-      root.attributes.productName =
-        root.attributes.customer.firstName + ' ' + dayName(root.attributes.order.eventDate);
+    root.domain = domains[root.properties.domain];
+    if (root.properties.domain === 0) {
+      root.properties.productName =
+        root.properties.customer.firstName + ' ' + dayName(root.properties.order.eventDate);
     }
     backTrace.push(root);
-    if (root.attributes.domain > 0) {
-      var bt = root.attributes.backTrace;
+    if (root.properties.domain > 0) {
+      var bt = root.properties.backTrace;
       //for (var i = 0; i < bt.length; i++) {
       bt.forEach(function(bti) {
         var son = angular.copy(workOrder.filter(function (wo) {

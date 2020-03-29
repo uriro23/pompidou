@@ -11,7 +11,7 @@
   <th style="width: 70%">מנות וכמויות לפי אירועים</th>
 </thead>
   <tbody>
-  <tr ng-repeat="prep in todaysPrepModel.todaysPreps">
+  <tr ng-repeat="prep in todaysPrepModel.todaysPreps track by prep.id">
     <td></td>
     <td>{{prep.productName}}</td>
     <td>{{(prep.quantity | number:2) + ' ' + prep.measurementUnit.label}}</td>
@@ -21,14 +21,14 @@
         <thead>
           <th style="width: 35%">מנה</th>
           <th style="width: 10%">כמות</th>
-          <th style="width: 10%" ng-repeat="ord in todaysPrepModel.allOrders">
+          <th style="width: 10%" ng-repeat="ord in todaysPrepModel.allOrders track by ord.id">
             {{ord.customer.firstName+' '+todaysPrepModel.dayName(ord.order.eventDate)}}
           </th>
         </thead>
-        <tr ng-repeat="menuItem in prep.menuItems">
+        <tr ng-repeat="menuItem in prep.menuItems track by menuItem.id">
           <td>{{menuItem.productName}}</td>
           <td>{{menuItem.quantity | number:2}}</td>
-          <td ng-repeat="order in menuItem.orders">
+          <td ng-repeat="order in menuItem.orders track by order.seq">
             <span ng-show="order.quantity">{{order.quantity | number:2}}</span>
           </td>
         </tr>

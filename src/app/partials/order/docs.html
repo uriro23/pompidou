@@ -38,9 +38,9 @@
       <td style="width: 15%">
         <button class="btn btn-warning"
                 ng-click="documentsModel.createAccountingOrder()"
-                ng-disabled="documentsModel.order.attributes.orderStatus === 1 ||
-                             documentsModel.order.attributes.orderStatus === 2 ||
-                             documentsModel.order.attributes.orderStatus === 6 || true">
+                ng-disabled="documentsModel.order.properties.orderStatus === 1 ||
+                             documentsModel.order.properties.orderStatus === 2 ||
+                             documentsModel.order.properties.orderStatus === 6 || true">
           <!-- drop the 'true' when ready  -->
           צור הזמנה
         </button>
@@ -82,7 +82,7 @@
          ng-disabled="documentsModel.readOnly.is">
   <span>רק לתפריט הנבחר?</span>
   <input type="checkbox" ng-model="documentsModel.isOnlyActiveQuote">
-    <span ng-repeat="documentType in documentsModel.sortedDocumentTypes">
+    <span ng-repeat="documentType in documentsModel.sortedDocumentTypes track by documentType.id">
         <button ng-click="documentsModel.createBid(documentType.id)"
                 ng-disabled="documentsModel.readOnly.is ||
                              !documentsModel.order.view.quote.foodPrice"
@@ -103,33 +103,33 @@
   </thead>
   <tbody>
   <tr ng-repeat="bid in documentsModel.bids track by bid.id">
-      <td>{{documentsModel.documentTypes[bid.attributes.documentType].label}}</td>
-    <td ng-show="bid.attributes.documentType === 1">
-      <a ng-href="#/bid/{{bid.attributes.uuid}}" target="_blank">
-        {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+      <td>{{documentsModel.documentTypes[bid.properties.documentType].label}}</td>
+    <td ng-show="bid.properties.documentType === 1">
+      <a ng-href="#/bid/{{bid.properties.uuid}}" target="_blank">
+        {{bid.properties.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
-    <td ng-show="bid.attributes.documentType === 4">
-      <a ng-href="#/quote/{{bid.attributes.uuid}}" target="_blank">
-        {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+    <td ng-show="bid.properties.documentType === 4">
+      <a ng-href="#/quote/{{bid.properties.uuid}}" target="_blank">
+        {{bid.properties.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
-    <td ng-show="bid.attributes.documentType === 5">
-      <a ng-href="#/quote2/{{bid.attributes.uuid}}" target="_blank">
-        {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+    <td ng-show="bid.properties.documentType === 5">
+      <a ng-href="#/quote2/{{bid.properties.uuid}}" target="_blank">
+        {{bid.properties.date | date: 'dd/MM/yyyy HH:mm'}}
       </a>
     </td>
-    <td ng-show="bid.attributes.documentType===0">
-              {{bid.attributes.date | date: 'dd/MM/yyyy HH:mm'}}
+    <td ng-show="bid.properties.documentType===0">
+              {{bid.properties.date | date: 'dd/MM/yyyy HH:mm'}}
       </td>
-    <td>{{bid.attributes.desc}}</td>
+    <td>{{bid.properties.desc}}</td>
     <td>
-      {{bid.attributes.total | currency}}
+      {{bid.properties.total | currency}}
     </td>
       <td>
           <button ng-click="documentsModel.restoreBid(bid)"
                   ng-hide="documentsModel.order.view.isChanged"
-                  ng-disabled="documentsModel.readOnly.is || bid.attributes.version < 4"
+                  ng-disabled="documentsModel.readOnly.is || bid.properties.version < 4"
                   class="btn btn-default btn-sm">
                   שחזר
           </button>

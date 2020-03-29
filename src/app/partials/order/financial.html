@@ -61,16 +61,16 @@
     <td></td>
     <td>{{financialModel.order.view.quote.extraServices | currency}}</td>
   </tr>
-  <tr ng-show="financialModel.order.attributes.isBusinessEvent">
+  <tr ng-show="financialModel.order.properties.isBusinessEvent">
     <td><label>לפני מע"מ</label></td>
     <td></td>
     <td>{{financialModel.order.view.quote.totalBeforeVat | currency}}</td>
   </tr>
-  <tr ng-show="financialModel.order.attributes.isBusinessEvent">
+  <tr ng-show="financialModel.order.properties.isBusinessEvent">
     <td>
       <label>
         <span>מע"מ %</span>
-        <span>{{financialModel.order.attributes.vatRate*100}}</span>
+        <span>{{financialModel.order.properties.vatRate*100}}</span>
       </label>
     </td>
     <td></td>

@@ -32,35 +32,35 @@ angular.module('myApp')
       )
         .then(function(orders) {
           model.orders = orders.filter(function(ord) {
-            return ord.attributes.orderStatus !== 6 // don't show canceled events
-              && !ord.attributes.template           // don't show templates
-              && (ord.attributes.eventDate>new Date() || ord.attributes.orderStatus !== 1); // don't show past 'new' events
+            return ord.properties.orderStatus !== 6 // don't show canceled events
+              && !ord.properties.template           // don't show templates
+              && (ord.properties.eventDate>new Date() || ord.properties.orderStatus !== 1); // don't show past 'new' events
           });
           model.orders.forEach(function(ord) {
             ord.view = {
               customer: customerNames.filter(function(cust) {
-                return cust.id===ord.attributes.customer;
+                return cust.id===ord.properties.customer;
               })[0],
               orderStatus: lov.orderStatuses.filter(function(os) {
-                return os.id===ord.attributes.orderStatus
+                return os.id===ord.properties.orderStatus
               })[0]
             }
           });
           model.pompidouEvents = model.orders.map(function(ord) {
             var d = new Date(
-              ord.attributes.eventDate.getFullYear(),
-              ord.attributes.eventDate.getMonth(),
-              ord.attributes.eventDate.getDate(),
-              ord.attributes.eventTime?ord.attributes.eventTime.getHours():12,
-              ord.attributes.eventTime?ord.attributes.eventTime.getMinutes():0
+              ord.properties.eventDate.getFullYear(),
+              ord.properties.eventDate.getMonth(),
+              ord.properties.eventDate.getDate(),
+              ord.properties.eventTime?ord.properties.eventTime.getHours():12,
+              ord.properties.eventTime?ord.properties.eventTime.getMinutes():0
             );
             return {
-              title: 'אירוע ' + ord.attributes.number + ': סטטוס ' + ord.view.orderStatus.name + ', לקוח '
+              title: 'אירוע ' + ord.properties.number + ': סטטוס ' + ord.view.orderStatus.name + ', לקוח '
               + ord.view.customer.name + ', '
-              + ord.attributes.noOfParticipants + ' משתתפים, '
-              + 'סכום ' + ord.attributes.header.total + ' ש"ח',
-              color: ord.attributes.orderStatus === 1 ? calendarConfig.colorTypes.info :
-                ord.attributes.orderStatus === 2 ? calendarConfig.colorTypes.warning :
+              + ord.properties.noOfParticipants + ' משתתפים, '
+              + 'סכום ' + ord.properties.header.total + ' ש"ח',
+              color: ord.properties.orderStatus === 1 ? calendarConfig.colorTypes.info :
+                ord.properties.orderStatus === 2 ? calendarConfig.colorTypes.warning :
                   calendarConfig.colorTypes.success,
               startsAt: d,
               endsAt: new Date(moment(d).add(1, 'hour')),
@@ -104,12 +104,12 @@ angular.module('myApp')
 
     var customerNames = customers.map(function(cust) {
       var name = '';
-      if (cust.attributes.firstName) {
-        name+=cust.attributes.firstName;
+      if (cust.properties.firstName) {
+        name+=cust.properties.firstName;
       }
-      if (cust.attributes.lastName) {
+      if (cust.properties.lastName) {
         name+=' ';
-        name+=cust.attributes.lastName;
+        name+=cust.properties.lastName;
       }
       return {
         id: cust.id,

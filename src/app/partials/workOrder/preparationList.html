@@ -12,14 +12,14 @@
       <td style="width: 15%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.woIndex.attributes.domainStatus[2]">
-        <a href="#/todaysPrep/{{workOrderModel.woIndex.attributes.woId}}" target="_blank"
+                ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
+        <a href="#/todaysPrep/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
-           ng-show="workOrderModel.woIndex.attributes.domainStatus[2]">
+           ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
           הכנות יומיות
           </a>
         </button>
-      <span ng-hide="workOrderModel.woIndex.attributes.domainStatus[2]">
+      <span ng-hide="workOrderModel.woIndex.properties.domainStatus[2]">
         --- לא מעודכן ---
       </span>
       </td>
@@ -27,7 +27,7 @@
    <td style="width: 10%">
        <button class="btn btn-default"
                ng-disabled="workOrderModel.isProcessing"
-               ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
+               ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
                ng-click="workOrderModel.preparationsEndDay()">
          סוף יום
        </button>
@@ -41,7 +41,7 @@
       <td  style="width: 10%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.woIndex.attributes.domainStatus[2]"
+                ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
                 ng-click="workOrderModel.createWorkOrderDomain(3)">
           {{'חשב '+workOrderModel.domains[3].forWorkItem}}
         </button>
@@ -49,48 +49,48 @@
     </tr>
   </table>
 
-<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
     <tbody>
-    <tr ng-repeat="woItem in cat.list">
-      <td style="width: 20%">{{woItem.attributes.productName}}</td>
+    <tr ng-repeat="woItem in cat.list track by woItem.id">
+      <td style="width: 20%">{{woItem.properties.productName}}</td>
       <td style="width: 5%">
         <!--
         <input type="text" money size="5"
-               ng-model="woItem.attributes.quantity"
-               ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
+               ng-model="woItem.properties.quantity"
+               ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
                ng-change="workOrderModel.setQuantity(woItem,2)">
                -->
-        {{woItem.attributes.quantity | number:2}}
+        {{woItem.properties.quantity | number:2}}
       </td>
-      <td style="width: 7%">{{woItem.attributes.measurementUnit.label}}</td>
+      <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
       <td style="width: 10%" ng-hide="workOrderModel.isShowPreparationsMenuItems">
         <button ng-click="workOrderModel.backInfo(woItem)"
-                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
       <td style="width: 13%"
-          ng-hide= "!workOrderModel.woIndex.attributes.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
+          ng-hide= "!workOrderModel.woIndex.properties.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
         <span>להיום: </span>
-        <input type="checkbox" ng-model="woItem.attributes.isForToday"
+        <input type="checkbox" ng-model="woItem.properties.isForToday"
                ng-change="workOrderModel.setIsForToday(woItem)">
       </td>
       <!--
       <td style="width: 11%"
-          ng-hide= "!workOrderModel.woIndex.attributes.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
+          ng-hide= "!workOrderModel.woIndex.properties.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
         <input type="text" money size="5"
-               ng-disabled="!woItem.attributes.isForToday"
-               ng-model="woItem.attributes.quantityForToday"
+               ng-disabled="!woItem.properties.isForToday"
+               ng-model="woItem.properties.quantityForToday"
                ng-change="workOrderModel.saveWI(woItem)">
       </td>
       -->
       <td style="width: 10%" ng-hide="workOrderModel.isShowPreparationsMenuItems">
         <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.woIndex.attributes.domainStatus[2]"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
                 class="btn btn-default btn-sm">
           מחק
         </button>
@@ -100,15 +100,15 @@
           <thead>
           <th style="width: 35%">מנה</th>
           <th style="width: 10%">כמות</th>
-          <th ng-repeat="order in workOrderModel.woOrders">
-            <span>{{order.attributes.customer.firstName}}</span>
-            <span>{{workOrderModel.dayName(order.attributes.order.eventDate)}}</span>
+          <th ng-repeat="order in workOrderModel.woOrders track by order.id">
+            <span>{{order.properties.customer.firstName}}</span>
+            <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
           </th>
           </thead>
-          <tr ng-repeat="menuItem in woItem.attributes.menuItems">
+          <tr ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
             <td>{{menuItem.productName}}</td>
             <td>{{menuItem.quantity | number:2}}</td>
-            <td ng-repeat="order in menuItem.orders">
+            <td ng-repeat="order in menuItem.orders track by order.seq">
               <span ng-show="order.quantity">{{order.quantity | number:2}}</span>
             </td>
           </tr>

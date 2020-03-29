@@ -22,8 +22,8 @@
       <div class="floatRight">
 
         <span class="bold">שם:</span>
-        <span>{{sensitivityListModel.customer.attributes.firstName+' '+
-                sensitivityListModel.customer.attributes.lastName}}</span>
+        <span>{{sensitivityListModel.customer.properties.firstName+' '+
+                sensitivityListModel.customer.properties.lastName}}</span>
         <br>
         <span class="bold">תאריך האירוע:</span>
         <span>{{sensitivityListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
@@ -48,14 +48,14 @@
 
     <div class="quoteTextBox quoteDetails">
       <div class="floatRight">
-      <div ng-repeat="sensitivity in sensitivityListModel.sensitivities">
+      <div ng-repeat="sensitivity in sensitivityListModel.sensitivities track by sensitivity.tId">
   <h3 class="bold" ng-show="sensitivity.items.length" ng-style="sensitivity.colorObj.style">
     <img ng-show="sensitivity.colorObj.backColor==='green'" src="app/img/green_light.jpg"/>
     <img ng-show="sensitivity.colorObj.backColor==='red'" src="app/img/red_light.jpg"/>
     {{sensitivity.description}}
  </h3>
         <ul>
-  <li ng-repeat="item in sensitivity.items">
+  <li ng-repeat="item in sensitivity.items track by item.index">
     {{item.productName}}
   </li>
         </ul>

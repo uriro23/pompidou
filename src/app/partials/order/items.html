@@ -22,7 +22,7 @@
       <th>כבר מופיע?</th>
       </thead>
       <tbody>
-      <tr ng-repeat="product in itemsModel.filteredCatalog">
+      <tr ng-repeat="product in itemsModel.filteredCatalog track by product.id">
         <td style="cursor: pointer" ng-click="itemsModel.setProduct(product)">{{product.productName}}</td>
         <td>{{product.isInOrder | checkMark}}</td>
       </tr>
@@ -55,27 +55,27 @@
       <tbody>
       <tr ng-repeat="template in itemsModel.templates | filter: {isCurrentMenuType:true}">
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
-          {{template.attributes.header.menuType.label}}
+          {{template.properties.header.menuType.label}}
         </td>
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
-          {{template.attributes.template}}
+          {{template.properties.template}}
         </td>
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
-          {{template.attributes.noOfParticipants}}
+          {{template.properties.noOfParticipants}}
         </td>
       </tr>
       <tr ng-show="itemsModel.isBothMenuTypes()">
         <td>---------------</td>
       </tr>
-      <tr ng-repeat="template in itemsModel.templates | filter: {isCurrentMenuType:false}">
+      <tr ng-repeat="template in itemsModel.templates  | filter: {isCurrentMenuType:false}">
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
-          {{template.attributes.header.menuType.label}}
+          {{template.properties.header.menuType.label}}
         </td>
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
-          {{template.attributes.template}}
+          {{template.properties.template}}
         </td>
         <td style="cursor: pointer" ng-click="itemsModel.setTemplate(template)">
-          {{template.attributes.noOfParticipants}}
+          {{template.properties.noOfParticipants}}
         </td>
       </tr>
      </tbody>
@@ -99,7 +99,7 @@
     <th>שם תפריט</th>
     </thead>
       <tbody>
-      <tr ng-repeat="quote in itemsModel.quotes">
+      <tr ng-repeat="quote in itemsModel.quotes track by quote.menuType.tId">
         <td style="cursor: pointer" ng-click="itemsModel.setQuote(quote)">
           {{quote.title}}
         </td>

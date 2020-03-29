@@ -381,7 +381,7 @@ config(function($stateProvider, $urlRouterProvider) {
         workOrder: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
             return workItems.map(function (wi) {
-              var att = wi.attributes;
+              var att = wi.properties;
               att.id = wi.id;
               return att;
             });
@@ -412,7 +412,7 @@ config(function($stateProvider, $urlRouterProvider) {
         workOrder: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
             return workItems.map(function (wi) {
-              var att = wi.attributes;
+              var att = wi.properties;
               att.id = wi.id;
               return att;
             });
@@ -436,13 +436,13 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
-            return res[0].attributes;
+            return res[0].properties;
           });
         }],
         workOrder: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
             return workItems.map(function (wi) {
-              var att = wi.attributes;
+              var att = wi.properties;
               att.id = wi.id;
               return att;
             });
@@ -485,7 +485,7 @@ config(function($stateProvider, $urlRouterProvider) {
         allCategories: ['api', function (api) {
          return api.queryCategories().then (function (res) {
             return res.map(function (obj) {
-              return obj.attributes;
+              return obj.properties;
             });
           });
         }],
@@ -494,8 +494,8 @@ config(function($stateProvider, $urlRouterProvider) {
               return names.map(function(name) {
                 return {
                   id:   name.id,
-                  name: name.attributes.productName,
-                  isDeleted: name.attributes.isDeleted
+                  name: name.properties.productName,
+                  isDeleted: name.properties.isDeleted
                 };
               });
             });
@@ -508,7 +508,7 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
-            return res[0].attributes;
+            return res[0].properties;
           });
         }]
       }
@@ -526,29 +526,29 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         currentDomain: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryCatalogById($stateParams.id).then(function (objs) {
-            return objs[0].attributes.domain;
+            return objs[0].properties.domain;
           });
         }],
         currentCategory: ['$stateParams', 'api', function ($stateParams, api) {
           return api.queryCatalogById($stateParams.id).then(function (objs) {
-            return objs[0].attributes.category;
+            return objs[0].properties.category;
           });
         }],
         allCategories: ['api', function (api) {
           return api.queryCategories().then (function (res) {
             return res.map(function (obj) {
-              return obj.attributes;
+              return obj.properties;
             });
           });
         }],
         productNames: ['$stateParams','api', function ($stateParams, api) {
           return api.queryCatalogById($stateParams.id).then(function (objs) {
-            return api.queryCatalog(objs[0].attributes.domain,['productName']).then(function(names) {
+            return api.queryCatalog(objs[0].properties.domain,['productName']).then(function(names) {
               return names.map(function(name) {
                 return {
                   id:   name.id,
-                  name: name.attributes.productName,
-                  isDeleted: name.attributes.isDeleted
+                  name: name.properties.productName,
+                  isDeleted: name.properties.isDeleted
                 };
               });
             });
@@ -562,7 +562,7 @@ config(function($stateProvider, $urlRouterProvider) {
         }],
         config: ['api', function (api) {
           return api.queryConfig().then(function (res) {
-            return res[0].attributes;
+            return res[0].properties;
           });
         }]
       }

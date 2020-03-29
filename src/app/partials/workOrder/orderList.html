@@ -14,24 +14,24 @@
   <th ng-show="workOrderModel.isOrderNumbers">זיהוי</th>
   </thead>
   <tbody>
-  <tr ng-repeat="woItem in workOrderModel.woOrders"
-      ng-class="woItem.attributes.orderStatus.id===1?'bg-active':
-                        woItem.attributes.orderStatus.id===2?'bg-warning':
-                        (woItem.attributes.orderStatus.id>=3 && woItem.attributes.orderStatus.id<=5)?'bg-success':
-                        woItem.attributes.orderStatus.id===6?'active myCanceledEvent':null">
+  <tr ng-repeat="woItem in workOrderModel.woOrders track by woItem.id"
+      ng-class="woItem.properties.orderStatus.id===1?'bg-active':
+                        woItem.properties.orderStatus.id===2?'bg-warning':
+                        (woItem.properties.orderStatus.id>=3 && woItem.properties.orderStatus.id<=5)?'bg-success':
+                        woItem.properties.orderStatus.id===6?'active myCanceledEvent':null">
     <td>
-      <a ng-href="#/editOrderView/{{woItem.attributes.order.id}}/0">{{woItem.attributes.order.number}}</a>
+      <a ng-href="#/editOrderView/{{woItem.properties.order.id}}/0">{{woItem.properties.order.number}}</a>
     </td>
-    <td>{{woItem.attributes.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
-    <td>{{woItem.attributes.order.eventTime | date: 'HH:mm'}}</td>
-    <td>{{woItem.attributes.order.exitTime | date: 'HH:mm'}}</td>
-    <td>{{woItem.attributes.customer.firstName+' '+woItem.attributes.customer.lastName}}</td>
-    <td>{{woItem.attributes.order.noOfParticipants}}</td>
-    <td>{{woItem.attributes.order.header.title}}</td>
-    <td  ng-style="workOrderModel.isOrderColors ? woItem.attributes.color.style : null">
-      {{woItem.attributes.orderStatus.name}}
+    <td>{{woItem.properties.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
+    <td>{{woItem.properties.order.eventTime | date: 'HH:mm'}}</td>
+    <td>{{woItem.properties.order.exitTime | date: 'HH:mm'}}</td>
+    <td>{{woItem.properties.customer.firstName+' '+woItem.properties.customer.lastName}}</td>
+    <td>{{woItem.properties.order.noOfParticipants}}</td>
+    <td>{{woItem.properties.order.header.title}}</td>
+    <td  ng-style="workOrderModel.isOrderColors ? woItem.properties.color.style : null">
+      {{woItem.properties.orderStatus.name}}
     </td>
-    <td ng-show="workOrderModel.isOrderNumbers">{{woItem.attributes.color.tId}}</td>
+    <td ng-show="workOrderModel.isOrderNumbers">{{woItem.properties.color.tId}}</td>
   </tr>
   </tbody>
 </table>

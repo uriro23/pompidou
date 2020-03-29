@@ -1,10 +1,10 @@
-<div ng-repeat="page in stickersModel.stickerPage"
+<div ng-repeat="page in stickersModel.stickerPage track by page.seq"
      style="margin-right: 1cm;  margin-bottom: 0.5cm"> <!-- was margin-top 0.7 cm -->
   <table>
     <thead>
     <th style="height:0.7cm">{{page.seq}}</th>
     </thead>
-  <tr ng-repeat="line in page.lines" style="height:2.55cm">
+  <tr ng-repeat="line in page.lines track by line.seq" style="height:2.55cm">
     <td ng-repeat="sticker in line.stickers track by sticker.seq" style="width:7cm">
       <div>
       <label>{{sticker.label}}</label>
