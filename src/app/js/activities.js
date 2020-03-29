@@ -12,14 +12,14 @@ angular.module('myApp')
 
     this.addActivity = function () {
       if (this.activityText.length > 0) {
-        this.order.attributes.activities.splice(0, 0, {date: new Date(), text: this.activityText});
+        this.order.properties.activities.splice(0, 0, {date: new Date(), text: this.activityText});
         this.activityText = '';
         orderService.orderChanged(this.order);
       }
     };
 
     this.delActivity = function (ind) {
-      this.order.attributes.activities.splice(ind, 1);
+      this.order.properties.activities.splice(ind, 1);
       orderService.orderChanged(this.order);
     };
 
@@ -31,7 +31,7 @@ angular.module('myApp')
           mail: function () {
             return api.queryMails(mailId)
               .then(function (mails) {
-                return mails[0].attributes;
+                return mails[0].properties;
               });
           }
         },
