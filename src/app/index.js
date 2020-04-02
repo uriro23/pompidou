@@ -919,6 +919,9 @@ config(function($stateProvider, $urlRouterProvider) {
       return api.queryCustomers().then(function (objs) {
         return objs;
       });
+    }],
+    config: ['configPromise', function (configPromise) {
+      return configPromise;
     }]
   }
 });

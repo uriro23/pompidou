@@ -42,17 +42,30 @@
     <div class="quoteTextBox quoteDetails">
       <div class="floatRight">
         <p></p>
+        <div ng-show="instructionsListModel.isAllFridge">
+          <label>עם קבלת המשלוח יש להכניס את כל המנות למקרר</label>
+        </div>
+        <div ng-show="instructionsListModel.isAnyFridge">
+          <label>עם קבלת המשלוח יש להכניס את המנות הבאות למקרר:</label>
+        </div>
+        <div ng-show="instructionsListModel.isAnyFridge"
+             ng-repeat="item in instructionsListModel.fridgeItems track by item.id">
+          <span>{{item.desc}}</span>
+        </div>
+        <p></p>
+       <p></p>
+        <p></p>
+        <div ng-show="instructionsListModel.instructions.length">
+          <labeL>הוראות נוספות:</labeL>
+        </div>
         <div ng-repeat="instructions in instructionsListModel.instructions track by instructions.id">
-          <div>
-            <label>{{instructions.title}}</label>
-          </div>
-          <div>
-            <span>{{instructions.text}}</span>
-          </div>
-          <p></p>
-          <p></p>
+          <span>{{instructions.time | number:0}}</span>
+          <span>דקות לפני ההגשה</span>
+          <span>{{instructions.text}}</span>
         </div>
       </div>
     </div>
+
+
   </div>
 </div>

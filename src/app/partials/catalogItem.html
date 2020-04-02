@@ -250,6 +250,16 @@
         </td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>האם לכלול בתפריט?</label></td>
+        <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isInMenu"
+                   ng-change="catalogItemModel.setChanged(true)"></td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>האם דורש קירור?</label></td>
+        <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isFridge"
+                   ng-change="catalogItemModel.setChanged(true)"></td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>הוראות ללקוח</label></td>
         <td>
           <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.instructions"
@@ -259,9 +269,10 @@
     </table>
      <table>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
-        <td><label>האם לכלול בתפריט?</label></td>
-        <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isInMenu"
-                    ng-change="catalogItemModel.setChanged(true)"></td>
+        <td><label>תזמון הוראות ללקוח</label></td>
+        <td><input type="number" min="0" max="120" ng-model="catalogItemModel.item.properties.instructionsMinutes"
+                   ng-change="catalogItemModel.setChanged(true)"></td>
+        <td>דקות</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
           ng-class="catalogItemModel.item.errors.muFactor?'bg-danger':null">
@@ -315,6 +326,7 @@
                ng-change="catalogItemModel.setPrice()">
 
         </td>
+        <td>ש"ח</td>
       </tr>
       <tr ng-hide="catalogItemModel.currentDomain.id===3"
           ng-class="catalogItemModel.item.errors.productionQuantity?'bg-danger':null">
@@ -356,6 +368,8 @@
           <input  type="text" size = 10 ng-model="catalogItemModel.item.properties.groupLabel"
                   ng-change="catalogItemModel.setChanged(true)">
          </td>
+        <td></td>
+        <td>למשל "קישים" לצורך ספירה משותפת של מספר פריטים ברשימת יציאה</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>יח' מידה לאריזה</label></td>
