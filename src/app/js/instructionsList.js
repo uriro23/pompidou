@@ -32,6 +32,7 @@ angular.module('myApp')
     this.isDeserts = false;
     this.fridgeItems = [];
     this.instructions = [];
+    this.generalInstructions = [];
 
     var outOfFridgeItem = catalog.filter(function(cat) {
       return cat.id === config.outOfFridgeItem;
@@ -65,6 +66,17 @@ angular.module('myApp')
               id: catItem.id,
               time: catItem.properties.instructionsMinutes,
               text: catItem.properties.instructions
+            })
+          }
+        }
+        if (catItem.properties.generalInstructions) {
+          temp = that.generalInstructions.filter(function (gi) {    // filter out same generalInstructions for multiple items
+            return (gi.text === catItem.properties.generalInstructions);
+          });
+          if (temp.length === 0) {
+            that.generalInstructions.push({
+              id: catItem.id,
+              text: catItem.properties.generalInstructions
             })
           }
         }

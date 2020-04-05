@@ -260,7 +260,14 @@
                    ng-change="catalogItemModel.setChanged(true)"></td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
-        <td><label>הוראות ללקוח</label></td>
+        <td><label>הוראות כלליות</label></td>
+        <td>
+          <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.generalInstructions"
+                    ng-change="catalogItemModel.setChanged(true)"></textarea>
+        </td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>הוראות לפי זמן</label></td>
         <td>
           <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.instructions"
                     ng-change="catalogItemModel.setChanged(true)"></textarea>
@@ -272,7 +279,7 @@
         <td><label>תזמון הוראות ללקוח</label></td>
         <td><input type="number" min="0" max="120" ng-model="catalogItemModel.item.properties.instructionsMinutes"
                    ng-change="catalogItemModel.setChanged(true)"></td>
-        <td>דקות</td>
+        <td>דקות לפני ההגשה</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
           ng-class="catalogItemModel.item.errors.muFactor?'bg-danger':null">

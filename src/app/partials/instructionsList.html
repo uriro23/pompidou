@@ -9,7 +9,7 @@
     <!-- Header + main logo -->
     <div class="quoteTextBox">
       <h2 class="purpleText bold quoteMainTitle">
-        הוראות הכנה והגשה
+        אז מה נשאר לך לעשות?
       </h2>
       <div class="quoteLogo">
         <img align="left" src="app/img/logo.png"/>
@@ -41,6 +41,14 @@
 
     <div class="quoteTextBox quoteDetails">
       <div class="floatRight">
+        <p></p>
+        <div ng-show="instructionsListModel.generalInstructions.length">
+          <ul>
+            <li ng-repeat="gi in instructionsListModel.generalInstructions track by gi.id">
+              {{gi.text}}
+            </li>
+          </ul>
+        </div>
         <p></p>
         <div ng-show="instructionsListModel.isAllFridge">
           <label>עם קבלת המשלוח יש להכניס את כל המנות למקרר</label>
