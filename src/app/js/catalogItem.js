@@ -136,6 +136,15 @@ angular.module('myApp')
       model.setChanged(true);
     };
 
+    model.setInstructions = function () {
+      if (model.item.properties.instructions) {
+        model.item.errors.instructionsMinutes = !model.item.properties.instructionsMinutes;
+      } else {
+        model.item.errors.instructionsMinutes = false;
+      }
+      model.setChanged(true);
+    };
+
     // Exit List Tab
 
     model.addExitListItem = function () {

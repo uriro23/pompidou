@@ -275,12 +275,13 @@
         <td><label>הוראות לפי זמן</label></td>
         <td>
           <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.instructions"
-                    ng-change="catalogItemModel.setChanged(true)"></textarea>
+                    ng-change="catalogItemModel.setInstructions()"></textarea>
         </td>
       </tr>
     </table>
      <table>
-      <tr ng-show="catalogItemModel.currentDomain.id===1">
+      <tr ng-show="catalogItemModel.currentDomain.id===1"
+          ng-class="catalogItemModel.item.errors.instructionsMinutes?'bg-danger':null">
         <td><label>תזמון הוראות ללקוח</label></td>
         <td><input type="number" min="0" max="120" ng-model="catalogItemModel.item.properties.instructionsMinutes"
                    ng-change="catalogItemModel.setChanged(true)"></td>

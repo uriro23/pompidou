@@ -41,39 +41,43 @@
 
     <div class="quoteTextBox quoteDetails">
       <div class="floatRight">
-        <p></p>
+        <p>&nbsp;</p>
+          <div ng-show="instructionsListModel.isAllFridge">
+          <label>עם קבלת המשלוח יש להכניס את כל המנות למקרר</label>
+        </div>
+        <div ng-show="instructionsListModel.isAnyFridge && !instructionsListModel.isAllFridge">
+          <div>
+          <label>עם קבלת המשלוח יש להכניס את המנות הבאות למקרר:</label>
+          </div>
+          <ul>
+            <li ng-repeat="item in instructionsListModel.fridgeItems track by item.id">
+              {{item.desc}}
+            </li>
+          </ul>
+        </div>
+        <p>&nbsp;</p>
         <div ng-show="instructionsListModel.generalInstructions.length">
+          <div>
+            <labeL>הוראות פרטניות:</labeL>
+          </div>
           <ul>
             <li ng-repeat="gi in instructionsListModel.generalInstructions track by gi.id">
               {{gi.text}}
             </li>
           </ul>
         </div>
-        <p></p>
-        <div ng-show="instructionsListModel.isAllFridge">
-          <label>עם קבלת המשלוח יש להכניס את כל המנות למקרר</label>
-        </div>
-        <div ng-show="instructionsListModel.isAnyFridge">
-          <label>עם קבלת המשלוח יש להכניס את המנות הבאות למקרר:</label>
-        </div>
-        <div ng-show="instructionsListModel.isAnyFridge"
-             ng-repeat="item in instructionsListModel.fridgeItems track by item.id">
-          <span>{{item.desc}}</span>
-        </div>
-        <p></p>
-       <p></p>
-        <p></p>
-        <div ng-show="instructionsListModel.instructions.length">
-          <labeL>הוראות נוספות:</labeL>
+        <p>&nbsp;</p>
+       <div ng-show="instructionsListModel.instructions.length">
+          <labeL>הוראות לפי זמן:</labeL>
         </div>
         <div ng-repeat="instructions in instructionsListModel.instructions track by instructions.id">
           <span>{{instructions.time | number:0}}</span>
           <span>דקות לפני ההגשה</span>
           <span>{{instructions.text}}</span>
         </div>
+        <p>&nbsp;</p>
+        <div><label>שיהיה בתיאבון והנאה באירוע</label></div>
       </div>
     </div>
-
-
   </div>
 </div>
