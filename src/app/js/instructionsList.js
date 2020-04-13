@@ -30,6 +30,7 @@ angular.module('myApp')
     this.isAnyFridge = false;
     this.isAllFridge = true;
     this.isDeserts = false;
+    this.isAnyHeating = false;
     this.fridgeItems = [];
     this.instructions = [];
     this.generalInstructions = [];
@@ -50,12 +51,15 @@ angular.module('myApp')
           that.isAnyFridge = true;
           that.fridgeItems.push({
             id: catItem.id,
-            desc: catItem.properties.shortDescription
+            desc: catItem.properties.stickerLabel
           });
         } else {
           if (item.category.type < 3) {
             that.isAllFridge = false;
           }
+        }
+        if (catItem.properties.isHeating) {
+          that.isAnyHeating = true;
         }
         if (catItem.properties.instructions) {
           var temp = that.instructions.filter(function (inst) {    // filter out same instructions for multiple items
@@ -90,10 +94,17 @@ angular.module('myApp')
     }
     if (this.isAnyFridge) {
       this.instructions.push({
-        id: outOfFridgeItem.id,
+        id: outOfFridgeItem.id + '-1',
         time: outOfFridgeItem.properties.instructionsMinutes,
         text: outOfFridgeItem.properties.instructions
       });
+    }
+    if (this.isAnyHeating) {
+      this.instructions.push({
+        id: outOfFridgeItem.id + '-2',
+        time: 60,
+        text: outOfFridgeItem.properties.generalInstructions
+      })
     }
     this.instructions.sort(function(a,b) {
       if (a.time > b.time) {

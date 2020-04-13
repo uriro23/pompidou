@@ -260,6 +260,11 @@
                    ng-change="catalogItemModel.setChanged(true)"></td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>האם דורש חימום?</label></td>
+        <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isHeating"
+                   ng-change="catalogItemModel.setChanged(true)"></td>
+      </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>הוראות כלליות</label></td>
         <td>
           <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.generalInstructions"
