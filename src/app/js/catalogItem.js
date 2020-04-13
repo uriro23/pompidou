@@ -145,7 +145,7 @@ angular.module('myApp')
       model.setChanged(true);
     };
 
-    // Exit List Tab
+       // Exit List Tab
 
     model.addExitListItem = function () {
       model.item.properties.exitList.push({

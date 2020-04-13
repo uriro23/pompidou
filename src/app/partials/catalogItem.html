@@ -284,7 +284,7 @@
           ng-class="catalogItemModel.item.errors.instructionsMinutes?'bg-danger':null">
         <td><label>תזמון הוראות ללקוח</label></td>
         <td><input type="number" min="0" max="120" ng-model="catalogItemModel.item.properties.instructionsMinutes"
-                   ng-change="catalogItemModel.setChanged(true)"></td>
+                   ng-change="catalogItemModel.setInstructions()"></td>
         <td>דקות לפני ההגשה</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1"
