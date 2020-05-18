@@ -329,7 +329,6 @@ angular.module('myApp')
         }
       });
       this.order.view.quote = this.order.properties.quotes[ind];
-      this.filteredCategories = orderService.filterCategories(this.order.view.quote);
       // make endBoxType point to member of menuTypes array, so select control in quoteParams view will work correctly
       if (this.order.view.quote.endBoxType) {
         this.order.view.quote.endBoxType = menuTypes.filter(function (mt) {

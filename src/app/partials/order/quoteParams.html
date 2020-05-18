@@ -49,7 +49,7 @@
     <th style="width:80%">תיאור</th>
     </thead>
     <tbody>
-    <tr ng-repeat="category in orderModel.filteredCategories track by category.tId"
+    <tr ng-repeat="category in quoteParamsModel.order.view.quote.categories track by category.tId"
         ng-class="category.isChanged?'bg-success':null">
       <td>{{category.label}}</td>
       <td>

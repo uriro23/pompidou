@@ -146,20 +146,7 @@ angular.module('myApp')
       return false;
     }
 
-    this.filterCategories = function (quote) {
-      var res = [];
-      if (quote.categories) {   // false for old orders
-        res = quote.categories.filter(function (qCat) {
-          var temp = quote.items.filter(function (itm) {
-            return itm.category.tId === qCat.tId;
-          });
-          return temp.length;
-        });
-      }
-      return res;
-    };
-
-    this.quoteChanged = function (order, field) {
+   this.quoteChanged = function (order, field) {
       if (field) {
         order.view.quote.changes[field] = true;
       } else {
