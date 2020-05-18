@@ -182,10 +182,11 @@ angular.module('myApp')
         case 'sales':
           api.queryFutureOrders(fieldList).then(function (orders) {
             fetchedOrders = orders.filter (function (ord) {
-              return !ord.properties.template &&
-                      (ord.properties.orderStatus === 0 ||
-                        ord.properties.orderStatus === 1 ||
-                        ord.properties.orderStatus === 6);
+              // return !ord.properties.template &&             showing only events before they are closed
+              //         (ord.properties.orderStatus === 0 ||
+              //           ord.properties.orderStatus === 1 ||
+              //           ord.properties.orderStatus === 6);
+              return !ord.properties.template;
             });
             that.enrichOrders();
            });

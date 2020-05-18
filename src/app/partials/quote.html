@@ -69,17 +69,20 @@
          ng-repeat="category in quoteModel.filteredCategories track by category.tId"
          on-finish-render="ngRepeatFinished">
 
-		  <!-- Food category header -->
+      {{quoteModel.setupCategoryItems(category.tId)}}
+
+      <div ng-hide="quoteModel.categoryItems.length===0"> <!-- skip categories with only bonus items -->
+
+      <!-- Food category header -->
 		  <div class="bold quoteFoodCategoryName">
 		    {{category.label}}
 		  </div>
 
 		  <!-- Food category description -->
-		  <div class="bold">
+		  <div class="bold" ng-hide="quoteModel.categoryItems.length===1"> <!-- don't show description if only one item in category -->
 		  	{{category.description}}
 		  </div>
 
-			{{quoteModel.setupCategoryItems(category.tId)}}
 
 			<!-- Regular items  -->
 			<div class="quoteTextItemLine"  ng-repeat="item in quoteModel.categoryItems track by item.index">
@@ -127,6 +130,7 @@
 
 
 
+      </div>
       </div>
 			<!-- End of  regular items -->
 
@@ -226,9 +230,11 @@
           <span>{{item.quantity}}</span>
           <span>{{item.measurementUnit.label}}</span>
           <span>{{item.productDescription}}</span>
-          <span>(ערך כספי:</span>
-          <span>{{item.price | currency}}</span>
-          <span>)</span>
+          <span ng-hide="item.price <= 100">
+            <span>(ערך כספי:</span>
+            <span>{{item.price | currency}}</span>
+            <span>)</span>
+          </span>
         </div>
       </div>
      </div>
@@ -242,9 +248,11 @@
           <span>{{item.quantity}}</span>
           <span>{{item.measurementUnit.label}}</span>
           <span>{{item.productDescription}}</span>
-          <span>(ערך כספי:</span>
-          <span>{{item.price | currency}}</span>
-          <span>)</span>
+          <span ng-hide="item.price <= 100">
+            <span>(ערך כספי:</span>
+            <span>{{item.price | currency}}</span>
+            <span>)</span>
+          </span>
         </div>
       </div>
       </div>
