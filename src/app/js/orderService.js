@@ -19,7 +19,7 @@ angular.module('myApp')
       var priceIncreaseItem;
       lov.specialTypes.forEach(function(st) {
         if (order.properties.taskData) {
-          delete order.properties.taskData[st.exists];
+          delete order.properties.taskData[st.exist];
           delete order.properties.taskData[st.desc];
         }
       });
