@@ -225,7 +225,7 @@ angular.module('myApp')
 
 
     function editItems (order, category, catalog) {
-      return order.properties.quotes[order.properties.activeQuote].items.filter(function(item) {
+      var categoryItems = order.properties.quotes[order.properties.activeQuote].items.filter(function(item) {
         return item.category.tId === category;
       }).map(function(item) {
         var catalogItem = catalog.filter(function(cat) {
@@ -239,7 +239,32 @@ angular.module('myApp')
           quantity: item.quantity,
           measurementUnitLabel: item.measurementUnit.label
         }
-      })
+      }).sort(function(a,b) {
+        if (a.productName < b.productName) {
+          return -1;
+        } else if (a.productName > b.productName) {
+          return 1;
+        } else if (a.isDescChanged) {
+          return 1;
+        } else if (b.isDescChanged) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+      // now unite items with same catalog name and without major description change
+      var condensedItems = [];
+      var j = 0;
+      condensedItems[0] = categoryItems[0];
+      for (var i=1;i<categoryItems.length;i++) {
+        if (categoryItems[i].productName === categoryItems[i-1].productName && !categoryItems[i].isDescChanged)  {
+          condensedItems[j].quantity += categoryItems[i].quantity;
+        } else {
+          j++;
+          condensedItems[j] = categoryItems[i];
+        }
+      }
+      return condensedItems;
     }
 
     this.snacks = editItems(order,CATEGORY_SNACKS,catalog);
