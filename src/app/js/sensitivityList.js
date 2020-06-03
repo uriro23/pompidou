@@ -49,7 +49,12 @@ angular.module('myApp')
         var currentSensitivity = that.sensitivities.filter(function(sen2) {
           return sen2.tId === sen.tId;
         })[0];
-        currentSensitivity.items.push(item);
+        var existingItem = currentSensitivity.items.filter(function(item2) {
+          return item2.productName === item.productName;
+        });
+        if (existingItem.length === 0) {
+          currentSensitivity.items.push(item);
+        }
       });
     });
 
