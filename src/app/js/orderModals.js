@@ -180,16 +180,20 @@ angular.module('myApp')
           if (bid.documentType === 4 || bid.documentType === 2) {
             msgText += '<a href="' + baseUrl + '/quote/' + bid.uuid + '">הצגה</a><span>  <span>';
             msgText += '<a href="' + baseUrl + '/quotePrint/' + bid.uuid + '">הדפסה</a>';
-          } else {
+          } else  if (bid.documentType === 1) {
             msgText += '<a href="' + baseUrl + '/bid/' + bid.uuid + '">הצגה</a><span>  <span>';
             msgText += '<a href="' + baseUrl + '/bidPrint/' + bid.uuid + '">הדפסה</a>';
+          } else { // assume documentType === 5
+            msgText += '<a href="' + baseUrl + '/quote2/' + bid.uuid + '">הצגה</a><span>  <span>';
+            msgText += '<a href="' + baseUrl + '/quote2Print/' + bid.uuid + '">הדפסה</a>';
           }
+          })
           msgText += '<br/>';
-        });
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
           var url = (bid.documentType===4 || bid.documentType === 2)
-            ? baseUrl + '/quote/' + bid.uuid : baseUrl + '/bid/' + bid.uuid;
+            ? baseUrl + '/quote/' + bid.uuid : (bid.documentType === 1)
+              ? baseUrl + '/bid/' + bid.uuid : baseUrl + '/quote2/' + bid.uuid;
           return {url: url, fileName: bid.desc+'.pdf'}
         });
       }
