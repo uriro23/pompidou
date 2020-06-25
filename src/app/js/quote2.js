@@ -31,6 +31,14 @@ angular.module('myApp')
         this.currentQuote = this.currentOrder;  // so we can read bids produced before the conversion
       }
 
+      this.itemsNoOfCols = 1;
+      if (!this.currentQuote.isNoQuantities) {
+        this.itemsNoOfCols++;
+      }
+      if (this.currentQuote.isShowPrices) {
+        this.itemsNoOfCols++;
+      }
+
       this.customer = bid.properties.customer;
 
       $rootScope.title = lov.company    // set title so PDF file will be named correctly
@@ -248,19 +256,7 @@ angular.module('myApp')
         }
       };
 
-      this.setupExternalServicesItems= function () {
-        this.category = categories.filter(function(cat) {
-          return cat.type === 5; // externalServices
-        })[0];
-        this.externalServicesItems = that.currentQuote.items.filter(function (item) {
-          return (item.category.type === 5 && !item.isFreeItem);  // externalServices
-        });
-        this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
-          return prev + (currentItem.isFreeItem?0:currentItem.price);
-        },0);
-      };
-
-      // set indication for bonus items
+        // set indication for bonus items
       this.isBonusItems = this.currentQuote.items.filter(function(item) {
         return item.isFreeItem;
       }).length > 0;
@@ -345,16 +341,28 @@ angular.module('myApp')
         }
       };
 
-      this.setupExternalServicesItems= function () {
+     this.setupExternalServicesItems= function () {
         this.category = categories.filter(function(cat) {
           return cat.type === 5; // externalServices
         })[0];
-        this.externalServicesItems = that.currentQuote.items.filter(function (item) {
-          return (item.category.type === 5 && !item.isFreeItem);  // externalServices
-        });
-        this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
+       this.externalServicesItems = that.currentQuote.items.filter(function (item) {
+         return (item.category.type === 5 && item.specialType > 2);  // other externalServices
+       });
+       this.disposableItems = that.currentQuote.items.filter(function (item) {
+         return (item.category.type === 5 && item.specialType === 1);  // disposables
+       });
+       this.equipRentalItems = that.currentQuote.items.filter(function (item) {
+         return (item.category.type === 5 && item.specialType === 2);  // equip rentals
+       });
+       this.isAnyExternalServices = this.externalServicesItems.length + this.disposableItems.length + this.equipRentalItems.length
+       this.isTableExternalServices = this.disposableItems.length + this.equipRentalItems.length
+       this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
           return prev + (currentItem.isFreeItem?0:currentItem.price);
-        },0);
+        },0) + this.disposableItems.reduce(function(prev,currentItem) { //sum category item prices
+         return prev + (currentItem.isFreeItem?0:currentItem.price);
+       },0) + this.equipRentalItems.reduce(function(prev,currentItem) { //sum category item prices
+         return prev + (currentItem.isFreeItem?0:currentItem.price);
+       },0);
       };
 
       // set indication for bonus items
