@@ -323,23 +323,14 @@
     </div>
 </section>
 </div>
-</section>
+
   <section class="pinkborder">
 <div class="row blockDisplay">
     <div class="column_third right_half">
 	  <img src="app/img/portrait_yuval.jpg" width="224" height="329" alt=""/>
     </div>
-    <div class="colomn_two_thirds left_half">
-      <span class="column_title_black">למה כדאי להזמין את תפריט השף פרימיום?</span>
-		<ul class="list-chef">
-			<li>שפע אדיר של חטיפים וקינוחים שיוצר התפעלות באירוע</li>
-			<li>שפע אדיר של חטיפים וקינוחים שיוצר התפעלות באירוע</li>
-			<li>שפע אדיר של חטיפים וקינוחים שיוצר התפעלות באירוע</li>
-			<li>שפע אדיר של חטיפים וקינוחים שיוצר התפעלות באירוע</li>
-			<li>שפע אדיר של חטיפים וקינוחים שיוצר התפעלות באירוע</li>
-		</ul>
-    </div>
-  </div>
+  <ng-include src="quote2Model.endBoxType.quoteEndBoxUrl"></ng-include>
+  <div ng-bind-html="quote2Model.currentQuote.endText"></div></div>
 </section>
   <section>
     <article class="left_article">
@@ -372,6 +363,17 @@
     <aside class="right_article"> <img src="app/img/waranty_homepage_dark.png" alt=""/></aside>
   </section>
 <footer class="secondary_header footer">
-    <div class="copyright"><strong>השף בקופסה - 050-1234567</strong></div>
-  </footer>
+    <div class="copyright"><strong>השף בקופסה - 054-7514061</strong></div>
+  <p></p>
+  <div ng-hide="quoteModel.currentQuote.isFixedPrice" class="copyright">
+    <strong>
+		  <span>
+		    הקטלוג המלא שלנו נמצא
+		  </span>
+    <a href="http://pompidou.co.il" target="_blank">כאו.</a>
+    <span>
+		    ניתן להחליף מנה מסויימת באחרת ולבקש שינוי תמהיל.
+		  </span>
+    </strong>
+  </div> </footer>
 </div>
