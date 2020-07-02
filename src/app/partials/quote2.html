@@ -247,53 +247,63 @@
     <table width="100%" ng-show="quote2Model.isAnyExternalServices">
       <thead>
       <tr>
-        <th colspan="4" align="right"> <h3><span style="color: #ed2891;">{{quote2Model.category.label}}</span></h3>
+        <th colspan="3" align="right"> <h3><span style="color: #ed2891;">{{quote2Model.category.label}}</span></h3>
           <strong>{{quote2Model.category.description}}</strong></th>
       </tr>
+      <!--
       <tr ng-show="quote2Model.isTableExternalServices">
         <th align="right" width="40%">פריט</th>
         <th align="right" width="20%">כמות</th>
         <th align="right" width="20%">מחיר ליחידה</th>
         <th align="right" width="20%">סך הכל</th>
       </tr>
+      -->
       </thead>
       <tbody>
       <tr ng-repeat="item in quote2Model.externalServicesItems track by item.index">
-        <td align="right">
+        <td align="right" width="60%">
           <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
           <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
           <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
         </td>
-        <td align="right">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
-        <td align="right" width="20%">{{item.isFreeItem?'':(item.price / item.quantity | currency)}}</td>
-        <td ng-hide="item.isFreeItem" align="right">{{item.price | currency}}</td>
+        <td align="right" width="20%">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
+        <!--<td align="right" width="20%">{{item.isFreeItem?'':(item.price / item.quantity | currency)}}</td> -->
+        <td ng-hide="item.isFreeItem" align="right" width="20%">{{item.price | currency}}</td>
       </tr>
      <tr ng-show="quote2Model.disposableItems.length">
-        <td colspan="4" align="right"><strong>כלים חד פעמיים</strong></td>
+        <td align="right">כלים חד פעמיים (פירוט בנספח)</td>
+        <td></td>
+        <td>{{quote2Model.disposablePrice | currency}}</td>
       </tr>
+      <!--
       <tr ng-show="quote2Model.disposableItems.length" ng-repeat="item in quote2Model.disposableItems track by item.index">
         <td align="right">{{item.productDescription}}</td>
         <td align="right">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
         <td align="right">{{item.price / item.quantity | currency}}</td>
         <td align="right">{{item.price | currency}}</td>
       </tr>
+      -->
       <tr ng-show="quote2Model.equipRentalItems.length">
-        <td colspan="4" align="right"><strong>השכרת ציוד</strong></td>
+        <td align="right">השכרת ציוד (פירוט בנספח)</td>
+        <td></td>
+        <td>{{quote2Model.equipRentalPrice | currency}}</td>
       </tr>
+      <!--
       <tr ng-show="quote2Model.equipRentalItems.length" ng-repeat="item in quote2Model.equipRentalItems track by item.index">
         <td align="right" width="40%">{{item.productDescription}}</td>
         <td align="right" width="20%">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
         <td align="right" width="20%">{{item.price / item.quantity | currency}}</td>
         <td align="right" width="20%">{{item.price | currency}}</td>
       </tr>
+      -->
       </tbody>
       <tfoot>
       <tr ng-show="!quote2Model.currentQuote.isFixedPrice">
-        <td align="left" width="80%" class="ttltxt" colspan="3">
+        <td align="left" colspan="2" class="ttltxt">
           <span>מחיר</span>
           <span>{{quote2Model.category.label}}</span>
         </td>
-        <td align="right" width="20%" class="ttltxt">{{quote2Model.categoryPrice | currency}}</td>
+        <td align="right" class="ttltxt">{{quote2Model.categoryPrice | currency}}</td>
       </tr>
       </tfoot>
     </table>
@@ -330,17 +340,20 @@
 	  <img src="app/img/portrait_yuval.jpg" width="224" height="329" alt=""/>
     </div>
   <ng-include src="quote2Model.endBoxType.quoteEndBoxUrl"></ng-include>
+</div>
 </section>
   <section>
     <article class="left_article">
 
       <span class="column_title_black">הצעת מחיר לאירוע - השף בקופסה</span>
-      <div ng-bind-html="quote2Model.currentQuote.endText"></div></div>
+      <div ng-bind-html="quote2Model.currentQuote.endText"></div>
     </article>
     <aside class="right_article"> <img src="app/img/waranty_homepage_dark.png" alt=""/></aside>
   </section>
+
 <footer class="secondary_header footer">
     <div class="copyright"><strong>השף בקופסה - 054-7514061</strong></div>
+  <!--
   <p></p>
   <div ng-hide="quoteModel.currentQuote.isFixedPrice" class="copyright">
     <strong>
@@ -352,5 +365,68 @@
 		    ניתן להחליף מנה מסויימת באחרת ולבקש שינוי תמהיל.
 		  </span>
     </strong>
-  </div> </footer>
-</div>
+  </div>
+  -->
+   </footer>
+
+<section ng-show="quote2Model.disposableItems.length">
+  <p style="height: 1cm"></p>
+  <div class="table-1">
+    <div  class="title-row">
+      <span class="column_title">נספח: פירוט כלים חד פעמיים</span>
+    </div>
+  </div>
+  <table width="55%">
+    <thead>
+    <tr>
+      <th align="right" width="40%">פריט</th>
+      <th align="right" width="20%">כמות</th>
+      <th align="right" width="20%">מחיר ליחידה</th>
+      <th align="right" width="20%">סך הכל</th>    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in quote2Model.disposableItems track by item.index">
+      <td align="right">{{item.productDescription}}</td>
+      <td align="right">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
+      <td align="right">{{item.price / item.quantity | currency}}</td>
+      <td align="right">{{item.price | currency}}</td>
+    </tr>
+    <tr>
+      <td colspan="3" align="left"><strong>סה"כ כלים חד פעמיים:</strong></td>
+      <td align="right"><strong>{{quote2Model.disposablePrice | currency}}</strong></td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section ng-show="quote2Model.equipRentalItems.length">
+  <p style="height: 1cm"></p>
+  <div class="table-1">
+    <div  class="title-row">
+      <span class="column_title">נספח: פירוט השכרת ציוד</span>
+    </div>
+  </div>
+  <table width="55%">
+    <thead>
+    <tr>
+      <th align="right" width="40%">פריט</th>
+      <th align="right" width="20%">כמות</th>
+      <th align="right" width="20%">מחיר ליחידה</th>
+      <th align="right" width="20%">סך הכל</th>    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in quote2Model.equipRentalItems track by item.index">
+      <td align="right">{{item.productDescription}}</td>
+      <td align="right">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
+      <td align="right">{{item.price / item.quantity | currency}}</td>
+      <td align="right">{{item.price | currency}}</td>
+    </tr>
+    <tr>
+      <td colspan="3" align="left"><strong>סה"כ השכרת ציוד:</strong></td>
+      <td align="right"><strong>{{quote2Model.equipRentalPrice | currency}}</strong></td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+

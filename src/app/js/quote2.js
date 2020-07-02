@@ -178,14 +178,16 @@ angular.module('myApp')
          return (item.category.type === 5 && item.specialType === 2);  // equip rentals
        });
        this.isAnyExternalServices = this.externalServicesItems.length + this.disposableItems.length + this.equipRentalItems.length
-       this.isTableExternalServices = this.disposableItems.length + this.equipRentalItems.length
-       this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
-          return prev + (currentItem.isFreeItem?0:currentItem.price);
-        },0) + this.disposableItems.reduce(function(prev,currentItem) { //sum category item prices
-         return prev + (currentItem.isFreeItem?0:currentItem.price);
-       },0) + this.equipRentalItems.reduce(function(prev,currentItem) { //sum category item prices
+       this.isTableExternalServices = this.disposableItems.length + this.equipRentalItems.length;
+       this.disposablePrice = this.disposableItems.reduce(function(prev,currentItem) { //sum category item prices
          return prev + (currentItem.isFreeItem?0:currentItem.price);
        },0);
+         this.equipRentalPrice = this.equipRentalItems.reduce(function(prev,currentItem) { //sum category item prices
+           return prev + (currentItem.isFreeItem?0:currentItem.price);
+         },0);
+       this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
+          return prev + (currentItem.isFreeItem?0:currentItem.price);
+        },0) + this.disposablePrice + this.equipRentalPrice;
       };
 
       // set indication for bonus items

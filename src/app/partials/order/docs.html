@@ -49,29 +49,31 @@
     </tbody>
   </table>
   <p></p>
-<table style="width: 50%">
-  <tbody>
-    <tr ng-class="documentsModel.order.view.changes.bidTextType?'bg-success':null">
-      <td><label>הצעת מחיר ישנה:</label></td>
-        <td><label>טקסט מבוא</label></td>
-        <td>
-            <select ng-model="documentsModel.order.view.startBidTextType"
-                    ng-change="documentsModel.orderChanged('bidTextType')"
-                    ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
-                    ng-disabled="documentsModel.readOnly.is"
-                    ></select>
-        </td>
-      <td><label>טקסט סיום</label></td>
-      <td>
-        <select ng-model="documentsModel.order.view.endBidTextType"
-                ng-change="documentsModel.orderChanged('bidTextType')"
-                ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
-                ng-disabled="documentsModel.readOnly.is"
-          ></select>
-      </td>
-    </tr>
-    </tbody>
-</table>
+  <!--
+ <table style="width: 50%">
+   <tbody>
+     <tr ng-class="documentsModel.order.view.changes.bidTextType?'bg-success':null">
+       <td><label>הצעת מחיר ישנה:</label></td>
+         <td><label>טקסט מבוא</label></td>
+         <td>
+             <select ng-model="documentsModel.order.view.startBidTextType"
+                     ng-change="documentsModel.orderChanged('bidTextType')"
+                     ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
+                     ng-disabled="documentsModel.readOnly.is"
+                     ></select>
+         </td>
+       <td><label>טקסט סיום</label></td>
+       <td>
+         <select ng-model="documentsModel.order.view.endBidTextType"
+                 ng-change="documentsModel.orderChanged('bidTextType')"
+                 ng-options="bidTextType.label for bidTextType in documentsModel.bidTextTypes | filter: {documentType: 1}"
+                 ng-disabled="documentsModel.readOnly.is"
+           ></select>
+       </td>
+     </tr>
+     </tbody>
+ </table>
+ -->
 <div ng-hide="documentsModel.order.view.isChanged">
   <label>
     צור מסמך חדש:
