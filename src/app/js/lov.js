@@ -327,13 +327,13 @@ angular.module('myApp')
       },
       {
         id: 4,
-        label: 'הצעת מחיר',
+        label: 'הצעת מחיר קיימת',
         isRealDocumentType: true,
         order:2
       },
       {
         id: 5,
-        label: 'בפיתוח',
+        label: 'הצעת מחיר חדשה',
         isRealDocumentType: true,
         order:4
       }

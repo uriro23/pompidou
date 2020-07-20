@@ -23,16 +23,18 @@ angular.module('myApp')
       return str.join("&");
     };
 
-    this.getPdf = function (sourceUrl) {
+    this.getPdf = function (source) {
       var q = $q.defer();
       var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret='+secrets.prod.web2pdfSecret;
       var formData = new FormData();
-      formData.append('Url', sourceUrl);
+      formData.append('Url', source.url);
       formData.append('ConversionDelay', 7);
       formData.append('MarginBottom', 30);
       formData.append('MarginTop', 100);
       formData.append('PageSize', 'a4');
-      formData.append('ViewportWidth', 1000);
+      if (source.documentType === 5) {  // only for quote2
+        formData.append('ViewportWidth', 1000);
+      }
     //  formData.append('CssMediaType', 'print');
 
       $.ajax({
@@ -66,7 +68,7 @@ angular.module('myApp')
       if (sourceList.length) {
         var source = sourceList.pop();
         console.log('converting ' + source.url);
-        this.getPdf(source.url)
+        this.getPdf(source)
           .then(function (pdf) {
             if (pdf.length < 1500) {  // too small PDF means timeout
               return that.promise.reject('PDF timeout');

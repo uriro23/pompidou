@@ -194,7 +194,7 @@ angular.module('myApp')
           var url = (bid.documentType===4 || bid.documentType === 2)
             ? baseUrl + '/quote/' + bid.uuid : (bid.documentType === 1)
               ? baseUrl + '/bid/' + bid.uuid : baseUrl + '/quote2/' + bid.uuid;
-          return {url: url, fileName: bid.desc+'.pdf'}
+          return {url: url, fileName: bid.desc+'.pdf', documentType: bid.documentType};
         });
       }
       pdfService.getPdfCollection(pdfSource, true)

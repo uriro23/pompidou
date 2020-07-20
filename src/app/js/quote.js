@@ -9,6 +9,7 @@ angular.module('myApp')
 
     if (bid) {
       this.docNotAvailable = false;
+      this.quoteVersion = 1;
 
       var that = this;
       this.bid = bid;
