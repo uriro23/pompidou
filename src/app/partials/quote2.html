@@ -332,7 +332,7 @@
 </section>
 </div>
 <!--  -->
-  <section class="pinkborder">
+  <section class="pinkborder" ng-show="quote2Model.endBoxType.quoteEndBoxUrl">
 <div class="row blockDisplay">
   <div class="column_third right_half" >
     <img src="app/img/portrait_yuval.jpg" width="180" height="263" alt=""/>
@@ -340,7 +340,7 @@
   <ng-include src="quote2Model.endBoxType.quoteEndBoxUrl"></ng-include>
 </div>
 </section>
-  <section>
+  <section ng-show="quote2Model.currentQuote.endText">
     <article class="left_article">
       <span class="column_title_black">הצעת מחיר לאירוע - השף בקופסה</span>
       <div ng-bind-html="quote2Model.currentQuote.endText"></div>
@@ -353,7 +353,9 @@
     <aside class="right_article" ng-hide="quote2Model.endBoxType.isWaranty">
       <img src="app/img/cucumber_cups.webp" alt="" height="150"/>
     </aside>
+  </section>
 
+  <section>
     <div class="table-1"  ng-show="quote2Model.disposableItems.length">
       <div class="title-row"><span class="column_title">נספח: פירוט כלים חד פעמיים</span></div>
 
