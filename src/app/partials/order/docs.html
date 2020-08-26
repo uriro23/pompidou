@@ -1,41 +1,48 @@
 <div ng-controller="DocumentsCtrl as documentsModel">
-  <table style="width:70%">
+  <table style="width:90%">
     <tbody>
     <tr>
-      <td style="width:15%">
+      <td>
         <button class="btn btn-default" ng-click="documentsModel.sendMail()"
                 ng-disabled="documentsModel.readOnly.is ||
                              documentsModel.order.view.isChanged ||
                              documentsModel.isBidsLoading">
-          שלח דוא"ל
+          שלח מייל ללקוח
         </button>
       </td>
-      <td style="width: 15%">
+      <td>
+        <button class="btn btn-default" ng-click="documentsModel.sendEquipMail()"
+                ng-disabled="documentsModel.readOnly.is ||
+                             documentsModel.order.view.isChanged">
+                             שלח הזמנת ציוד
+        </button>
+      </td>
+      <td>
         <a ng-href="#/waranty/{{documentsModel.order.id}}" target="_blank">
           תעודת אחריות
         </a>
       </td>
-      <td style="width: 15%">
+      <td>
         <a ng-href="#/menu/{{documentsModel.order.id}}" target="_blank">
           תפריט מודפס
         </a>
       </td>
-      <td style="width: 20%">
+      <td>
         <a ng-href="#/sensitivityList/{{documentsModel.order.id}}" target="_blank">
           רשימת רגישויות
         </a>
       </td>
-      <td style="width: 20%">
+      <td>
         <a ng-href="#/instructionsList/{{documentsModel.order.id}}" target="_blank">
           רשימת הוראות
         </a>
       </td>
-      <td style="width: 15%">
+      <td>
         <a ng-href="#/exitList/{{documentsModel.order.id}}" target="_blank">
            רשימת יציאה
         </a>
       </td>
-      <td style="width: 15%">
+      <td>
         <button class="btn btn-warning"
                 ng-click="documentsModel.createAccountingOrder()"
                 ng-disabled="documentsModel.order.properties.orderStatus === 1 ||

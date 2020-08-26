@@ -166,6 +166,38 @@ angular.module('myApp')
 
     };
 
+    this.sendEquipMail = function () {
+      var that = this;
+      if (this.user.attributes.isSalesPerson) {
+        alert ('אינך יכול לשלוח הזמנת ציוד');
+        return;
+      }
+      var sendEquipMailModal = $modal.open({
+        templateUrl: 'app/partials/order/sendEquipMail.html',
+        controller: 'SendEquipMailCtrl as sendEquipMailModel',
+        resolve: {
+          order: function () {
+            return that.order;
+          },
+          bidTextTypes: function () {
+            return that.bidTextTypes;
+          },
+          user: function () {
+            return that.user;
+          },
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }]
+        },
+        size: 'lg'
+      });
+
+      sendEquipMailModal.result.then(function () {
+      });
+
+
+    };
+
     this.createAccountingOrder = function() {
       accountingService.documentTypes(false);
       //accountingService.createOrder(this.isProd, this.order);

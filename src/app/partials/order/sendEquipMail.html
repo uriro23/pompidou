@@ -1,0 +1,64 @@
+<div class="modal-header">
+  <h3 class="modal-title">שליחת מייל לספק ציוד השכרה</h3>
+</div>
+<div class="modal-body">
+
+  <div>
+    <label>
+      אל:
+    </label>
+    <span>{{sendEquipMailModel.customer. firstName+' '+
+            sendEquipMailModel.customer.lastName}}</span>
+    <input type="text" size="30" ng-model="sendEquipMailModel.mail.to"><br/>
+    <label>
+      דע:
+    </label>
+    <span>{{sendEquipMailModel.contact. firstName+' '+
+            sendEquipMailModel.contact.lastName}}</span>
+    <input type="text" size="30" ng-model="sendEquipMailModel.mail.cc"><br/>
+  </div>
+  <div>
+    <label>
+      הנדון:
+    </label>
+    <input type="text" size="60" ng-model="sendEquipMailModel.mail.subject">
+  </div>
+  <div>
+    <h5>טקסט מבוא</h5>
+    <label>
+      בחר וערוך מלל:
+    </label>
+    <select ng-model="sendEquipMailModel.mailTextType"
+            ng-change="sendEquipMailModel.setText()"
+            ng-options="bidTextType.label for bidTextType in sendEquipMailModel.bidTextTypes | filter: {documentType: 3}"
+    ></select><br/>
+    <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendEquipMailModel.msg"
+    ></textarea>
+    <h5>טבלת ציוד השכרה</h5>
+    <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendEquipMailModel.table"
+    ></textarea>
+  </div>
+   <p></p>
+  <table class="table table-hover">
+    <tr ng-repeat="bid in sendEquipMailModel.bids | filter: sendEquipMailModel.isShowDocument">
+      <td>
+        <input type="checkbox" ng-model="bid.isInclude">
+      </td>
+      <td>{{sendEquipMailModel.documentTypes[bid.properties.documentType].label}}</td>
+      <td>{{bid.properties.desc}}</td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <email-first-time-experience>
+    <button class="btn btn-primary" ng-click="sendEquipMailModel.doEmail('send')"
+            ng-disabled = "!sendEquipMailModel.msg || !sendEquipMailModel.mail.to"
+    >שלח</button>
+  </email-first-time-experience>
+  <email-first-time-experience>
+    <button class="btn btn-primary" ng-click="sendEquipMailModel.doEmail('save')"
+            ng-disabled = "!sendEquipMailModel.msg || !sendEquipMailModel.mail.to"
+    >שמור</button>
+  </email-first-time-experience>
+  <button class="btn btn-warning" ng-click="sendEquipMailModel.cancel()">ביטול</button>
+</div>

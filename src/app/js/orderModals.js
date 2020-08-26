@@ -107,7 +107,7 @@ angular.module('myApp')
       from: user.attributes.email,
       to: '',
       cc: '',
-      subject: 'אירוע פומפידו בתאריך '+ $filter('date')(order.properties.eventDate,'dd/MM/yyyy'),
+      subject: 'אירוע השף בקופסה בתאריך '+ $filter('date')(order.properties.eventDate,'dd/MM/yyyy'),
       text: ''
     };
     this.msg = '';
@@ -148,7 +148,7 @@ angular.module('myApp')
       removePlugins: 'elementspath'
     };
 
-     this.doEmail = function (op) {
+    this.doEmail = function (op) {
       var that = this;
       this.mail.attachedBids = [];
       var bidCnt = 0;
@@ -173,7 +173,7 @@ angular.module('myApp')
         }
       });
       if (this.attachmentType==='link') {
-       msgText += '<br/><br/><span>קישורים למסמכים:</span><br/>';
+        msgText += '<br/><br/><span>קישורים למסמכים:</span><br/>';
         this.mail.attachedBids.forEach(function(bid) {
           msgText += '<span>';
           msgText += (bid.desc + ' </span>');
@@ -187,8 +187,8 @@ angular.module('myApp')
             msgText += '<a href="' + baseUrl + '/quote2/' + bid.uuid + '">הצגה</a><span>  <span>';
             msgText += '<a href="' + baseUrl + '/quote2Print/' + bid.uuid + '">הדפסה</a>';
           }
-          })
-          msgText += '<br/>';
+        })
+        msgText += '<br/>';
       } else {    // pdf
         pdfSource = this.mail.attachedBids.map(function (bid) {
           var url = (bid.documentType===4 || bid.documentType === 2)
@@ -199,54 +199,144 @@ angular.module('myApp')
       }
       pdfService.getPdfCollection(pdfSource, true)
         .then(function(pdfResult) {
-          that.mail.attachments = pdfResult;
-          that.mail.text = '<div dir="rtl">' + msgText + '</div>';
-          gmailClientLowLevel.doEmail(op,that.mail)
-            .then(function () {
-              var newMail = api.initMail();
-              newMail.properties.orderId = order.id;
-              newMail.properties.date = new Date();
-              newMail.properties.customer = that.customer;
-              newMail.properties.contact = that.contact;
-              newMail.properties.to = that.mail.to;
-              newMail.properties.cc = that.mail.cc;
-              newMail.properties.subject = that.mail.subject;
-              newMail.properties.text = that.mail.text;
-              newMail.properties.attachmentType = that.attachmentType;
-              newMail.properties.attachments = that.mail.attachedBids;
-              api.saveObj(newMail)
-                .then(function (mail) {
-                  var activity = {
-                    date: new Date(),
-                    text: 'נשלח דואל עם ' + bidCnt + ' הצעות מחיר',
-                    mail: mail.id
-                  };
-                  order.properties.activities.splice(0, 0, activity);
-                  if (typeof order.properties.mailCount === 'undefined') {
-                    order.properties.mailCount = 1;  // this is needed for tasks
-                  } else {
-                    order.properties.mailCount++;
+            that.mail.attachments = pdfResult;
+            that.mail.text = '<div dir="rtl">' + msgText + '</div>';
+            gmailClientLowLevel.doEmail(op,that.mail)
+              .then(function () {
+                  var newMail = api.initMail();
+                  newMail.properties.orderId = order.id;
+                  newMail.properties.date = new Date();
+                  newMail.properties.customer = that.customer;
+                  newMail.properties.contact = that.contact;
+                  newMail.properties.to = that.mail.to;
+                  newMail.properties.cc = that.mail.cc;
+                  newMail.properties.subject = that.mail.subject;
+                  newMail.properties.text = that.mail.text;
+                  newMail.properties.attachmentType = that.attachmentType;
+                  newMail.properties.attachments = that.mail.attachedBids;
+                  api.saveObj(newMail)
+                    .then(function (mail) {
+                      var activity = {
+                        date: new Date(),
+                        text: 'נשלח דואל עם ' + bidCnt + ' הצעות מחיר',
+                        mail: mail.id
+                      };
+                      order.properties.activities.splice(0, 0, activity);
+                      if (typeof order.properties.mailCount === 'undefined') {
+                        order.properties.mailCount = 1;  // this is needed for tasks
+                      } else {
+                        order.properties.mailCount++;
+                      }
+                      orderService.checkTasks(order);
+                      orderService.saveOrder(order);
+                    });
+                },
+                function (error) {
+                  console.log(error);
+                  var errText = 'send email error:\r\n';
+                  if (error.result) {
+                    if (error.result.error) {
+                      errText += error.result.error.message
+                    }
                   }
-                  orderService.checkTasks(order);
-                  orderService.saveOrder(order);
-                });
-            },
-            function (error) {
-              console.log(error);
-              var errText = 'send email error:\r\n';
-              if (error.result) {
-                if (error.result.error) {
-                  errText += error.result.error.message
+                  alert(errText);
                 }
-              }
-              alert(errText);
-            }
-          );
-        },
+              );
+          },
           function(error) {
-          console.log(error);
-          alert(error);
+            console.log(error);
+            alert(error);
           });
+
+      $modalInstance.close();
+    };
+
+    this.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+
+  })
+  .controller('SendEquipMailCtrl', function ($modalInstance, $location, api, orderService, lov,
+                                        order, bidTextTypes, user, config,
+                                        gmailClientLowLevel, $scope, $filter) {
+    var that = this;
+    console.log(config);
+    this.order = order;
+     this.bidTextTypes = bidTextTypes;
+    this.documentTypes = lov.documentTypes;
+    this.mail = {
+      from: user.attributes.email,
+      to: config.equipRentalMail,
+      cc: '',
+      subject: 'הזמנת ציוד לאירוע השף בקופסה בתאריך '+ $filter('date')(order.properties.eventDate,'dd/MM/yyyy'),
+      text: '',
+      attachments: []
+    };
+    this.msg = '';
+    this.table = renderEquipTable(order);
+
+
+    this.setText = function () {
+      this.msg = this.mailTextType.mailText;
+    };
+
+    this.isShowDocument = function (doc) {
+      return lov.documentTypes[doc.properties.documentType].isRealDocumentType
+    };
+
+    $scope.editorOptions = {
+      height: '150',
+      removePlugins: 'elementspath'
+    };
+
+    function renderEquipTable (ord) {
+      var table = "<p></p><table><thead><tr><th><label>פריט</label></th><th><label>כמות</label></th></tr></thead><tbody>";
+      var items = ord.properties.quotes[ord.properties.activeQuote].items;
+      var equipRentalItems = items.filter(function (item) {
+        return (item.category.type === 5 && item.specialType === 2);  // equip rentals
+      });
+      if (equipRentalItems.length === 0) {
+        alert('אין השכרת ציוד באירוע זה');
+        return "<p>אין הזמנת ציוד באירוע זה</p>";
+      }
+      equipRentalItems.forEach(function(item) {
+        table += "<tr><td>";
+        table += item.productDescription;
+        table += "</td><td>";
+        table += item.quantity;
+        table += "</td></tr>";
+      });
+      table += "<tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>";
+      return table;
+    }
+
+    this.doEmail = function (op) {
+      var that = this;
+       var msgText = this.msg + this.table;
+
+
+            that.mail.text = '<div dir="rtl">' + msgText + '</div>';
+            gmailClientLowLevel.doEmail(op,that.mail)
+              .then(function () {
+                      var activity = {
+                        date: new Date(),
+                        text: 'נשלח מייל לספק ציוד להשכרה',
+                      };
+                      order.properties.activities.splice(0, 0, activity);
+                      orderService.saveOrder(order);
+                },
+                function (error) {
+                  console.log(error);
+                  var errText = 'send email error:\r\n';
+                  if (error.result) {
+                    if (error.result.error) {
+                      errText += error.result.error.message
+                    }
+                  }
+                  alert(errText);
+                }
+              );
 
       $modalInstance.close();
     };
