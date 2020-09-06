@@ -67,8 +67,13 @@ angular.module('myApp')
     this.setFixedPrice = function () {
       var thisQuote = this.order.view.quote;
 
-       thisQuote.errors.fixedPrice = Number(thisQuote.fixedPrice) != thisQuote.fixedPrice ||
-                              Number(thisQuote.fixedPrice) < 0;
+      if (!thisQuote.isFixedPrice) {
+        thisQuote.fixedPrice = 0;
+      } else {
+        thisQuote.errors.fixedPrice =
+          Number(thisQuote.fixedPrice) != thisQuote.fixedPrice || Number(thisQuote.fixedPrice) < 0;
+      }
+
       orderService.calcTotal(thisQuote,this.order);
       orderService.quoteChanged(this.order,'fixedPrice');
     };
