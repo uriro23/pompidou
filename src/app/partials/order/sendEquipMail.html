@@ -25,14 +25,7 @@
   </div>
   <div>
     <h5>טקסט מבוא</h5>
-    <label>
-      בחר וערוך מלל:
-    </label>
-    <select ng-model="sendEquipMailModel.mailTextType"
-            ng-change="sendEquipMailModel.setText()"
-            ng-options="bidTextType.label for bidTextType in sendEquipMailModel.bidTextTypes | filter: {documentType: 3}"
-    ></select><br/>
-    <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendEquipMailModel.msg"
+   <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendEquipMailModel.msg"
     ></textarea>
     <h5>טבלת ציוד השכרה</h5>
     <textarea ckeditor="editorOptions" rows="5" cols="70" ng-model="sendEquipMailModel.table"
