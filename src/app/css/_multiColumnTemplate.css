@@ -191,7 +191,7 @@ section {
 
 .left_article {
   background-color: #FFFFFF;
-  width: 60%;
+  width: 65%;
   float: left;
   font-size: 1.2em;
   font-family: 'Assistant', sans-serif;
@@ -259,9 +259,10 @@ section {
 }
 
 .right_article {
-  width: 40%;
-  float: left;
+  width: 35%;
+  float: right;
   background-color: #ffffff;
+  height: auto;
 }
 
 .container .right_article ul {
@@ -410,6 +411,8 @@ body {
     padding-bottom: 40px;
   }
 
+  /*
+
   .left_article {
     width: 100%;
     height: auto;
@@ -419,6 +422,8 @@ body {
     width: 100%;
     height: auto;
   }
+
+   */
 
   .placeholder {
     width: 100%;
@@ -509,6 +514,7 @@ body {
     padding-bottom: 40px;
   }
 
+  /*
   .left_article {
     width: 100%;
     height: auto;
@@ -519,6 +525,8 @@ body {
     height: auto;
     padding-bottom: 25px;
   }
+
+   */
 
   .placeholder {
     margin-top: 0px;

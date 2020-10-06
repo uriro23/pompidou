@@ -69,6 +69,7 @@ angular.module('myApp')
 
       if (!thisQuote.isFixedPrice) {
         thisQuote.fixedPrice = 0;
+        thisQuote.isNoTotal = false;
       } else {
         thisQuote.errors.fixedPrice =
           Number(thisQuote.fixedPrice) != thisQuote.fixedPrice || Number(thisQuote.fixedPrice) < 0;
