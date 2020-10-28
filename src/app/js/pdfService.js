@@ -29,10 +29,10 @@ angular.module('myApp')
       var formData = new FormData();
       formData.append('Url', source.url);
       formData.append('ConversionDelay', 7);
-      // formData.append('MarginBottom', 10);
-      // formData.append('MarginTop', 10);
-      // formData.append('MarginRight', 0);
-      // formData.append('MarginLeft', 0);
+      formData.append('MarginBottom', 5);
+      formData.append('MarginTop', 5);
+      formData.append('MarginRight', 5);
+      formData.append('MarginLeft', 5);
       formData.append('PageSize', 'a4');
       // if (source.documentType === 5) {  // only for quote2
       //   formData.append('ViewportWidth', 1000);

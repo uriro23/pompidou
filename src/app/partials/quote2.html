@@ -3,7 +3,11 @@
 
   <section>
     <article class="left_article">
-		<p><span class="column_title_black">הצעת מחיר לאירוע - השף בקופסה</span></p>
+		<p><span class="column_title_black">הצעת מחיר לאירוע</span></p>
+      <p>
+        <span>מספרנו:</span>
+        <span>{{quote2Model.bid.properties.order.number}}</span>
+      </p>
 <p>      <strong>שם:</strong>
           <span>{{quote2Model.bid.properties.customer.firstName+' '+quote2Model.bid.properties.customer.lastName}}</span><br>
         <strong>תאריך האירוע:</strong>
@@ -341,17 +345,16 @@
 </div>
 </section>
   <section ng-show="quote2Model.currentQuote.endText">
+    <div id="terms_and_conditions" style="margin-left:2cm;margin-right:3cm;margin-bottom: 1cm"
+         ng-bind-html="quote2Model.currentQuote.endText"></div>
+    <!--
     <article class="left_article">
       <div id="terms_and_conditions" ng-bind-html="quote2Model.currentQuote.endText"></div>
     </article>
-    <aside class="right_article" ng-show="quote2Model.endBoxType.isWaranty">
-      <a href="https://chefbekufsa.co.il/%d7%90%d7%97%d7%a8%d7%99%d7%95%d7%aa-%d7%a2%d7%9c-%d7%94%d7%aa%d7%9c%d7%94%d7%91%d7%95%d7%aa-%d7%94%d7%90%d7%95%d7%a8%d7%97%d7%99%d7%9d/" target="_blank">
-        <img src="app/img/waranty_homepage_dark.png" alt="" width="210"/>
-      </a>
+        <aside class="right_article">
+      <img src="app/img/cucumber_cups.webp" alt="" height="150" style="margin-right:3.5cm;margin-top:0.8cm">
     </aside>
-    <aside class="right_article" ng-hide="quote2Model.endBoxType.isWaranty">
-      <img src="app/img/cucumber_cups.webp" alt="" height="150"/>
-    </aside>
+    -->
   </section>
 
   <section>
@@ -428,6 +431,77 @@
   </div>
   -->
    </footer>
+  <div id="waranty" bgcolor="#FFFBFE" ng-show="quote2Model.endBoxType.isWaranty">
+    <div>
+      <p style="page-break-after: always;">&nbsp;</p>
+      <p style="page-break-before: always;">&nbsp;</p>
+    </div>
+    <div class="container" style="border: #D908BE solid 0px; padding: 8px; margin: 5%; border-radius: 4px; -webkit-box-shadow: -5px -4px 42px 11px rgba(217,217,217,1);
+-moz-box-shadow: -5px -4px 42px 11px rgba(217,217,217,1);
+box-shadow: -5px -4px 42px 11px rgba(217,217,217,1);">
+      <div style="border: #DF019F solid 4px; padding: 20px; border-radius: 5px;"> <!-- padding was 35px 42 px -->
 
+        <section>
+          <article class="waranty_stamp">
+            <div align="center" style="padding: 42px 0 0 0;"><img src="app/img/waranty_homepage_dark.png" width="249" height="252" alt=""/></div>
+          </article>
+          <aside class="waranty_main_text">
+            <p><span class="column_title_black-big">תעודת אחריות</span></p>
+            <!-- עבור תפריט השף בהצעת מחיר מספר------  בסכום של-------- עבור הלקוח--------->
+            <p style="font-size: 1.12em;">
+              <span>עבור</span>
+              <span>{{quote2Model.quoteHeading}}</span>
+              <span>בהצעת מחיר מספר</span>
+              <span>{{quote2Model.bid.properties.order.number}}</span>
+              <span>בסכום של</span>
+              <span>{{quote2Model.currentQuote.total | currency}}</span>
+              <span>ללקוח/ה</span>
+              <span>{{quote2Model.bid.properties.customer.firstName+' '+quote2Model.bid.properties.customer.lastName}}</span>
+            </p>
+            <p style="font-size: 1.12em;">השף בקופסה מתחייב בזאת שהאורחים באירוע הנ"ל יתלהבו מהאוכל ויציינו זאת בקול רם. כמו כן, יחמיאו למארח על הבחירה הטובה.</p>
+            <p style="font-size: 1.12em;">במידה והשף בקופסה לא יעמוד בהתחייבות הזאת יוחזר 20% מעלות האוכל באירוע ללקוח.</p>
+          </aside>
+       </section>
+        <section>
+          <div>
+            <table width="100%">
+              <tbody>
+              <tr>
+                <td align="right"><span class="diploma_table_subtitle">למה אנחנו נותנים כזאת אחריות?</span>
+                  מנסיון של קרוב ל- 2000 אירועים יש לנו ביטחון גדול ביכולת שלנו לספק את הסחורה, שהיא מבחינתינו קודם כל אורחים שמתלהבים מהאוכל.
+                  היכולת שלנו לעמוד בהבטחה שלנו נובעת קודם כל מניסיון מקצועי בין לאומי של השף שצבר למעלה משני עשורים של עשייה קולינרית, ובנוסף, מלמעלה מעשור שבמהלכו שימחנו קרוב ל- 2000 לקוחות ועשרות אלפי אורחים.<br>
+                  <br>
+                  בנוסף לניסיון אנחנו משקיעים בכל אירוע משאבים אדירים כדי לעמוד בהבטחה הגדולה שלנו. כל אירוע מקבל את מלוא תשומת הלב, כאילו הוא היה הראשון שלנו.
+                  על למנת לשקף לך את הרצינות שלנו ואת המחויבות שלנו להצלחת האירוע שלך אנחנו נותנים את האחריות יוצאת הדופן הזאת.
+                </td>
+              </tr>
+              <tr>
+                <td align="right"><span class="diploma_table_subtitle">למי אנחנו נותנים כזאת אחריות?</span>
+                  אנחנו נותנים אחריות להתלהבות האורחים רק לתפריטי השף שלנו ללא שינויים מהותיים, ורק ללקוחות שלאחר שיחה איתם התרשמנו שהתפריט מתאים להם, ועל בסיס אמון הדדי.<br>
+                  <br>
+                  לשף בקופסה יש גם תפריטים אחרים שעליהם אין את האחריות הזאת ויכול להיות שבסופו של דבר תרכשו תפריט כזה. <strong>חשוב להדגיש שבכל מקרה אנחנו תמיד לוקחים אחריות מלאה על איכות האוכל שלנו</strong>. אבל אחריות כזאת על התלהבותם של האורחים אנחנו יכולים לתת על תפריטי השף בלבד מפני שיש בהם שפע גדול של מנות שאי אפשר להישאר אדישים אליהן.</td>
+              </tr>
+              <tr>
+                <td align="right"><span class="diploma_table_subtitle">איך זה עובד בפועל?</span>
+                  במידה והאורחים שלך לא יתלהבו מהאוכל, כל שצריך לעשות הוא לשלוח לנו הודעה בנוסח הבא: האורחים לא התלהבו מהאוכל, ולהוסיף פרטי חשבון בנק להעברה.<br>
+                  <br>אנחנו נעביר לחשבון הבנק שלך 20% ממחיר האוכל באירוע
+                  <br>
+                  <br><strong>אשמח לעמוד לשרותכם באירוע החשוב שלכם ולדאוג עבורכם שהוא יהיה בלתי נשכח</strong><br>
+
+                  בברכה<br>
+                  יובל
+
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </section>
+
+
+      </div>
+    </div>
+  </div>
 </div>
 

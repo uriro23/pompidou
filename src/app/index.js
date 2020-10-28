@@ -840,24 +840,7 @@ config(function($stateProvider, $urlRouterProvider) {
       }]
     }
   })
-    .state ('waranty', {
-      url: '/waranty/:id',
-      templateUrl: 'app/partials/waranty.html',
-      controller: 'WarantyCtrl as warantyModel',
-      resolve: {
-        order: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrder ($stateParams.id).then (function (orders) {
-            return orders[0];
-          });
-        }],
-        customers: ['api', function (api) {
-          return api.queryCustomers().then(function (objs) {
-            return objs;
-          });
-        }]
-      }
-    })
-    .state ('menu', {
+  .state ('menu', {
       url: '/menu/:id',
       templateUrl: 'app/partials/menu.html',
       controller: 'MenuCtrl as menuModel',

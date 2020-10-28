@@ -8,7 +8,7 @@
 }
 
 body  {
-  width: 1000px;
+  width: 1000px !important;
   margin-top: 42px;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -62,7 +62,7 @@ tfoot {
 
 .container {
   background-color: #FFFFFF;
-  width: 90%;
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
   border-bottom-width: 0px;
@@ -191,7 +191,7 @@ section {
 
 .left_article {
   background-color: #FFFFFF;
-  width: 65%;
+  width: 60%; /*65*/
   float: left;
   font-size: 1.2em;
   font-family: 'Assistant', sans-serif;
@@ -259,7 +259,7 @@ section {
 }
 
 .right_article {
-  width: 35%;
+  width: 40%; /*35*/
   float: right;
   background-color: #ffffff;
   height: auto;
@@ -354,6 +354,15 @@ section {
 .column_title_black {
   font-family: 'Assistant', sans-serif;
   font-size: 30px;
+  font-weight: 700;
+  line-height: 36px;
+  color: #000000;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+.column_title_black-big {
+  font-family: 'Assistant', sans-serif;
+  font-size: 55px;
   font-weight: 700;
   line-height: 36px;
   color: #000000;
@@ -676,3 +685,37 @@ body {
   border: thin solid #9D67A7;
 }
 
+.diploma_table_subtitle {
+  display: block;
+  font-size: 1.17em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+.waranty_main_text {
+  background-color: #FFFFFF;
+  width: 60%;
+  float: left;
+  font-size: 1.2em;
+  font-family: 'Assistant', sans-serif;
+  color: #343434;
+  padding-bottom: 15px;
+}
+
+.waranty_main_text p {
+  padding-left: 5%;
+  padding-right: 5%;
+  text-align: justify;
+  line-height: 1.1em;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #5C5656;
+}
+.waranty_stamp {
+  width: 40%;
+  float: left;
+  background-color: #ffffff;
+}
