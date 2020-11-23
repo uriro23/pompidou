@@ -136,10 +136,17 @@ angular.module('myApp')
     this.setKnownDate = function () {
       var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
-      if (!thisOrder.isUnknownDate) { // isUnknownDate should always be false here
+      if (!thisOrder.isDateUnknown) { // isUnknownDate should always be false here
         thisOrder.eventDate = undefined;
         this.order.view.errors.eventDate = true;
       }
+    };
+
+    this.setDateUnknown = function () {
+      var thisOrder = this.order.properties;
+      orderService.orderChanged(this.order,'header');
+      thisOrder.eventDate = undefined;
+      thisOrder.isDateUnknown = true;
     };
 
     this.setEventTime = function () {

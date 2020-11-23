@@ -128,6 +128,9 @@
       <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.properties.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'bg-danger':null">
+      <button class="btn btn-default btn-small"
+              ng-click="headerModel.setDateUnknown()"
+              ng-hide="orderModel.order.view.orderStatus.id > 1 && orderModel.order.view.orderStatus.id < 6">X</button>
     </td>
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
          style="width: 12%">
