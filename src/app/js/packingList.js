@@ -195,6 +195,12 @@ angular.module('myApp')
         item.packageMeasurementUnit = measurementUnits.filter(function(mu) {
           return mu.tId === catItem.packageMeasurementUnit;
         })[0];
+        // add "main part" to name, if exitList is non empty
+        if (catItem.exitList.length) {
+          item.displayName = item.productName + ' (החלק העיקרי)';
+        } else {
+          item.displayName = item.productName;
+        }
 
         ind++;
         that.vec[ind] = {
@@ -205,6 +211,7 @@ angular.module('myApp')
 
         // add exit list items
         catItem.exitList.forEach(function(ex) {
+          ex.item += (' ל'+item.productName);
           ind++;
           that.vec[ind] = {
             ind: ind,
@@ -222,55 +229,5 @@ angular.module('myApp')
       })[0];
       this.exitList = thisItem.properties.exitList;
     };
-
-
-    function editItems (order, category, catalog) {
-      var categoryItems = order.properties.quotes[order.properties.activeQuote].items.filter(function(item) {
-        return item.category.tId === category;
-      }).map(function(item) {
-        var catalogItem = catalog.filter(function(cat) {
-          return cat.id===item.catalogId;
-        })[0].properties;
-        return {
-          index: item.index,
-          productName: catalogItem.productName,
-          productDescription: item.productDescription,
-          isDescChanged: item.isDescChanged & (!item.isCosmeticChange),
-          quantity: item.quantity,
-          measurementUnitLabel: item.measurementUnit.label
-        }
-      }).sort(function(a,b) {
-        if (a.productName < b.productName) {
-          return -1;
-        } else if (a.productName > b.productName) {
-          return 1;
-        } else if (a.isDescChanged) {
-          return 1;
-        } else if (b.isDescChanged) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      // now unite items with same catalog name and without major description change
-      var condensedItems = [];
-      var j = 0;
-      condensedItems[0] = categoryItems[0];
-      for (var i=1;i<categoryItems.length;i++) {
-        if (categoryItems[i].productName === categoryItems[i-1].productName && !categoryItems[i].isDescChanged)  {
-          condensedItems[j].quantity += categoryItems[i].quantity;
-        } else {
-          j++;
-          condensedItems[j] = categoryItems[i];
-        }
-      }
-      return condensedItems;
-    }
-
-    this.snacks = editItems(order,CATEGORY_SNACKS,catalog);
-    this.desserts = editItems(order,CATEGORY_DESSERTS,catalog);
-
-
-
 
   });
