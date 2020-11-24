@@ -1,0 +1,328 @@
+<div id="exitListContainer">
+		<h1>
+		   רשימת אריזה -
+      {{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}
+      {{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+      <img ng-show="packingListModel.isOrderColors" src="app/img/bigColors/{{packingListModel.color.stickerColor}}.jpg"/>
+      <span ng-show="packingListModel.isOrderNumbers">[{{packingListModel.color.tId}}]</span>
+    </h1>
+
+
+		<table style="width:90%">
+		  <tbody>
+		  <tr>
+
+		    <td>
+		      <label>
+		        הזמנה מס':
+		      </label>
+		      <span>{{packingListModel.currentOrder.number}}</span>
+		    </td>
+
+        <td>
+		      <label>
+		        תאריך:
+		      </label>
+		      <span>{{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}</span>
+		    </td>
+
+        <td>
+          <label>
+שעת מסירה:
+          </label>
+          <span>{{packingListModel.currentOrder.eventTime | date: 'H:mm'}}</span>
+        </td>
+
+        <td>
+          <label>
+שעת יציאה:
+          </label>
+          <span>{{packingListModel.currentOrder.exitTime | date: 'H:mm'}}</span>
+        </td>
+
+        <td>
+          <label>
+            משתתפים:
+          </label>
+          <span>{{packingListModel.currentOrder.noOfParticipants}}</span>
+        </td>
+
+        <td>
+          <label>
+            מתוכם ילדים:
+          </label>
+          <span>{{packingListModel.currentOrder.children}}</span>
+        </td>
+
+      </tr>
+
+
+		  <tr>
+		    <td>
+		      <label>
+		        לקוח:
+		      </label>
+		      <span>{{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}</span>
+		    </td>
+		    <td>
+		      <label>
+		        נייד:
+		      </label>
+		      <span>{{packingListModel.customer.mobilePhone}}</span>
+		    </td>
+		    <td>
+		      <label>
+		        בית:
+		      </label>
+		      <span>{{packingListModel.customer.homePhone}}</span>
+		    </td>
+		    <td>
+		      <label>
+		        עבודה:
+		      </label>
+		      <span>{{packingListModel.customer.workPhone}}</span>
+		    </td>
+		  </tr>
+      <tr></tr>
+      <tr>
+         <td ng-show="packingListModel.currentOrder.taskData.isSurpriseParty">
+          <h4>זוהי מסיבת הפתעה!!!</h4>
+        </td>
+        <td ng-show="packingListModel.currentOrder.taskData.surpriseContact">
+          <label>לדבר עם</label>
+          <span>{{packingListModel.currentOrder.taskData.surpriseContact}}</span>
+        </td>
+        <td ng-show="packingListModel.currentOrder.taskData.eventCause">
+          <label>מה חוגגים:</label>
+          <span>{{packingListModel.currentOrder.taskData.eventCause}}</span>
+        </td>
+      </tr>
+
+
+		  </tbody>
+		</table>
+
+  <div ng-show="packingListModel.currentOrder.taskData.kitchenInstructions">
+    <label>הוראות למטבח:</label>
+    <span>{{packingListModel.currentOrder.taskData.kitchenInstructions}}</span>
+  </div>
+<p></p>
+  <div ng-hide="packingListModel.currentOrder.taskData.isSelfDelivery">
+  <h4>הוראות לשליח:</h4>
+    <div>
+      <label>מיקום האירוע:</label>
+      <span>{{packingListModel.currentOrder.taskData.address}}</span>
+    </div>
+    <div ng-show="packingListModel.currentOrder.taskData.parking">
+      <label>גישה וחניה:</label>
+      <span>{{packingListModel.currentOrder.taskData.parking}}</span>
+    </div>
+    <div ng-show="packingListModel.currentOrder.taskData.isCustomerAbsent">
+      <label>הלקוח לא יהיה לקבל את המשלוח</label>
+      &nbsp;&nbsp;
+      <label>איש קשר:</label>
+      <span>{{packingListModel.currentOrder.taskData.contactPersonDetails}}</span>
+    </div>
+  </div>
+  <div ng-show="packingListModel.currentOrder.taskData.isSelfDelivery">
+    <h4>איסוף עצמי</h4>
+  </div>
+<p></p>
+    <h4 ng-show="packingListModel.currentOrder.taskData.isServiceOnSite">
+      נדרש סרוויס באירוע!
+    </h4>
+  <div ng-show="packingListModel.currentOrder.taskData.serviceRemarks">
+    <label>הערות לסרוויס:</label>
+    <span>{{packingListModel.currentOrder.taskData.serviceRemarks}}</span>
+  </div>
+		<div ng-show="packingListModel.currentOrder.remarks">
+		  <label>
+		    הערות:
+		  </label>
+		  <span>{{packingListModel.currentOrder.remarks}}</span>
+		</div>
+<p></p>
+
+		<table style="width:90%">
+		  <tbody>
+		  <tr>
+	     <td style="width:20%">
+          <label>
+            לתשלום:
+          </label>
+		      <span>
+		        {{packingListModel.currentQuote.isFixedPrice?
+		            packingListModel.currentQuote.fixedPrice:packingListModel.currentQuote.total | currency}}
+		      </span>
+        </td>
+        <td style="width:20%" ng-show="packingListModel.currentQuote.advance">
+          <label>
+מקדמה:
+          </label>
+		      <span>
+		        {{packingListModel.currentQuote.advance | currency}}
+		      </span>
+        </td>
+        <td style="width:20%" ng-show="packingListModel.currentQuote.advance">
+          <label>
+יתרה:
+          </label>
+		      <span>
+		        {{packingListModel.currentQuote.balance | currency}}
+		      </span>
+        </td>
+		  </tr>
+		  </tbody>
+		</table>
+
+
+  <table style="width:90%;height:20px" border="1">
+    <tr>
+      <td ng-repeat="role in packingListModel.pRoles track by role.tId" style="width: 25%">
+        <label>{{role.label}}</label>
+      </td>
+    </tr>
+  </table>
+
+  <p style="height: 20px;"></p>
+
+  <table style="width: 90%">
+    <th style="width: 50%"></th>
+    <th style="width: 25%"></th>
+    <th style="width: 25%"></th>
+    <tr ng-repeat="line in packingListModel.vec track by line.ind">
+      <td ng-show="line.level===0">
+        <label>{{line.data.label}}</label></td>
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem" style="font-weight: bold">
+        &nbsp;&#128440;
+        {{line.data.productName}}
+        <div ng-show="line.data.isDescChanged">
+          &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
+          {{line.data.productDescription}}
+        </div>
+      </td>
+      <td ng-show="line.level===2">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
+        {{line.data.item}}</td>
+      <td ng-show="line.level===0"></td>
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
+        {{line.data.quantity}}&nbsp;{{line.data.measurementUnit.label}}
+      </td>
+      <td ng-show="line.level===2"></td>
+      <td ng-show="line.level===0">
+        <span ng-show="line.data.measurementUnit">
+        <input type="text" size="5"> &nbsp; {{line.data.measurementUnitLabel}}
+        </span>
+      </td>
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
+        <span ng-show="line.data.packageMeasurementUnit.tId">
+        <input type="text" size="5"> &nbsp; {{line.data.packageMeasurementUnit.label}}
+        </span>
+      </td>
+      <td ng-show="line.level===2">
+        <span ng-show="line.data.measurementUnit.tId">
+        <input type="text" size="5"> &nbsp; {{line.data.measurementUnit.label}}
+        </span>
+      </td>
+    </tr>
+  </table>
+  <div ng-show="packingListModel.accessories.length">
+    <div><label>אביזרים נלווים</label></div>
+    <table>
+      <tbody>
+      <tr ng-repeat="accessory in packingListModel.accessories track by accessory.id">
+        <td>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
+          {{accessory.name}}
+        </td>
+        <td>{{accessory.quantity | number:0}}</td>
+        <td>{{accessory.measurementUnit.label}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p></p>
+
+  <table>
+    <tbody>
+    <tr ng-repeat="group in packingListModel.groups track by group.id" style="font-weight: bold">
+      <td>
+        סה"כ
+        {{group.label}}
+        :
+      </td>
+      <td>{{group.quantity}}</td>
+      <td>{{group.measurementUnit.label}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <div>
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+
+  <h3>
+    {{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}
+    {{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    -
+    חטיפים
+    &nbsp;
+    <img ng-show="packingListModel.isOrderColors" src="app/img/bigColors/{{packingListModel.color.stickerColor}}.jpg"/>
+    <span ng-show="packingListModel.isOrderNumbers">[{{packingListModel.color.tId}}]</span>
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in packingListModel.snacks track by item.index">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>
+    {{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}
+    {{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    -
+    קינוחים
+    &nbsp;
+    <img ng-show="packingListModel.isOrderColors" src="app/img/bigColors/{{packingListModel.color.stickerColor}}.jpg"/>
+    <span ng-show="packingListModel.isOrderNumbers">[{{packingListModel.color.tId}}]</span>
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in packingListModel.desserts track by item.index">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+
+
+
+
+</div> <!-- End of exitListContainer  -->

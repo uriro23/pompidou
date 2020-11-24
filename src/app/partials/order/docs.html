@@ -34,19 +34,31 @@
       </td>
       <td>
         <a ng-href="#/exitList/{{documentsModel.order.id}}" target="_blank">
-           רשימת יציאה
+          רשימת יציאה
         </a>
       </td>
+      <td>
+        <a ng-href="#/serviceList/{{documentsModel.order.id}}" target="_blank">
+          רשימת סרוויס
+        </a>
+      </td>
+      <td>
+        <a ng-href="#/packingList/{{documentsModel.order.id}}" target="_blank">
+          רשימת אריזה
+        </a>
+      </td>
+      <!--
       <td>
         <button class="btn btn-warning"
                 ng-click="documentsModel.createAccountingOrder()"
                 ng-disabled="documentsModel.order.properties.orderStatus === 1 ||
                              documentsModel.order.properties.orderStatus === 2 ||
                              documentsModel.order.properties.orderStatus === 6 || true">
-          <!-- drop the 'true' when ready  -->
+           drop the 'true' when ready
           צור הזמנה
         </button>
       </td>
+      -->
     </tr>
     </tbody>
   </table>

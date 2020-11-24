@@ -1,0 +1,224 @@
+<div id="exitListContainer">
+		<h1>
+		   רשימת סרוויס -
+      {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
+      {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+      <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
+      <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+    </h1>
+
+
+		<table style="width:90%">
+		  <tbody>
+		  <tr>
+
+		    <td>
+		      <label>
+		        הזמנה מס':
+		      </label>
+		      <span>{{serviceListModel.currentOrder.number}}</span>
+		    </td>
+
+          <td>
+		      <label>
+		        תאריך:
+		      </label>
+		      <span>{{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}</span>
+		    </td>
+
+        <td>
+          <label>
+שעת מסירה:
+          </label>
+          <span>{{serviceListModel.currentOrder.eventTime | date: 'H:mm'}}</span>
+        </td>
+
+        <td>
+          <label>
+שעת יציאה:
+          </label>
+          <span>{{serviceListModel.currentOrder.exitTime | date: 'H:mm'}}</span>
+        </td>
+
+        <td>
+          <label>
+            משתתפים:
+          </label>
+          <span>{{serviceListModel.currentOrder.noOfParticipants}}</span>
+        </td>
+
+        <td>
+          <label>
+            מתוכם ילדים:
+          </label>
+          <span>{{serviceListModel.currentOrder.children}}</span>
+        </td>
+
+      </tr>
+
+
+		  <tr>
+		    <td>
+		      <label>
+		        לקוח:
+		      </label>
+		      <span>{{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}</span>
+		    </td>
+		    <td>
+		      <label>
+		        נייד:
+		      </label>
+		      <span>{{serviceListModel.customer.mobilePhone}}</span>
+		    </td>
+		    <td>
+		      <label>
+		        בית:
+		      </label>
+		      <span>{{serviceListModel.customer.homePhone}}</span>
+		    </td>
+		    <td>
+		      <label>
+		        עבודה:
+		      </label>
+		      <span>{{serviceListModel.customer.workPhone}}</span>
+		    </td>
+		  </tr>
+      <tr></tr>
+      <tr>
+         <td ng-show="serviceListModel.currentOrder.taskData.isSurpriseParty">
+          <h4>זוהי מסיבת הפתעה!!!</h4>
+        </td>
+        <td ng-show="serviceListModel.currentOrder.taskData.surpriseContact">
+          <label>לדבר עם</label>
+          <span>{{serviceListModel.currentOrder.taskData.surpriseContact}}</span>
+        </td>
+        <td ng-show="serviceListModel.currentOrder.taskData.eventCause">
+          <label>מה חוגגים:</label>
+          <span>{{serviceListModel.currentOrder.taskData.eventCause}}</span>
+        </td>
+      </tr>
+
+
+		  </tbody>
+		</table>
+
+  <div ng-show="serviceListModel.currentOrder.taskData.kitchenInstructions">
+    <label>הוראות למטבח:</label>
+    <span>{{serviceListModel.currentOrder.taskData.kitchenInstructions}}</span>
+  </div>
+<p></p>
+    <h4 ng-show="serviceListModel.currentOrder.taskData.isServiceOnSite">
+      נדרש סרוויס באירוע!
+    </h4>
+  <div ng-show="serviceListModel.currentOrder.taskData.serviceRemarks">
+    <label>הערות לסרוויס:</label>
+    <span>{{serviceListModel.currentOrder.taskData.serviceRemarks}}</span>
+  </div>
+		<div ng-show="serviceListModel.currentOrder.remarks">
+		  <label>
+		    הערות:
+		  </label>
+		  <span>{{serviceListModel.currentOrder.remarks}}</span>
+		</div>
+<p></p>
+
+
+  <p style="height: 20px;"></p>
+
+  <table style="width: 90%">
+    <th style="width: 50%"></th>
+    <th style="width: 25%"></th>
+    <th style="width: 25%"></th>
+    <tr ng-repeat="line in serviceListModel.vec track by line.ind">
+  <!-- column 1: name -->
+      <td ng-show="line.level===0">
+        <label>{{line.data.label}}</label></td>
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem" style="font-weight: bold">
+        &nbsp;&#128440;
+        {{line.data.productName}}
+        <div ng-show="line.data.isDescChanged">
+          &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
+          {{line.data.productDescription}}
+        </div>
+      </td>
+      <!-- column 2: quantity -->
+      <td ng-show="line.level===2">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
+        {{line.data.item}}</td>
+      <td ng-show="line.level===0"></td>
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
+        {{line.data.quantity}}&nbsp;{{line.data.measurementUnit.label}}
+      </td>
+    </tr>
+  </table>
+
+  <p></p>
+
+
+  <div>
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+
+  <h3>
+    {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
+    {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    -
+    חטיפים
+    &nbsp;
+    <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
+    <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in serviceListModel.snacks track by item.index">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>
+    {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
+    {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    -
+    קינוחים
+    &nbsp;
+    <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
+    <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+  </h3>
+  <table style="width:60%">
+    <thead>
+    <th style="width:70%">פריט</th>
+    <th style="width:15%">כמות</th>
+    <th style="width:15%"></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in serviceListModel.desserts track by item.index">
+      <td>{{item.productName}}
+        <div ng-show="item.isDescChanged">
+          <label>התאמה אישית:</label>
+          {{item.productDescription}}
+        </div>
+      </td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.measurementUnitLabel}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+
+
+
+
+</div> <!-- End of exitListContainer  -->

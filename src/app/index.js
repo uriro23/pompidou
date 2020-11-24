@@ -809,38 +809,102 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
     .state ('exitList', {
-    url: '/exitList/:id',
-    templateUrl: 'app/partials/exitList.html',
-    controller: 'ExitListCtrl as exitListModel',
-    resolve: {
-      order: ['$stateParams', 'api', function ($stateParams, api) {
-        return api.queryOrder ($stateParams.id).then (function (orders) {
-          return orders[0];
-        });
-      }],
-      catalog: ['api', function(api) {
-        return api.queryCatalog(). then (function(catalog) {
-          return catalog;
-        });
-      }],
-      config: ['configPromise', function (configPromise) {
-        return configPromise;
-      }],
-      measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-        return measurementUnitsPromise;
-      }],
-      pRoles: ['pRolesPromise', function (pRolesPromise) {
-        return pRolesPromise;
-      }],
-      categories: ['categoriesPromise', function (categoriesPromise) {
-        return categoriesPromise;
-      }],
-      colors: ['colorsPromise', function (colorsPromise) {
-        return colorsPromise;
-      }]
-    }
-  })
-  .state ('menu', {
+      url: '/exitList/:id',
+      templateUrl: 'app/partials/exitList.html',
+      controller: 'ExitListCtrl as exitListModel',
+      resolve: {
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        catalog: ['api', function(api) {
+          return api.queryCatalog(). then (function(catalog) {
+            return catalog;
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }]
+      }
+    })
+    .state ('serviceList', {
+      url: '/serviceList/:id',
+      templateUrl: 'app/partials/serviceList.html',
+      controller: 'ServiceListCtrl as serviceListModel',
+      resolve: {
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        catalog: ['api', function(api) {
+          return api.queryCatalog(). then (function(catalog) {
+            return catalog;
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }]
+      }
+    })
+    .state ('packingList', {
+      url: '/packingList/:id',
+      templateUrl: 'app/partials/packingList.html',
+      controller: 'PackingListCtrl as packingListModel',
+      resolve: {
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        catalog: ['api', function(api) {
+          return api.queryCatalog(). then (function(catalog) {
+            return catalog;
+          });
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        pRoles: ['pRolesPromise', function (pRolesPromise) {
+          return pRolesPromise;
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }]
+      }
+    })
+    .state ('menu', {
       url: '/menu/:id',
       templateUrl: 'app/partials/menu.html',
       controller: 'MenuCtrl as menuModel',
