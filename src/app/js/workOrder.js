@@ -407,10 +407,10 @@ angular.module('myApp')
  //     api.saveObj(this.woIndex);
     };
 
-   this.createNewWorkOrder = function () {
+   this.createNewWorkOrder = function (isAutoDetect) {
       var that = this;
       var ackDelModal = $modal.open({
-        templateUrl: 'app/partials/workOrder/ackDelete.html',
+        templateUrl: isAutoDetect ? 'app/partials/workOrder/ackAutoDelete.html' : 'app/partials/workOrder/ackDelete.html',
         controller: 'AckDelWorkOrderCtrl as ackDelWorkOrderModel',
         resolve: {
           workOrderType: function () {
@@ -688,7 +688,25 @@ angular.module('myApp')
           that.orderView = [];
           that.isActiveTab = [false, true, false, false]; // show menu items by default
           that.splitWorkOrder();
-          that.isProcessing = false;
+          // check if any order in wo has passed or has been changed since last wo creation
+          that.isWoValid = true;
+          api.queryFutureOrders(['number'])
+            .then(function(futureOrders) {
+              that.woOrders.forEach(function(woOrder) {
+                var ord = futureOrders.filter(function(futureOrder) {
+                  return futureOrder.properties.number === woOrder.properties.order.number;
+                })[0];
+                if (!ord) {
+                  that.isWoValid = false;
+                } else if (ord.updatedAt > that.woIndex.updatedAt) {
+                  that.isWoValid = false;
+                }
+              });
+              if (!that.isWoValid) {
+                that.createNewWorkOrder(true);
+              }
+              that.isProcessing = false;
+            });
         });
     };
 
