@@ -440,6 +440,7 @@ angular.module('myApp')
                 that.woIndex.properties.domainStatus[dd] = false;
               }
               api.saveObj(that.woIndex);
+              that.isWoValid = true;
             });
         }
       });

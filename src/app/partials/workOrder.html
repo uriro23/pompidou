@@ -1,10 +1,13 @@
-<table style="width: 70%">
+<table style="width: 90%">
   <tr>
-    <td style="width: 30%;font-size: x-large">
+    <td style="width: 50%;font-size: x-large">
   פקודת עבודה
 <span>{{workOrderModel.woIndex.properties.label}}</span>
-      </td>
-    <td style="width: 30%">
+      <span ng-hide="workOrderModel.isWoValid">
+      <bold style="font-size: x-large">לא מעודכנת</bold>
+    </span>
+    </td>
+     <td style="width: 25%">
 <button ng-click="workOrderModel.createNewWorkOrder(false)"
         ng-disabled="workOrderModel.isProcessing"
         class="btn btn-default">
@@ -13,7 +16,7 @@
   <span>חדשה</span>
 </button>
       </td>
-    <td style="width: 40%">
+    <td style="width: 25%">
   <span>החלף סוג פקודה:</span>
   <select ng-model="workOrderModel.woIndex" ng-change="workOrderModel.switchWorkOrders()"
           ng-disabled="workOrderModel.isProcessing"
