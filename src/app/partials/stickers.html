@@ -12,7 +12,7 @@
       <div>
         <span>{{sticker.customer.firstName}}</span>
         <span>{{stickersModel.dayName(sticker.eventDate)}}</span>
-        <img ng-show="stickersModel.isOrderColors" src="app/img/bigColors/{{sticker.color.stickerColor}}.jpg"/>
+        <img ng-show="stickersModel.isOrderColors" ng-src="app/img/bigColors/{{sticker.color.stickerColor}}.jpg"/>
         <span ng-show="stickersModel.isOrderNumbers">[{{sticker.color.tId}}]</span>
       </div>
     </td>

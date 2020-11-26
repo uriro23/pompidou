@@ -5,7 +5,7 @@ angular.module('myApp')
 
   .controller('StickersCtrl', function (api, $state, $rootScope,
                                                  catalog, categories, config,
-                                                 workOrder) {
+                                                 workOrder, order, customer, color) {
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'מדבקות';
 
@@ -16,6 +16,19 @@ angular.module('myApp')
 
     this.isOrderColors = config.isOrderColors;
     this.isOrderNumbers = config.isOrderNumbers;
+
+    // for stickers request from order we create a fictitious workorder with just that order
+    if ($state.current.name === 'orderStickers') {
+      workOrder = [
+        {
+          id: 'foo',
+          domain: 0,
+          order: order.properties,
+          customer: customer,
+          color: color
+        }
+      ]
+    }
 
     function splitMenuItemsByCategory  (orders) {
       orders.forEach(function (order) {
@@ -196,9 +209,6 @@ angular.module('myApp')
     });
     sortStickers();
 
-    console.log(ordCategories);
-
-
     var STICKER_HEIGHT = 11;
     var STICKER_WIDTH = 3;
     this.stickerPage = [];
@@ -214,7 +224,6 @@ angular.module('myApp')
     };
     this.renderStickers();
 
-    console.log(this.stickerPage);
   })
 
 
@@ -267,43 +276,3 @@ angular.module('myApp')
 
   });
 
-/*
-    this.splitMenuItemsByCategory = function () {
-      var that = this;
-      this.categories = [];
-      workOrder.forEach(function(wo) {
-        if (wo.domain === 1) {
-          var catInd;
-          var temp = that.categories.filter(function (c, ind) {
-            if (c.category.tId === wo.category.tId) {
-              catInd = ind;
-              return true;
-            }
-          });
-          if (!temp.length) {  // if category appears for 1st time, create it's object
-            that.categories.splice(0, 0, {
-              category: wo.category,
-              list: []
-            });
-            catInd = 0;
-          }
-          that.categories[catInd].list.push(wo); //add wo item to proper category list
-        }
-      });
-      // sort categories of each domain and items within category
-        this.categories.sort(function (a, b) {
-          return a.category.order - b.category.order;
-        });
-        this.categories.forEach(function(cat) {
-          cat.list.sort(function (a, b) {
-            if (a.productName > b.productName) {
-              return 1;
-            } else if (a.productName < b.productName){
-              return -1;
-            } else {
-              return 0;
-            }
-          });
-        });
-    };
-*/

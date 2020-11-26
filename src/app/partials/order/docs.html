@@ -17,9 +17,16 @@
                              שלח הזמנת ציוד
         </button>
       </td>
-    <td>
+      <td>
         <a ng-href="#/menu/{{documentsModel.order.id}}" target="_blank">
           תפריט מודפס
+        </a>
+      </td>
+      <td>
+        <a ng-href="#/orderStickers/{{documentsModel.order.id}}/{{documentsModel.order.properties.customer}}/{{documentsModel.order.properties.color}}"
+              target="_blank"
+              ng-disabled="!documentsModel.order.properties.color">
+          מדבקות
         </a>
       </td>
       <td>

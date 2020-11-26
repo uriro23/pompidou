@@ -421,8 +421,8 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-    .state('stickers', {
-      url: '/stickers/:woId',
+    .state('woStickers', {
+      url: '/woStickers/:woId',
       templateUrl: 'app/partials/stickers.html',
       controller: 'StickersCtrl as stickersModel',
       resolve: {
@@ -447,6 +447,60 @@ config(function($stateProvider, $urlRouterProvider) {
               return att;
             });
           });
+        }],
+        order: [function() {
+          return null;
+        }],
+        customer: [function() {
+          return null;
+        }],
+        color: [function() {
+          return null;
+        }]
+      }
+    })
+
+    .state('orderStickers', {
+      url: '/orderStickers/:id/:custId/:colorId',
+      templateUrl: 'app/partials/stickers.html',
+      controller: 'StickersCtrl as stickersModel',
+      resolve: {
+        catalog: ['api', function (api) {
+          return api.queryCatalog(1).then(function (obj) {
+            return obj;
+          });
+        }],
+        categories: ['categoriesPromise', function (categoriesPromise) {
+          return categoriesPromise;
+        }],
+        config: ['api', function (api) {
+          return api.queryConfig().then(function (res) {
+            return res[0].properties;
+          });
+        }],
+        workOrder: [function () {
+          return null;
+        }],
+        order: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryOrder ($stateParams.id).then (function (orders) {
+            return orders[0];
+          });
+        }],
+        customer: ['$stateParams', 'api', function ($stateParams, api) {
+          return api.queryCustomers($stateParams.custId).then (function (customers) {
+            return customers[0].properties;
+          });
+        }],
+        color: ['$stateParams', 'api', function ($stateParams, api) {
+          if ($stateParams.colorId) {
+            return api.queryColors().then(function (colors) {
+              return colors.filter(function (col) {
+                return col.properties.tId.toString() === $stateParams.colorId;
+              })[0].properties;
+            });
+          } else {
+            return {};
+          }
         }]
       }
     })
