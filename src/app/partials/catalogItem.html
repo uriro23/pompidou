@@ -203,9 +203,14 @@
        </tr>
     </table>
   </tab>
-  <tab heading="רשימת יציאה" ng-show="catalogItemModel.currentDomain.id===1">
+  <tab heading="פריטים נלווים" ng-show="catalogItemModel.currentDomain.id===1">
     <button class="btn btn-default" ng-click="catalogItemModel.addExitListItem()">הוסף</button>
-    <table class="table table-hover" style="width:40%">
+    <table class="table table-hover" style="width:60%">
+      <thead>
+      <th><bold>תיאור</bold></th>
+      <th><bold>יח' מידה לאריזה</bold></th>
+      <th><bold>פקטור</bold></th>
+      </thead>
       <tbody>
       <tr ng-repeat="listItem in catalogItemModel.item.properties.exitList track by listItem.item">
         <td>
@@ -219,11 +224,19 @@
           </select>
         </td>
         <td>
+          <input type="text" size="4" ng-model="listItem.factor"
+                 ng-hide="listItem.measurementUnit.tId === 0"
+                 ng-change="catalogItemModel.setChanged(true)">
+        </td>
+        <td>
           <button class="btn btn-default" ng-click="catalogItemModel.delExitListItem($index)">מחק</button>
         </td>
       </tr>
       </tbody>
     </table>
+    <div>
+      פקטור - כמה יח' מידה ללקוח של הפריט הראשי הן יח' מידה אחת לאריזה של הפריט הנלווה - מעוגל כלפי מעלה
+    </div>
   </tab>
    <tab heading="ראשי" active="catalogItemModel.isMainTabActive">
     <table>
@@ -287,8 +300,7 @@
                    ng-change="catalogItemModel.setInstructions()"></td>
         <td>דקות לפני ההגשה</td>
       </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1"
-          ng-class="catalogItemModel.item.errors.muFactor?'bg-danger':null">
+      <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>יח' מידה ללקוח</label></td>
         <td>
           <select ng-model="catalogItemModel.item.view.measurementUnit"
@@ -301,18 +313,52 @@
                   ng-change="catalogItemModel.setProdMeasurementUnit()"
                   ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits"></select>
         </td>
-        <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
-          <label>פקטור</label>
-        </td>
-        <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
-          <input type="text" size = 4 ng-model="catalogItemModel.item.properties.muFactor"
-                 ng-change="catalogItemModel.setMuFactor()">
-
-        </td>
-        <td ng-hide="catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId">
-          (כמה יח' מידה לייצור הן יח' מידה אחת ללקוח)
+        <td><label>יח' מידה לאריזה</label></td>
+        <td>
+          <select ng-model="catalogItemModel.item.view.packageMeasurementUnit"
+                  ng-change="catalogItemModel.setPackageMeasurementUnit()"
+                  ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits">
+          </select>
         </td>
       </tr>
+       <tr ng-hide="catalogItemModel.currentDomain.id!==1 ||
+                    catalogItemModel.item.view.prodMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId ||
+                    catalogItemModel.item.view.prodMeasurementUnit.tId===0"
+           ng-class="catalogItemModel.item.errors.muFactor?'bg-danger':null">
+         <td>
+           <label>פקטור ייצור</label>
+         </td>
+         <td>
+           <input type="text" size = 4 ng-model="catalogItemModel.item.properties.muFactor"
+                  ng-change="catalogItemModel.setMuFactor()">
+         </td>
+         <td colspan="2">
+           <span>כמה</span>
+           <span>{{catalogItemModel.item.view.prodMeasurementUnit.label}}</span>
+           <span>הן 1</span>
+           <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
+           <span>?</span>
+         </td>
+       </tr>
+       <tr ng-hide="catalogItemModel.currentDomain.id!==1 ||
+                    catalogItemModel.item.view.packageMeasurementUnit.tId===catalogItemModel.item.view.measurementUnit.tId ||
+                    catalogItemModel.item.view.packageMeasurementUnit.tId===0"
+           ng-class="catalogItemModel.item.errors.packageFactor?'bg-danger':null">
+         <td>
+           <label>פקטור אריזה</label>
+         </td>
+         <td>
+           <input type="text" size = 4 ng-model="catalogItemModel.item.properties.packageFactor"
+                  ng-change="catalogItemModel.setPackageFactor()">
+         </td>
+         <td colspan="2">
+           <span>כמה</span>
+           <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
+           <span>הן 1</span>
+           <span>{{catalogItemModel.item.view.packageMeasurementUnit.label}}</span>
+           <span>?</span>
+         </td>
+       </tr>
        <tr ng-hide="catalogItemModel.currentDomain.id===1">
          <td><label>יח' מידה</label></td>
          <td>
@@ -382,16 +428,7 @@
                   ng-change="catalogItemModel.setChanged(true)">
          </td>
         <td></td>
-        <td>למשל "קישים" לצורך ספירה משותפת של מספר פריטים ברשימת יציאה</td>
-      </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1">
-        <td><label>יח' מידה לאריזה</label></td>
-        <td>
-          <select ng-model="catalogItemModel.item.view.packageMeasurementUnit"
-                  ng-change="catalogItemModel.setChanged(true)"
-                  ng-options="measurementUnit.label for measurementUnit in catalogItemModel.measurementUnits">
-          </select>
-        </td>
+        <td>למשל "קישים"</td>
       </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>שם למדבקה</label></td>

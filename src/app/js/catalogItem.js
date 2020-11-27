@@ -80,7 +80,9 @@ angular.module('myApp')
 
     model.setMeasurementUnit = function () {
       model.item.view.prodMeasurementUnit = model.item.view.measurementUnit;
+      model.item.view.packageMeasurementUnit = model.item.view.measurementUnit;
       model.item.properties.muFactor = 1;
+      model.item.properties.packageFactor = 1;
       model.setChanged(true);
     };
 
@@ -91,11 +93,26 @@ angular.module('myApp')
       model.setChanged(true);
     };
 
+    model.setPackageMeasurementUnit = function () {
+      if (model.item.view.packageMeasurementUnit.tId === model.item.view.measurementUnit.tId) {
+        model.item.properties.packageFactor = 1;
+      }
+      model.setChanged(true);
+    };
+
     model.setMuFactor = function () {
       model.item.errors.muFactor =
         (model.currentDomain.id === 1 || Boolean(model.item.properties.muFactor)) &&
         ((model.item.properties.muFactor != Number(model.item.properties.muFactor) ||
           Number(model.item.properties.muFactor) <= 0));
+      model.setChanged(true);
+    };
+
+    model.setPackageFactor = function () {
+      model.item.errors.packageFactor =
+        (model.currentDomain.id === 1 || Boolean(model.item.properties.packageFactor)) &&
+        ((model.item.properties.packageFactor != Number(model.item.properties.packageFactor) ||
+          Number(model.item.properties.packageFactor) <= 0));
       model.setChanged(true);
     };
 
@@ -389,6 +406,7 @@ angular.module('myApp')
      model.item.properties.minTimeUnit = model.item.view.minTimeUnit.id;
      model.item.properties.maxTimeUnit = model.item.view.maxTimeUnit.id;
      model.item.properties.muFactor = Number(model.item.properties.muFactor);
+     model.item.properties.packageFactor = Number(model.item.properties.packageFactor);
      model.item.properties.priceQuantity = Number(model.item.properties.priceQuantity);
      model.item.properties.price = Number(model.item.properties.price);
      model.item.properties.productionQuantity = Number(model.item.properties.productionQuantity);
@@ -638,6 +656,7 @@ angular.module('myApp')
        return dom.id===currentDomain;
      })[0].id;
      model.item.properties.muFactor = 1;
+     model.item.properties.packageFactor = 1;
      model.item.properties.priceQuantity = null;
      model.item.properties.price = null;
      model.item.properties.productionQuantity = null;
