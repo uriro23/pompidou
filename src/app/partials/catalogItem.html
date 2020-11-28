@@ -215,7 +215,8 @@
       <tr ng-repeat="listItem in catalogItemModel.item.properties.exitList track by listItem.item">
         <td>
           <input type="text" size=60 ng-model="listItem.item"
-                 ng-change="catalogItemModel.setChanged(true)">
+                 ng-change="catalogItemModel.exitListItemChanged(listItem)"
+                 ng-class="listItem.errors.item?'bg-danger':null">
         </td>
         <td>
           <select ng-model="listItem.measurementUnit"
@@ -226,7 +227,8 @@
         <td>
           <input type="text" size="4" ng-model="listItem.factor"
                  ng-hide="listItem.measurementUnit.tId === 0"
-                 ng-change="catalogItemModel.setChanged(true)">
+                 ng-change="catalogItemModel.exitListFactorChanged(listItem)"
+                 ng-class="listItem.errors.factor?'bg-danger':null">
         </td>
         <td>
           <button class="btn btn-default" ng-click="catalogItemModel.delExitListItem($index)">מחק</button>
@@ -234,8 +236,10 @@
       </tr>
       </tbody>
     </table>
-    <div>
-      פקטור - כמה יח' מידה ללקוח של הפריט הראשי הן יח' מידה אחת לאריזה של הפריט הנלווה - מעוגל כלפי מעלה
+    <div ng-show="catalogItemModel.item.properties.exitList.length">
+      <span>פקטור - כמה</span>
+      <span>{{catalogItemModel.item.view.measurementUnit.label}}</span>
+      <span>הם יח' מידה אחת לאריזה של הפריט הנלווה - מעוגל כלפי מעלה</span>
     </div>
   </tab>
    <tab heading="ראשי" active="catalogItemModel.isMainTabActive">

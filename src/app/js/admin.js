@@ -1364,6 +1364,28 @@ angular.module('myApp')
         })
    };
      */
+    this.packageFactor = function() {
+      console.log('starting');
+      api.queryCatalog(1,['packageFactor','exitList'])
+        .then(function(items) {
+          console.log('read '+items.length+' items');
+          var elc = 0;
+          items.forEach(function(item) {
+            item.properties.packageFactor = 1;
+              item.properties.exitList.forEach(function (el) {
+                elc++;
+                el.factor = 1000;   // set high default value
+              });
+          });
+          console.log('set '+elc+' exitList factor values');
+          console.log('updating');
+          api.saveObjects(items)
+            .then(function() {
+              console.log('done');
+            });
+
+        });
+    };
 // end conversions
 
   });

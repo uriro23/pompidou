@@ -18,6 +18,8 @@ angular.module('myApp')
 
     model.user = user;
 
+    var DEFAULT_EXITLIST_FACTOR = 1000;  // make it high so computed quantity will always be 1 by default
+
     model.setChanged = function (bool) {
       if (bool) {
         model.item.isChanged = true;
@@ -167,13 +169,28 @@ angular.module('myApp')
     model.addExitListItem = function () {
       model.item.properties.exitList.push({
         item: '',
-        measurementUnit: measurementUnits[0]
+        measurementUnit: measurementUnits[0],
+        factor: DEFAULT_EXITLIST_FACTOR,
+        errors: {
+          item:true   // empty text is error
+        }
       });
       model.setChanged(true);
     };
 
     model.delExitListItem = function (ind) {
       model.item.properties.exitList.splice(ind, 1);
+      model.setChanged(true);
+    };
+
+    model.exitListItemChanged = function (listItem) {
+      listItem.errors.item = !Boolean(listItem.item);
+      model.setChanged(true);
+    };
+
+    model.exitListFactorChanged = function (listItem) {
+      listItem.errors.factor =
+        (listItem.factor != Number(listItem.factor) || Number(listItem.factor) <= 0);
       model.setChanged(true);
     };
 
@@ -358,6 +375,17 @@ angular.module('myApp')
          }
        }
      }
+     model.item.properties.exitList.forEach(function(item) {
+       for (e in item.errors) {
+         if (item.errors.hasOwnProperty(e)) {
+           if (item.errors[e]) {
+             hasErrors = true;
+             console.log('error in exit list:');
+             console.log(e);
+           }
+         }
+       }
+    });
      model.compDomains.forEach(function(d) {
        d.compItems.forEach(function(i) {
          if (i.isError) {
