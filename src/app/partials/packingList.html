@@ -182,6 +182,7 @@
     <th style="width: 25%"></th>
     <th style="width: 25%"></th>
     <tr ng-repeat="line in packingListModel.vec track by line.ind">
+      <!-- col 1 -->
       <td ng-show="line.level===0">
         <label>{{line.data.label}}</label></td>
       <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
@@ -191,26 +192,18 @@
       <td ng-show="line.level===2">
         &nbsp;&#128440;
         {{line.data.item}}</td>
-      <td ng-show="line.level===0"></td>
-      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
-        {{line.data.quantity}}&nbsp;{{line.data.measurementUnit.label}}
-      </td>
-      <td ng-show="line.level===2"></td>
-      <td ng-show="line.level===0">
+      <!-- col 2 -->
+      <td ng-show="line.level===0"> <!-- todo: move to level 1 -->
         <span ng-show="line.data.measurementUnit">
         <input type="text" size="5"> &nbsp; {{line.data.measurementUnitLabel}}
         </span>
       </td>
       <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
-        <span ng-show="line.data.packageMeasurementUnit.tId">
-        <input type="text" size="5"> &nbsp; {{line.data.packageMeasurementUnit.label}}
+        <span ng-hide="line.data.packageMeasurementUnit.tId===0">
+          {{line.data.packageQuantity}}&nbsp;{{line.data.packageMeasurementUnit.label}}
         </span>
       </td>
-      <td ng-show="line.level===2">
-        <span ng-show="line.data.measurementUnit.tId">
-        <input type="text" size="5"> &nbsp; {{line.data.measurementUnit.label}}
-        </span>
-      </td>
+      <td ng-show="line.level===2"></td>
     </tr>
   </table>
   <div ng-show="packingListModel.accessories.length">

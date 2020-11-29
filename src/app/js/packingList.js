@@ -184,22 +184,27 @@ angular.module('myApp')
         var catItem = that.catalog.filter(function (cat) {
           return cat.id === item.catalogId;
         })[0].properties;
-        // convert basic measurement unit to prod measurement unit, if needed
-        if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
-          item.measurementUnit = measurementUnits.filter(function(mu) {
-            return mu.tId === catItem.prodMeasurementUnit;
-          })[0];
-          item.quantity = item.quantity * catItem.muFactor;
-        }
+
+        // load prodMeasurementUnit from catalog and compute prodQuantity
+        item.prodMeasurementUnit = measurementUnits.filter(function(mu) {
+          return mu.tId === catItem.prodMeasurementUnit;
+        })[0];
+        item.prodQuantity = item.quantity * catItem.muFactor;
+
         // load package measurement unit from catalog
         item.packageMeasurementUnit = measurementUnits.filter(function(mu) {
           return mu.tId === catItem.packageMeasurementUnit;
         })[0];
+        item.packageFactor = catItem.packageFactor;
+        item.packageQuantity = Math.ceil(item.quantity / item.packageFactor);
+        if (item.packageMeasurementUnit.tId === item.prodMeasurementUnit.tId && item.packageFactor === 1) {
+          item.displayName = item.productName; // because package quantity will be listed anyway
+        } else {
+          item.displayName = item.prodQuantity.toString() + ' ' + item.prodMeasurementUnit.label + ' ' + item.productName;
+        }
         // add "main part" to name, if exitList is non empty
         if (catItem.exitList.length) {
-          item.displayName = item.productName + ' (החלק העיקרי)';
-        } else {
-          item.displayName = item.productName;
+          item.displayName += ' (החלק העיקרי)'
         }
 
         ind++;
