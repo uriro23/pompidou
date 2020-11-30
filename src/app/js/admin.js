@@ -24,6 +24,7 @@ angular.module('myApp')
 
   this.categories = categories;
   this.sensitivities = sensitivities;
+  this.measurementUnits = measurementUnits;
 
 
     // vat
@@ -361,21 +362,25 @@ angular.module('myApp')
     this.filterProductNameDomain = function() {
       var that = this;
       this.isProcessing = true;
-      api.queryCategories(this.productNamesDomain.id)
+      api.queryCategories(1)
         .then(function(categories) {
           that.categories = categories.map(function(cat) {
             return cat.properties;
           });
-          api.queryCatalog(that.productNamesDomain.id)
+          api.queryCatalog(1)
             .then(function(catalog) {
               console.log(catalog.length+' menu items loaded');
+              catalog = catalog.filter(function(c) {
+                return !c.properties.isDeleted;
+              });
+              console.log(catalog.length+' undeleted items');
               catalog.forEach(function(cat) {
                 cat.category = cat.properties.category; // for ng-repeat filter
                 cat.measurementUnitObj = measurementUnits.filter(function(mu) {
                   return mu.tId === cat.properties.measurementUnit;
                 })[0];
                 if (!cat.measurementUnitObj) {
-                  console.log('MU not found for '+cat.properties.productName);
+                  console.log('MU not found for '+cat.properties.measurementUnit);
                 } else {
                   cat.measurementUnitLabel = cat.measurementUnitObj.label;
                 }
@@ -383,6 +388,15 @@ angular.module('myApp')
                   return cat2.tId === cat.properties.category;
                 })[0];
                 cat.exitListLength = cat.properties.exitList.length;
+                cat.measurementUnit = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.measurementUnit;
+                })[0];
+                cat.prodMeasurementUnit = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.prodMeasurementUnit;
+                })[0];
+                cat.packageMeasurementUnit = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.packageMeasurementUnit;
+                })[0];
               });
               that.productNameItems = catalog;
               that.productNameCategoryItems = [];
@@ -411,7 +425,17 @@ angular.module('myApp')
             }
           });
         });
-      })
+       })
+    };
+
+    this.setDisableLink = function() {
+      var that = this;
+      this.isDisableLink = false;
+      this.productNameItems.forEach(function(d) {
+        if (d.isChanged) {
+          that.isDisableLink = true;
+        }
+      });
     };
 
     this.productNameItemChanged = function(cat) {
@@ -424,6 +448,7 @@ angular.module('myApp')
         cat.errors = (tmp.length>0);
       }
       cat.isChanged = !cat.errors;
+      this.setDisableLink();
     };
 
     this.saveProductNameitem = function(cat) {
@@ -431,8 +456,12 @@ angular.module('myApp')
       cat.properties.sensitivities = cat.sensArray.filter(function(sen) {
         return sen.isTrue;
       });
+      cat.properties.measurementUnit = cat.measurementUnit.tId;
+      cat.properties.prodMeasurementUnit = cat.prodMeasurementUnit.tId;
+      cat.properties.packageMeasurementUnit = cat.packageMeasurementUnit.tId;
       api.saveObj(cat);
       cat.isChanged = false;
+      this.setDisableLink();
     };
 
     // no boxes

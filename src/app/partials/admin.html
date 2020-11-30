@@ -227,80 +227,144 @@
       </tr>
     </table>
   </tab>
-  <tab heading="עדכון קטגוריות">
-    <div ng-hide="adminModel.isProcessing">
-      <label>בחר תחום</label>
-      <select ng-model="adminModel.productNamesDomain"
-              ng-change="adminModel.filterProductNameDomain()"
-              ng-options="domain.label for domain in adminModel.domains"></select>
-      <label>בחר קטגוריה</label>
-      <select ng-model="adminModel.productNamesCategory"
-              ng-change="adminModel.filterProductNameCategory()"
-              ng-options="category.label for category in adminModel.categories"></select>
-      <table class="table table-hover" style="width: 99%">
-        <thead>
-        <th>שם</th>
-        <th>כמות</th>
-        <th>יח'</th>
-        <!--
-        <th ng-show="adminModel.productNamesDomain.id===1">שם למדבקה</th>
-        <th ng-show="adminModel.productNamesDomain.id===1">כמות מדבקות</th>
-        <th ng-show="adminModel.productNamesDomain.id===1">נוספות</th>
-        -->
-        <th>ביטול</th>
-        <th>קטגוריה</th>
-        <th ng-repeat="sensitivity in adminModel.sensitivities track by sensitivity.tId"
-            ng-show="adminModel.productNamesDomain.id===1">
-          {{sensitivity.label}}
-        </th>
-        <th></th>
-        </thead>
-        <tbody>
-        <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems track by productNameItem.id"
-            ng-class="productNameItem.errors ? 'bg-danger' :
+   <tab heading="עדכון קטגוריות">
+     <div ng-hide="adminModel.isProcessing">
+       <label>בחר תחום</label>
+       <select ng-model="adminModel.productNamesDomain"
+               ng-change="adminModel.filterProductNameDomain()"
+               ng-options="domain.label for domain in adminModel.domains"></select>
+       <label>בחר קטגוריה</label>
+       <select ng-model="adminModel.productNamesCategory"
+               ng-change="adminModel.filterProductNameCategory()"
+               ng-options="category.label for category in adminModel.categories"></select>
+       <table class="table table-hover" style="width: 99%">
+         <thead>
+         <th>שם</th>
+         <th>כמות</th>
+         <th>יח'</th>
+         <!--
+         <th ng-show="adminModel.productNamesDomain.id===1">שם למדבקה</th>
+         <th ng-show="adminModel.productNamesDomain.id===1">כמות מדבקות</th>
+         <th ng-show="adminModel.productNamesDomain.id===1">נוספות</th>
+         -->
+         <th>ביטול</th>
+         <th>קטגוריה</th>
+         <th ng-repeat="sensitivity in adminModel.sensitivities track by sensitivity.tId"
+             ng-show="adminModel.productNamesDomain.id===1">
+           {{sensitivity.label}}
+         </th>
+         <th></th>
+         </thead>
+         <tbody>
+         <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems track by productNameItem.id"
+             ng-class="productNameItem.errors ? 'bg-danger' :
                        productNameItem.isChanged ? 'bg-success' :
                        productNameItem.properties.isDeleted ? 'active myCanceledEvent' : bg-active">
-          <td>{{productNameItem.properties.productName}}</td>
-          <td>{{productNameItem.properties.priceQuantity}}</td>
-          <td>{{productNameItem.measurementUnitLabel}}</td>
-          <!--
-          <td ng-show="adminModel.productNamesDomain.id===1">
-            <input type="text" ng-model="productNameItem.properties.stickerLabel" size="10"
-                   ng-change="adminModel.productNameItemChanged(productNameItem)">
-          </td>
-          <td ng-show="adminModel.productNamesDomain.id===1">
-            <input type="number" ng-model="productNameItem.properties.stickerQuantity" min="0" max="99"
-                   ng-change="adminModel.productNameItemChanged(productNameItem)">
-          </td>
-          <td ng-show="adminModel.productNamesDomain.id===1">
-            {{productNameItem.exitListLength}}
-          </td>
-          -->
-          <td>
-            <input type="checkbox"
-                   ng-model="productNameItem.properties.isDeleted"
-                   ng-change="adminModel.productNameItemChanged(productNameItem)">
-          </td>
-          <td>
-            <select ng-model="productNameItem.categoryObject"
-                    ng-change="adminModel.productNameItemChanged(productNameItem)"
-                    ng-options="category.label for category in adminModel.categories"></select>          </td>
-         <td ng-repeat="potSens in productNameItem.sensArray track by potSens.tId"
-             ng-show="adminModel.productNamesDomain.id===1">
-            <input type="checkbox" ng-model="potSens.isTrue"
-                   ng-change="adminModel.productNameItemChanged(productNameItem)">
-          </td>
-          <td>
-            <button ng-show="productNameItem.isChanged"
-                    ng-click="adminModel.saveProductNameitem(productNameItem)">
-              עדכן
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </tab>
+           <td>{{productNameItem.properties.productName}}</td>
+           <td>{{productNameItem.properties.priceQuantity}}</td>
+           <td>{{productNameItem.measurementUnitLabel}}</td>
+           <!--
+           <td ng-show="adminModel.productNamesDomain.id===1">
+             <input type="text" ng-model="productNameItem.properties.stickerLabel" size="10"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td ng-show="adminModel.productNamesDomain.id===1">
+             <input type="number" ng-model="productNameItem.properties.stickerQuantity" min="0" max="99"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td ng-show="adminModel.productNamesDomain.id===1">
+             {{productNameItem.exitListLength}}
+           </td>
+           -->
+           <td>
+             <input type="checkbox"
+                    ng-model="productNameItem.properties.isDeleted"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td>
+             <select ng-model="productNameItem.categoryObject"
+                     ng-change="adminModel.productNameItemChanged(productNameItem)"
+                     ng-options="category.label for category in adminModel.categories"></select>          </td>
+           <td ng-repeat="potSens in productNameItem.sensArray track by potSens.tId"
+               ng-show="adminModel.productNamesDomain.id===1">
+             <input type="checkbox" ng-model="potSens.isTrue"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td>
+             <button ng-show="productNameItem.isChanged"
+                     ng-click="adminModel.saveProductNameitem(productNameItem)">
+               עדכן
+             </button>
+           </td>
+         </tr>
+         </tbody>
+       </table>
+     </div>
+   </tab>
+   <tab heading="יח' מידה" select="adminModel.filterProductNameDomain()">
+     <div ng-hide="adminModel.isProcessing">
+      <label>בחר קטגוריה</label>
+       <select ng-model="adminModel.productNamesCategory"
+               ng-change="adminModel.filterProductNameCategory()"
+               ng-options="category.label for category in adminModel.categories"></select>
+       <table class="table table-hover" style="width: 99%">
+         <thead>
+         <th>שם</th>
+         <th>מידה ללקוח</th>
+         <th>מידה לייצור</th>
+         <th>מידה לאריזה</th>
+         <th>פקטור ייצור</th>
+         <th>פקטור אריזה</th>
+         <th>פריטים נלווים</th>
+        <th></th>
+         </thead>
+         <tbody>
+         <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems track by productNameItem.id"
+             ng-class="productNameItem.errors ? 'bg-danger' :
+                       productNameItem.isChanged ? 'bg-success' :
+                       productNameItem.properties.isDeleted ? 'active myCanceledEvent' : bg-active">
+           <td ng-hide="adminModel.isDisableLink">
+             <a  ng-href="#/editCatalogItem/{{productNameItem.id}}">
+               {{productNameItem.properties.productName}}
+             </a>
+           </td>
+         <td ng-show="adminModel.isDisableLink">{{productNameItem.properties.productName}}</td>
+        <td>
+             <select ng-model="productNameItem.measurementUnit"
+                     ng-change="adminModel.productNameItemChanged(productNameItem)"
+                     ng-options="measurementUnit.label for measurementUnit in adminModel.measurementUnits"></select>
+         </td>
+           <td>
+             <select ng-model="productNameItem.prodMeasurementUnit"
+                     ng-change="adminModel.productNameItemChanged(productNameItem)"
+                     ng-options="measurementUnit.label for measurementUnit in adminModel.measurementUnits"></select>
+           </td>
+           <td>
+             <select ng-model="productNameItem.packageMeasurementUnit"
+                     ng-change="adminModel.productNameItemChanged(productNameItem)"
+                     ng-options="measurementUnit.label for measurementUnit in adminModel.measurementUnits"></select>
+           </td>
+           <td>
+             <input type="number" min="1" max="9999" ng-model="productNameItem.properties.muFactor"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td>
+             <input type="number" min="1" max="9999" ng-model="productNameItem.properties.packageFactor"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td ng-show="productNameItem.exitListLength">{{productNameItem.exitListLength}}</td>
+           <td ng-hide="productNameItem.exitListLength"></td>
+           <td>
+           <button ng-show="productNameItem.isChanged"
+                     ng-click="adminModel.saveProductNameitem(productNameItem)">
+               עדכן
+             </button>
+           </td>
+         </tr>
+         </tbody>
+       </table>
+     </div>
+   </tab>
    <tab heading="קופסאות" select="adminModel.loadNoBoxes()">
      <h3>חטיפים וקינוחים שאין להם קישור לקופסת פומפידו בעץ המוצר</h3>
      <table class="table table-hover">
