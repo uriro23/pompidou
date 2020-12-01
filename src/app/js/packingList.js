@@ -20,6 +20,7 @@ angular.module('myApp')
     var CATEGORY_SNACKS = 1;
     var CATEGORY_DESSERTS = 8;
     var CATEGORY_ACCESSORIES = 50;
+    var MU_TRAYS = 4;
 
     this.currentOrder = order.properties;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
@@ -167,8 +168,26 @@ angular.module('myApp')
         }
       });
       category.items = [];
-      if (catItems.length) {       // group items by productName, provided productDescription was not changed
         var j=0;
+        if (category.tId === CATEGORY_SNACKS) {
+          category.items[j] = {
+            catalogId: config.snacksTraysItem,
+            productName: 'מגשי חטיפים',
+            packageQuantity: -1,
+            isDontComputePackageQuantity: true
+          };
+          j++;
+        }
+        if (category.tId === CATEGORY_DESSERTS) {
+          category.items[j] = {
+            catalogId: config.dessertsTraysItem,
+            productName: 'מגשי קינוחים',
+            packageQuantity: -1,
+            isDontComputePackageQuantity: true
+          };
+          j++;
+        }
+      if (catItems.length) {       // group items by productName, provided productDescription was not changed
         category.items[j] = catItems[0];
         for (var i=1;i<catItems.length;i++) {
           if (catItems[i].productName===category.items[j].productName &&
@@ -180,12 +199,12 @@ angular.module('myApp')
         }
       }
 
-      category.items.forEach(function(item) {
+       category.items.forEach(function(item) {
         var catItem = that.catalog.filter(function (cat) {
           return cat.id === item.catalogId;
         })[0].properties;
 
-        // load prodMeasurementUnit from catalog and compute prodQuantity
+       // load prodMeasurementUnit from catalog and compute prodQuantity
         item.prodMeasurementUnit = measurementUnits.filter(function(mu) {
           return mu.tId === catItem.prodMeasurementUnit;
         })[0];
@@ -195,8 +214,15 @@ angular.module('myApp')
         item.packageMeasurementUnit = measurementUnits.filter(function(mu) {
           return mu.tId === catItem.packageMeasurementUnit;
         })[0];
-        item.packageFactor = catItem.packageFactor;
-        item.packageQuantity = Math.ceil(item.quantity / item.packageFactor);
+
+         if (item.packageMeasurementUnit.tId === 0) {  // don't show main item with no package mu (e.g. green salads)
+           item.isExcludeMainItem = true;
+         }
+
+         item.packageFactor = catItem.packageFactor;
+         if (!item.isDontComputePackageQuantity) {
+           item.packageQuantity = Math.ceil(item.quantity / item.packageFactor);
+         }
         if (item.packageMeasurementUnit.tId === item.prodMeasurementUnit.tId && item.packageFactor === 1) {
           item.displayName = item.productName; // because package quantity will be listed anyway
         } else {
@@ -217,6 +243,7 @@ angular.module('myApp')
         // add exit list items
         catItem.exitList.forEach(function(ex) {
           ex.item += (' ל'+item.productName);
+          ex.quantity = Math.ceil(item.quantity / ex.factor);
           ind++;
           that.vec[ind] = {
             ind: ind,
