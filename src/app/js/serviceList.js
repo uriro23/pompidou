@@ -114,8 +114,7 @@ angular.module('myApp')
     //filter categories - only those in order and  are food
     this.filteredCategories = this.categories.filter(function (cat) {
       var categoryItems = listItems.filter(function (item) {
-        return (item.category.tId === cat.tId) &&
-               (cat.type < 3 || (cat.type === 5 && item.specialType === 1)); // include food and disposable dishes
+        return (item.category.tId === cat.tId) && cat.type < 3;
       });
       return (categoryItems.length > 0);
     });
@@ -140,9 +139,7 @@ angular.module('myApp')
       };
 
       var catItems = listItems.filter(function (item) {
-        return (item.category.tId === category.tId &&
-          (category.type < 3 || (category.type === 5 && item.specialType === 1)) && // include food and disposable dishes
-          !item.isExcludeWholeItem);
+        return (item.category.tId === category.tId && category.type < 3  && !item.isExcludeWholeItem);
       }).sort(function(a,b) {
         if (a.productName > b.productName) {
           return 1;

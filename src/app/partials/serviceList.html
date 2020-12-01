@@ -125,7 +125,7 @@
 
   <p style="height: 20px;"></p>
 
-  <table style="width: 90%">
+  <table border="1" style="width: 90%">
     <th style="width: 50%"></th>
     <th style="width: 25%"></th>
     <th style="width: 25%"></th>
@@ -133,7 +133,7 @@
   <!-- column 1: name -->
       <td ng-show="line.level===0">
         <label>{{line.data.label}}</label></td>
-      <td ng-show="line.level===1 && !line.data.isExcludeMainItem" style="font-weight: bold">
+      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
         &nbsp;&#128440;
         {{line.data.productName}}
         <div ng-show="line.data.isDescChanged">
@@ -142,11 +142,8 @@
         </div>
       </td>
       <!-- column 2: quantity -->
-      <td ng-show="line.level===2">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#128410;
-        {{line.data.item}}</td>
       <td ng-show="line.level===0"></td>
-      <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
+     <td ng-show="line.level===1 && !line.data.isExcludeMainItem">
         {{line.data.quantity}}&nbsp;{{line.data.measurementUnit.label}}
       </td>
     </tr>
@@ -169,7 +166,7 @@
     <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
     <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
   </h3>
-  <table style="width:60%">
+  <table border="1" style="width:60%">
     <thead>
     <th style="width:70%">פריט</th>
     <th style="width:15%">כמות</th>
@@ -197,7 +194,7 @@
     <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
     <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
   </h3>
-  <table style="width:60%">
+  <table border="1" style="width:60%">
     <thead>
     <th style="width:70%">פריט</th>
     <th style="width:15%">כמות</th>
