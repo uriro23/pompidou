@@ -184,11 +184,17 @@ angular.module('myApp')
     };
 
     model.exitListItemChanged = function (listItem) {
+      if (!listItem.errors) {
+        listItem.errors = {};
+      }
       listItem.errors.item = !Boolean(listItem.item);
       model.setChanged(true);
     };
 
     model.exitListFactorChanged = function (listItem) {
+      if (!listItem.errors) {
+        listItem.errors = {};
+      }
       listItem.errors.factor =
         (listItem.factor != Number(listItem.factor) || Number(listItem.factor) <= 0);
       model.setChanged(true);
@@ -699,7 +705,7 @@ angular.module('myApp')
    } else {
      $rootScope.title = 'קטלוג - ' + currentItem.properties.productName;
      model.item = currentItem;
-     }
+   }
 
    model.item.isCopyToShortDesc = model.item.properties.productDescription===model.item.properties.shortDescription;
    model.setupItemView();
