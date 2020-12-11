@@ -18,9 +18,12 @@ angular.module('myApp')
     $rootScope.title = 'רשימת אריזה';
 
     var CATEGORY_SNACKS = 1;
+    var CATEGORY_SANDWICHES = 35;
     var CATEGORY_DESSERTS = 8;
     var CATEGORY_ACCESSORIES = 50;
     var MU_TRAYS = 4;
+    var MU_GLASSES = 17;
+    var DEFAULT_SNACKS_FACTOR = 40;
 
     this.currentOrder = order.properties;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
@@ -107,7 +110,9 @@ angular.module('myApp')
     // for snacks and desserts include in exit list only items which have sub items in their exit list
     var exitListItems = angular.copy(this.currentQuote.items);
     exitListItems.forEach(function(item) {
-      if(item.category.tId === CATEGORY_SNACKS || item.category.tId === CATEGORY_DESSERTS) {
+      if(item.category.tId === CATEGORY_SNACKS ||
+        item.category.tId === CATEGORY_SANDWICHES ||
+        item.category.tId === CATEGORY_DESSERTS) {
         var exitList = that.catalog.filter(function(cat) {
           return cat.id === item.catalogId;
         })[0].properties.exitList;
@@ -147,8 +152,8 @@ angular.module('myApp')
 
       var catItems = exitListItems.filter(function (item) {
         return (item.category.tId === category.tId &&
-          (category.type < 3 || (category.type === 5 && item.specialType === 1)) && // include food and disposable dishes
-          !item.isExcludeWholeItem);
+          (category.type < 3 || (category.type === 5 && item.specialType === 1)) );  // include food and disposable dishes
+
       }).sort(function(a,b) {
         if (a.productName > b.productName) {
           return 1;
@@ -168,24 +173,37 @@ angular.module('myApp')
         }
       });
       category.items = [];
+      category.totalItem = -1;
         var j=0;
-        if (category.tId === CATEGORY_SNACKS) {
-          category.items[j] = {
-            catalogId: config.snacksTraysItem,
-            productName: 'מגשי חטיפים',
-            packageQuantity: -1,
-            isDontComputePackageQuantity: true
-          };
-          j++;
-        }
-        if (category.tId === CATEGORY_DESSERTS) {
+      if (category.tId === CATEGORY_SNACKS) {
+        category.items[j] = {
+          catalogId: config.snacksTraysItem,
+          productName: 'מגשי חטיפים',
+          packageQuantity: 0,
+          glassPackageQuantity: 0, // really only used for desserts
+          isTotalItem: true
+        };
+        category.totalItem = j++;
+      }
+      if (category.tId === CATEGORY_SANDWICHES) {
+        category.items[j] = {
+          catalogId: config.sandwichesTraysItem,
+          productName: 'מגשי כריכונים',
+          packageQuantity: 0,
+          glassPackageQuantity: 0, // really only used for desserts
+          isTotalItem: true
+        };
+        category.totalItem = j++;
+      }
+      if (category.tId === CATEGORY_DESSERTS) {
           category.items[j] = {
             catalogId: config.dessertsTraysItem,
             productName: 'מגשי קינוחים',
-            packageQuantity: -1,
-            isDontComputePackageQuantity: true
+            packageQuantity: 0,
+            glassPackageQuantity: 0,
+            isTotalItem: true
           };
-          j++;
+        category.totalItem = j++;
         }
       if (catItems.length) {       // group items by productName, provided productDescription was not changed
         category.items[j] = catItems[0];
@@ -200,6 +218,7 @@ angular.module('myApp')
       }
 
        category.items.forEach(function(item) {
+         console.log('examining '+item.productName+ ', category '+category.tId);
         var catItem = that.catalog.filter(function (cat) {
           return cat.id === item.catalogId;
         })[0].properties;
@@ -220,7 +239,22 @@ angular.module('myApp')
          }
 
          item.packageFactor = catItem.packageFactor;
-         if (!item.isDontComputePackageQuantity) {
+
+          if (item.isTotalItem) { // skip the item used to accumulate category total packages
+         } else if (category.totalItem > -1) { // this category uses accumulated packages
+           if (item.measurementUnit.tId === MU_GLASSES) { // accumulate glasses separately
+             category.items[category.totalItem].glassPackageQuantity += (item.quantity / item.packageFactor);
+             console.log('adding '+item.productName+' to glasses, category '+category.tId+' giving '+
+               category.items[category.totalItem].glassPackageQuantity);
+           } else {
+             category.items[category.totalItem].packageQuantity += (item.quantity / item.packageFactor);
+             console.log('adding '+item.productName+' to category '+category.tId+' giving '+
+                            category.items[category.totalItem].packageQuantity);
+             if (category.tId === CATEGORY_SNACKS && item.packageFactor !== DEFAULT_SNACKS_FACTOR) {
+               category.items[category.totalItem].isExceptionalSnacks = true;
+             }
+           }
+         } else { // no accumulation - compute package quantity for each item separately
            item.packageQuantity = Math.ceil(item.quantity / item.packageFactor);
          }
         if (item.packageMeasurementUnit.tId === item.prodMeasurementUnit.tId && item.packageFactor === 1) {
@@ -233,12 +267,15 @@ angular.module('myApp')
           item.displayName += ' (החלק העיקרי)'
         }
 
-        ind++;
-        that.vec[ind] = {
-          ind: ind,
-          level: 1,
-          data: item
-      };
+        if (category.totalItem > -1 && !item.isTotalItem) {
+        } else {
+          ind++;
+          that.vec[ind] = {
+            ind: ind,
+            level: 1,
+            data: item
+          };
+        }
 
         // add exit list items
         catItem.exitList.forEach(function(ex) {
@@ -252,6 +289,11 @@ angular.module('myApp')
           };
         });
    });
+      if (category.totalItem > -1) { // if accumulated packages - round up
+        category.items[category.totalItem].packageQuantity =
+          Math.ceil(category.items[category.totalItem].packageQuantity) +
+          Math.ceil(category.items[category.totalItem].glassPackageQuantity);
+      }
     });
 
      // fetch item's exit list
