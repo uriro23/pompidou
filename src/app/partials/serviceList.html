@@ -106,7 +106,6 @@
     <label>הוראות למטבח:</label>
     <span>{{serviceListModel.currentOrder.taskData.kitchenInstructions}}</span>
   </div>
-<p></p>
     <h4 ng-show="serviceListModel.currentOrder.taskData.isServiceOnSite">
       נדרש סרוויס באירוע!
     </h4>
@@ -120,10 +119,10 @@
 		  </label>
 		  <span>{{serviceListModel.currentOrder.remarks}}</span>
 		</div>
-<p></p>
 
 
-  <p style="height: 20px;"></p>
+
+  <p></p>
 
   <table border="1" style="width: 90%">
     <th style="width: 50%"></th>
@@ -151,17 +150,84 @@
 
   <p></p>
 
+  <div class="row">
+    <div class="column">
+      <table border="1" ng-hide="serviceListModel.splitSeparates[0].items.length===0">
+        <tbody>
+        <tr>
+          <td>
+            <span style="font-weight: bold">{{serviceListModel.splitSeparates[0].category.label}}</span>
+          </td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in serviceListModel.splitSeparates[0].items track by item.index">
+          <td>{{item.productName}}
+            <div ng-show="item.isDescChanged">
+              <label>התאמה אישית:</label>
+              {{item.productDescription}}
+            </div>
+          </td>
+          <td>{{item.quantity}} {{item.measurementUnitLabel}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="column">
+      <table border="1" ng-hide="serviceListModel.splitSeparates[1].items.length===0">
+        <tbody>
+        <tr>
+          <td>
+            <span style="font-weight: bold">{{serviceListModel.splitSeparates[1].category.label}}</span>
+          </td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in serviceListModel.splitSeparates[1].items track by item.index">
+          <td>{{item.productName}}
+            <div ng-show="item.isDescChanged">
+              <label>התאמה אישית:</label>
+              {{item.productDescription}}
+            </div>
+          </td>
+          <td>{{item.quantity}} {{item.measurementUnitLabel}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <p></p>
+      <table border="1" ng-hide="serviceListModel.splitSeparates[2].items.length===0">
+        <tbody>
+        <tr>
+          <td>
+            <span style="font-weight: bold">{{serviceListModel.splitSeparates[2].category.label}}</span>
+          </td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in serviceListModel.splitSeparates[2].items track by item.index">
+          <td>{{item.productName}}
+            <div ng-show="item.isDescChanged">
+              <label>התאמה אישית:</label>
+              {{item.productDescription}}
+            </div>
+          </td>
+          <td>{{item.quantity}} {{item.measurementUnitLabel}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <div>
     <p style="page-break-after: always;">&nbsp;</p>
     <p style="page-break-before: always;">&nbsp;</p>
   </div>
 
+
+  <div ng-repeat="separate in serviceListModel.separates track by separate.id">
+  <div ng-show="separate.items.length > 0">
   <h3>
     {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
     {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
     -
-    חטיפים
+    {{separate.category.label}}
     &nbsp;
     <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
     <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
@@ -170,52 +236,20 @@
     <thead>
     <th style="width:70%">פריט</th>
     <th style="width:15%">כמות</th>
-    <th style="width:15%"></th>
     </thead>
     <tbody>
-    <tr ng-repeat="item in serviceListModel.snacks track by item.index">
+    <tr ng-repeat="item in separate.items track by item.index">
       <td>{{item.productName}}
         <div ng-show="item.isDescChanged">
           <label>התאמה אישית:</label>
           {{item.productDescription}}
         </div>
       </td>
-      <td>{{item.quantity}}</td>
-      <td>{{item.measurementUnitLabel}}</td>
+      <td>{{item.quantity}} {{item.measurementUnitLabel}}</td>
     </tr>
     </tbody>
   </table>
-  <h3>
-    {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
-    {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
-    -
-    קינוחים
-    &nbsp;
-    <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
-    <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
-  </h3>
-  <table border="1" style="width:60%">
-    <thead>
-    <th style="width:70%">פריט</th>
-    <th style="width:15%">כמות</th>
-    <th style="width:15%"></th>
-    </thead>
-    <tbody>
-    <tr ng-repeat="item in serviceListModel.desserts track by item.index">
-      <td>{{item.productName}}
-        <div ng-show="item.isDescChanged">
-          <label>התאמה אישית:</label>
-          {{item.productDescription}}
-        </div>
-      </td>
-      <td>{{item.quantity}}</td>
-      <td>{{item.measurementUnitLabel}}</td>
-    </tr>
-    </tbody>
-  </table>
-
-
-
-
+  </div>
+</div>
 
 </div> <!-- End of exitListContainer  -->

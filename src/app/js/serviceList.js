@@ -18,6 +18,7 @@ angular.module('myApp')
     $rootScope.title = 'רשימת סרוויס';
 
     var CATEGORY_SNACKS = 1;
+    var CATEGORY_SANDWICHES = 35;
     var CATEGORY_DESSERTS = 8;
     var CATEGORY_ACCESSORIES = 50;
 
@@ -106,8 +107,10 @@ angular.module('myApp')
     // for snacks and desserts include in exit list only items which have sub items in their exit list
     var listItems = angular.copy(this.currentQuote.items);
     listItems.forEach(function(item) {
-      if(item.category.tId === CATEGORY_SNACKS || item.category.tId === CATEGORY_DESSERTS) {
-        item.isExcludeWholeItem = true; // don't list snacks and desserts in main list
+      if(item.category.tId === CATEGORY_SNACKS ||
+         item.category.tId === CATEGORY_SANDWICHES||
+         item.category.tId === CATEGORY_DESSERTS) {
+        item.isExcludeWholeItem = true; // don't list snacks sandwiches and desserts in main list
           }
     });
 
@@ -129,7 +132,9 @@ angular.module('myApp')
         })[0].label;
       }
 
-      if (category.tId !== CATEGORY_SNACKS && category.tId !== CATEGORY_DESSERTS) {
+      if (category.tId !== CATEGORY_SNACKS &&
+          category.tId !== CATEGORY_SANDWICHES &&
+          category.tId !== CATEGORY_DESSERTS) {
         ind++;
         that.vec[ind] = {
           ind: ind,
@@ -219,7 +224,10 @@ angular.module('myApp')
     };
 
 
-    function editItems (order, category, catalog) {
+    function editItems (order, category, catalog, categories) {
+      var categoryObject = categories.filter(function(c) {
+        return c.tId === category;
+      })[0];
       var categoryItems = order.properties.quotes[order.properties.activeQuote].items.filter(function(item) {
         return item.category.tId === category;
       }).map(function(item) {
@@ -250,22 +258,32 @@ angular.module('myApp')
       // now unite items with same catalog name and without major description change
       var condensedItems = [];
       var j = 0;
-      condensedItems[0] = categoryItems[0];
-      for (var i=1;i<categoryItems.length;i++) {
-        if (categoryItems[i].productName === categoryItems[i-1].productName && !categoryItems[i].isDescChanged)  {
-          condensedItems[j].quantity += categoryItems[i].quantity;
-        } else {
-          j++;
-          condensedItems[j] = categoryItems[i];
+      if (categoryItems.length > 0) {
+        condensedItems[0] = categoryItems[0];
+        for (var i = 1; i < categoryItems.length; i++) {
+          if (categoryItems[i].productName === categoryItems[i - 1].productName && !categoryItems[i].isDescChanged) {
+            condensedItems[j].quantity += categoryItems[i].quantity;
+          } else {
+            j++;
+            condensedItems[j] = categoryItems[i];
+          }
         }
       }
-      return condensedItems;
+      return {
+        id: category, // unique key for ng-repeat
+        category: categoryObject,
+        items: condensedItems
+      };
     }
 
-    this.snacks = editItems(order,CATEGORY_SNACKS,catalog);
-    this.desserts = editItems(order,CATEGORY_DESSERTS,catalog);
+    this.separates = [];
+    this.separates.push(editItems(order,CATEGORY_SNACKS,catalog,categories));
+    this.separates.push(editItems(order,CATEGORY_SANDWICHES,catalog,categories));
+    this.separates.push(editItems(order,CATEGORY_DESSERTS,catalog,categories));
+    console.log(this.separates[2]);
 
-
-
+    this.splitSeparates = this.separates.sort(function(a,b) {
+      return (b.items.length - a.items.length);
+    });
 
   });

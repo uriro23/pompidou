@@ -166,7 +166,13 @@ a:link, a:visited  {
   width: 40%
 }
 
+.column {
+  float: right;
+  width: 50%;
+}
 
-
-
-
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
