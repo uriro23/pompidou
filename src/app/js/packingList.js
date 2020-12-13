@@ -107,22 +107,7 @@ angular.module('myApp')
 
     });
 
-    // for snacks and desserts include in exit list only items which have sub items in their exit list
     var exitListItems = angular.copy(this.currentQuote.items);
-    exitListItems.forEach(function(item) {
-      if(item.category.tId === CATEGORY_SNACKS ||
-        item.category.tId === CATEGORY_SANDWICHES ||
-        item.category.tId === CATEGORY_DESSERTS) {
-        var exitList = that.catalog.filter(function(cat) {
-          return cat.id === item.catalogId;
-        })[0].properties.exitList;
-        if (exitList.length === 0) {
-          item.isExcludeWholeItem = true; // if no sub items dont print item at all
-        } else {
-          item.isExcludeMainItem = true; // if sub items exist, print them without the main item
-        }
-      }
-    });
 
     //filter categories - only those in order and  are food
     this.filteredCategories = this.categories.filter(function (cat) {
@@ -167,15 +152,16 @@ angular.module('myApp')
           return 0;
         }
       });
+
       catItems.forEach(function(item) {
         if (item.isDescChanged && item.isCosmeticChange) {
           item.isDescChanged = false;
         }
       });
       category.items = [];
-      category.totalItem = -1;
+      category.totalItem = -1; // totalItem is dummy item to hold computed # of trays
         var j=0;
-      if (category.tId === CATEGORY_SNACKS) {
+      if (category.tId === CATEGORY_SNACKS) { // create dummy total item for snacks
         category.items[j] = {
           catalogId: config.snacksTraysItem,
           productName: 'מגשי חטיפים',
@@ -185,7 +171,7 @@ angular.module('myApp')
         };
         category.totalItem = j++;
       }
-      if (category.tId === CATEGORY_SANDWICHES) {
+      if (category.tId === CATEGORY_SANDWICHES) { // create dummy total item for sandwiches
         category.items[j] = {
           catalogId: config.sandwichesTraysItem,
           productName: 'מגשי כריכונים',
@@ -195,7 +181,7 @@ angular.module('myApp')
         };
         category.totalItem = j++;
       }
-      if (category.tId === CATEGORY_DESSERTS) {
+      if (category.tId === CATEGORY_DESSERTS) { // create dummy total item for desserts
           category.items[j] = {
             catalogId: config.dessertsTraysItem,
             productName: 'מגשי קינוחים',
@@ -234,14 +220,10 @@ angular.module('myApp')
           return mu.tId === catItem.packageMeasurementUnit;
         })[0];
 
-         if (item.packageMeasurementUnit.tId === 0) {  // don't show main item with no package mu (e.g. green salads)
-           item.isExcludeMainItem = true;
-         }
-
-         item.packageFactor = catItem.packageFactor;
+        item.packageFactor = catItem.packageFactor;
 
           if (item.isTotalItem) { // skip the item used to accumulate category total packages
-         } else if (category.totalItem > -1) { // this category uses accumulated packages
+         } else if (category.totalItem > -1 && item.packageMeasurementUnit.tId === MU_TRAYS) { // accumulate this item
            if (item.measurementUnit.tId === MU_GLASSES) { // accumulate glasses separately
              category.items[category.totalItem].glassPackageQuantity += (item.quantity / item.packageFactor);
              console.log('adding '+item.productName+' to glasses, category '+category.tId+' giving '+
@@ -267,7 +249,10 @@ angular.module('myApp')
           item.displayName += ' (החלק העיקרי)'
         }
 
-        if (category.totalItem > -1 && !item.isTotalItem) {
+         // skip accumulated items and items w/o package MU
+        if ((category.totalItem > -1 && item.packageMeasurementUnit.tId === MU_TRAYS && !item.isTotalItem) ||
+          item.packageMeasurementUnit.tId === 0) {
+          item.isSkip = true;
         } else {
           ind++;
           that.vec[ind] = {
@@ -279,7 +264,12 @@ angular.module('myApp')
 
         // add exit list items
         catItem.exitList.forEach(function(ex) {
-          ex.item += (' ל'+item.productName);
+          ex.parentName = item.productName;
+          if (item.isSkip) {
+            ex.parentQuantity = item.prodQuantity;
+            ex.parentMeasurementUnit = item.prodMeasurementUnit;
+          }
+          ex.isShowParentQuantity = item.isSkip;
           ex.quantity = Math.ceil(item.quantity / ex.factor);
           ind++;
           that.vec[ind] = {

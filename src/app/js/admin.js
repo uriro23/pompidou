@@ -1461,7 +1461,6 @@ angular.module('myApp')
 
         });
     };
-      */
     this.isInStock = function() {
       console.log('starting');
       api.queryCatalog(undefined,['isInStock'])
@@ -1478,6 +1477,7 @@ angular.module('myApp')
 
         });
     };
+      */
 // end conversions
 
   });

@@ -194,7 +194,14 @@
     </td>
       <td ng-show="line.level===2">
         &nbsp;&#128440;
-        {{line.data.item}}</td>
+        <span>{{line.data.item}}</span>
+        <span>ל</span>
+        <span ng-show="line.data.isShowParentQuantity">
+          <span>{{line.data.parentQuantity}}</span>
+          <span>{{line.data.parentMeasurementUnit.label}}</span>
+        </span>
+        <span style="text-decoration: underline">{{line.data.parentName}}</span>
+      </td>
       <!-- col 2 -->
       <td ng-show="line.level===0"></td>
       <td ng-show="line.level===1">
