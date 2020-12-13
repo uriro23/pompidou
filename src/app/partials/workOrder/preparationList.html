@@ -23,21 +23,14 @@
         --- לא מעודכן ---
       </span>
       </td>
-      <!--
-   <td style="width: 10%">
-       <button class="btn btn-default"
-               ng-disabled="workOrderModel.isProcessing"
-               ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
-               ng-click="workOrderModel.preparationsEndDay()">
-         סוף יום
-       </button>
-     </td>
-     -->
-      <td style="width: 35%">
+   <td style="width: 20%">
         <span>פרוט מנות ואירועים</span>
         <input type="checkbox" ng-model="workOrderModel.isShowPreparationsMenuItems">
       </td>
-      <td style="width: 15%"></td>
+      <td style="width: 20%">
+        <span>כולל מלאי?</span>
+        <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
+      </td>
       <td  style="width: 10%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
@@ -54,15 +47,10 @@
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
     <tbody>
-    <tr ng-repeat="woItem in cat.list track by woItem.id">
+    <tr ng-hide="workOrderModel.isIncludeStock"
+        ng-repeat="woItem in cat.list | filter : {isInStock:false} track by woItem.id">
       <td style="width: 20%">{{woItem.properties.productName}}</td>
       <td style="width: 5%">
-        <!--
-        <input type="text" money size="5"
-               ng-model="woItem.properties.quantity"
-               ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
-               ng-change="workOrderModel.setQuantity(woItem,2)">
-               -->
         {{woItem.properties.quantity | number:2}}
       </td>
       <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
@@ -79,15 +67,53 @@
         <input type="checkbox" ng-model="woItem.properties.isForToday"
                ng-change="workOrderModel.setIsForToday(woItem)">
       </td>
-      <!--
-      <td style="width: 11%"
-          ng-hide= "!workOrderModel.woIndex.properties.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
-        <input type="text" money size="5"
-               ng-disabled="!woItem.properties.isForToday"
-               ng-model="woItem.properties.quantityForToday"
-               ng-change="workOrderModel.saveWI(woItem)">
+      <td style="width: 10%" ng-hide="workOrderModel.isShowPreparationsMenuItems">
+        <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
+                class="btn btn-default btn-sm">
+          מחק
+        </button>
       </td>
-      -->
+      <td style="width: 70%" ng-show="workOrderModel.isShowPreparationsMenuItems">
+        <table class="table table-hover" border="1" style="width: 100%">
+          <thead>
+          <th style="width: 35%">מנה</th>
+          <th style="width: 10%">כמות</th>
+          <th ng-repeat="order in workOrderModel.woOrders track by order.id">
+            <span>{{order.properties.customer.firstName}}</span>
+            <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
+          </th>
+          </thead>
+          <tr ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
+            <td>{{menuItem.productName}}</td>
+            <td>{{menuItem.quantity | number:2}}</td>
+            <td ng-repeat="order in menuItem.orders track by order.seq">
+              <span ng-show="order.quantity">{{order.quantity | number:2}}</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr ng-show="workOrderModel.isIncludeStock"
+        ng-repeat="woItem in cat.list track by woItem.id">
+      <td style="width: 20%">{{woItem.properties.productName}}</td>
+      <td style="width: 5%">
+        {{woItem.properties.quantity | number:2}}
+      </td>
+      <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
+      <td style="width: 10%" ng-hide="workOrderModel.isShowPreparationsMenuItems">
+        <button ng-click="workOrderModel.backInfo(woItem)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
+                class="btn btn-default btn-sm">
+          פרטים
+        </button>
+      </td>
+      <td style="width: 13%"
+          ng-hide= "!workOrderModel.woIndex.properties.domainStatus[2] || workOrderModel.isShowPreparationsMenuItems">
+        <span>להיום: </span>
+        <input type="checkbox" ng-model="woItem.properties.isForToday"
+               ng-change="workOrderModel.setIsForToday(woItem)">
+      </td>
       <td style="width: 10%" ng-hide="workOrderModel.isShowPreparationsMenuItems">
         <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
                 ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"

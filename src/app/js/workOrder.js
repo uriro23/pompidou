@@ -191,6 +191,7 @@ angular.module('myApp')
                     workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
                       return mes.tId === outCatItem.measurementUnit;
                     })[0];
+                    workItem.properties.isInStock = outCatItem.isInStock;
                     workItem.properties.backTrace = [{
                       id: inWorkOrder.id,
                       domain: inWorkItem.domain,
@@ -472,6 +473,7 @@ angular.module('myApp')
       }
       this.workOrder.forEach(function(woi) {
         var wo = woi.properties;
+        woi.isInStock = wo.isInStock; // for ng-repeat filter
         if (wo.domain > 0) {
           var catInd;
           var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {

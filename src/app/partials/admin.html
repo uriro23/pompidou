@@ -28,8 +28,9 @@
   <button class="btn btn-default" ng-click="adminModel.updateHeader()">header</button>
   <button class="btn btn-default" ng-click="adminModel.specialTypes()">special types</button>
   <button class="btn btn-default" ng-click="adminModel.listExtra()">list Extra</button>
-    -->
-  <button class="btn btn-default" ng-click="adminModel.packageFactor()">package factor</button>
+    <button class="btn btn-default" ng-click="adminModel.packageFactor()">package factor</button>
+  -->
+  <button class="btn btn-default" ng-click="adminModel.isInStock()">stock</button>
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -242,17 +243,13 @@
          <th>שם</th>
          <th>כמות</th>
          <th>יח'</th>
-         <!--
-         <th ng-show="adminModel.productNamesDomain.id===1">שם למדבקה</th>
-         <th ng-show="adminModel.productNamesDomain.id===1">כמות מדבקות</th>
-         <th ng-show="adminModel.productNamesDomain.id===1">נוספות</th>
-         -->
          <th>ביטול</th>
          <th>קטגוריה</th>
          <th ng-repeat="sensitivity in adminModel.sensitivities track by sensitivity.tId"
              ng-show="adminModel.productNamesDomain.id===1">
            {{sensitivity.label}}
          </th>
+         <th ng-show="adminModel.productNamesDomain.id>1">מלאי?</th>
          <th></th>
          </thead>
          <tbody>
@@ -263,19 +260,6 @@
            <td>{{productNameItem.properties.productName}}</td>
            <td>{{productNameItem.properties.priceQuantity}}</td>
            <td>{{productNameItem.measurementUnitLabel}}</td>
-           <!--
-           <td ng-show="adminModel.productNamesDomain.id===1">
-             <input type="text" ng-model="productNameItem.properties.stickerLabel" size="10"
-                    ng-change="adminModel.productNameItemChanged(productNameItem)">
-           </td>
-           <td ng-show="adminModel.productNamesDomain.id===1">
-             <input type="number" ng-model="productNameItem.properties.stickerQuantity" min="0" max="99"
-                    ng-change="adminModel.productNameItemChanged(productNameItem)">
-           </td>
-           <td ng-show="adminModel.productNamesDomain.id===1">
-             {{productNameItem.exitListLength}}
-           </td>
-           -->
            <td>
              <input type="checkbox"
                     ng-model="productNameItem.properties.isDeleted"
@@ -290,6 +274,10 @@
              <input type="checkbox" ng-model="potSens.isTrue"
                     ng-change="adminModel.productNameItemChanged(productNameItem)">
            </td>
+           <td ng-show="adminModel.productNamesDomain.id>1">
+             <input type="checkbox" ng-model="productNameItem.properties.isInStock"
+                    ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
            <td>
              <button ng-show="productNameItem.isChanged"
                      ng-click="adminModel.saveProductNameitem(productNameItem)">
@@ -301,7 +289,7 @@
        </table>
      </div>
    </tab>
-   <tab heading="יח' מידה" select="adminModel.filterProductNameDomain()">
+   <tab heading="יח' מידה" select="adminModel.loadMenuItemsCatalog()">
      <div ng-hide="adminModel.isProcessing">
       <label>בחר קטגוריה</label>
        <select ng-model="adminModel.productNamesCategory"

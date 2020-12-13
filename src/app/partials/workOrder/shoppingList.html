@@ -6,14 +6,18 @@
              ng-model="workOrderModel.hierarchicalWorkOrder[3].isShowAll"
              ng-change="workOrderModel.setShowAll(3)">
     </td>
-    <td style="width:60%;font-size: large" ng-hide="workOrderModel.isPrint">
+    <td style="width:40%;font-size: large" ng-hide="workOrderModel.isPrint">
       {{workOrderModel.domains[3].forWorkItem}}
       <span ng-hide="workOrderModel.woIndex.properties.domainStatus[3]">
         --- לא מעודכן ---
       </span>
     </td>
-    <td style="width:60%;font-size: large" ng-show="workOrderModel.isPrint">
+    <td style="width:40%;font-size: large" ng-show="workOrderModel.isPrint">
       <span>רשימת קניות</span>
+    </td>
+    <td>
+      <span>כולל מלאי?</span>
+      <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
     </td>
     <td style="width:20%">
       <span>להדפסה</span>
@@ -27,7 +31,29 @@
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table table-hover" style="width:30%">
     <tbody>
-    <tr ng-repeat="woItem in cat.list track by woItem.id">
+    <tr ng-hide="workOrderModel.isIncludeStock"
+        ng-repeat="woItem in cat.list | filter : {isInStock:false} track by woItem.id">
+      <td style="width: 80%">{{woItem.properties.productName}}</td>
+      <td>
+        {{woItem.properties.quantity | number:2}}
+      </td>
+      <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
+      <td>
+        <button ng-click="workOrderModel.backInfo(woItem)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[3]"
+                class="btn btn-default btn-sm">
+          פרטים
+        </button>
+      </td>
+      <td>
+        <button ng-click="workOrderModel.delItem(3,$parent.$index,$index)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[3]"
+                class="btn btn-default btn-sm">
+          מחק
+        </button>
+      </td>
+    </tr>
+    <tr  ng-show="workOrderModel.isIncludeStock" ng-repeat="woItem in cat.list track by woItem.id">
       <td style="width: 80%">{{woItem.properties.productName}}</td>
       <td>
         {{woItem.properties.quantity | number:2}}

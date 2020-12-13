@@ -359,7 +359,7 @@ angular.module('myApp')
 
 
 
-    this.filterProductNameDomain = function() {
+    this.loadMenuItemsCatalog = function() {
       var that = this;
       this.isProcessing = true;
       api.queryCategories(1)
@@ -384,7 +384,52 @@ angular.module('myApp')
                 } else {
                   cat.measurementUnitLabel = cat.measurementUnitObj.label;
                 }
-                 cat.categoryObject = that.categories.filter(function(cat2) {
+                cat.categoryObject = that.categories.filter(function(cat2) {
+                  return cat2.tId === cat.properties.category;
+                })[0];
+                cat.exitListLength = cat.properties.exitList.length;
+                cat.measurementUnit = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.measurementUnit;
+                })[0];
+                cat.prodMeasurementUnit = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.prodMeasurementUnit;
+                })[0];
+                cat.packageMeasurementUnit = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.packageMeasurementUnit;
+                })[0];
+              });
+              that.productNameItems = catalog;
+              that.productNameCategoryItems = [];
+              that.isProcessing = false;
+            });
+        });
+    };
+    this.filterProductNameDomain = function() {
+      var that = this;
+      this.isProcessing = true;
+      api.queryCategories(this.productNamesDomain.id)
+        .then(function(categories) {
+          that.categories = categories.map(function(cat) {
+            return cat.properties;
+          });
+          api.queryCatalog(that.productNamesDomain.id)
+            .then(function(catalog) {
+              console.log(catalog.length+' menu items loaded');
+              catalog = catalog.filter(function(c) {
+                return !c.properties.isDeleted;
+              });
+              console.log(catalog.length+' undeleted items');
+              catalog.forEach(function(cat) {
+                cat.category = cat.properties.category; // for ng-repeat filter
+                cat.measurementUnitObj = measurementUnits.filter(function(mu) {
+                  return mu.tId === cat.properties.measurementUnit;
+                })[0];
+                if (!cat.measurementUnitObj) {
+                  console.log('MU not found for '+cat.properties.measurementUnit);
+                } else {
+                  cat.measurementUnitLabel = cat.measurementUnitObj.label;
+                }
+                cat.categoryObject = that.categories.filter(function(cat2) {
                   return cat2.tId === cat.properties.category;
                 })[0];
                 cat.exitListLength = cat.properties.exitList.length;
@@ -457,8 +502,10 @@ angular.module('myApp')
         return sen.isTrue;
       });
       cat.properties.measurementUnit = cat.measurementUnit.tId;
-      cat.properties.prodMeasurementUnit = cat.prodMeasurementUnit.tId;
-      cat.properties.packageMeasurementUnit = cat.packageMeasurementUnit.tId;
+      if (this.productNamesDomain.id===1) {
+        cat.properties.prodMeasurementUnit = cat.prodMeasurementUnit.tId;
+        cat.properties.packageMeasurementUnit = cat.packageMeasurementUnit.tId;
+      }
       api.saveObj(cat);
       cat.isChanged = false;
       this.setDisableLink();
@@ -1392,7 +1439,6 @@ angular.module('myApp')
             })
         })
    };
-     */
     this.packageFactor = function() {
       console.log('starting');
       api.queryCatalog(1,['packageFactor','exitList'])
@@ -1401,12 +1447,29 @@ angular.module('myApp')
           var elc = 0;
           items.forEach(function(item) {
             item.properties.packageFactor = 1;
-              item.properties.exitList.forEach(function (el) {
-                elc++;
-                el.factor = 1000;   // set high default value
-              });
+            item.properties.exitList.forEach(function (el) {
+              elc++;
+              el.factor = 1000;   // set high default value
+            });
           });
           console.log('set '+elc+' exitList factor values');
+          console.log('updating');
+          api.saveObjects(items)
+            .then(function() {
+              console.log('done');
+            });
+
+        });
+    };
+      */
+    this.isInStock = function() {
+      console.log('starting');
+      api.queryCatalog(undefined,['isInStock'])
+        .then(function(items) {
+          console.log('read '+items.length+' items');
+          items.forEach(function(item) {
+            item.properties.isInStock = false;
+         });
           console.log('updating');
           api.saveObjects(items)
             .then(function() {
