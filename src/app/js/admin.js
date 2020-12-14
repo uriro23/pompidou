@@ -502,8 +502,10 @@ angular.module('myApp')
         return sen.isTrue;
       });
       cat.properties.measurementUnit = cat.measurementUnit.tId;
-      if (this.productNamesDomain.id===1) {
+      if (cat.prodMeasurementUnit) {
         cat.properties.prodMeasurementUnit = cat.prodMeasurementUnit.tId;
+      }
+      if (cat.packageMeasurementUnit) {
         cat.properties.packageMeasurementUnit = cat.packageMeasurementUnit.tId;
       }
       api.saveObj(cat);

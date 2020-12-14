@@ -120,6 +120,7 @@ angular.module('myApp')
 
     this.vec = [];
     var ind = -1;
+    this.totalTrays = 0;
 
     this.filteredCategories.forEach(function(category) {
       if (category.measurementUnit) {
@@ -184,7 +185,7 @@ angular.module('myApp')
       if (category.tId === CATEGORY_DESSERTS) { // create dummy total item for desserts
           category.items[j] = {
             catalogId: config.dessertsTraysItem,
-            productName: 'מגשי קינוחים',
+            productName: 'מגשי פטיפורים',
             packageQuantity: 0,
             glassPackageQuantity: 0,
             isTotalItem: true
@@ -238,6 +239,9 @@ angular.module('myApp')
            }
          } else { // no accumulation - compute package quantity for each item separately
            item.packageQuantity = Math.ceil(item.quantity / item.packageFactor);
+           if (item.packageMeasurementUnit.tId === MU_TRAYS) {
+             that.totalTrays += item.packageQuantity;
+           }
          }
         if (item.packageMeasurementUnit.tId === item.prodMeasurementUnit.tId && item.packageFactor === 1) {
           item.displayName = item.productName; // because package quantity will be listed anyway
@@ -283,6 +287,7 @@ angular.module('myApp')
         category.items[category.totalItem].packageQuantity =
           Math.ceil(category.items[category.totalItem].packageQuantity) +
           Math.ceil(category.items[category.totalItem].glassPackageQuantity);
+        that.totalTrays += category.items[category.totalItem].packageQuantity; // all accumulated packages are trays
       }
     });
 
