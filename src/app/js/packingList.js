@@ -121,6 +121,7 @@ angular.module('myApp')
     this.vec = [];
     var ind = -1;
     this.totalTrays = 0;
+    this.isExceptionalSnacks = false;
 
     this.filteredCategories.forEach(function(category) {
       if (category.measurementUnit) {
@@ -288,6 +289,9 @@ angular.module('myApp')
           Math.ceil(category.items[category.totalItem].packageQuantity) +
           Math.ceil(category.items[category.totalItem].glassPackageQuantity);
         that.totalTrays += category.items[category.totalItem].packageQuantity; // all accumulated packages are trays
+        if (category.items[category.totalItem].isExceptionalSnacks) {
+          that.isExceptionalSnacks = true;
+        }
       }
     });
 
