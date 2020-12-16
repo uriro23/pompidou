@@ -22,7 +22,6 @@ angular.module('myApp')
     var CATEGORY_DESSERTS = 8;
     var CATEGORY_ACCESSORIES = 50;
     var MU_TRAYS = 4;
-    var MU_GLASSES = 17;
     var DEFAULT_SNACKS_FACTOR = 40;
 
     this.currentOrder = order.properties;
@@ -168,7 +167,6 @@ angular.module('myApp')
           catalogId: config.snacksTraysItem,
           productName: 'מגשי חטיפים',
           packageQuantity: 0,
-          glassPackageQuantity: 0, // really only used for desserts
           isTotalItem: true
         };
         category.totalItem = j++;
@@ -178,7 +176,6 @@ angular.module('myApp')
           catalogId: config.sandwichesTraysItem,
           productName: 'מגשי כריכונים',
           packageQuantity: 0,
-          glassPackageQuantity: 0, // really only used for desserts
           isTotalItem: true
         };
         category.totalItem = j++;
@@ -188,7 +185,6 @@ angular.module('myApp')
             catalogId: config.dessertsTraysItem,
             productName: 'מגשי פטיפורים',
             packageQuantity: 0,
-            glassPackageQuantity: 0,
             isTotalItem: true
           };
         category.totalItem = j++;
@@ -226,18 +222,12 @@ angular.module('myApp')
 
           if (item.isTotalItem) { // skip the item used to accumulate category total packages
          } else if (category.totalItem > -1 && item.packageMeasurementUnit.tId === MU_TRAYS) { // accumulate this item
-           if (item.measurementUnit.tId === MU_GLASSES) { // accumulate glasses separately
-             category.items[category.totalItem].glassPackageQuantity += (item.quantity / item.packageFactor);
-             console.log('adding '+item.productName+' to glasses, category '+category.tId+' giving '+
-               category.items[category.totalItem].glassPackageQuantity);
-           } else {
-             category.items[category.totalItem].packageQuantity += (item.quantity / item.packageFactor);
+            category.items[category.totalItem].packageQuantity += (item.quantity / item.packageFactor);
              console.log('adding '+item.productName+' to category '+category.tId+' giving '+
                             category.items[category.totalItem].packageQuantity);
              if (category.tId === CATEGORY_SNACKS && item.packageFactor !== DEFAULT_SNACKS_FACTOR) {
                category.items[category.totalItem].isExceptionalSnacks = true;
              }
-           }
          } else { // no accumulation - compute package quantity for each item separately
            item.packageQuantity = Math.ceil(item.quantity / item.packageFactor);
            if (item.packageMeasurementUnit.tId === MU_TRAYS) {
@@ -282,12 +272,14 @@ angular.module('myApp')
             level: 2,
             data: ex
           };
+          if (ex.measurementUnit.tId === MU_TRAYS) {
+            that.totalTrays += ex.quantity;
+          }
         });
    });
       if (category.totalItem > -1) { // if accumulated packages - round up
         category.items[category.totalItem].packageQuantity =
-          Math.ceil(category.items[category.totalItem].packageQuantity) +
-          Math.ceil(category.items[category.totalItem].glassPackageQuantity);
+          Math.ceil(category.items[category.totalItem].packageQuantity);
         that.totalTrays += category.items[category.totalItem].packageQuantity; // all accumulated packages are trays
         if (category.items[category.totalItem].isExceptionalSnacks) {
           that.isExceptionalSnacks = true;
