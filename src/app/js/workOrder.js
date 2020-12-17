@@ -324,7 +324,7 @@ angular.module('myApp')
       api.queryOrdersByRange('eventDate',this.fromDate,this.toDate)
         .then(function(ords) {
           var orders = ords.filter(function(ord) {
-            return ord.properties.orderStatus !== 1 && ord.properties.orderStatus !== 6;
+            return ord.properties.orderStatus > 1 && ord.properties.orderStatus < 6;
           });
           orders.forEach(function(ord) {
             var viewItem = api.initWorkOrder();
