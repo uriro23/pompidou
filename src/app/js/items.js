@@ -9,7 +9,9 @@ angular.module('myApp')
     this.readOnly = $scope.orderModel.readOnly;
     this.categories = $scope.orderModel.categories;
     this.measurementUnits = $scope.orderModel.measurementUnits;
+    this.descChangeActions = $scope.orderModel.descChangeActions;
     this.config = $scope.orderModel.config;
+
 
 
     this.filterText = '';
@@ -171,31 +173,56 @@ angular.module('myApp')
     this.setProductDescription = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
       thisItem.isDescChanged = true;
+      thisItem.isCosmeticChange = false;
+      thisItem.isMajorChange = false;
+      orderService.setDescChangeActions(this.order, this.descChangeActions);
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
       orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
-    this.setCosmeticChange = function (ind ) {
-      var thisItem = this.order.view.quote.items[ind];
-      orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
-      orderService.quoteChanged(this.order);
-      thisItem.isChanged = true;
-    };
+  //   this.setCosmeticChange = function (ind ) {
+  //     var thisItem = this.order.view.quote.items[ind];
+  //     orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
+  //     orderService.quoteChanged(this.order);
+  //     thisItem.isChanged = true;
+  //   };
+  //
+  //   this.resetDescChange = function (ind) {
+  //     var that = this;
+  //     var thisItem = this.order.view.quote.items[ind];
+  //     api.queryCatalogById(thisItem.catalogId)
+  //       .then(function(cat) {
+  //         thisItem.productDescription = cat[0].properties.productDescription;
+  //         thisItem.isDescChanged = false;
+  //         orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
+  //         orderService.quoteChanged(that.order);
+  //         thisItem.isChanged = true;
+  //       });
+  // };
 
-    this.resetDescChange = function (ind) {
+    this.setDescChangeBooleans = function (ind ) {
       var that = this;
       var thisItem = this.order.view.quote.items[ind];
-      api.queryCatalogById(thisItem.catalogId)
-        .then(function(cat) {
-          thisItem.productDescription = cat[0].properties.productDescription;
-          thisItem.isDescChanged = false;
-          orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
-          orderService.quoteChanged(that.order);
-          thisItem.isChanged = true;
-        });
-  };
+      thisItem.isDescChanged = thisItem.descChangeAction.isDescChanged;
+      thisItem.isCosmeticChange = thisItem.descChangeAction.isCosmeticChange;
+      thisItem.isMajorChange = thisItem.descChangeAction.isMajorChange;
+      if (!thisItem.isDescChanged) {
+        api.queryCatalogById(thisItem.catalogId)
+          .then(function(cat) {
+            thisItem.productDescription = cat[0].properties.productDescription;
+            orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
+            orderService.quoteChanged(that.order);
+            thisItem.isChanged = true;
+          });
+      } else {
+        orderService.calcTotal(this.order.view.quote, this.order); // because tasks are also updated here
+        orderService.quoteChanged(this.order);
+        thisItem.isChanged = true;
+      }
+    };
+
 
     this.setQuantity = function (ind) {
       var thisOrder = this.order.properties;
@@ -420,6 +447,7 @@ angular.module('myApp')
           if (isPriceConflict) {
             alert('קיימת בעיה של מחירים קבועים בתבנית המועתקת. בדוק שגיאות מסומנות בשדה המחיר')
           }
+          orderService.setDescChangeActions(that.order,that.descChangeActions);
           orderService.calcTotal(targetQuote,that.order);
           orderService.quoteChanged(that.order);
         });

@@ -158,6 +158,7 @@ angular.module('myApp')
       var attr = this.order.properties;
       view.errors = {};
       view.changes = {};
+      orderService.setDescChangeActions(this.order,this.descChangeActions); // initialize object for drop down in all items
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         view.quote = attr.quotes[attr.activeQuote]; // load active quote
         if (view.quote && view.quote.endBoxType) {
@@ -400,6 +401,7 @@ angular.module('myApp')
     this.readOnly = {is:false}; // declared as object so it will be shared by ref among controllers
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
+    this.descChangeActions = lov.descChangeActions;
     this.categories = categories;
     this.measurementUnits = measurementUnits;
     this.discountCauses = discountCauses;

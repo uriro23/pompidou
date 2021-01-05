@@ -350,6 +350,37 @@ angular.module('myApp')
       }
     ],
 
+    descChangeActions: [
+      {
+        id: 0,
+        label: 'מקור',
+        isDescChanged: false,
+        isCosmeticChange: false,
+        isMajorChange: false
+      },
+      {
+        id: 1,
+        label: 'לסרוויס',
+        isDescChanged: true,
+        isCosmeticChange: false,
+        isMajorChange: false
+      },
+      {
+        id: 2,
+        label: 'גם לאריזה',
+        isDescChanged: true,
+        isCosmeticChange: false,
+        isMajorChange: true
+      },
+      {
+        id: 3,
+        label: 'רק ללקוח',
+        isDescChanged: true,
+        isCosmeticChange: true,
+        isMajorChange: false
+      }
+    ],
+
     accessBoxItemId: 332,
     accessUnhandledItemComponent: 417,
     accessUnhandledItemMaterial: 418

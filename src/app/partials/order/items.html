@@ -124,10 +124,11 @@
           ng-class="item.isChanged?'bg-success':null">
         <td>{{item.category.label}}</td>
         <td>
-          <input type="text" size="{{item.isDescChanged ? 89 : 100}}" ng-model="item.productDescription"
+          <input type="text" size="{{item.isDescChanged ? 86 : 100}}" ng-model="item.productDescription"
                  ng-change="itemsModel.setProductDescription($index)"
                  ng-disabled="itemsModel.readOnly.is"
                  ng-class="item.errors.productDescription?'bg-danger':null">
+          <!--
           <input type="checkbox" ng-model="item.isCosmeticChange"
                  ng-show="item.isDescChanged"
                  ng-change="itemsModel.setCosmeticChange($index)"
@@ -135,6 +136,13 @@
           <button ng-show="item.isDescChanged"
                   class="btn btn-default btn-sm bg-success"
                   ng-click="itemsModel.resetDescChange($index)">מקור</button>
+                  -->
+          <select ng-show="item.isDescChanged"
+                  ng-model="item.descChangeAction"
+                  ng-change="itemsModel.setDescChangeBooleans($index)"
+                  ng-disabled="itemsModel.readOnly.is"
+                  ng-options="descChangeAction.label for descChangeAction in itemsModel.descChangeActions">
+          </select>
         </td>
         <td>{{item.measurementUnit.label}}</td>
         <td>

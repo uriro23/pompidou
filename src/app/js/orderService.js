@@ -660,4 +660,20 @@ angular.module('myApp')
         });
     };
 
+    this.setDescChangeActions = function (order, descChangeActions) {
+      var that = this;
+      order.properties.quotes.forEach(function (quote) {
+        quote.items.forEach(function(item) {
+          if (item.isDescChanged) {
+            item.descChangeAction = descChangeActions.filter(function(act) {
+              return act.isDescChanged &&
+                (act.isCosmeticChange === Boolean(item.isCosmeticChange)) &&
+                (act.isMajorChange === Boolean(item.isMajorChange));
+            })[0];
+
+          }
+        });
+      });
+    };
+
   });

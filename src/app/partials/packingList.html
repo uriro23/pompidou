@@ -188,6 +188,10 @@
       <td ng-show="line.level===1">
         &nbsp;&#128440;
         {{line.data.displayName}}
+        <div ng-show="line.data.isMajorChange">
+          &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
+          {{line.data.productDescription}}
+        </div>
         <span ng-show="line.data.isExceptionalSnacks">
           <br><span style="font-weight: bold"> &nbsp;&nbsp; יש לבדוק את מספר המגשים בפועל</span>
         </span>
