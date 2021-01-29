@@ -390,10 +390,12 @@ angular.module('myApp')
     this.checkTasks = function (order) {
       var t = order.properties.taskData;
       // recalc location string
+      t.encodedAddress = undefined;
       if (t.isSelfDelivery) {
         t.location = 'איסוף עצמי';
         t.isShowLocation = true;
       } else if (t.address) {
+        t.encodedAddress = encodeURI(t.address);
         var i1 = t.address.lastIndexOf(',')+1;
         t.location = t.address.slice(i1);
         t.isShowLocation = true;

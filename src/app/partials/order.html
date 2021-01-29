@@ -28,10 +28,12 @@
           </span>
       &nbsp;&nbsp;&nbsp;
           <span ng-show="!orderModel.order.view.isChanged">
-            <label>מיקום:</label>
+            <a ng-show="orderModel.order.properties.taskData.encodedAddress"
+               ng-href="https://waze.com/ul?q={{orderModel.order.properties.taskData.encodedAddress}}&navigate=yes">מיקום:</a>
+             <label ng-hide="orderModel.order.properties.taskData.encodedAddress">מיקום:</label>
             <span>{{orderModel.order.properties.taskData.location}}</span>
           </span>
-   </div>
+         </div>
     <p></p>
        <div>
           <ng-include src="'app/partials/order/header.html'"></ng-include>
