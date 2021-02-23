@@ -55,14 +55,25 @@ angular.module('myApp')
    // Main Tab
 
     model.setProductName = function () {
-       model.item.errors.productName =
+      model.item.errors.productName =
         !model.item.properties.productName || model.item.properties.productName.length === 0;
       if (!model.item.errors.productName) {
         if (isNameInUse(model.item.properties.productName,model.item.id)) {
           model.item.errors.productName = 'dup';
         }
       }
-       model.setChanged(true);
+      model.setChanged(true);
+    };
+
+    model.setExternalName = function () {
+      model.item.errors.externalName =
+        !model.item.properties.externalName || model.item.properties.externalName.length === 0;
+      model.setChanged(true);
+    };
+
+    model.copyProductName = function () {
+      model.item.properties.externalName = model.item.properties.productName;
+      model.setExternalName();
     };
 
     model.setProductDescription = function () {
@@ -526,6 +537,7 @@ angular.module('myApp')
           model.item.errors.productionQuantity = true;
         }
         if (model.currentDomain.id===1) {
+          model.item.errors.externalName = true;
           model.item.errors.productDescription = true;
           model.item.errors.priceQuantity = true;
           model.item.errors.price = true;

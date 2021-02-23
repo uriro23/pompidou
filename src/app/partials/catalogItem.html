@@ -245,15 +245,25 @@
    <tab heading="ראשי" active="catalogItemModel.isMainTabActive">
     <table>
       <tr ng-class="catalogItemModel.item.errors.productName?'bg-danger':null">
-        <td><label>שם</label></td>
+        <td><label>שם פנימי</label></td>
         <td>
-        <input  type="text" size = 40 ng-model="catalogItemModel.item.properties.productName"
+          <input  type="text" size = 40 ng-model="catalogItemModel.item.properties.productName"
                   ng-change="catalogItemModel.setProductName()">
           <span ng-show="catalogItemModel.item.errors.productName==='dup'">&nbsp;שם פריט כפול</span>
         </td>
       </tr>
+      <tr ng-class="catalogItemModel.item.errors.externalName?'bg-danger':null"
+          ng-show="catalogItemModel.currentDomain.id===1">
+        <td><label>שם קצר ללקוח</label></td>
+        <td>
+          <input  type="text" size = 40 ng-model="catalogItemModel.item.properties.externalName"
+                  ng-change="catalogItemModel.setExternalName()">
+          <button class="btn btn-default" ng-hide="catalogItemModel.item.properties.externalName"
+                  ng-click="catalogItemModel.copyProductName()">העתק משם פנימי</button>
+        </td>
+      </tr>
       <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null">
-        <td><label>תיאור</label></td>
+        <td><label>תיאור להצעת מחיר</label></td>
         <td>
         <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.productDescription"
                   ng-change="catalogItemModel.setProductDescription()"></textarea>

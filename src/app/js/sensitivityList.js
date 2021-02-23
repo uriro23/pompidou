@@ -45,6 +45,7 @@ angular.module('myApp')
       var catItem = catalog.filter(function(cat) {
         return cat.id === item.catalogId;
       })[0];
+      item.externalName = catItem.properties.externalName;
       catItem.properties.sensitivities.forEach(function(sen) {
         var currentSensitivity = that.sensitivities.filter(function(sen2) {
           return sen2.tId === sen.tId;

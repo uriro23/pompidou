@@ -1480,7 +1480,23 @@ angular.module('myApp')
         });
     };
       */
-// end conversions
+    this.externalName = function() {
+      console.log('starting');
+      api.queryCatalog(1,['productName','externalName'])
+        .then(function(items) {
+          console.log('read '+items.length+' items');
+          items.forEach(function(item) {
+            item.properties.externalName = item.properties.productName;
+          });
+          console.log('updating');
+          api.saveObjects(items)
+            .then(function() {
+              console.log('done');
+            });
+
+        });
+    };
+    // end conversions
 
   });
 
