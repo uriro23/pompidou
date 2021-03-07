@@ -26,7 +26,7 @@
                 sensitivityListModel.customer.properties.lastName}}</span>
         <br>
         <span class="bold">תאריך האירוע:</span>
-        <span>{{sensitivityListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
+        <span>{{sensitivityListModel.eventDate | date: 'dd/MM/yy'}}</span>
         <p></p>
         <label>חשוב:</label>
         <span>במטבח שלנו יש הקפדה על נקיון והיגיינה </span>

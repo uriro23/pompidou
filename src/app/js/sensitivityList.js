@@ -30,7 +30,8 @@ angular.module('myApp')
       return customer.id === currentOrder.customer;
     })[0];
 
-    this.eventDate = moment(currentOrder.eventDate);
+    // this.eventDate = moment(currentOrder.eventDate);
+    this.eventDate = currentOrder.eventDate;
 
 
     // distribute menu items according to their sensitivities

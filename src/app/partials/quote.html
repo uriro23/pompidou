@@ -28,7 +28,7 @@
 			  <br>
 			  <span class="bold">תאריך האירוע:</span>
         <span ng-hide="quoteModel.bid.properties.order.isDateUnknown">
-          {{quoteModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}
+          {{quoteModel.bid.properties.order.eventDate | date: 'dd/MM/yy'}}
         </span>
         <span ng-show="quoteModel.bid.properties.order.isDateUnknown">
           טרם נקבע
@@ -36,7 +36,7 @@
         <br>
 			  <span class="bold" ng-show="quoteModel.eventTime">זמן האספקה:</span>
         <span ng-show="quoteModel.eventTime">
-          {{quoteModel.eventTime | convertTimezone:'Asia/Jerusalem' | formatTime: 'H:mm'}}
+          {{quoteModel.bid.properties.order.eventTime | date: 'H:mm'}}
         </span>
 			  <br>
 			  <span class="bold">מספר המשתתפים:</span>

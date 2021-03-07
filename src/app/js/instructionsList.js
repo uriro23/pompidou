@@ -25,7 +25,8 @@ angular.module('myApp')
       return customer.id === currentOrder.customer;
     })[0];
 
-    this.eventDate = moment(currentOrder.eventDate);
+    // this.eventDate = moment(currentOrder.eventDate);
+    this.eventDate = currentOrder.eventDate;
 
     this.isAnyFridge = false;
     this.isAllFridge = true;

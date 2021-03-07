@@ -12,6 +12,7 @@ angular.module('myApp')
     this.orderStatuses = $scope.orderModel.orderStatuses; // needed for setupOrderView
     this.user = $scope.orderModel.user;
     this.isProd = $scope.orderModel.isProd;
+    this.descChangeActions = $scope.orderModel.descChangeActions;
 
     // functions
     this.setupOrderView = $scope.orderModel.setupOrderView;
@@ -112,7 +113,7 @@ angular.module('myApp')
             .then(function () {
               api.queryOrder(that.order.id)   // requery order to get new update timestamp
                 .then(function(ord) {
-                  that.order.updatedAt = ord[0].updatedAt;
+                  //that.order.updatedAt = ord[0].updatedAt;
                   alert('האירוע שוחזר לגרסה ' + bid.properties.desc + ' מתאריך ' +
                   $filter('date')(bid.properties.date, 'dd/MM/yyyy HH:mm'))
                 });

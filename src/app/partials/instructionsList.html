@@ -26,7 +26,8 @@
                 instructionsListModel.customer.properties.lastName}}</span>
         <br>
         <span class="bold">תאריך האירוע:</span>
-        <span>{{instructionsListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span>
+      <!--  <span>{{instructionsListModel.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}</span> -->
+       <span>{{instructionsListModel.eventDate | date: 'dd/MM/yy'}}</span>
 
       </div>
 
