@@ -65,6 +65,15 @@ angular.module('myApp')
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       }); // source: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+      // we generate a date string for eventDate and eventTime so PDF generation will have correct date and time
+      var ed = that.order.properties.eventDate;
+      if (ed) {
+        bid.properties.eventDateStr = ed.getDate() + '/' + (ed.getMonth() + 1) + '/' + ed.getFullYear();
+      }
+      var et = that.order.properties.eventTime;
+      if (et) {
+        bid.properties.eventTimeStr = et.getHours() + ':' + et.getMinutes();
+      }
       return bid;
     }
 

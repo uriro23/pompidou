@@ -28,15 +28,17 @@
 			  <br>
 			  <span class="bold">תאריך האירוע:</span>
         <span ng-hide="quoteModel.bid.properties.order.isDateUnknown">
-          {{quoteModel.bid.properties.order.eventDate | date: 'dd/MM/yy'}}
+          <!-- {{quoteModel.bid.properties.order.eventDate | date: 'dd/MM/yy'}} -->
+          {{quoteModel.bid.properties.eventDateStr}}
         </span>
         <span ng-show="quoteModel.bid.properties.order.isDateUnknown">
           טרם נקבע
         </span>
         <br>
-			  <span class="bold" ng-show="quoteModel.eventTime">זמן האספקה:</span>
-        <span ng-show="quoteModel.eventTime">
-          {{quoteModel.bid.properties.order.eventTime | date: 'H:mm'}}
+			  <span class="bold" ng-show="quoteModel.bid.properties.eventTimeStr">זמן האספקה:</span>
+        <span ng-show="quoteModel.bid.properties.eventTimeStr">
+         <!-- {{quoteModel.bid.properties.order.eventTime | date: 'H:mm'}}  -->
+          {{quoteModel.bid.properties.eventTimeStr}}
         </span>
 			  <br>
 			  <span class="bold">מספר המשתתפים:</span>

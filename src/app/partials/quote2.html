@@ -13,15 +13,17 @@
         <strong>תאריך האירוע:</strong>
           <span ng-hide="quote2Model.bid.properties.order.isDateUnknown">
           <!--    {{quote2Model.eventDate | convertTimezone:'Asia/Jerusalem' | formatTime: 'D/M/YYYY'}}  -->
-                  {{quote2Model.bid.properties.order.eventDate | date: 'dd/MM/yy'}}
+          <!--        {{quote2Model.bid.properties.order.eventDate | date: 'dd/MM/yy'}}  -->
+            {{quote2Model.bid.properties.eventDateStr}}
                 </span>
           <span ng-show="quote2Model.bid.properties.order.isDateUnknown">
                   טרם נקבע
                 </span><br>
-          <strong ng-show="quote2Model.eventTime">זמן האספקה:</strong>
-            <span ng-show="quote2Model.eventTime">
+          <strong ng-show="quote2Model.bid.properties.eventTimeStr">זמן האספקה:</strong>
+            <span ng-show="quote2Model.bid.properties.eventTimeStr">
            <!--     {{quote2Model.eventTime | convertTimezone:'Asia/Jerusalem' | formatTime: 'H:mm'}}  -->
-                    {{quote2Model.bid.properties.order.eventTime | date: 'H:mm'}}
+            <!--        {{quote2Model.bid.properties.order.eventTime | date: 'H:mm'}}  -->
+              {{quote2Model.bid.properties.eventTimeStr}}
                   </span><br>
           <strong> מספר המשתתפים:</strong>
             <span>{{quote2Model.bid.properties.order.noOfParticipants}}</span><br>
