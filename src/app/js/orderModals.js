@@ -258,12 +258,10 @@ angular.module('myApp')
 
   })
   .controller('SendEquipMailCtrl', function ($modalInstance, $location, api, orderService, lov,
-                                        order, bidTextTypes, user, config,
-                                        gmailClientLowLevel, $scope, $filter) {
+                                             order, user, config,
+                                             gmailClientLowLevel, $scope, $filter) {
     var that = this;
-    console.log(config);
     this.order = order;
-     this.bidTextTypes = bidTextTypes;
     this.documentTypes = lov.documentTypes;
     this.mail = {
       from: user.attributes.email,
@@ -283,10 +281,6 @@ angular.module('myApp')
 
     this.setText = function () {
       this.msg = this.mailTextType.mailText;
-    };
-
-    this.isShowDocument = function (doc) {
-      return lov.documentTypes[doc.properties.documentType].isRealDocumentType
     };
 
     $scope.editorOptions = {
@@ -317,30 +311,30 @@ angular.module('myApp')
 
     this.doEmail = function (op) {
       var that = this;
-       var msgText = this.msg + this.table;
+      var msgText = this.msg + this.table;
 
 
-            that.mail.text = '<div dir="rtl">' + msgText + '</div>';
-            gmailClientLowLevel.doEmail(op,that.mail)
-              .then(function () {
-                      var activity = {
-                        date: new Date(),
-                        text: 'נשלח מייל לספק ציוד להשכרה',
-                      };
-                      order.properties.activities.splice(0, 0, activity);
-                      orderService.saveOrder(order);
-                },
-                function (error) {
-                  console.log(error);
-                  var errText = 'send email error:\r\n';
-                  if (error.result) {
-                    if (error.result.error) {
-                      errText += error.result.error.message
-                    }
-                  }
-                  alert(errText);
-                }
-              );
+      that.mail.text = '<div dir="rtl">' + msgText + '</div>';
+      gmailClientLowLevel.doEmail(op,that.mail)
+        .then(function () {
+            var activity = {
+              date: new Date(),
+              text: 'נשלח מייל לספק ציוד להשכרה',
+            };
+            order.properties.activities.splice(0, 0, activity);
+            orderService.saveOrder(order);
+          },
+          function (error) {
+            console.log(error);
+            var errText = 'send email error:\r\n';
+            if (error.result) {
+              if (error.result.error) {
+                errText += error.result.error.message
+              }
+            }
+            alert(errText);
+          }
+        );
 
       $modalInstance.close();
     };
@@ -351,6 +345,85 @@ angular.module('myApp')
 
 
   })
+
+  .controller('SendFeedbackMailCtrl', function ($modalInstance, $location, api, orderService, lov,
+                                             order, customer, user, config,
+                                             gmailClientLowLevel, $scope, $filter) {
+    var that = this;
+    this.order = order;
+    this.customer = customer;
+    this.documentTypes = lov.documentTypes;
+    this.mail = {
+      from: user.attributes.email,
+      to: config.equipRentalMail,
+      cc: '',
+      subject: 'נשמח לקבל ממך משוב על האירוע שלך',
+      text: '',
+      attachments: []
+    };
+
+    this.msg = "><p>שלום</p><p>אודה לך אם תקדיש/י מספר דקות למילוי משוב קצב על האירוע שלך.</p>" +
+      "<p><span>האירוע יתקיים בתאריך </span><span></span>" + order.properties.eventDate.toLocaleDateString('en-IL') +
+      "</span><span>&nbsp;</span><span>במיקום</span><span>&nbsp</span><span>" +
+      (order.properties.taskData.address?order.properties.taskData.address:"לאידוע") + "</span></p>" +
+      "<p>בברכה</p><p>יובל</p><p>טל' 054-7514061</p>";
+
+
+    this.setText = function () {
+      this.msg = this.mailTextType.mailText;
+    };
+
+    $scope.editorOptions = {
+      height: '150',
+      removePlugins: 'elementspath'
+    };
+
+    this.doEmail = function (op) {
+      var that = this;
+      var form = 'https://form.jotform.com/211281742689058';
+      form += ('?input25='+(this.customer?(this.customer.firstName+' '+this.customer.lastName):'<אין לקוח>'));
+      form += ('&input26[day]='+this.order.properties.eventDate.getDate());
+      form += ('&input26[month]='+(this.order.properties.eventDate.getMonth()+1));
+      form += ('&input26[year]='+this.order.properties.eventDate.getFullYear());
+      form += ('&input27='+(this.isPremiumDelivery?'כן':'לא'));
+      form += ('&input28='+(this.isWaiters?'כן':'לא'));
+      form += ('&input29='+(this.isExternalDelivery?'כן':'לא'));
+      form += ('&input30='+(this.isSentFeedbackMail?'כן':'לא'));
+      var link = '<a href="'+encodeURI(form)+'">הקישור הזה</a>';
+      var beforeLink = '<p></p>נא להקיש על ';
+      that.mail.text = '<div dir="rtl">' + this.msg+beforeLink+link + '</div>';
+
+      gmailClientLowLevel.doEmail(op,that.mail)
+        .then(function () {
+            var activity = {
+              date: new Date(),
+              text: 'נשלח מייל בקשת משוב',
+            };
+            order.properties.activities.splice(0, 0, activity);
+            orderService.saveOrder(order);
+          },
+          function (error) {
+            console.log(error);
+            var errText = 'send email error:\r\n';
+            if (error.result) {
+              if (error.result.error) {
+                errText += error.result.error.message
+              }
+            }
+            alert(errText);
+          }
+        );
+
+      $modalInstance.close();
+    };
+
+    this.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+
+  })
+
   .controller('ShowMailCtrl', function ($modalInstance, mail) {
     this.mail = mail;
 

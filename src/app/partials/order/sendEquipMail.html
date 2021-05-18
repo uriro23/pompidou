@@ -32,15 +32,6 @@
     ></textarea>
   </div>
    <p></p>
-  <table class="table table-hover">
-    <tr ng-repeat="bid in sendEquipMailModel.bids | filter: sendEquipMailModel.isShowDocument">
-      <td>
-        <input type="checkbox" ng-model="bid.isInclude">
-      </td>
-      <td>{{sendEquipMailModel.documentTypes[bid.properties.documentType].label}}</td>
-      <td>{{bid.properties.desc}}</td>
-    </tr>
-  </table>
 </div>
 <div class="modal-footer">
   <email-first-time-experience>

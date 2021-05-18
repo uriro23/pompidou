@@ -14,7 +14,14 @@
         <button class="btn btn-default" ng-click="documentsModel.sendEquipMail()"
                 ng-disabled="documentsModel.readOnly.is ||
                              documentsModel.order.view.isChanged">
-                             שלח הזמנת ציוד
+          שלח הזמנת ציוד
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-default" ng-click="documentsModel.sendFeedbackMail()"
+                ng-disabled="documentsModel.readOnly.is ||
+                             documentsModel.order.view.isChanged">
+          שלח בקשת משוב
         </button>
       </td>
       <td>
@@ -39,12 +46,7 @@
           רשימת הוראות
         </a>
       </td>
-      <td>
-        <a ng-href="#/exitList/{{documentsModel.order.id}}" target="_blank">
-          רשימת יציאה
-        </a>
-      </td>
-      <td>
+     <td>
         <a ng-href="#/serviceList/{{documentsModel.order.id}}" target="_blank">
           רשימת סרוויס
         </a>

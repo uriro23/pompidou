@@ -189,10 +189,7 @@ angular.module('myApp')
           order: function () {
             return that.order;
           },
-          bidTextTypes: function () {
-            return that.bidTextTypes;
-          },
-          user: function () {
+            user: function () {
             return that.user;
           },
           config: ['configPromise', function (configPromise) {
@@ -203,6 +200,44 @@ angular.module('myApp')
       });
 
       sendEquipMailModal.result.then(function () {
+      });
+
+
+    };
+
+    this.sendFeedbackMail = function () {
+      var that = this;
+      if (this.user.attributes.isSalesPerson) {
+        alert ('אינך יכול לשלוח בקשת משוב');
+        return;
+      }
+      var sendFeedbackMailModal = $modal.open({
+        templateUrl: 'app/partials/order/sendFeedbackMail.html',
+        controller: 'SendFeedbackMailCtrl as sendFeedbackMailModel',
+        resolve: {
+          order: function () {
+            return that.order;
+          },
+          customer: ['api', function (api) {
+            if (that.order.properties.customer) {
+              return api.queryCustomers(that.order.properties.customer).then(function (objs) {
+                return objs[0].properties;
+              })
+            } else {
+              return null;
+            }
+          }],
+          user: function () {
+            return that.user;
+          },
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }]
+        },
+        size: 'lg'
+      });
+
+      sendFeedbackMailModal.result.then(function () {
       });
 
 

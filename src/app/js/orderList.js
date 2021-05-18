@@ -142,9 +142,14 @@ angular.module('myApp')
           })[0];
         }
         if (fetchedOrder.properties.tasks) {
-          fetchedOrder.view.isInvoiceDone = fetchedOrder.properties.tasks.filter(function (task) {
+          var invoiceTask = fetchedOrder.properties.tasks.filter(function (task) {
             return task.tId === 16;  // !!! tId of invoice task  -- don't move it !!!
-          })[0].isDone;
+          })[0];
+          if (invoiceTask) {
+            fetchedOrder.view.isInvoiceDone = invoiceTask.isDone;
+          } else {
+            fetchedOrder.view.isInvoiceDone = false;
+          }
         } else {
           fetchedOrder.view.isInvoiceDone = false;
         }
