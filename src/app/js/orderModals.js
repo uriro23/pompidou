@@ -355,7 +355,7 @@ angular.module('myApp')
     this.documentTypes = lov.documentTypes;
     this.mail = {
       from: user.attributes.email,
-      to: customer.email ? customer.email : '',
+      to: customer.email ? customer.email : '', // stam
       cc: '',
       subject: 'נשמח לקבל ממך משוב על האירוע שלך',
       text: '',
