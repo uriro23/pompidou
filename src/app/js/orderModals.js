@@ -347,7 +347,7 @@ angular.module('myApp')
   })
 
   .controller('SendFeedbackMailCtrl', function ($modalInstance, $location, api, orderService, lov,
-                                             order, customer, user, config,
+                                             order, customer, user,
                                              gmailClientLowLevel, $scope, $filter) {
     var that = this;
     this.order = order;
@@ -355,12 +355,16 @@ angular.module('myApp')
     this.documentTypes = lov.documentTypes;
     this.mail = {
       from: user.attributes.email,
-      to: config.equipRentalMail,
+      to: customer.email ? customer.email : '',
       cc: '',
       subject: 'נשמח לקבל ממך משוב על האירוע שלך',
       text: '',
       attachments: []
     };
+    if (api.getEnvironment() === 'test') {
+      this.mail.to = 'test.' + that.mail.to
+    }
+
 
     this.msg = "><p>שלום</p><p>אודה לך אם תקדיש/י מספר דקות למילוי משוב קצב על האירוע שלך.</p>" +
       "<p><span>האירוע יתקיים בתאריך </span><span></span>" + order.properties.eventDate.toLocaleDateString('en-IL') +
