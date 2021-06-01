@@ -367,10 +367,7 @@ angular.module('myApp')
 
 
     this.msg = "><p>שלום</p><p>אודה לך אם תקדיש/י מספר דקות למילוי משוב קצב על האירוע שלך.</p>" +
-      "<p><span>האירוע יתקיים בתאריך </span><span></span>" + order.properties.eventDate.toLocaleDateString('en-IL') +
-      "</span><span>&nbsp;</span><span>במיקום</span><span>&nbsp</span><span>" +
-      (order.properties.taskData.address?order.properties.taskData.address:"לאידוע") + "</span></p>" +
-      "<p>בברכה</p><p>יובל</p><p>טל' 054-7514061</p>";
+     "<p>בברכה</p><p>יובל</p><p>טל' 054-7514061</p>";
 
 
     this.setText = function () {
