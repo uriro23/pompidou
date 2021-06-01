@@ -366,8 +366,9 @@ angular.module('myApp')
     }
 
 
-    this.msg = "><p>שלום</p><p>אודה לך אם תקדיש/י מספר דקות למילוי משוב קצב על האירוע שלך.</p>" +
-     "<p>בברכה</p><p>יובל</p><p>טל' 054-7514061</p>";
+    this.msg = "><p>שלום</p>" +
+      "<p>תודה שבחרת בשף בקופסה לאירוע החשוב שלך. אנו מוקירים כל לקוח ולקוחה, וחשוב לנו שתמיד תהיו מרוצים. כחלק מהשאיפה שלנו למצויינות ולשיפור תמידי, אבקש ממך להקדיש מספר דקות למילוי המשוב הקצר כאן.</p>" +
+     "<p>בתודה מראש,</p><p>יובל רוזנן, השף בקופסה</p><p>טל' 054-7514061</p>";
 
 
     this.setText = function () {
@@ -390,9 +391,12 @@ angular.module('myApp')
       form += ('&input28='+(this.isWaiters?'כן':'לא'));
       form += ('&input29='+(this.isExternalDelivery?'כן':'לא'));
       form += ('&input30='+(this.isSentFeedbackMail?'כן':'לא'));
-      var link = '<a href="'+encodeURI(form)+'">הקישור הזה</a>';
-      var beforeLink = '<p></p>נא להקיש על ';
-      that.mail.text = '<div dir="rtl">' + this.msg+beforeLink+link + '</div>';
+      var link = '<a href="'+encodeURI(form)+
+        '">כאן</a>';
+      var beforeLink =  "<p>שלום</p>" +
+        "<p>תודה שבחרת בשף בקופסה לאירוע החשוב שלך. אנו מוקירים כל לקוח ולקוחה, וחשוב לנו שתמיד תהיו מרוצים. כחלק מהשאיפה שלנו למצויינות ולשיפור תמידי, אבקש ממך להקדיש מספר דקות למילוי המשוב הקצר ";
+      var afterLink = "</p><p>בתודה מראש,</p><p>יובל רוזנן, השף בקופסה</p><p>טל' 054-7514061</p>";
+      that.mail.text = '<div dir="rtl">'+beforeLink+link+afterLink+ '</div>';
 
       gmailClientLowLevel.doEmail(op,that.mail)
         .then(function () {
