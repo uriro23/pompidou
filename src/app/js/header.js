@@ -145,8 +145,9 @@ angular.module('myApp')
     this.setDateUnknown = function () {
       var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
-      thisOrder.eventDate = undefined;
+      thisOrder.eventDate = new Date(2199,11,31,0,0,0,0);
       thisOrder.isDateUnknown = true;
+      this.order.view.errors.eventDate = false;
     };
 
     this.setEventTime = function () {
