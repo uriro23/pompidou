@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('ItemsCtrl', function ($scope, $state, api, orderService) {
+  .controller('ItemsCtrl', function ($scope, $state, api, lov, orderService) {
 
     // references to members of parent order controller
     //objects
@@ -16,45 +16,67 @@ angular.module('myApp')
 
     this.filterText = '';
     this.isAddItem = false;
+    this.isExtraService = false;
     this.currentCategory = this.categories[0]; // default to first category
+    this.specialTypes = lov.specialTypes;
+    this.currentExtraService = this.specialTypes[0];
+
+    this.order.view.quote.items.forEach(function(item) {
+      if (item.specialType) {
+        item.specialTypeObj = lov.specialTypes.filter(function(s) {
+          return s.id === item.specialType;
+        })[0];
+      }
+    });
 
 
-    this.setCategory = function () {
+    this.setCategory = function (level) { // level 0: main category; level 1: extraService
       var that = this;
       var thisOrder = this.order.properties;
-      return api.queryCatalogByCategory(this.currentCategory.tId)
-        .then(function (cat) {
-          that.baseCatalog = cat.filter(function (c) {
-            return !c.properties.isDeleted
-          });
-          that.baseCatalog = that.baseCatalog.map(function (c) {
-            var cc = c.properties;
-            cc.id = c.id;
-            cc.isInOrder = false; // check items already in order, just for attention
-            var orderItems = that.order.view.quote.items;
-            for (var i = 0; i < orderItems.length; i++) {
-              if (orderItems[i].catalogId === c.id) {
-                cc.isInOrder = true;
+      if (level === 0 && this.currentCategory.type === 5) {
+        this.isExtraService = true;
+        this.setCategory(1);
+      } else {
+        this.isExtraService = (this.currentCategory.type === 5);
+        return api.queryCatalogByCategory(this.currentCategory.tId)
+          .then(function (cat) {
+            that.baseCatalog = cat.filter(function (c) {
+              return !c.properties.isDeleted
+            });
+            if (level === 1) {
+              that.baseCatalog = that.baseCatalog.filter(function(c) {
+                return c.properties.specialType === that.currentExtraService.id;
+              });
+            }
+            that.baseCatalog = that.baseCatalog.map(function (c) {
+              var cc = c.properties;
+              cc.id = c.id;
+              cc.isInOrder = false; // check items already in order, just for attention
+              var orderItems = that.order.view.quote.items;
+              for (var i = 0; i < orderItems.length; i++) {
+                if (orderItems[i].catalogId === c.id) {
+                  cc.isInOrder = true;
+                }
               }
-            }
-            return cc;
-          });
-          that.baseCatalog.sort(function (a, b) {
-            if (a.productName > b.productName) {
-              return 1
-            } else {
-              return -1
-            }
-          });
-          that.filteredCatalog = that.baseCatalog;
-          that.filterText = '';
-        })
+              return cc;
+            });
+            that.baseCatalog.sort(function (a, b) {
+              if (a.productName > b.productName) {
+                return 1
+              } else {
+                return -1
+              }
+            });
+            that.filteredCatalog = that.baseCatalog;
+            that.filterText = '';
+          })
+      }
     };
 
-    this.addItem = function (set) {
+     this.addItem = function (set) {
       if (set) {
         this.isAddItem = true;
-        this.setCategory();
+        this.setCategory(0);
       } else {
         this.isAddItem = false;
       }
@@ -160,6 +182,9 @@ angular.module('myApp')
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
       if (catalogEntry.specialType) {
         thisItem.specialType = catalogEntry.specialType;
+        thisItem.specialTypeObj = lov.specialTypes.filter(function(s) {
+          return s.id === catalogEntry.specialType;
+        })[0];
       }
 
       thisItem.errors = {}; // initialize errors object for new item

@@ -296,7 +296,7 @@ angular.module('myApp')
       },
       {
         id: 6,
-        name: 'שונות',
+        name: 'שרותים שונים',
         exist: 'isOtherExtras',
         desc: 'otherExtras'
       }

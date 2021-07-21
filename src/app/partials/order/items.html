@@ -12,8 +12,13 @@
     בטל
 </button>
 <span ng-show="itemsModel.isAddItem">
-    <select ng-model="itemsModel.currentCategory" ng-change="itemsModel.setCategory()"
+    <select ng-model="itemsModel.currentCategory"
+            ng-change="itemsModel.setCategory(0)"
             ng-options="category.label for category in itemsModel.categories"></select>
+  <select ng-show="itemsModel.isExtraService"
+          ng-model="itemsModel.currentExtraService"
+          ng-change="itemsModel.setCategory(1)"
+          ng-options="specialType.name for specialType in itemsModel.specialTypes"></select>
     <label>סינון:</label><input type="text" ng-model="itemsModel.filterText"
                                 ng-change="itemsModel.filterProducts()">
     <table class="table table-hover" style="width:40%">
@@ -122,7 +127,8 @@
       <tbody>
       <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index"
           ng-class="item.isChanged?'bg-success':null">
-        <td>{{item.category.label}}</td>
+        <td ng-hide="item.specialType">{{item.category.label}}</td>
+        <td ng-show="item.specialType">{{item.specialTypeObj.name}}</td>
         <td>
           <input type="text" size="{{item.isDescChanged ? 86 : 100}}" ng-model="item.productDescription"
                  ng-change="itemsModel.setProductDescription($index)"

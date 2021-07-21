@@ -176,7 +176,7 @@ angular.module('myApp')
       quote.advance = 0;
       quote.categories = angular.copy(categories); // used to edit category descriptions
       quote.categories.forEach (function(cat) {
-        cat.isShowDescription = true;
+        cat.isShowDescription = false;
       });
       quote.items = [];
       quote.isActive = false;
@@ -302,9 +302,20 @@ angular.module('myApp')
             return 1;
           } else if (a.category.order < b.category.order) {
             return -1
-          } else if (a.productDescription > b.productDescription) {
+          } else if (a.category.type === 5) {  // for extraServices sort first by service type then product desc
+           if (a.specialType > b.specialType) {
+              return 1;
+            } else if (a.specialType < b.specialType) {
+              return -1;
+            }
+          }
+          if (a.productDescription > b.productDescription) {
             return 1
-          } else return -1;
+          } else if (a.productDescription < b.productDescription) {
+            return -1
+          } else {
+           return 0;
+          }
         });
 
         if (q.categories) {
