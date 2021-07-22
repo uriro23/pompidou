@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h3 class="modal-title">נא התייחסותך להתראות הבאות:</h3>
+</div>
+<div class="modal-body">
+  <table class="table table-hover">
+    <thead>
+    <th style="width: 40%">תפריט</th>
+    <th style="width: 60%">התראה</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="warning in quoteWarningsModel.warnings track by warning.id">
+      <td>{{warning.menuType.label}}</td>
+      <td>{{warning.text}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="quoteWarningsModel.ignore()">הפק בכל זאת</button>
+  <button class="btn btn-warning" ng-click="quoteWarningsModel.cancel()">חזור לערוך</button>
+</div>

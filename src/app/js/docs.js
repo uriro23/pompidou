@@ -13,6 +13,7 @@ angular.module('myApp')
     this.user = $scope.orderModel.user;
     this.isProd = $scope.orderModel.isProd;
     this.descChangeActions = $scope.orderModel.descChangeActions;
+    this.config = $scope.orderModel.config;
 
     // functions
     this.setupOrderView = $scope.orderModel.setupOrderView;
@@ -77,6 +78,63 @@ angular.module('myApp')
       return bid;
     }
 
+    this.findWarnings = function (quote) {
+      var warnings = [];
+      var seq = 0;
+      // warning I: missing transportation item
+      var isTransportation = false;
+      quote.items.forEach(function(item) {
+        if (item.category.type === 3) {
+          isTransportation = true;
+        }
+      });
+      if (!isTransportation) {
+        warnings.push({
+          id: quote.menuType.tId * 1000 + seq++,
+          type: 1,
+          menuType: quote.menuType,
+          text: 'חסר פריט משלוח'
+        })
+      }
+      // warning II: Saturday event w/o price increase
+      if (this.order.properties.eventDate.getDay() === 6) {// event on Saturday
+        var isPriceIncrease = false;
+        quote.items.forEach(function(item) {
+          if (item.category.type === 4) {
+            isPriceIncrease = true;
+          }
+        });
+        if (!isPriceIncrease) {
+          warnings.push({
+            id: quote.menuType.tId * 1000 + seq++,
+            type: 2,
+            menuType: quote.menuType,
+            text: 'חסר פריט תוספת שבת וחג'
+          })
+        }
+      }
+      // warning III: Equipment rental w/o rental transportation item
+      var isRenatl = false;
+      var isRentalTransportation = false;
+      quote.items.forEach(function(item) {
+        if (item.category.type === 5 && item.specialType === 2) {  // equip rental
+          isRenatl = true;
+          if (item.catalogId === that.config.rentalTransportationItem) {
+            isRentalTransportation = true;
+          }
+        }
+      });
+      if (isRenatl && !isRentalTransportation) {
+        warnings.push({
+          id: quote.menuType.tId * 1000 + seq++,
+          type: 3,
+          menuType: quote.menuType,
+          text: 'חסר פריט הובלת השכרת ציוד'
+        })
+      }
+      return warnings;
+    }
+
     this.createBid = function (docType) {
       if (this.order.view.isChanged) {
         return;
@@ -84,11 +142,14 @@ angular.module('myApp')
 
       var that = this;
       var bids = [];
+      var warnings = [];
       if (docType === 0 || docType === 2 || this.isOnlyActiveQuote) { // if creating backup or order doc, pick active quote only
+        warnings = warnings.concat(this.findWarnings(this.order.view.quote));
         bids.push(createBidForQuote(this.order.view.quote, docType, this.bidDesc));
       } else {
         this.order.properties.quotes.forEach(function (quote) {
           if (quote.items.length) { // skip empty quotes
+            warnings = warnings.concat(that.findWarnings(quote));
             bids.push(createBidForQuote(quote, docType, that.bidDesc));
           }
         });
@@ -96,7 +157,30 @@ angular.module('myApp')
       this.bidDesc = '';
       this.isOnlyActiveQuote = false;
 
-     return api.saveObjects(bids)
+      if (warnings.length) {
+        var quoteWarningsModal = $modal.open({
+          templateUrl: 'app/partials/order/quoteWarnings.html',
+          controller: 'QuoteWarningsCtrl as quoteWarningsModel',
+          resolve: {
+            warnings: function () {
+              return warnings;
+            }
+          },
+          size: 'sm'
+        });
+
+        quoteWarningsModal.result.then(function (isIgnore) {
+          if (isIgnore) {
+            that.saveBids(bids);
+          }
+        })
+      } else {
+        that.saveBids(bids);
+      }
+    };
+
+  this.saveBids = function (bids) {
+    return api.saveObjects(bids)
         .then(function () {
          that.isBidsLoading = true;
          return api.queryBidsByOrder(that.order.id)  // requery bids for view

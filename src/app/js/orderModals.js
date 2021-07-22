@@ -452,9 +452,24 @@ angular.module('myApp')
         cancelReason: this.cancelReason ? this.cancelReason.tId : undefined,
         cancelReasonText: this.cancelReasonText
       };
-     $modalInstance.close(res);
+      $modalInstance.close(res);
     };
   })
+
+  .controller('QuoteWarningsCtrl', function ($modalInstance, warnings) {
+    this.warnings = warnings;
+
+    this.ignore = function () {
+      $modalInstance.close(true);
+    };
+
+    this.cancel = function () {
+      $modalInstance.close(false);
+    };
+
+  })
+
+
 
   .controller('EditTextCtrl', function ($modalInstance, text, title) {
     this.text = text;
