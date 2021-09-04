@@ -179,17 +179,39 @@ angular.module('myApp')
 
 
     this.queryOrdersByCustomer = function (cust,fields) {
-    var orderQuery = new Parse.Query(Order);
-    if (cust) {
-      orderQuery.equalTo('customer', cust);
-    }
+      var orderQuery = new Parse.Query(Order);
+      if (cust) {
+        orderQuery.equalTo('customer', cust);
+      }
       if (fields) {
         orderQuery.select(fields);
       }
       return query(orderQuery);
-  };
+    };
 
-  this.queryTemplateOrders = function (fields) {
+    this.queryOrdersByCouponIssued = function (coupon,fields) {
+      var orderQuery = new Parse.Query(Order);
+      if (coupon) {
+        orderQuery.equalTo('couponIssued', coupon);
+      }
+      if (fields) {
+        orderQuery.select(fields);
+      }
+      return query(orderQuery);
+    };
+
+    this.queryOrdersByCouponApplied = function (coupon,fields) {
+      var orderQuery = new Parse.Query(Order);
+      if (coupon) {
+        orderQuery.equalTo('couponApplied', coupon);
+      }
+      if (fields) {
+        orderQuery.select(fields);
+      }
+      return query(orderQuery);
+    };
+
+    this.queryTemplateOrders = function (fields) {
     var orderQuery = new Parse.Query(Order);
     orderQuery.exists('template');
     if (fields) {

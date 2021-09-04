@@ -346,13 +346,15 @@ angular.module('myApp')
 
   })
 
-  .controller('SendFeedbackMailCtrl', function ($modalInstance, $location, api, orderService, lov,
-                                             order, customer, user,
+  .controller('SendFeedbackMailCtrl', function ($modalInstance, $location, $q,
+                                             api, orderService, lov, dater,
+                                             order, customer, user, config,
                                              gmailClientLowLevel, $scope, $filter) {
     var that = this;
     this.order = order;
     this.customer = customer;
     this.documentTypes = lov.documentTypes;
+    this.isSendCoupon = true;  // default value
     this.mail = {
       from: user.attributes.email,
       to: customer.email ? customer.email : '', // stam
@@ -380,46 +382,82 @@ angular.module('myApp')
       removePlugins: 'elementspath'
     };
 
+    this.generateCouponAndEmail = function (op) {
+      var that = this;
+      if (this.order.properties.couponIssuedType &&
+        this.order.properties.couponIssuedType !== config.couponType) {
+        alert ('נשלח לאירוע כבר משוב עם קופון מסוג אחר. לא ניתן לשלוח שוב');
+        return;
+      }
+      if (!this.isSendCoupon || this.order.properties.couponIssued) {
+        this.doEmail(op); // send w/o coupon or with previous coupon
+        return;
+      }
+      var coupon = Math.floor(Math.random()*899999 + 100000); // range 100000 - 999999
+      api.queryOrdersByCouponIssued(coupon,['number']) // check if exists
+        .then (function(res1) {
+          if (res1.length) {  // exists - retry
+            that.generateCouponAndEmail(op);
+          } else {
+            that.order.properties.couponIssued = coupon;
+            that.order.properties.couponIssuedType = config.couponType;
+            var expiery = angular.copy(dater.today());
+            expiery.setMonth(expiery.getMonth()+6);
+            that.order.properties.couponExpiryDate = expiery;
+            that.doEmail(op); // changes in order will be saved by doEmail
+          }
+        })
+    }
+
     this.doEmail = function (op) {
       var that = this;
-      var form = 'https://form.jotform.com/211281742689058';
-      form += ('?input25='+(this.customer?(this.customer.firstName+' '+this.customer.lastName):'<אין לקוח>'));
-      form += ('&input26[day]='+this.order.properties.eventDate.getDate());
-      form += ('&input26[month]='+(this.order.properties.eventDate.getMonth()+1));
-      form += ('&input26[year]='+this.order.properties.eventDate.getFullYear());
-      form += ('&input27='+(this.isPremiumDelivery?'כן':'לא'));
-      form += ('&input28='+(this.isWaiters?'כן':'לא'));
-      form += ('&input29='+(this.isExternalDelivery?'כן':'לא'));
-      form += ('&input30='+(this.isSentFeedbackMail?'כן':'לא'));
-      var link = '<a href="'+encodeURI(form)+
-        '">כאן</a>';
-      var beforeLink =  "<p>שלום</p>" +
-        "<p>תודה שבחרת בשף בקופסה לאירוע החשוב שלך. אנו מוקירים כל לקוח ולקוחה, וחשוב לנו שתמיד תהיו מרוצים. כחלק מהשאיפה שלנו למצויינות ולשיפור תמידי, אבקש ממך להקדיש מספר דקות למילוי המשוב הקצר ";
-      var afterLink = "</p><p>בתודה מראש,</p><p>יובל רוזנן, השף בקופסה</p><p>טל' 054-7514061</p>";
-      that.mail.text = '<div dir="rtl">'+beforeLink+link+afterLink+ '</div>';
+      var couponStr = this.order.properties.couponIssued.toString().replace(/(\d{3})(\d{3})/,'$1-$2');
+       //  var form = 'https://form.jotform.com/211281742689058';  // without coupon
+        var form = 'https://form.jotform.com/212334723271448';
+        form += ('?input25=' + (this.customer ? (this.customer.firstName + ' ' + this.customer.lastName) : '<אין לקוח>'));
+        form += ('&email=' + this.customer.email);
+        form += ('&input26[day]=' + this.order.properties.eventDate.getDate());
+        form += ('&input26[month]=' + (this.order.properties.eventDate.getMonth() + 1));
+        form += ('&input26[year]=' + this.order.properties.eventDate.getFullYear());
+        form += ('&input27=' + (this.isPremiumDelivery ? 'כן' : 'לא'));
+        form += ('&input28=' + (this.isWaiters ? 'כן' : 'לא'));
+        form += ('&input29=' + (this.isExternalDelivery ? 'כן' : 'לא'));
+        form += ('&input30=' + (this.isSentFeedbackMail ? 'כן' : 'לא'));
+        form += ('&input48=' + (this.isSendCoupon ? 'כן' : 'לא'));
+        form += ('&coupon=' + couponStr);
+        form += ('&couponexpirydate[day]=' + this.order.properties.couponExpiryDate.getDate());
+        form += ('&couponexpirydate[month]=' + (this.order.properties.couponExpiryDate.getMonth() + 1));
+        form += ('&couponexpirydate[year]=' + this.order.properties.couponExpiryDate.getFullYear());
+        console.log(form);
+        var link = '<a href="' + encodeURI(form) +
+          '">כאן</a>';
+        var beforeLink = "<p>שלום</p>" +
+          "<p>תודה שבחרת בשף בקופסה לאירוע החשוב שלך. אנו מוקירים כל לקוח ולקוחה, וחשוב לנו שתמיד תהיו מרוצים. כחלק מהשאיפה שלנו למצויינות ולשיפור תמידי, אבקש ממך להקדיש מספר דקות למילוי המשוב הקצר ";
+        var afterLink = "</p><p>בתודה מראש,</p><p>יובל רוזנן, השף בקופסה</p><p>טל' 054-7514061</p>";
+        that.mail.text = '<div dir="rtl">' + beforeLink + link + afterLink + '</div>';
 
-      gmailClientLowLevel.doEmail(op,that.mail)
-        .then(function () {
-            var activity = {
-              date: new Date(),
-              text: 'נשלח מייל בקשת משוב',
-            };
-            order.properties.activities.splice(0, 0, activity);
-            orderService.saveOrder(order);
-          },
-          function (error) {
-            console.log(error);
-            var errText = 'send email error:\r\n';
-            if (error.result) {
-              if (error.result.error) {
-                errText += error.result.error.message
+        gmailClientLowLevel.doEmail(op, that.mail)
+          .then(function () {
+              var activity = {
+                date: new Date(),
+                text: 'נשלח מייל בקשת משוב',
+              };
+              order.properties.activities.splice(0, 0, activity);
+              orderService.saveOrder(order);
+            },
+            function (error) {
+              console.log(error);
+              var errText = 'send email error:\r\n';
+              if (error.result) {
+                if (error.result.error) {
+                  errText += error.result.error.message
+                }
               }
+              alert(errText);
             }
-            alert(errText);
-          }
-        );
+          );
 
-      $modalInstance.close();
+        $modalInstance.close();
     };
 
     this.cancel = function () {

@@ -364,10 +364,11 @@
       </tr>
      </table>
    </tab>
-   <tab heading="לקוחות" select="adminModel.loadCustomers()">
+   <tab heading="לקוחות" select="adminModel.loadCustomers2()">
      <div>
        <label>ליצוא</label>
        <input type="checkbox" ng-model="adminModel.isCustomersExport">
+       <span>{{adminModel.customers.length}}</span>
      </div>
      <table class="table table-hover" ng-hide="adminModel.isCustomersExport">
        <thead>
