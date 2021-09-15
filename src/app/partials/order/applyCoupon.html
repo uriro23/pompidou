@@ -1,0 +1,57 @@
+<div class="modal-header">
+  <h3 class="modal-title">מימוש קופון</h3>
+</div>
+<div class="modal-body">
+    <div ng-hide="applyCouponModel.isCouponApplied">
+      <span><label>מס' קופון</label></span>
+      <span style="font-size: large">
+        <input type="number" ng-model="applyCouponModel.couponApplied">
+      </span>
+        <button class="btn btn-success" ng-click="applyCouponModel.checkCoupon()">בדוק</button>
+    </div>
+  <div ng-show="applyCouponModel.isCouponApplied">
+    <span><label>מס' קופון</label></span>
+    <span>{{applyCouponModel.couponApplied}}</span>
+    <button class="btn btn-success" ng-click="applyCouponModel.changeCoupon()">
+      שנה
+    </button>
+  </div>
+  <p style="height: 20px"></p>
+  <div ng-show="applyCouponModel.errors.length">
+    <h4>שגיאות שנמצאו בקופון</h4>
+    <div ng-repeat="error in applyCouponModel.errors track by error">
+      <span>{{error}}</span>
+    </div>
+  </div>
+  <div ng-show="applyCouponModel.isValid">
+    הקופון תקין
+  </div>
+  <p style="height: 20px"></p>
+  <div ng-show="applyCouponModel.couponAppliedType">
+    קופון מסוג
+    <span>{{applyCouponModel.couponAppliedType}}</span>
+  </div>
+  <p style="height: 20px"></p>
+  <div ng-show="applyCouponModel.isReferringCustomer">
+    הלקוח הופנה ע"י
+    <span>{{applyCouponModel.referringCustomer.firstName}}</span>
+    <span>{{applyCouponModel.referringCustomer.lastName}}</span>
+    טל'
+    <a href="tel:{{applyCouponModel.referringCustomer.phone}}">{{applyCouponModel.referringCustomer.phone}}</a>
+    דוא"ל
+    <a href="mailto:{{applyCouponModel.referringCustomer.emai}}">{{applyCouponModel.referringCustomer.email}}</a>
+  </div>
+</div>
+<div class="modal-footer">
+  <button ng-hide="applyCouponModel.isCouponApplied"
+          ng-class="applyCouponModel.errors.length ? 'btn btn-danger' : 'btn btn-primary'"
+          ng-disabled="!applyCouponModel.isChecked"
+          ng-click="applyCouponModel.save()">
+    <span ng-hide="applyCouponModel.errors.length">שמור</span>
+    <span ng-show="applyCouponModel.errors.length">שמור למרות השגיאות</span>
+  </button>
+  <button class="btn btn-warning"
+          ng-click="applyCouponModel.cancel()">
+    {{applyCouponModel.isCouponApplied ? 'סגור' : 'בטל'}}
+  </button>
+</div>

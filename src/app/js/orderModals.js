@@ -507,13 +507,98 @@ angular.module('myApp')
 
   })
 
+  .controller('ApplyCouponCtrl', function ($modalInstance, order, config, api, dater) {
 
+
+
+    this.checkCoupon = function() {
+      var that = this;
+      this.isValid = false;
+      this.errors = [];
+      var fields = ['number','eventDate','customer','couponIssued','couponExpiryDate','couponIssuedType'];
+      if (typeof this.couponApplied !== 'number' ||
+                this.couponApplied < 100000 || this.couponApplied > 999999) {
+        alert ('מספר הקופון צ"ל בן 6 ספרות');
+        return;
+      }
+      this.loadCouponInfo();
+     }
+
+    this.changeCoupon = function() {
+      this.isCouponApplied = false;
+    }
+
+    this.loadCouponInfo = function () {
+      var that = this;
+      this.isValid = false;
+      this.errors = [];
+      this.isReferringCustomer = false;
+      var fields = ['number','eventDate','customer','couponIssued','couponExpiryDate','couponIssuedType'];
+      api.queryOrdersByCouponIssued(this.couponApplied,fields)
+        .then(function(ords) {
+          if (ords.length === 0) {
+            alert('מספר קופון לא קיים');
+          } else {
+            var issuingOrder = ords[0];
+            that.couponAppliedType = issuingOrder.properties.couponIssuedType;
+            if (issuingOrder.properties.couponExpiryDate < dater.today()) {
+              that.errors.push('קופון פג תוקף בתאריך '+issuingOrder.properties.couponExpiryDate.toString());
+            }
+            api.queryOrdersByCouponApplied(that.couponApplied,fields)
+              .then(function(ords2) {
+                if (ords2.length > 0) {
+                  that.errors.push('הקופון נוצל כבר '+ords2.length+' פעמים');
+                }
+                that.isChecked = true;
+                if (that.errors.length === 0) {
+                  that.isValid = true;
+                }
+                if (issuingOrder.properties.customer && order.properties.customer &&
+                  (issuingOrder.properties.customer !== order.properties.customer)) {
+                  that.isReferringCustomer = true;
+                  api.queryCustomers(issuingOrder.properties.customer)
+                    .then(function(cust) {
+                      that.referringCustomer = {
+                        firstName: cust[0].properties.firstName,
+                        lastName: cust[0].properties.lastName,
+                        phone: cust[0].properties.mobilePhone ? cust[0].properties.mobilePhone :
+                          cust[0].properties.homePhone ? cust[0].properties.homePhone :
+                            cust[0].properties.workPhone,
+                        email: cust[0].properties.email
+                      };
+                    });
+                }
+              });
+          }
+        });
+    }
+
+    this.save = function () {
+      order.properties.couponApplied = this.couponApplied;
+      order.properties.couponAppliedType = this.couponAppliedType;
+      $modalInstance.close(true);
+    };
+
+    this.cancel = function () {
+      $modalInstance.close(false);
+    };
+
+    // main block
+
+    this.isChecked = false;
+    this.couponApplied = order.properties.couponApplied;
+    if (this.couponApplied) {
+      this.isCouponApplied = true;
+      this.loadCouponInfo();
+    }
+
+  })
 
   .controller('EditTextCtrl', function ($modalInstance, text, title) {
     this.text = text;
     this.title = title;
 
-  this.update = function () {
+  this.save = function () {
     $modalInstance.close(this.text);
   };
 

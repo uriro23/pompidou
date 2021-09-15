@@ -38,11 +38,21 @@
     </td>
     <td>{{financialModel.order.view.quote.discount | currency}}</td>
   </tr>
-  <tr ng-show="financialModel.order.view.quote.discount">
-    <td><label>אחרי הנחה</label></td>
+  <tr ng-show="financialModel.order.properties.couponAppliedType">
+    <td><label>
+      הנחת קופון מסוג
+      {{financialModel.order.properties.couponAppliedType}}
+    </label></td>
+    <td>{{financialModel.order.properties.couponApplied}}</td>
+  <td>{{financialModel.order.view.quote.couponDiscount | currency}}</td>
+  </tr>
+  <tr ng-show="financialModel.order.view.quote.discount + financialModel.order.view.quote.couponDiscount">
+    <td><label>אחרי הנחות</label></td>
     <td></td>
     <td>
-      {{(financialModel.order.view.quote.subTotal + financialModel.order.view.quote.discount) | currency}}
+      {{(financialModel.order.view.quote.subTotal +
+         financialModel.order.view.quote.discount +
+         financialModel.order.view.quote.couponDiscount) | currency}}
     </td>
   </tr>
   <tr>

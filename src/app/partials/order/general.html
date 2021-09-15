@@ -18,7 +18,7 @@
     </td>
   </tr>
   <tr ng-class="generalModel.order.view.changes.remarks?'bg-success':null">
-    <td>הערות</td>
+    <td>הערות פנימיות</td>
     <td>
       <textarea rows="4" cols="48" ng-model="generalModel.order.properties.remarks"
                 ng-change="generalModel.orderChanged('remarks')"
@@ -26,13 +26,22 @@
           ></textarea>
     </td>
   </tr>
-  <tr ng-class="generalModel.order.view.changes.includeRemarksInBid?'bg-success':null">
-    <td>הכלל הערות בהצעה</td>
+  <tr ng-show="generalModel.order.properties.couponIssued">
+    <td>קופון שנופק באירוע</td>
     <td>
-      <input type="checkbox" ng-model="generalModel.order.properties.includeRemarksInBid"
-             ng-change="generalModel.orderChanged('includeRemarksInBid')"
-             ng-disabled="generalModel.readOnly.is">
+      <span>{{generalModel.order.properties.couponIssued}}</span>
+      מסוג
+      <span>{{generalModel.order.properties.couponIssuedType}}</span>
     </td>
+  </tr>
+  <tr ng-class="generalModel.order.view.changes.couponApplied?'bg-success':null">
+    <td>קופון למימוש</td>
+    <td><button class="btn btn-default"
+                ng-click="generalModel.applyCoupon()"
+                ng-disabled="generalModel.readOnly.is">
+      {{generalModel.order.properties.couponApplied ?
+      generalModel.order.properties.couponApplied.toString() : 'הזן'}}
+    </button></td>
   </tr>
   <tr ng-class="generalModel.order.view.changes.isBusinessEvent?'bg-success':null">
     <td>אירוע עסקי</td>

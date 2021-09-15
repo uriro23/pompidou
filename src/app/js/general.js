@@ -14,6 +14,35 @@ angular.module('myApp')
     };
 
 
+    this.applyCoupon = function () {
+      var that = this;
+      var applyCouponModal = $modal.open({
+        templateUrl: 'app/partials/order/applyCoupon.html',
+        controller: 'ApplyCouponCtrl as applyCouponModel',
+        resolve: {
+          order: function () {
+            return that.order;
+          },
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }]
+        },
+        size: 'lg'
+      });
+
+      applyCouponModal.result.then(function (save) {
+        if (save) {
+          if (that.order.properties.quotes) {  // recalc total for all quotes
+            that.order.properties.quotes.forEach(function(quote) {
+              orderService.calcTotal(quote,that.order);
+            })
+          }
+          orderService.orderChanged(that.order,'couponApplied');
+        }
+      })
+
+    };
+
     this.setBusinessEvent = function () {
       var thisOrder = this.order.properties;
 

@@ -88,7 +88,7 @@ angular.module('myApp')
           isTransportation = true;
         }
       });
-      if (!isTransportation) {
+      if (!isTransportation && !order.properties.taskData.isSelfDelivery) {
         warnings.push({
           id: quote.menuType.tId * 1000 + seq++,
           type: 1,

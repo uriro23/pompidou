@@ -85,13 +85,26 @@ angular.module('myApp')
       quote.satietyIndex = satiety;
       quote.isHeavyweight = isHeavyweight;
 
+      // compute coupon discount
+      quote.couponDiscount = 0;
+      if (order.properties.couponAppliedType) {
+        if (order.properties.couponAppliedType === 1) {
+          var totalForCoupon = quote.subTotal - quote.transportation - quote.extraServices;
+          console.log('tot for coupon: ' + totalForCoupon);
+          if (totalForCoupon > 1500) {
+            quote.couponDiscount = -300;
+            console.log('coupon applied');
+          }
+        }
+      }
+
       if(quote.isFixedPrice) {
         quote.total = quote.fixedPrice;
         quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
         quote.totalForStat = quote.fixedPrice / (1 + order.properties.vatRate);  // stat is before vat
       } else {
-        quote.totalForStat = subTotalForStat + quote.discount + quote.priceIncrease;
-        quote.totalBeforeVat = quote.subTotal + quote.discount + quote.priceIncrease + quote.extraServices;;
+        quote.totalForStat = subTotalForStat + quote.discount + quote.couponDiscount + quote.priceIncrease;
+        quote.totalBeforeVat = quote.subTotal + quote.discount + quote.couponDiscount + quote.priceIncrease + quote.extraServices;;
         if (order.properties.isBusinessEvent) {
           quote.vat = Math.round(quote.totalBeforeVat * order.properties.vatRate);
           quote.total = quote.totalBeforeVat + quote.vat;
@@ -169,6 +182,7 @@ angular.module('myApp')
       quote.discountCause = discountCause;
       quote.discountRate = 0;
       quote.discount = 0;
+      quote.couponDiscount = 0;
       quote.credits = 0;
       quote.transportationInclVat = 0;  // just to display on order list
       quote.transportation = 0;  // just to display on order list

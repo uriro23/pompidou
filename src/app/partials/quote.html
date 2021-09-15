@@ -196,19 +196,26 @@
         </div>
       </div>
 
-      <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
-        <div class="bold quoteItemDescription">הנחה מיוחדת</div>
-        <div class="quoteQuantAndUnit">
-          {{quoteModel.currentQuote.discount | currency}}
+        <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
+          <div class="bold quoteItemDescription">הנחה מיוחדת</div>
+          <div class="quoteQuantAndUnit">
+            {{quoteModel.currentQuote.discount | currency}}
+          </div>
         </div>
-      </div>
 
-      <div ng-show="quoteModel.currentQuote.discount && !quoteModel.currentQuote.isFixedPrice">
+        <div ng-show="quoteModel.currentQuote.couponDiscount && !quoteModel.currentQuote.isFixedPrice">
+          <div class="bold quoteItemDescription">הנחת קופון</div>
+          <div class="quoteQuantAndUnit">
+            {{quoteModel.currentQuote.couponDiscount | currency}}
+          </div>
+        </div>
+
+        <div ng-show="(quoteModel.currentQuote.discount + quoteModel.currentQuote.couponDiscount) && !quoteModel.currentQuote.isFixedPrice">
         <div class="bold quoteItemDescription">
           <span>לאחר הנחה</span>
         </div>
         <div class="quoteQuantAndUnit">
-          {{quoteModel.currentQuote.subTotal + quoteModel.currentQuote.discount | currency}}
+          {{quoteModel.currentQuote.subTotal + quoteModel.currentQuote.discount + quoteModel.currentQuote.couponDiscount | currency}}
         </div>
       </div>
 

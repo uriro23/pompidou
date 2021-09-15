@@ -163,14 +163,26 @@
     </table>
     <table width="100%">
       <tfoot>
-      <tr ng-show="quote2Model.currentQuote.discount && !quote2Model.currentQuote.isFixedPrice">
+      <tr ng-show="quote2Model.currentQuote.couponDiscount && !quote2Model.currentQuote.isFixedPrice">
+        <td align="left" width="80%" class="ttltxt">
+          <span>
+הנחת קופון
+          </span>
+        </td>
+        <td align="right" width="20%" class="ttltxt">{{quote2Model.currentQuote.couponDiscount | currency}}</td>
+      </tr>
+      </tfoot>
+    </table>
+    <table width="100%">
+      <tfoot>
+      <tr ng-show="(quote2Model.currentQuote.discount + quote2Model.currentQuote.couponDiscount) && !quote2Model.currentQuote.isFixedPrice">
         <td align="left" width="80%" class="ttltxt">
           <span>
 לאחר הנחה
           </span>
         </td>
         <td align="right" width="20%" class="ttltxt">
-          {{quote2Model.currentQuote.subTotal + quote2Model.currentQuote.discount | currency}}</td>
+          {{quote2Model.currentQuote.subTotal + quote2Model.currentQuote.discount + quote2Model.currentQuote.couponDiscount | currency}}</td>
       </tr>
       </tfoot>
     </table>

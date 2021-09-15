@@ -237,7 +237,7 @@ angular.module('myApp')
         if (item.packageMeasurementUnit.tId === item.prodMeasurementUnit.tId && item.packageFactor === 1) {
           item.displayName = item.productName; // because package quantity will be listed anyway
         } else {
-          item.displayName = item.prodQuantity.toString() + ' ' + item.prodMeasurementUnit.label + ' ' + item.productName;
+          item.displayName = (Math.round(item.prodQuantity*100)/100).toString() + ' ' + item.prodMeasurementUnit.label + ' ' + item.productName;
         }
         // add "main part" to name, if exitList is non empty
         if (catItem.exitList.length) {
