@@ -107,7 +107,7 @@
   <span>רק לתפריט הנבחר?</span>
   <input type="checkbox" ng-model="documentsModel.isOnlyActiveQuote">
     <span ng-repeat="documentType in documentsModel.sortedDocumentTypes track by documentType.id">
-        <button ng-click="documentsModel.createBid(documentType.id)"
+        <button ng-click="documentsModel.createBid(documentType.id,undefined)"
                 ng-disabled="documentsModel.readOnly.is ||
                              !documentsModel.order.view.quote.foodPrice"
                 class="btn btn-default">  <!-- disable for quotes before 7/3/2019 -->

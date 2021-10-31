@@ -88,7 +88,7 @@ angular.module('myApp')
           isTransportation = true;
         }
       });
-      if (!isTransportation && !order.properties.taskData.isSelfDelivery) {
+      if (!isTransportation && !this.order.properties.taskData.isSelfDelivery) {
         warnings.push({
           id: quote.menuType.tId * 1000 + seq++,
           type: 1,
@@ -135,7 +135,7 @@ angular.module('myApp')
       return warnings;
     }
 
-    this.createBid = function (docType) {
+    this.createBid = function (docType,bidToRestore) {
       if (this.order.view.isChanged) {
         return;
       }
@@ -171,15 +171,29 @@ angular.module('myApp')
 
         quoteWarningsModal.result.then(function (isIgnore) {
           if (isIgnore) {
-            that.saveBids(bids);
+            that.saveBids(bids,docType,bidToRestore);
           }
         })
       } else {
-        that.saveBids(bids);
+        that.saveBids(bids,docType,bidToRestore);
       }
     };
 
-  this.saveBids = function (bids) {
+  this.saveBids = function (bids,docType,bidToRestore) {
+    if (docType === 0) {    // restore
+      that.order.properties = bidToRestore.properties.order;
+      that.setupOrderView();
+      orderService.setupOrderHeader(that.order.properties);
+      api.saveObj(that.order)
+        .then(function () {
+          api.queryOrder(that.order.id)   // requery order to get new update timestamp
+            .then(function(ord) {
+              //that.order.updatedAt = ord[0].updatedAt;
+              alert('האירוע שוחזר לגרסה ' + bidToRestore.properties.desc + ' מתאריך ' +
+                $filter('date')(bidToRestore.properties.date, 'dd/MM/yyyy HH:mm'))
+            });
+        })
+    }
     return api.saveObjects(bids)
         .then(function () {
          that.isBidsLoading = true;
@@ -197,21 +211,7 @@ angular.module('myApp')
         return;
       }
       this.bidDesc = 'גיבוי לפני שחזור לתאריך ' + $filter('date')(bid.properties.date, 'dd/MM/yyyy HH:mm');
-      this.createBid(0)
-        .then(function () {
-          that.order.properties = bid.properties.order;
-          that.setupOrderView();
-          orderService.setupOrderHeader(that.order.properties);
-          api.saveObj(that.order)
-            .then(function () {
-              api.queryOrder(that.order.id)   // requery order to get new update timestamp
-                .then(function(ord) {
-                  //that.order.updatedAt = ord[0].updatedAt;
-                  alert('האירוע שוחזר לגרסה ' + bid.properties.desc + ' מתאריך ' +
-                  $filter('date')(bid.properties.date, 'dd/MM/yyyy HH:mm'))
-                });
-            })
-        })
+      this.createBid(0,bid);
     };
 
     this.delBid = function (bid) {
