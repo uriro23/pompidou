@@ -90,9 +90,10 @@ angular.module('myApp')
     }
   })
 
+
   .controller('SendMailCtrl', function ($modalInstance, $location, api, orderService, lov,
                                         order, bids, bidTextTypes, user,
-                                        pdfService, gmailClientLowLevel, $scope, $filter) {
+                                        pdfService, gmailClientLowLevel, $scope, $filter, $q) {
     var that = this;
     this.order = order;
     this.bids = bids;
@@ -255,8 +256,108 @@ angular.module('myApp')
       $modalInstance.dismiss();
     };
 
+    function transformRequest (req)  {
+      return req;
+    }
+
+
+    this.getWhatsAppUrl = function () {
+      var waUrl = "https://wa.me/";
+      var waPhone = this.customer ? "972" + this.customer.mobilePhone.slice(1) : "";
+      waUrl += waPhone;
+      waUrl += "?text=";
+      var waText = encodeURI(this.msg);
+      waUrl += waText;
+      console.log("url="+waUrl);
+      return waUrl;
+    }
 
   })
+  .controller('SendWhatsAppCtrl', function ($modalInstance, $location, api, orderService, lov,
+                                        order, bids, bidTextTypes, user,
+                                        pdfService, gmailClientLowLevel, $scope, $filter, $q) {
+    var that = this;
+    this.order = order;
+    this.bids = bids;
+    // reset isInclude checkbox from previous sends
+    bids.forEach(function(bid) {
+      bid.isInclude = false;
+    })
+    this.bidTextTypes = bidTextTypes;
+    this.documentTypes = lov.documentTypes;
+    this.msg = '';
+    api.queryCustomers(order.properties.customer)
+      .then(function (custs) {
+        that.customer = custs[0].properties;
+        that.phone = that.customer.mobilePhone;
+      });
+
+    this.setText = function () {
+      this.msg = this.mailTextType.whatsAppText;
+    };
+
+    this.isShowDocument = function (doc) {
+      return lov.documentTypes[doc.properties.documentType].isRealDocumentType
+    };
+
+    this.getWhatsAppUrl = function (op) {
+      var that = this;
+      this.attachedBids = [];
+      var bidCnt = 0;
+      var baseUrl = $location.absUrl();
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim isFromNew flag
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
+      var waUrl = "https://wa.me/";
+      if (this.phone) {
+        waUrl += ("972" + this.phone.slice(1));
+      }
+      waUrl += "?text=";
+      var msgText = this.msg;
+
+      bids.forEach(function(bid) {
+        if (bid.isInclude) {
+          that.attachedBids.push({    // this is the original bid object without the content of the order
+            uuid: bid.properties.uuid,
+            desc: bid.properties.desc,
+            documentType: bid.properties.documentType,
+            orderId: bid.properties.orderId,
+            date: bid.properties.date,
+            customer: bid.properties.customer
+          });
+          bidCnt++;
+        }
+      });
+      msgText += ' ';
+        this.attachedBids.forEach(function(bid) {
+         // msgText += (bid.desc + ' ');
+          if (bid.documentType === 4 || bid.documentType === 2) {
+            msgText += (baseUrl + '/quote/' + bid.uuid + ' ')
+          } else  if (bid.documentType === 1) {
+            msgText += (baseUrl + '/bid/' + bid.uuid + ' ')
+          } else { // assume documentType === 5
+            msgText += (baseUrl + '/quote2/' + bid.uuid + ' ')
+          }
+        })
+      var res = encodeURI(waUrl+msgText);
+        var i = res.indexOf('#');
+        while (i>-1) {
+          res = res.slice(0,i).concat('%23',res.slice(i+1));
+          i = res.indexOf('#');
+        }
+      console.log(res);
+      return res;
+      }
+
+      // $modalInstance.close();
+
+
+    this.cancel = function () {
+      $modalInstance.dismiss();
+    };
+
+  })
+
   .controller('SendEquipMailCtrl', function ($modalInstance, $location, api, orderService, lov,
                                              order, user, config,
                                              gmailClientLowLevel, $scope, $filter) {

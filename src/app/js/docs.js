@@ -260,6 +260,39 @@ angular.module('myApp')
 
     };
 
+    this.sendWhatsApp = function () {
+      var that = this;
+      if (this.user.attributes.isSalesPerson &&
+        this.user.attributes.username !== this.order.properties.createdBy) {
+        alert ('אינך יכול לשלוח הודעה באירוע שלא יצרת');
+        return;
+      }
+      var sendWhatsAppModal = $modal.open({
+        templateUrl: 'app/partials/order/sendWhatsApp.html',
+        controller: 'SendWhatsAppCtrl as sendWhatsAppModel',
+        resolve: {
+          order: function () {
+            return that.order;
+          },
+          bids: function () {
+            return that.bids;
+          },
+          bidTextTypes: function () {
+            return that.bidTextTypes;
+          },
+          user: function () {
+            return that.user;
+          }
+        },
+        size: 'lg'
+      });
+
+      sendWhatsAppModal.result.then(function () {
+      });
+
+
+    };
+
     this.sendEquipMail = function () {
       var that = this;
       if (this.user.attributes.isSalesPerson) {

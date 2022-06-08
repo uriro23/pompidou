@@ -7,7 +7,15 @@
                 ng-disabled="documentsModel.readOnly.is ||
                              documentsModel.order.view.isChanged ||
                              documentsModel.isBidsLoading">
-          שלח מייל ללקוח
+          <img src="app/img/gmail.png">
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-default" ng-click="documentsModel.sendWhatsApp()"
+                ng-disabled="documentsModel.readOnly.is ||
+                             documentsModel.order.view.isChanged ||
+                             documentsModel.isBidsLoading">
+          <img src="app/img/WhatsApp_icon.png">
         </button>
       </td>
       <td>

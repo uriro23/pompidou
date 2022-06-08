@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h3 class="modal-title">שליחת WhatsApp ללקוח</h3>
+</div>
+<div class="modal-body">
+
+  <div>
+    <label>
+      אל:
+    </label>
+    <span>{{sendWhatsAppModel.customer. firstName+' '+
+    sendWhatsAppModel.customer.lastName}}</span>
+    <input type="text" size="30" ng-model="sendWhatsAppModel.phone"><br/>
+  </div>
+  <div>
+    <label>
+      בחר וערוך מלל:
+    </label>
+    <select ng-model="sendWhatsAppModel.mailTextType"
+            ng-change="sendWhatsAppModel.setText()"
+            ng-options="bidTextType.label for bidTextType in sendWhatsAppModel.bidTextTypes | filter: {documentType: 3}"
+    ></select><br/>
+    <textarea rows="5" cols="70" ng-model="sendWhatsAppModel.msg"></textarea>
+  </div>
+   <p></p>
+  <table class="table table-hover">
+    <tr ng-repeat="bid in sendWhatsAppModel.bids | filter: sendWhatsAppModel.isShowDocument">
+      <td>
+        <input type="checkbox" ng-model="bid.isInclude">
+      </td>
+      <td>{{sendWhatsAppModel.documentTypes[bid.properties.documentType].label}}</td>
+      <td>{{bid.properties.desc}}</td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" ng-disabled = "!sendWhatsAppModel.msg || !sendWhatsAppModel.phone">
+    <a ng-href={{sendWhatsAppModel.getWhatsAppUrl()}}>שלח</a>
+  </button>
+  <button class="btn btn-warning" ng-click="sendWhatsAppModel.cancel()">ביטול</button>
+</div>
