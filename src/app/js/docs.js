@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('myApp')
-  .controller('DocumentsCtrl', function ($scope, $modal, $filter,
-                                         api, orderService, accountingService, lov) {
+  .controller('DocumentsCtrl', function ($scope, $modal, $filter, $location,
+                                         api, orderService, accountingService,
+                                         secrets, lov) {
 
     // references to members of parent order controller
     //objects
@@ -31,7 +32,10 @@ angular.module('myApp')
     var that = this;
     this.isBidsLoading = true;
     api.queryBidsByOrder(this.order.id).then (function (bids) { // lazy load bids
-      that.bids = bids;
+      that.bids = bids.map (function (bid) {
+        bid.downloadUrl = that.downloadBid(bid);
+        return bid;
+      });
       that.isBidsLoading = false;
     });
 
@@ -199,7 +203,10 @@ angular.module('myApp')
          that.isBidsLoading = true;
          return api.queryBidsByOrder(that.order.id)  // requery bids for view
             .then(function (bids) {
-              that.bids = bids;
+              that.bids = bids.map (function (bid) {
+                bid.downloadUrl = that.downloadBid(bid);
+                return bid;
+              });
               that.isBidsLoading = false;
            })
         })
@@ -221,11 +228,39 @@ angular.module('myApp')
           that.isBidsLoading = true;
           return api.queryBidsByOrder(that.order.id)
             .then(function (bids) {
-              that.bids = bids;
+              that.bids = bids.map (function (bid) {
+                bid.downloadUrl = that.downloadBid(bid);
+                return bid;
+              });
               that.isBidsLoading = false;
             })
         })
     };
+
+    this.downloadBid = function (bid) {
+      var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret='+secrets.prod.web2pdfSecret;
+      var baseUrl = $location.absUrl();
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim isFromNew flag
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
+      baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
+
+      var sourceUrl = (bid.properties.documentType===4 || bid.properties.documentType === 2)
+          ? baseUrl + '/quote/' + bid.properties.uuid : (bid.properties.documentType === 1)
+          ? baseUrl + '/bid/' + bid.properties.uuid : baseUrl + '/quote2/' + bid.properties.uuid;
+      var encodedSource = encodeURIComponent(sourceUrl);
+      var params = "download=attachment&ConversionDelay=7&" +
+        "MarginBottom=5&MarginTop=5&MarginLeft=5&MarginRight=5&PageSize=a4" +
+        "&FileName=" +
+        encodeURIComponent("הצעת מחיר " +
+        bid.properties.customer.firstName + " " +
+        bid.properties.customer.lastName + " " +
+        bid.properties.eventDateStr.replace('/','-').replace('/','-') + " " +
+        bid.properties.desc);
+      var payload = "&url="+encodedSource+"&"+params;
+      var url = serviceUrl+payload;
+      return (url);
+    };
+
 
     this.sendMail = function () {
       var that = this;

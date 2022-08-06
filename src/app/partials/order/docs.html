@@ -158,7 +158,13 @@
     <td>
       {{bid.properties.total | currency}}
     </td>
-      <td>
+    <td>
+      <button class="btn btn-default btn-sm"
+              ng-disabled="documentsModel.readOnly.is">
+        <a ng-href="{{bid.downloadUrl}}">הורד</a>
+      </button>
+    </td>
+    <td>
           <button ng-click="documentsModel.restoreBid(bid)"
                   ng-hide="documentsModel.order.view.isChanged"
                   ng-disabled="documentsModel.readOnly.is || bid.properties.version < 4"
@@ -166,13 +172,13 @@
                   שחזר
           </button>
       </td>
-      <td>
-          <button ng-click="documentsModel.delBid(bid)"
-                  ng-disabled="documentsModel.readOnly.is"
-                  class="btn btn-default btn-sm">
-              מחק
-          </button>
-      </td>
+    <td>
+      <button ng-click="documentsModel.delBid(bid)"
+              ng-disabled="documentsModel.readOnly.is"
+              class="btn btn-default btn-sm">
+        מחק
+      </button>
+    </td>
   </tr>
   </tbody>
 </table>

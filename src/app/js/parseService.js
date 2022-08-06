@@ -773,7 +773,7 @@ angular.module('myApp')
     if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod
       this.setEnvironment('prod');
     } else {
-      this.setEnvironment('test');
+      this.setEnvironment('prod');  // todo: fix test server
     }
 
 
