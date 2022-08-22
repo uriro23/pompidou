@@ -254,8 +254,9 @@ angular.module('myApp')
         encodeURIComponent("הצעת מחיר " +
         bid.properties.customer.firstName + " " +
         bid.properties.customer.lastName + " " +
-        bid.properties.eventDateStr.replace('/','-').replace('/','-') + " " +
-        bid.properties.desc);
+        (bid.properties.eventDateStr ?
+          (bid.properties.eventDateStr.replace('/','-').replace('/','-')) :
+          "") + " " + bid.properties.desc);
       var payload = "&url="+encodedSource+"&"+params;
       var url = serviceUrl+payload;
       return (url);

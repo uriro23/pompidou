@@ -1,11 +1,11 @@
 <div id="exitListContainer">
-		<h1>
+ 	<h2>
 		   רשימת אריזה -
       {{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}
       {{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
       <img ng-show="packingListModel.isOrderColors" src="app/img/bigColors/{{packingListModel.color.stickerColor}}.jpg"/>
       <span ng-show="packingListModel.isOrderNumbers">[{{packingListModel.color.tId}}]</span>
-    </h1>
+    </h2>
 
 
 		<table style="width:90%">
@@ -177,10 +177,20 @@
 
    <p style="height: 20px;"></p>
 
-  <table border="1" style="width: 90%">
-    <th style="width: 50%"></th>
-    <th style="width: 25%"></th>
-    <th style="width: 25%"></th>
+  <table class="tableStart" border="1" style="width: 90%">
+    <thead>
+    <tr style="height: 10mm">
+    <th style="width: 70%">
+      רשימת אריזה -
+      {{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}
+      {{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+      <img ng-show="packingListModel.isOrderColors" src="app/img/bigColors/{{packingListModel.color.stickerColor}}.jpg"/>
+      <span ng-show="packingListModel.isOrderNumbers">[{{packingListModel.color.tId}}]</span>
+    </th>
+    <th style="width: 30%"></th>
+    </tr>
+    </thead>
+    <tbody>
     <tr ng-repeat="line in packingListModel.vec track by line.ind">
       <!-- col 1 -->
       <td ng-show="line.level===0">
@@ -219,6 +229,7 @@
         </span>
       </td>
     </tr>
+    </tbody>
   </table>
   <div ng-show="packingListModel.accessories.length">
     <div><label>אביזרים נלווים</label></div>

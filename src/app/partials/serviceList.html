@@ -1,11 +1,11 @@
 <div id="exitListContainer">
-		<h1>
+		<h2>
 		   רשימת סרוויס -
       {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
       {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
       <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
       <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
-    </h1>
+    </h2>
 
 
 		<table style="width:90%">
@@ -125,9 +125,19 @@
   <p></p>
 
   <table border="1" style="width: 90%">
-    <th style="width: 50%"></th>
-    <th style="width: 25%"></th>
-    <th style="width: 25%"></th>
+    <thead>
+    <tr style="height:10mm">
+    <th style="width: 70%">
+      רשימת סרוויס -
+      {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
+      {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+      <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
+      <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+    </th>
+    <th style="width: 30%"></th>
+    </tr>
+    </thead>
+    <tbody>
     <tr ng-repeat="line in serviceListModel.vec track by line.ind">
   <!-- column 1: name -->
       <td ng-show="line.level===0">
@@ -146,6 +156,7 @@
         {{line.data.quantity}}&nbsp;{{line.data.measurementUnit.label}}
       </td>
     </tr>
+    </tbody>
   </table>
 
   <p></p>

@@ -79,13 +79,13 @@
     line-height: 90%; /* The gap between lines of same item description */
     margin-bottom:5pt;  /* The gap between items */
 }
-
+ /*  removed @page because it messed up exit list format
 @page
 {
 	margin: 0;
 
 }
-
+*/
 
 @media print
 {

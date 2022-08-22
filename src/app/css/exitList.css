@@ -1,16 +1,9 @@
-#exitListContainer
-{
-	width:100%;
-	margin:0 auto;
-	background-color:#ffffff;
-	padding:5%;
-  margin-bottom:40% ;
-}
 
-@media print {
 
-  @page {
-    size: A4 portrait;
-    margin: 2cm;
-  }
+
+#exitListContainer {
+  margin: 5% !important;
+
+
+
 }
