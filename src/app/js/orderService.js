@@ -17,13 +17,7 @@ angular.module('myApp')
       var satiety = 0;
       var isHeavyweight = false;
       var priceIncreaseItem;
-      lov.specialTypes.forEach(function(st) {
-        if (order.properties.taskData) {
-          delete order.properties.taskData[st.exist];
-          delete order.properties.taskData[st.desc];
-        }
-      });
-      quote.items.forEach(function(thisItem) {
+     quote.items.forEach(function(thisItem) {
         if (thisItem.category.type !== 4) {  // not priceIncrease
           if (!thisItem.isFreeItem) {
             if (thisItem.category.type === 5) {
@@ -50,21 +44,7 @@ angular.module('myApp')
           if (thisItem.category.type === 2) {  // heavy food category
             isHeavyweight = true;
           }
-          if (thisItem.specialType) {
-            var specialType = lov.specialTypes.filter(function(st) {
-              return st.id === thisItem.specialType;
-            })[0];
-            if (!order.properties.taskData) {
-              order.properties.taskData = {};
-            }
-            order.properties.taskData[specialType.exist] = true;
-            if (order.properties.taskData[specialType.desc]) {
-              order.properties.taskData[specialType.desc] += (', ' + thisItem.productDescription);
-            } else {
-              order.properties.taskData[specialType.desc] = thisItem.productDescription;
-            }
-          }
-        } else {
+      } else {
           priceIncreaseItem = thisItem;
         }
       });
@@ -126,6 +106,32 @@ angular.module('myApp')
 
 
       this.checkTasks(order);
+    };
+
+    this.calcSpecialTypes = function(order) {
+      lov.specialTypes.forEach(function(st) {
+        if (order.properties.taskData) {
+          delete order.properties.taskData[st.exist];
+          delete order.properties.taskData[st.desc];
+        }
+      });
+      order.properties.quotes[order.properties.activeQuote].items.forEach(function(thisItem) {
+        if (thisItem.specialType) {
+          var specialType = lov.specialTypes.filter(function (st) {
+            return st.id === thisItem.specialType;
+          })[0];
+          if (!order.properties.taskData) {
+            order.properties.taskData = {};
+          }
+          order.properties.taskData[specialType.exist] = true;
+          order.properties.taskData[specialType.desc] = specialType.name;
+          // if (order.properties.taskData[specialType.desc]) {
+          //   order.properties.taskData[specialType.desc] += (', ' + thisItem.productName);
+          // } else {
+          //   order.properties.taskData[specialType.desc] = thisItem.productName;
+          // }
+        }
+      });
     };
 
     this.orderChanged = function (order, field) {

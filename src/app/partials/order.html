@@ -39,7 +39,7 @@
           <ng-include src="'app/partials/order/header.html'"></ng-include>
         </div>
     <p></p>
-        <tabset>
+        <tabset ng-hide="orderModel.showSummary.is">
           <tab heading="בונוסים"
                ng-show="orderModel.order.view.orderStatus.id > 1 &&
                         orderModel.order.view.orderStatus.id < 6 && !orderModel.user.attributes.isKitchenStaff">
@@ -81,6 +81,7 @@
                select="orderModel.selectQuote(quote.menuType)"
                deselect="orderModel.deselectQuote(quote.menuType)"
                ng-show="!orderModel.user.attributes.isKitchenStaff"
+               active="orderModel.isActiveQuoteTab"
                heading="{{quote.title}}">
             <ng-include src="'app/partials/order/quoteTabs.html'"></ng-include>
           </tab>
@@ -95,3 +96,6 @@
             <ng-include src="'app/partials/order/tasks.html'"></ng-include>
           </tab>
         </tabset>
+    <div ng-show="orderModel.showSummary.is">
+      <ng-include src="'app/partials/order/summary.html'"></ng-include>
+    </div>

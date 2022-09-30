@@ -21,13 +21,15 @@ angular.module('myApp')
     this.specialTypes = lov.specialTypes;
     this.currentExtraService = this.specialTypes[0];
 
-    this.order.view.quote.items.forEach(function(item) {
-      if (item.specialType) {
-        item.specialTypeObj = lov.specialTypes.filter(function(s) {
-          return s.id === item.specialType;
-        })[0];
-      }
-    });
+    if (this.order.view.quote) {
+      this.order.view.quote.items.forEach(function (item) {
+        if (item.specialType) {
+          item.specialTypeObj = lov.specialTypes.filter(function (s) {
+            return s.id === item.specialType;
+          })[0];
+        }
+      });
+    }
 
 
     this.setCategory = function (level) { // level 0: main category; level 1: extraService
@@ -86,6 +88,9 @@ angular.module('myApp')
       var thisQuote = this.order.view.quote;
       thisQuote.items.splice(ind, 1);
       orderService.calcTotal(thisQuote,this.order);
+      if (thisQuote.isActive) {
+        orderService.calcSpecialTypes(this.order);
+      }
       orderService.quoteChanged(this.order);
     };
 
@@ -193,6 +198,9 @@ angular.module('myApp')
       this.filterText = '';
       orderService.calcTotal(thisQuote,this.order);
       orderService.quoteChanged(this.order);
+      if (thisQuote.isActive) {
+        orderService.calcSpecialTypes(thisOrder);
+      }
     };
 
     this.setProductDescription = function (ind) {
@@ -202,7 +210,6 @@ angular.module('myApp')
       thisItem.isMajorChange = false;
       orderService.setDescChangeActions(this.order, this.descChangeActions);
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
-      orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };

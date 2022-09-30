@@ -24,6 +24,7 @@ angular.module('myApp')
       this.order.properties.quotes[ind].isActive = true;
       this.order.properties.activeQuote = ind;
       this.order.view.quote = this.order.properties.quotes[ind];
+      orderService.calcSpecialTypes(this.order); // recalc special types in task for new active quote
       this.setQuoteChanged(ind);
     };
 

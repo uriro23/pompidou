@@ -1,0 +1,10 @@
+<div  class="summaryOutline" ng-controller="SummaryCtrl as summaryModel">
+  <table>
+    <tbody>
+    <tr ng-repeat="detail in summaryModel.details track by detail.tId">
+      <td>{{detail.description}}</td>
+      <td>{{detail.inputText ? detail.inputText : detail.boolean? "כן" : "לא"}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

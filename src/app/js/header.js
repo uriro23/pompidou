@@ -8,6 +8,7 @@ angular.module('myApp')
     this.order = $scope.orderModel.order;
     this.readOnly = $scope.orderModel.readOnly;
     this.orderStatuses = $scope.orderModel.orderStatuses;
+    this.showSummary = $scope.orderModel.showSummary;
 
 
     // functions
@@ -168,5 +169,8 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'header');
     };
 
+    this.showDetails = function(bool) {
+      this.showSummary.is = !bool;
+    }
 
   });

@@ -3,6 +3,16 @@
 angular.module('myApp')
   .controller('TasksCtrl', function ($scope, orderService, api) {
 
+    // taskDetail types
+    // ----------------
+    //
+    // 0: desctription is just a comment for display
+    // 1: isDone boolean for required fields of order (like customer, date, time)
+    // 2: updateable single line text
+    // 3: read only text
+    // 4: updateable multi line text
+    // 5: updateable boolean value
+
     // references to members of parent order controller
     //objects
     this.order = $scope.orderModel.order;

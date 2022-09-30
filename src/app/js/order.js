@@ -22,6 +22,10 @@ angular.module('myApp')
 
     var tabThis;
 
+    this.showSummary = {
+      is: true
+    };
+
     this.setOrderTableParams = function () {
       if (tabThis) {
         tabThis.queryType = 'customer';
@@ -409,15 +413,19 @@ angular.module('myApp')
     this.cancelReasons = cancelReasons;
     this.menuTypes = menuTypes;
     this.employees = employees;
+    this.taskTypes = taskTypes;
+    this.taskDetails = taskDetails;
     this.config = config;
     this.vatRate = config.vatRate;
     this.isProd = config.isProd;
     this.activityDate = new Date();
-    this.isItemsTabActive = true;
     this.quoteViewType = 'items';
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
+      if (this.order.properties.quotes) {
+        this.showSummary.is = new Boolean(this.order.properties.quotes.length);
+      }
       this.setupOrderView();
       if (typeof this.order.properties.taskData === 'undefined') {
         this.order.properties.taskData = {};
@@ -427,16 +435,12 @@ angular.module('myApp')
       // } else {
       //   this.isActiveGeneralTab = true;
       // }
-      if (user.attributes.isKitchenStaff) {
         if (this.order.properties.quotes.length) {
           this.isActiveQuoteTab = true;
         } else {
           this.isActiveQuoteManagementTab = true;
         }
-      } else {
-        this.isActiveTasksTab = true;
-      }
-       this.setReadOnly();
+      this.setReadOnly();
       this.order.properties.empBonuses.forEach(function(role) {
         if (role.employee) {
           role.employee = employees.filter(function(emp) {
@@ -460,6 +464,9 @@ angular.module('myApp')
       this.order.properties.exitTime = undefined;
       this.order.properties.activities = [];
       this.order.properties.taskData = {};
+      if (this.order.properties.quotes) {
+        this.showSummary.is = new Boolean(this.order.properties.quotes.length);
+      }
 
       // initialize employee bonuses array
       this.order.properties.empBonuses = angular.copy(pRoles);
@@ -473,22 +480,19 @@ angular.module('myApp')
       });
 
       this.setupOrderView();
-      if (user.attributes.isKitchenStaff) {
         if (this.order.properties.quotes.length) {
           this.isActiveQuoteTab = true;
         } else {
           this.isActiveQuoteManagementTab = true;
         }
-      } else {
-        this.isActiveTasksTab = true;
-      }
-      this.setReadOnly();
+     this.setReadOnly();
       this.handleVatRateChange();
       if (!this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
     } else {  // new order or new order by customer
       $rootScope.title = 'אירוע חדש';
+      this.showSummary.is = false;
       this.order = api.initOrder();
       this.order.properties.isDateUnknown = true;
       this.order.properties.eventDate = new Date(2199,11,31,0,0,0,0);
@@ -535,16 +539,12 @@ angular.module('myApp')
       //   this.isActiveQuoteTab = false;
       //   this.isActiveGeneralTab = true;
       // }
-      if (user.attributes.isKitchenStaff) {
         if (this.order.properties.quotes.length) {
           this.isActiveQuoteTab = true;
         } else {
           this.isActiveQuoteManagementTab = true;
         }
-      } else {
-        this.isActiveTasksTab = true;
-      }
-      this.order.properties.vatRate = this.vatRate;
+   this.order.properties.vatRate = this.vatRate;
       this.order.properties.activities = [];
       this.setReadOnly();
     }

@@ -176,3 +176,8 @@ a:link, a:visited  {
   display: table;
   clear: both;
 }
+
+.summaryOutline {
+  margin: 5mm;
+  outline-style: dotted;
+}
