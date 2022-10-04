@@ -30,8 +30,9 @@
   <button class="btn btn-default" ng-click="adminModel.listExtra()">list Extra</button>
     <button class="btn btn-default" ng-click="adminModel.packageFactor()">package factor</button>
    <button class="btn btn-default" ng-click="adminModel.isInStock()">stock</button>
- -->
   <button class="btn btn-default" ng-click="adminModel.externalName()">external name</button>
+  <button class="btn btn-default" ng-click="adminModel.prepTiming()">תזמון</button>
+ -->
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -250,6 +251,7 @@
              ng-show="adminModel.productNamesDomain.id===1">
            {{sensitivity.label}}
          </th>
+         <th ng-show="adminModel.productNamesDomain.id===2">תזמון</th>
          <th ng-show="adminModel.productNamesDomain.id>1">מלאי?</th>
          <th></th>
          </thead>
@@ -259,7 +261,13 @@
                        productNameItem.isChanged ? 'bg-success' :
                        productNameItem.properties.isDeleted ? 'active myCanceledEvent' : bg-active">
            <td>{{productNameItem.properties.productName}}</td>
-           <td>{{productNameItem.properties.priceQuantity}}</td>
+           <td ng-show="adminModel.productNamesDomain.id===1">
+             {{productNameItem.properties.priceQuantity}}
+           </td>
+           <td ng-show="adminModel.productNamesDomain.id===2">
+             {{productNameItem.properties.productionQuantity}}
+           </td>
+           <td ng-show="adminModel.productNamesDomain.id===3"></td>
            <td>{{productNameItem.measurementUnitLabel}}</td>
            <td>
              <input type="checkbox"
@@ -274,6 +282,11 @@
                ng-show="adminModel.productNamesDomain.id===1">
              <input type="checkbox" ng-model="potSens.isTrue"
                     ng-change="adminModel.productNameItemChanged(productNameItem)">
+           </td>
+           <td ng-show="adminModel.productNamesDomain.id===2">
+             <select ng-model="productNameItem.prepTimingObject"
+                     ng-change="adminModel.productNameItemChanged(productNameItem)"
+                     ng-options="prepTiming.label for prepTiming in adminModel.prepTimings"></select>
            </td>
            <td ng-show="adminModel.productNamesDomain.id>1">
              <input type="checkbox" ng-model="productNameItem.properties.isInStock"

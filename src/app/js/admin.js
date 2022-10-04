@@ -25,6 +25,7 @@ angular.module('myApp')
   this.categories = categories;
   this.sensitivities = sensitivities;
   this.measurementUnits = measurementUnits;
+  this.prepTimings = lov.prepTimings;
 
 
     // vat
@@ -442,6 +443,11 @@ angular.module('myApp')
                 cat.packageMeasurementUnit = measurementUnits.filter(function(mu) {
                   return mu.tId === cat.properties.packageMeasurementUnit;
                 })[0];
+                if (typeof cat.properties.prepTiming === 'number') {
+                  cat.prepTimingObject = lov.prepTimings.filter(function (ti) {
+                    return ti.id === cat.properties.prepTiming;
+                  })[0];
+                }
               });
               that.productNameItems = catalog;
               that.productNameCategoryItems = [];
@@ -1479,7 +1485,6 @@ angular.module('myApp')
 
         });
     };
-      */
     this.externalName = function() {
       console.log('starting');
       api.queryCatalog(1,['productName','externalName'])
@@ -1496,6 +1501,23 @@ angular.module('myApp')
 
         });
     };
+    this.prepTiming = function() {
+      console.log('starting');
+      api.queryCatalog(2,['domain','prepTiming'])
+        .then(function(items) {
+          console.log('read '+items.length+' items');
+          items.forEach(function(item) {
+            item.properties.prepTiming = 0;
+          });
+          console.log('updating');
+          api.saveObjects(items)
+            .then(function() {
+              console.log('done');
+            });
+
+        });
+    };
+          */
     // end conversions
 
   });
