@@ -339,14 +339,14 @@ angular.module('myApp')
       }
     ],
 
-    timeUnits: [
+    prepTimings: [
       {
         id: 0,
-        label: 'ימים'
+        label: 'הכנות'
       },
       {
         id: 1,
-        label: 'שעות'
+        label: 'סרוויס'
       }
     ],
 

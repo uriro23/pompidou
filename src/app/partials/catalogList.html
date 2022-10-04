@@ -35,22 +35,12 @@
         <th ng-show="catalogListModel.currentDomain.id===1" style="width:8%"></th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:4%">ייצור</th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:6%"></th>
-      <th ng-hide="catalogListModel.currentDomain.id===1" style="width: 4%">מידה</th>
       <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%">כמות</th>
-      <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%"></th>
-      <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%">מינימום</th>
-        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%"></th>
-        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%">מקסימום</th>
-        <th ng-show="catalogListModel.currentDomain.id===2" style="width: 6%"></th>
-     </thead>
-    <thead  ng-show="catalogListModel.currentDomain.id===2">
-    <th></th><th></th><th></th><th></th><th></th>
-    <th>זמן</th>
-    <th>יחידה</th>
-    <th>זמן</th>
-    <th>יחידה</th>
+      <th ng-hide="catalogListModel.currentDomain.id===1" style="width: 4%">מידה</th>
+      <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%">תזמון</th>
+      <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%">מלאי</th>
     </thead>
-      <tbody>
+     <tbody>
       <tr ng-repeat="catalogItem in catalogListModel.categoryItems track by catalogItem.id"
           ng-class="catalogItem.properties.isDeleted?'myCanceledEvent':null">
         <td>{{catalogItem.view.category.label}}</td>
@@ -63,7 +53,9 @@
         <td ng-show="catalogListModel.currentDomain.id===1">
           {{catalogItem.properties.priceQuantity | number:2}}
         </td>
-        <td>{{catalogItem.view.measurementUnit.label}}</td>
+        <td ng-hide="catalogListModel.currentDomain.id===2">
+          {{catalogItem.view.measurementUnit.label}}
+        </td>
         <td ng-show="catalogListModel.currentDomain.id===1">ב</td>
         <td ng-show="catalogListModel.currentDomain.id===1">
           {{catalogItem.properties.price | currency}}
@@ -71,20 +63,17 @@
         <td ng-hide="catalogListModel.currentDomain.id===3">
           {{catalogItem.properties.productionQuantity | number:2}}
         </td>
-        <td ng-hide="catalogListModel.currentDomain.id===3">
+        <td ng-show="catalogListModel.currentDomain.id===1">
           {{catalogItem.view.prodMeasurementUnit.label}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
-          {{catalogItem.properties.minTime | number:0}}
+          {{catalogItem.view.measurementUnit.label}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
-          {{catalogItem.view.minTimeUnit.label}}
+          {{catalogItem.view.prepTiming.label}}
         </td>
         <td ng-show="catalogListModel.currentDomain.id===2">
-          {{catalogItem.properties.maxTime | number:0}}
-        </td>
-        <td ng-show="catalogListModel.currentDomain.id===2">
-          {{catalogItem.view.maxTimeUnit.label}}
+          {{catalogItem.properties.isInStock ? 'כן' : ''}}
         </td>
       </tr>
       </tbody>

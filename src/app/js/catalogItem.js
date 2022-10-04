@@ -152,21 +152,7 @@ angular.module('myApp')
        model.setChanged(true);
     };
 
-    model.setMinTime = function (ind) {
-      model.item.errors.minTime =
-        model.item.properties.minTime != Number(model.item.properties.minTime) ||
-        Number(model.item.properties.minTime) < 0;
-      model.setChanged(true);
-    };
-
-    model.setMaxTime = function (ind) {
-      model.item.errors.maxTime =
-        model.item.properties.maxTime != Number(model.item.properties.maxTime) ||
-        Number(model.item.properties.maxTime) < 0;
-      model.setChanged(true);
-    };
-
-    model.setInstructions = function () {
+     model.setInstructions = function () {
       if (model.item.properties.instructions) {
         model.item.errors.instructionsMinutes = !model.item.properties.instructionsMinutes;
       } else {
@@ -432,12 +418,6 @@ angular.module('myApp')
        alert('Missing prod measurement unit');
        return;
      }
-     if (!model.item.view.minTimeUnit) {
-       model.item.view.minTimeUnit = lov.timeUnits[0];
-     }
-     if (!model.item.view.maxTimeUnit) {
-       model.item.view.maxTimeUnit = lov.timeUnits[0];
-     }
      model.item.properties.measurementUnit = model.item.view.measurementUnit.tId;
      if (model.item.properties.domain === 1) {
        model.item.properties.prodMeasurementUnit = model.item.view.prodMeasurementUnit.tId;
@@ -448,15 +428,14 @@ angular.module('myApp')
      if (model.item.view.specialType) {
        model.item.properties.specialType = model.item.view.specialType.id;
      }
-     model.item.properties.minTimeUnit = model.item.view.minTimeUnit.id;
-     model.item.properties.maxTimeUnit = model.item.view.maxTimeUnit.id;
+     if (model.item.view.prepTiming) {
+       model.item.properties.prepTiming = model.item.view.prepTiming.id;
+     }
      model.item.properties.muFactor = Number(model.item.properties.muFactor);
      model.item.properties.packageFactor = Number(model.item.properties.packageFactor);
      model.item.properties.priceQuantity = Number(model.item.properties.priceQuantity);
      model.item.properties.price = Number(model.item.properties.price);
      model.item.properties.productionQuantity = Number(model.item.properties.productionQuantity);
-     model.item.properties.minTime = Number(model.item.properties.minTime);
-     model.item.properties.maxTime = Number(model.item.properties.maxTime);
      model.item.properties.components = [];
      model.compDomains.forEach(function(d) {
        d.compItems.forEach(function(c) {
@@ -549,8 +528,11 @@ angular.module('myApp')
           return mu.isDefault;
         })[0];
         model.item.view.packageMeasurementUnit = measurementUnits[0];
-        model.item.view.minTimeUnit = lov.timeUnits[0];
-        model.item.view.maxTimeUnit = lov.timeUnits[0];
+        if (typeof model.item.properties.prepTiming === 'number') {
+          model.item.view.prepTiming = lov.prepTimings.filter(function (st) {
+            return st.id === model.item.properties.prepTiming;
+          }) [0];
+        }
         model.item.isCopyToShortDesc = true;
       } else {
         model.item.view.category = model.categories.filter(function (cat) {
@@ -570,14 +552,9 @@ angular.module('myApp')
             return st.id === model.item.properties.specialType;
           }) [0];
         }
-        if (typeof model.item.properties.minTimeUnit === 'number') {
-          model.item.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === model.item.properties.minTimeUnit;
-          }) [0];
-        }
-        if (typeof model.item.properties.maxTimeUnit === 'number') {
-          model.item.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === model.item.properties.maxTimeUnit;
+        if (typeof model.item.properties.prepTiming === 'number') {
+          model.item.view.prepTiming = lov.prepTimings.filter(function (st) {
+            return st.id === model.item.properties.prepTiming;
           }) [0];
         }
         model.item.properties.exitList.forEach(function(ex) {
@@ -692,8 +669,8 @@ angular.module('myApp')
     model.isOrderNumbers = config.isOrderNumbers;
     model.measurementUnits = measurementUnits;
     model.sensitivities = sensitivities;
-    model.timeUnits = lov.timeUnits;
     model.specialTypes = lov.specialTypes;
+    model.prepTimings = lov.prepTimings;
     model.isNewItem = $state.current.name==='newCatalogItem';
    if (model.isNewItem) {
      $rootScope.title = 'קטלוג - פריט חדש';
@@ -706,10 +683,11 @@ angular.module('myApp')
      model.item.properties.priceQuantity = null;
      model.item.properties.price = null;
      model.item.properties.productionQuantity = null;
-     model.item.properties.minTime = null;
-     model.item.properties.maxTime = null;
      if (model.currentDomain.id === 1) {
        model.item.properties.isInMenu = true;
+     }
+     if (model.currentDomain.id === 2) {
+       model.item.properties.prepTimings = 0;
      }
      model.item.properties.exitList = [];
      model.item.properties.components = [];

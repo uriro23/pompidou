@@ -61,14 +61,9 @@ angular.module('myApp')
         cat.view.prodMeasurementUnit = that.measurementUnits.filter(function (mes) {
           return mes.tId === cat.properties.prodMeasurementUnit;
         }) [0];
-        if (typeof cat.properties.minTimeUnit === 'number') {
-          cat.view.minTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === cat.properties.minTimeUnit;
-          }) [0];
-        }
-        if (typeof cat.properties.maxTimeUnit === 'number') {
-          cat.view.maxTimeUnit = lov.timeUnits.filter(function (tu) {
-            return tu.id === cat.properties.maxTimeUnit;
+        if (typeof cat.properties.prepTiming === 'number') {
+          cat.view.prepTiming = lov.prepTimings.filter(function (ti) {
+            return ti.id === cat.properties.prepTiming;
           }) [0];
         }
         cat.isChanged = false;
@@ -134,7 +129,6 @@ angular.module('myApp')
     this.domains.splice(0, 1);   // drop "events" domain
     this.currentDomain = this.domains[currentDomain-1];
     this.measurementUnits = measurementUnits;
-    this.timeUnits = lov.timeUnits;
     this.searchText = '';
     this.fetchCategoryItems();
   });
