@@ -401,7 +401,7 @@
         </td>
         <td>ש"ח</td>
       </tr>
-      <tr ng-hide="catalogItemModel.currentDomain.id===3"
+      <tr ng-show="catalogItemModel.currentDomain.id < 3"
           ng-class="catalogItemModel.item.errors.productionQuantity?'bg-danger':null">
         <td><label>כמות ייצור</label></td>
         <td>
@@ -441,7 +441,7 @@
             <option value=""></option>
           </select>
       </tr>
-       <tr ng-show="catalogItemModel.currentDomain.id===2">
+       <tr ng-show="catalogItemModel.currentDomain.id===2 || catalogItemModel.currentDomain.id===4">
          <td><label>תזמון</label></td>
          <td>
            <select ng-model="catalogItemModel.item.view.prepTiming"

@@ -187,7 +187,13 @@ angular.module('myApp')
         id: 3,
         label: 'קניות',
         single: 'קניה',
-        forWorkItem: 'קניות'
+        forWorkItem: 'מצרכים'
+      },
+      {
+        id: 4,
+        label: 'מטלות',
+        single: 'מטלה',
+        forWorkItem: 'מטלות'
       }
     ],
     orderStatuses: [

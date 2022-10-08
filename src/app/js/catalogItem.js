@@ -529,7 +529,7 @@ angular.module('myApp')
         })[0];
         model.item.view.packageMeasurementUnit = measurementUnits[0];
         if (typeof model.item.properties.prepTiming === 'number') {
-          model.item.view.prepTiming = lov.prepTimings.filter(function (st) {
+          model.item.view.prepTiming = model.prepTimings.filter(function (st) {
             return st.id === model.item.properties.prepTiming;
           }) [0];
         }
@@ -553,7 +553,7 @@ angular.module('myApp')
           }) [0];
         }
         if (typeof model.item.properties.prepTiming === 'number') {
-          model.item.view.prepTiming = lov.prepTimings.filter(function (st) {
+          model.item.view.prepTiming = model.prepTimings.filter(function (st) {
             return st.id === model.item.properties.prepTiming;
           }) [0];
         }
@@ -686,8 +686,8 @@ angular.module('myApp')
      if (model.currentDomain.id === 1) {
        model.item.properties.isInMenu = true;
      }
-     if (model.currentDomain.id === 2) {
-       model.item.properties.prepTimings = 0;
+     if (model.currentDomain.id === 2 || model.currentDomain.id === 4) {
+       model.item.properties.prepTiming = 0;
      }
      model.item.properties.exitList = [];
      model.item.properties.components = [];
