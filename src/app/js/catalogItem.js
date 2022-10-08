@@ -258,7 +258,13 @@ angular.module('myApp')
     // loads catalog items for the components of the current item
    model.loadComponentItems = function() {
      model.compDomains = lov.domains.filter(function(dom) {
-       return dom.id > currentDomain;
+       if (currentDomain === 1) {
+         return (dom.id === 2 || dom.id === 3); // no tasks directly under menu
+       } else if (currentDomain === 3) {
+         return false; // no tasks under shopping
+       } else {
+         return dom.id > currentDomain;
+       }
      });
      model.compDomains.forEach(function(dom){
        dom.categories = allCategories.filter(function(cat){
