@@ -319,10 +319,13 @@ angular.module('myApp')
     return t;
   };
 
-  this.queryCustomers = function (id) {
+  this.queryCustomers = function (id,fields) {
     var customerQuery = new Parse.Query(Customer);
     if (id) {
       customerQuery.equalTo('objectId', id);
+    }
+    if (fields) {
+      catalogQuery.select(fields);
     }
     customerQuery.ascending("firstName");
     return query(customerQuery);

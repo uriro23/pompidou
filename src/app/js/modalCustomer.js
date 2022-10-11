@@ -38,7 +38,9 @@ angular.module('myApp')
         this.currentCustomer = this.filteredCustomers[ind];
         this.backupCustomer = angular.copy(this.currentCustomer);
         this.state = 'selected';
-        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
+        this.filteredCustomers =
+          customerService.filterList(this.customers,this.currentCustomer.properties,false);
+        this.customersView = this.filteredCustomers.length > 100 ? [] : this.filteredCustomers;
       }
       this.isCustomerChanged = false;
     };
@@ -46,7 +48,9 @@ angular.module('myApp')
     this.customerChanged = function () {
       this.currentCustomer.isError = this.currentCustomer.isFirstNameError || this.currentCustomer.isMobilePhoneError;
       this.isCustomerChanged = true;
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,true);
+      this.filteredCustomers =
+        customerService.filterList(this.customers,this.currentCustomer.properties,true);
+      this.customersView = this.filteredCustomers.length > 100 ? [] : this.filteredCustomers;
     };
 
     this.firstNameChanged = function () {
@@ -70,7 +74,9 @@ angular.module('myApp')
             that.currentCustomer = that.customers[ind] = angular.copy(that.backupCustomer);   // undo changes
           }
         });
-        this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
+        this.filteredCustomers =
+          customerService.filterList(this.customers,this.currentCustomer.properties,false);
+        this.customersView = this.filteredCustomers.length > 100 ? [] : this.filteredCustomers;
         this.isCustomerChanged = false;
       }
     };
@@ -83,7 +89,9 @@ angular.module('myApp')
         this.state = 'selected';
       }
       customerService.sortList(this.customers);
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
+      this.filteredCustomers =
+        customerService.filterList(this.customers,this.currentCustomer.properties,false);
+      this.customersView = this.filteredCustomers.length > 100 ? [] : this.filteredCustomers;
       return api.saveObj(this.currentCustomer)
         .then(function (obj) {
         that.currentCustomer = obj;
@@ -112,7 +120,9 @@ angular.module('myApp')
       this.currentCustomer.properties.email = '';
       this.currentCustomer.properties.address = '';
       this.state = 'new';
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,true);
+      this.filteredCustomers =
+        customerService.filterList(this.customers,this.currentCustomer.properties,true);
+      this.customersView = this.filteredCustomers.length > 100 ? [] : this.filteredCustomers;
       this.isCustomerChanged = false;
       this.currentCustomer.isFirstNameError = true;
     };
@@ -132,7 +142,7 @@ angular.module('myApp')
     };
 
     // main block
-
+    this.customersView = [];
     // make customers array easy for filtering - no undefined fields
     this.customers = customers.map(function (cust) {
       var c = cust;
@@ -157,7 +167,9 @@ angular.module('myApp')
         }
       })[0];
       this.state = 'selected';
-      this.filteredCustomers = customerService.filterList(this.customers,this.currentCustomer.properties,false);
+      this.filteredCustomers =
+        customerService.filterList(this.customers,this.currentCustomer.properties,false);
+      this.customersView = this.filteredCustomers.length > 100 ? [] : this.filteredCustomers;
     } else {
       this.currentCustomer = {};
       this.newCustomer();
