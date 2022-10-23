@@ -218,7 +218,14 @@
       ng-class="(headerModel.order.view.orderStatus.id > 0 &&
                 headerModel.order.view.orderStatus.id < 6) ||
                 headerModel.order.properties.template ? 'bg-danger' : null">
-    <td>אין תפריטים</td>
-   </tr>
+    <td colspan="5">אין תפריטים</td>
+    <td>
+      <button class="btn btn-default"
+              ng-click="headerModel.showDetails(headerModel.showSummary.is)">
+        <span ng-hide="headerModel.showSummary.is">הסתר פרטים</span>
+        <span ng-show="headerModel.showSummary.is">הצג פרטים</span>
+      </button>
+    </td>
+  </tr>
 </table>
 </div>

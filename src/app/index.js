@@ -362,6 +362,42 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
+    .state('workOrder2', {
+      url: '/workOrder2View',
+      templateUrl: 'app/partials/workOrder2.html',
+      controller: 'WorkOrder2Ctrl as workOrder2Model',
+      resolve: {
+        catalog: ['api', function (api) {
+          return api.queryCatalog().then(function (obj) {
+            return obj; // here we return the complete catalog, including deleted items
+          });
+        }],
+        allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
+          return allCategoriesPromise;
+        }],
+        config: ['configPromise', function (configPromise) {
+          return configPromise;
+        }],
+        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+          return measurementUnitsPromise;
+        }],
+        colors: ['colorsPromise', function (colorsPromise) {
+          return colorsPromise;
+        }],
+        customers: ['api', function (api) {
+          return api.queryCustomers()
+            .then(function (objs) {
+              return objs;
+            });
+        }],
+        woIndexes: ['api', function (api) {
+          return api.queryWorkOrder2Index().then(function (obj) {
+            return obj;
+          });
+        }]
+      }
+    })
+
     .state('todaysPrep', {
       url: '/todaysPrep/:woId',
       templateUrl: 'app/partials/todaysPrep.html',

@@ -352,19 +352,31 @@ angular.module('myApp')
   };
 
 
-  // WorkOrderIndex
-  // ----------------
+    // WorkOrderIndex
+    // ----------------
 
-  var WorkOrderIndex = Parse.Object.extend("WorkOrderIndex");
+    var WorkOrderIndex = Parse.Object.extend("WorkOrderIndex");
 
-  this.queryWorkOrderIndex = function () {
-    var q = new Parse.Query(WorkOrderIndex);
-    q.ascending('woId');
-    return query(q);
-  };
+    this.queryWorkOrderIndex = function () {
+      var q = new Parse.Query(WorkOrderIndex);
+      q.ascending('woId');
+      return query(q);
+    };
 
 
-  // Catalog
+    // WorkOrder2Index
+    // ----------------
+
+    var WorkOrder2Index = Parse.Object.extend("WorkOrder2Index");
+
+    this.queryWorkOrder2Index = function () {
+      var q = new Parse.Query(WorkOrder2Index);
+      q.ascending('woId');
+      return query(q);
+    };
+
+
+    // Catalog
   // -------
 
   var Catalog = Parse.Object.extend("Catalog");

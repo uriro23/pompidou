@@ -1,0 +1,25 @@
+<table style="width: 90%">
+  <tr>
+    <td style="width: 50%;font-size: x-large">
+      פקודת עבודה
+      <span>{{workOrder2Model.woIndex.properties.label}}</span>
+      <span ng-hide="workOrder2Model.isWoValid">
+      <bold style="font-size: x-large">לא מעודכנת</bold>
+    </span>
+    </td>
+    <td style="width: 25%">
+      <button ng-click="workOrder2Model.createNewWorkOrder(false)"
+              ng-disabled="workOrder2Model.isProcessing"
+              class="btn btn-default">
+        <span>צור פקודה</span>
+        <span>{{workOrder2Model.woIndex.properties.label}}</span>
+        <span>חדשה</span>
+      </button>
+    </td>
+    <td style="width: 25%">
+      <span>החלף סוג פקודה:</span>
+      <select ng-model="workOrder2Model.woIndex" ng-change="workOrder2Model.switchWorkOrders()"
+              ng-disabled="workOrder2Model.isProcessing"
+              ng-options="woIndex.properties.label for woIndex in workOrder2Model.woIndexes"></select>
+    </td>
+  </tr>
