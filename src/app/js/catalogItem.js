@@ -416,6 +416,15 @@ angular.module('myApp')
      } else {
        model.item.properties.category = model.item.view.category.tId;
      }
+     if (model.item.view.actionCategory) {
+       model.item.properties.actionCategory = model.item.view.actionCategory.tId;
+     } else {
+       if (model.item.delAttributes) {
+         model.item.delAttributes.actionCategory = true;
+       } else {
+         model.item.delAttributes = {actionCategory: true};
+       }
+     }
      if (!model.item.view.measurementUnit.tId) {
        alert('Missing measurement unit');
        return;
@@ -544,6 +553,11 @@ angular.module('myApp')
         model.item.view.category = model.categories.filter(function (cat) {
           return cat.tId === model.item.properties.category;
         }) [0];
+        if (model.item.properties.actionCategory) {
+          model.item.view.actionCategory = model.actionCategories.filter(function (cat) {
+            return cat.tId === model.item.properties.actionCategory;
+          }) [0];
+        }
         model.item.view.measurementUnit = model.measurementUnits.filter(function (mes) {
           return mes.tId === model.item.properties.measurementUnit;
         }) [0];
@@ -671,6 +685,9 @@ angular.module('myApp')
     model.currentDomain = lov.domains[currentDomain];
     model.categories = allCategories.filter(function(cat) {
       return cat.domain===currentDomain;
+    });
+    model.actionCategories = allCategories.filter(function(cat) {
+      return cat.domain === 4;
     });
     model.isOrderNumbers = config.isOrderNumbers;
     model.measurementUnits = measurementUnits;

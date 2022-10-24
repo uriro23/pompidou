@@ -167,30 +167,35 @@ angular.module('myApp')
     domains: [
       {
         id: 0,
+        name: 'events',
         label: 'אירועים',
         single: 'אירוע',
         forWorkItem: 'אירועים'
       },
       {
         id: 1,
+        name: 'menuItems',
         label: 'מנות',
         single: 'מנה',
         forWorkItem: 'מנות'
       },
       {
         id: 2,
+        name: 'preparations',
         label: 'הכנות',
         single: 'הכנה',
         forWorkItem: 'הכנות'
       },
       {
         id: 3,
-        label: 'קניות',
-        single: 'קניה',
+        name: 'shopping',
+        label: 'מצרכים',
+        single: 'מצרך',
         forWorkItem: 'מצרכים'
       },
       {
         id: 4,
+        mame: 'actions',
         label: 'מטלות',
         single: 'מטלה',
         forWorkItem: 'מטלות'

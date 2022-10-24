@@ -262,7 +262,8 @@
                   ng-click="catalogItemModel.copyProductName()">העתק משם פנימי</button>
         </td>
       </tr>
-      <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null">
+      <tr ng-class="catalogItemModel.item.errors.productDescription?'bg-danger':null"
+          ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>תיאור להצעת מחיר</label></td>
         <td>
         <textarea rows="3" cols="100" ng-model="catalogItemModel.item.properties.productDescription"
@@ -441,7 +442,7 @@
             <option value=""></option>
           </select>
       </tr>
-       <tr ng-show="catalogItemModel.currentDomain.id===2 || catalogItemModel.currentDomain.id===4">
+       <tr ng-show="catalogItemModel.currentDomain.id===2">
          <td><label>תזמון</label></td>
          <td>
            <select ng-model="catalogItemModel.item.view.prepTiming"
@@ -449,6 +450,19 @@
                    ng-change="catalogItemModel.setChanged(true)"
                    ng-options="prepTiming.label for prepTiming in catalogItemModel.prepTimings">
            </select>
+         </td>
+       </tr>
+       <tr ng-show="catalogItemModel.currentDomain.id===2">
+         <td><label>מיקום</label></td>
+         <td>
+           <select ng-model="catalogItemModel.item.view.actionCategory"
+                   ng-change="catalogItemModel.setChanged(true)"
+                   ng-options="category.label for category in catalogItemModel.actionCategories">
+             <option value=""></option>
+           </select>
+         </td>
+         <td>
+           מתייחס רק להכנות שאין להן פירוק למטלות
          </td>
        </tr>
        <tr ng-show="catalogItemModel.currentDomain.id>1">

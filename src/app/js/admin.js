@@ -239,10 +239,13 @@ angular.module('myApp')
           var noCompItems = catItems.filter(function(cat) {  // return only items with no components
             var comps = cat.properties.components.filter(function(comp) {
               return comp.id !== config.properties.unhandledItemComponent &&
-                     comp.id !== config.properties.unhandledItemMaterial  &&
-                      comp.id !== config.properties.satietyIndexItem;
+                comp.id !== config.properties.unhandledItemMaterial  &&
+                comp.id !== config.properties.satietyIndexItem;
             });
-            return !comps.length;
+            var category = categories.filter(function (categ) {
+              return categ.tId === cat.properties.category;
+            })[0];
+            return comps.length===0 && category.type < 3; // skip technical and non food items
           }).map(function(cat) {
             cat.view = {};
             cat.view.count = 0;
@@ -275,14 +278,70 @@ angular.module('myApp')
                 } else {
                   if (a.view.category.order>b.view.category.order) {
                     return 1
-                } else {
+                  } else {
                     if (a.view.count<b.view.count) {
                       return 1
                     } else {
                       return -1
                     }
                   }
-              }});
+                }});
+            });
+        });
+    };
+
+    this.catalogReport2 = function() {
+      var that = this;
+      api.queryCatalog(1)
+        .then(function(catItems) {
+          var noCompItems = catItems.filter(function(cat) {  // return only items with no components
+            var comps = cat.properties.components.filter(function(comp) {
+              return comp.domain === 3;
+            });
+            var category = categories.filter(function (categ) {
+              return categ.tId === cat.properties.category;
+            })[0];
+            return comps.length && category.type < 3; // skip technical and non food items
+          }).map(function(cat) {
+            cat.view = {};
+            cat.view.count = 0;
+            cat.view.category = categories.filter(function(c) {
+              return c.tId===cat.properties.category;
+            })[0];
+            return cat;
+          });
+          var from = new Date(new Date().getFullYear()-1,new Date().getMonth(),new Date().getDate());
+          var to = new Date(2099,11,31);
+          api.queryOrdersByRange('eventDate',from,to)
+            .then(function(ords) {
+              ords.forEach(function(ord) {
+                if (ord.properties.quotes.length) {
+                  var ordItems = ord.properties.quotes[ord.properties.activeQuote].items;
+                  ordItems.forEach(function (itm) {
+                    noCompItems.forEach(function (noComp) {
+                      if (noComp.id === itm.catalogId) {
+                        noComp.view.count++;
+                      }
+                    });
+                  });
+                }
+              });
+              that.catalog = noCompItems.filter(function(cat) {
+                return cat.view.count;
+              }).sort(function(a,b) {
+                if (a.view.category.order<b.view.category.order) {
+                  return -1
+                } else {
+                  if (a.view.category.order>b.view.category.order) {
+                    return 1
+                  } else {
+                    if (a.view.count<b.view.count) {
+                      return 1
+                    } else {
+                      return -1
+                    }
+                  }
+                }});
             });
         });
     };
