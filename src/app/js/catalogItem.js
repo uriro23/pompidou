@@ -213,6 +213,9 @@ angular.module('myApp')
              defaultAction.properties.category = model.actionCategory.tId;
              defaultAction.properties.productName = model.item.properties.productName;
              defaultAction.properties.measurementUnit = model.item.view.measurementUnit.tId;
+             defaultAction.properties.exitList = [];
+             defaultAction.properties.components = [];
+             defaultAction.properties.sensitivities = [];
              api.saveObj(defaultAction)
                .then(function (obj) {
                  model.item.properties.defaultAction = obj.id;
