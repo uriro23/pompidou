@@ -161,6 +161,78 @@ angular.module('myApp')
       model.setChanged(true);
     };
 
+     model.createDefaultAction = function() {
+       var actionDomain = model.compDomains.filter(function (dom) {
+         return dom.id === 4;
+       })[0];
+       // check if already exists
+       api.queryCatalogByProductName(4,model.item.properties.productName)
+         .then(function(act) {
+           if (act.length) {
+             var existingAction = act[0];
+             if (existingAction.properties.category !== model.actionCategory.tId)
+             {
+               var otherCat = model.actionCategories.filter(function(cat) {
+                 return cat.tId === existingAction.properties.category;
+               })[0];
+               alert('קיימת כבר מטלה כזו במיקום אחר: '+otherCat.label);
+             } else if (existingAction.properties.measurementUnit !== model.item.view.measurementUnit.tId) {
+               var otherMu = model.measurementUnits.filter(function(mu) {
+                 return mu.tId === existingAction.properties.measurementUnit;
+               })[0];
+               alert('קיימת כבר מטלה כזו עם יחידת מידה אחרת: '+otherMu.label);
+             } else { // if all matches - save its id in current prep
+               model.item.properties.defaultAction = existingAction.id;
+               // now check if action appears in components of prep and add if neseccary
+               var existingComp = actionDomain.compItems.filter(function(ci) {
+                 return ci.id === existingAction.id;
+               });
+               if (existingComp.length === 0) { // add component
+                 existingAction.view = {
+                   compQuantity: Number(model.item.properties.productionQuantity),
+                   category: allCategories.filter(function(cat) {
+                     return cat.tId === model.actionCategory.tId;
+                   })[0],
+                   measurementUnit: measurementUnits.filter(function(mes) {
+                     return mes.tId === model.item.view.measurementUnit.tId;
+                   })[0]
+                 };
+                 actionDomain.compItems.push(existingAction);
+               }
+               if (existingAction.properties.isDeleted) { // if matching action is deleted - undelete it
+                 existingAction.properties.isDeleted = false;
+                 api.saveObj(existingAction)
+                   .then(function(obj) {
+                   });
+               }
+               model.setChanged(true);
+             }
+           } else { // action does not exist - create it
+             var defaultAction = api.initCatalog();
+             defaultAction.properties.domain = 4;
+             defaultAction.properties.category = model.actionCategory.tId;
+             defaultAction.properties.productName = model.item.properties.productName;
+             defaultAction.properties.measurementUnit = model.item.view.measurementUnit.tId;
+             api.saveObj(defaultAction)
+               .then(function (obj) {
+                 model.item.properties.defaultAction = obj.id;
+                 obj.view = {
+                   compQuantity: Number(model.item.properties.productionQuantity),
+                   category: allCategories.filter(function(cat) {
+                     return cat.tId === model.actionCategory.tId;
+                   })[0],
+                   measurementUnit: measurementUnits.filter(function(mes) {
+                     return mes.tId === model.item.view.measurementUnit.tId;
+                   })[0]
+                 }
+                 actionDomain.compItems.push(obj);
+                 model.setChanged(true);
+               });
+           }
+       })
+
+     };
+
        // Exit List Tab
 
     model.addExitListItem = function () {
@@ -709,7 +781,7 @@ angular.module('myApp')
      if (model.currentDomain.id === 1) {
        model.item.properties.isInMenu = true;
      }
-     if (model.currentDomain.id === 2 || model.currentDomain.id === 4) {
+     if (model.currentDomain.id === 2) {
        model.item.properties.prepTiming = 0;
      }
      model.item.properties.exitList = [];

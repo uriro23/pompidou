@@ -418,8 +418,16 @@ angular.module('myApp')
     return query(catalogQuery);
   };
 
+    this.queryCatalogByProductName = function (domain,product) {
+      var catalogQuery = new Parse.Query(Catalog);
+      catalogQuery.equalTo('domain', domain);
+      catalogQuery.equalTo('productName', product);
+      return query(catalogQuery);
+    };
 
-   // BidTextType
+
+
+    // BidTextType
   // -----------
 
   var BidTextType = Parse.Object.extend("BidTextType");

@@ -37,9 +37,9 @@
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:6%"></th>
       <th ng-show="catalogListModel.currentDomain.id===2" style="width: 4%">כמות</th>
       <th ng-hide="catalogListModel.currentDomain.id===1" style="width: 4%">מידה</th>
-      <th ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4"
+      <th ng-show="catalogListModel.currentDomain.id===2"
           style="width: 4%">תזמון</th>
-      <th ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4"
+      <th ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===3"
           style="width: 4%">מלאי</th>
     </thead>
      <tbody>
@@ -71,10 +71,10 @@
         <td ng-show="catalogListModel.currentDomain.id===2">
           {{catalogItem.view.measurementUnit.label}}
         </td>
-        <td ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4">
+        <td ng-show="catalogListModel.currentDomain.id===2">
           {{catalogItem.view.prepTiming.label}}
         </td>
-        <td ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4">
+        <td ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===3">
           {{catalogItem.properties.isInStock ? 'כן' : ''}}
         </td>
       </tr>
