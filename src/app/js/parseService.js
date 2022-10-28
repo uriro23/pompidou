@@ -364,18 +364,6 @@ angular.module('myApp')
     };
 
 
-    // WorkOrder2Index
-    // ----------------
-
-    var WorkOrder2Index = Parse.Object.extend("WorkOrder2Index");
-
-    this.queryWorkOrder2Index = function () {
-      var q = new Parse.Query(WorkOrder2Index);
-      q.ascending('woId');
-      return query(q);
-    };
-
-
     // Catalog
   // -------
 
