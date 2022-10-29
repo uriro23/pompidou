@@ -41,6 +41,10 @@
        active="workOrderModel.isActiveTab[3]">
     <ng-include src="'app/partials/workOrder/shoppingList.html'"></ng-include>
   </tab>
+  <tab heading="{{workOrderModel.domains[4].forWorkItem}}"
+       active="workOrderModel.isActiveTab[4]">
+    <ng-include src="'app/partials/workOrder/actionList.html'"></ng-include>
+  </tab>
   <tab heading="{{workOrderModel.domains[2].forWorkItem}}"
        active="workOrderModel.isActiveTab[2]">
     <ng-include src="'app/partials/workOrder/preparationList.html'"></ng-include>

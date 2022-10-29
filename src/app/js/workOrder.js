@@ -154,7 +154,6 @@ angular.module('myApp')
           })[0];
           if (inCatObj) {
             var inCatItem = inCatObj.properties;
-            //for (var j = 0; j < inCatItem.components.length; j++) {
             inCatItem.components.forEach(function(component) {
               if (component.domain === targetDomain) {
                 var temp = that.workOrder.filter(function (workItem, ind) {
@@ -402,7 +401,7 @@ angular.module('myApp')
             that.createSmallOrderView();
           });
       }
- //     for (var dd = 1; dd < 4; dd++) {                     // set all further domains as invalid
+ //     for (var dd = 1; dd < 5; dd++) {                     // set all further domains as invalid
  //       this.woIndex.properties.domainStatus[dd] = false;
  //     }
  //     api.saveObj(this.woIndex);
@@ -437,7 +436,7 @@ angular.module('myApp')
               if (!that.woIndex.properties.isQuery) {
                 that.createOrderView();
               }
-              for (var dd = 0; dd < 4; dd++) {                     // all domains - invalid
+              for (var dd = 0; dd < 5; dd++) {                     // all domains - invalid
                 that.woIndex.properties.domainStatus[dd] = false;
               }
               api.saveObj(that.woIndex);
@@ -465,7 +464,7 @@ angular.module('myApp')
       // split wo by domains and categories
       var that = this;
       this.hierarchicalWorkOrder = [];
-      for (var d = 1; d < 4; d++) {
+      for (var d = 1; d < 5; d++) {
         this.hierarchicalWorkOrder[d] = {
           categories: [],
           isShowAll: true
@@ -495,7 +494,7 @@ angular.module('myApp')
       });
 
       // sort categories of each domain and items within category
-      for (d = 1; d < 4; d++) {
+      for (d = 1; d < 5; d++) {
         this.hierarchicalWorkOrder[d].categories.sort(function (a, b) {
           return a.category.order - b.category.order;
         });
@@ -549,8 +548,10 @@ angular.module('myApp')
         } else if (targetDomain === 2) {
           that.createComponents(2);
           that.createMenuItemView();
-        } else {
+        } else if (targetDomain === 3) {
           that.createComponents(3);
+        } else {
+          that.createComponents(4);
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {
@@ -558,13 +559,15 @@ angular.module('myApp')
               .then(function (wo) {
                 that.workOrder = wo;
                 that.splitWorkOrder();
-               for (var d = 0; d < 4; d++) {
+               for (var d = 0; d < 5; d++) {
                   that.isActiveTab[d] = false;
                 }
                 that.isActiveTab[targetDomain] = true;
                 that.woIndex.properties.domainStatus[targetDomain] = true; // the domain just created is valid
-                for (var dd = targetDomain + 1; dd < 4; dd++) {                     // all further domains - invalid
-                  that.woIndex.properties.domainStatus[dd] = false;
+                if (targetDomain < 3) {
+                  for (var dd = targetDomain + 1; dd < 5; dd++) {                     // all further domains - invalid
+                    that.woIndex.properties.domainStatus[dd] = false;
+                  }
                 }
                 api.saveObj(that.woIndex);
               });
@@ -579,9 +582,11 @@ angular.module('myApp')
     this.setQuantity = function (woItem, domain) {
       this.saveWI (woItem)
         .then(function () {
-        for (var dd = domain + 1; dd < 4; dd++) {                     // set all further domains as invalid
-          that.woIndex.properties.domainStatus[dd] = false;
-        }
+          if (domain < 3) {
+            for (var dd = domain + 1; dd < 5; dd++) {                     // set all further domains as invalid
+              that.woIndex.properties.domainStatus[dd] = false;
+            }
+          }
         api.saveObj(that.woIndex);
       });
     };
@@ -601,8 +606,10 @@ angular.module('myApp')
           return wo.id !== obj.id;
         });
         that.hierarchicalWorkOrder[dom].categories[cat].list.splice(item, 1);
-        for (var dd = dom + 1; dd < 4; dd++) {                     // set all further domains as invalid
-          that.woIndex.properties.domainStatus[dd] = false;
+        if (dom < 3) {
+          for (var dd = dom + 1; dd < 5; dd++) {                     // set all further domains as invalid
+            that.woIndex.properties.domainStatus[dd] = false;
+          }
         }
         api.saveObj(that.woIndex);
       });

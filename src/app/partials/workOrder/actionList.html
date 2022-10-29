@@ -1,0 +1,67 @@
+<table style="width:60%">
+  <tr>
+    <td style="width:20%" ng-hide="workOrderModel.isPrint">
+      <span>&nbsp;הצג</span>
+      <input type="checkbox"
+             ng-model="workOrderModel.hierarchicalWorkOrder[4].isShowAll"
+             ng-change="workOrderModel.setShowAll(4)">
+    </td>
+    <td style="width:40%;font-size: large" ng-hide="workOrderModel.isPrint">
+      {{workOrderModel.domains[4].forWorkItem}}
+      <span ng-hide="workOrderModel.woIndex.properties.domainStatus[4]">
+        --- לא מעודכן ---
+      </span>
+    </td>
+    <td style="width:40%;font-size: large" ng-show="workOrderModel.isPrint">
+      <span>רשימת קניות</span>
+    </td>
+    <td style="width:20%">
+      <span>להדפסה</span>
+      <input type="checkbox" ng-model="workOrderModel.isPrint">
+    </td>
+  </tr>
+</table>
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[4].categories track by cat.category.tId"
+     ng-hide="workOrderModel.isPrint">
+  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
+  <label>{{cat.category.label}}</label>
+  <table ng-show="cat.isShow" class="table table-hover" style="width:30%">
+    <tbody>
+    <tr  ng-repeat="woItem in cat.list track by woItem.id">
+      <td style="width: 80%">{{woItem.properties.productName}}</td>
+      <td>
+        {{woItem.properties.quantity | number:2}}
+      </td>
+      <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
+      <td>
+        <button ng-click="workOrderModel.backInfo(woItem)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[4]"
+                class="btn btn-default btn-sm">
+          פרטים
+        </button>
+      </td>
+      <td>
+        <button ng-click="workOrderModel.delItem(4,$parent.$index,$index)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[4]"
+                class="btn btn-default btn-sm">
+          מחק
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div style="margin-right: 2%;margin-bottom: 2cm;margin-top: 1cm">
+  <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[4].categories track by cat.category.tId"
+       ng-show="workOrderModel.isPrint">
+    <label ng-show="cat.isShow" style="font-size: x-large">{{cat.category.label}}</label>
+    <div ng-show="cat.isShow" style="column-count: 2; width:90%">
+      <div ng-repeat="woItem in cat.list track by woItem.id" style="font-size: large">
+        <span style="position: relative;right:0%">{{woItem.properties.quantity | number:2}}</span>
+        <span style="position: relative;right:4%">{{woItem.properties.measurementUnit.label}}</span>
+        <span style="position: relative;right:15%">{{woItem.properties.productName}}</span>
+      </div>
+    </div>
+    <p></p>
+  </div>
+</div>
