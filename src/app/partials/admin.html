@@ -181,19 +181,33 @@
           </div>
           </div>
           <div ng-repeat="prepMaterial in prep.materials track by prepMaterial.id" style="margin-right: 3%">
-            <div style="height: 0.6cm ; vertical-align: middle">
-            <div style="cursor: pointer;width: 37.5%; display: inline-block"
-                 ng-click="adminModel.selectCatItem(prepMaterial.id)">
-            <span>חומר:</span>
-            <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
+            <div ng-show="prepMaterial.properties.domain===3" style="color: blue; height: 0.6cm ; vertical-align: middle">
+              <div style="cursor: pointer;width: 37.5%; display: inline-block"
+                   ng-click="adminModel.selectCatItem(prepMaterial.id)">
+                <span>חומר:</span>
+                <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
               {{prepMaterial.properties.productName}}
             </span>
+              </div>
+              <div style="width: 18.9%;display: inline-block">
+                <span>כמות בהכנה:</span>
+                <span>{{prepMaterial.quantity}}</span>
+                <span>{{prepMaterial.measurementUnit.label}}</span>
+              </div>
             </div>
-            <div style="width: 18.9%;display: inline-block">
-              <span>כמות בהכנה:</span>
-              <span>{{prepMaterial.quantity}}</span>
-              <span>{{prepMaterial.measurementUnit.label}}</span>
-            </div>
+            <div ng-show="prepMaterial.properties.domain===4" style="color: green; height: 0.6cm ; vertical-align: middle">
+              <div style="cursor: pointer;width: 37.5%; display: inline-block"
+                   ng-click="adminModel.selectCatItem(prepMaterial.id)">
+                <span>מטלה:</span>
+                <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
+              {{prepMaterial.properties.productName}}
+            </span>
+              </div>
+              <div style="width: 18.9%;display: inline-block">
+                <span>כמות בהכנה:</span>
+                <span>{{prepMaterial.quantity}}</span>
+                <span>{{prepMaterial.measurementUnit.label}}</span>
+              </div>
             </div>
           </div>
         </div>

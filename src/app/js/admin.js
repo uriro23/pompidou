@@ -372,7 +372,7 @@ angular.module('myApp')
             });
             return comps.length && !cat.properties.isDeleted;
           }).sort(function(a,b) {
-            if (a.properties.productDescription > b.properties.productDescription) {
+            if (a.properties.productName > b.properties.productName) {
               return 1;
             } else {
               return -1;
