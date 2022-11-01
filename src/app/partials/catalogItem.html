@@ -442,21 +442,10 @@
             <option value=""></option>
           </select>
       </tr>
-       <tr ng-show="catalogItemModel.currentDomain.id===2">
-         <td><label>תזמון</label></td>
-         <td>
-           <select ng-model="catalogItemModel.item.view.prepTiming"
-                   ng-disabled="catalogItemModel.item.properties.isInStock"
-                   ng-change="catalogItemModel.setChanged(true)"
-                   ng-options="prepTiming.label for prepTiming in catalogItemModel.prepTimings">
-           </select>
-         </td>
-       </tr>
        <tr ng-show="catalogItemModel.currentDomain.id===2 || catalogItemModel.currentDomain.id===3">
          <td><label>האם מלאי?</label></td>
          <td>
            <input type="checkbox" ng-model="catalogItemModel.item.properties.isInStock"
-                  ng-disabled="catalogItemModel.item.view.prepTiming.id === 1"
                   ng-change="catalogItemModel.setChanged(true)">
          </td>
        </tr>

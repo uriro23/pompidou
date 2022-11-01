@@ -1,5 +1,5 @@
 <h4>
-  אירועים
+  אירועים שנבחרו
 </h4>
 <table class="table table-hover" style="width:70%">
   <thead>
@@ -12,6 +12,7 @@
   <th>    תפריט  </th>
   <th>    סטטוס  </th>
   <th ng-show="workOrderModel.isOrderNumbers">זיהוי</th>
+  <th>טווח</th>
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.woOrders track by woItem.id"
@@ -32,6 +33,11 @@
       {{woItem.properties.orderStatus.name}}
     </td>
     <td ng-show="workOrderModel.isOrderNumbers">{{woItem.properties.color.tId}}</td>
+    <td>
+      {{woItem.properties.prepScope==='all'?'הכל':
+        woItem.properties.prepScope==='prep'?'הכנות':
+        woItem.properties.prepScope==='service'?'סרוויס':''}}
+    </td>
   </tr>
   </tbody>
 </table>

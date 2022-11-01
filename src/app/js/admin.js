@@ -25,7 +25,6 @@ angular.module('myApp')
   this.categories = categories;
   this.sensitivities = sensitivities;
   this.measurementUnits = measurementUnits;
-  this.prepTimings = lov.prepTimings;
 
 
     // vat
@@ -356,6 +355,12 @@ angular.module('myApp')
       api.queryCatalog()
         .then(function(cat) {
           that.catalog = cat;
+          api.queryCategories()
+            .then(function(allCategories) {
+              that.allCategories = allCategories.map(function(cat) {
+                return cat.properties;
+              });
+            });
           that.isCatalogLoading = false;
         });
     };
@@ -392,6 +397,9 @@ angular.module('myApp')
               var compCatalog = angular.copy(that.catalog.filter(function(cat) {
                 return cat.id === component.id;
               })[0]);
+              compCatalog.category = that.allCategories.filter(function(cat) {
+                return cat.tId === compCatalog.properties.category;
+              })[0];
               compCatalog.quantity = component.quantity;
               compCatalog.measurementUnit = measurementUnits.filter(function(mu) {
                 return mu.tId === compCatalog.properties.measurementUnit;
@@ -402,15 +410,51 @@ angular.module('myApp')
                   var materialCatalog = angular.copy(that.catalog.filter(function(cat) {
                     return cat.id === prepMaterial.id;
                   })[0]);
+                  materialCatalog.category = that.allCategories.filter(function(cat) {
+                    return cat.tId === materialCatalog.properties.category;
+                  })[0];
                   materialCatalog.quantity = prepMaterial.quantity;
                   materialCatalog.measurementUnit = measurementUnits.filter(function(mu) {
                     return mu.tId === materialCatalog.properties.measurementUnit;
                   })[0];
                   compCatalog.materials.push(materialCatalog);
                 });
+                compCatalog.materials.sort(function(a,b) {
+                  if (a.category.order > b.category.order) {
+                    return 1;
+                  } else if (a.category.order < b.category.order) {
+                    return -1;
+                  } else if (a.properties.productName > b.properties.productName) {
+                    return 1;
+                  } else {
+                    return -1;
+                  }
+                })
                 menuItem.preparations.push(compCatalog);
               } else {
                 menuItem.materials.push(compCatalog);
+              }
+            })
+            menuItem.preparations.sort(function(a,b) {
+              if (a.category.order > b.category.order) {
+                return 1;
+              } else if (a.category.order < b.category.order) {
+                return -1;
+              } else if (a.properties.productName > b.properties.productName) {
+                return 1;
+              } else {
+                return -1;
+              }
+            })
+            menuItem.materials.sort(function(a,b) {
+              if (a.category.order > b.category.order) {
+                return 1;
+              } else if (a.category.order < b.category.order) {
+                return -1;
+              } else if (a.properties.productName > b.properties.productName) {
+                return 1;
+              } else {
+                return -1;
               }
             })
           });
@@ -502,12 +546,7 @@ angular.module('myApp')
                 cat.packageMeasurementUnit = measurementUnits.filter(function(mu) {
                   return mu.tId === cat.properties.packageMeasurementUnit;
                 })[0];
-                if (typeof cat.properties.prepTiming === 'number') {
-                  cat.prepTimingObject = lov.prepTimings.filter(function (ti) {
-                    return ti.id === cat.properties.prepTiming;
-                  })[0];
-                }
-              });
+             });
               that.productNameItems = catalog;
               that.productNameCategoryItems = [];
               that.isProcessing = false;

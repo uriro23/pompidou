@@ -61,11 +61,6 @@ angular.module('myApp')
         cat.view.prodMeasurementUnit = that.measurementUnits.filter(function (mes) {
           return mes.tId === cat.properties.prodMeasurementUnit;
         }) [0];
-        if (typeof cat.properties.prepTiming === 'number') {
-          cat.view.prepTiming = lov.prepTimings.filter(function (ti) {
-            return ti.id === cat.properties.prepTiming;
-          }) [0];
-        }
         cat.isChanged = false;
       });
       this.filterText = '';

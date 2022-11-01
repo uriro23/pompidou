@@ -24,6 +24,9 @@
   <th>סטטוס  </th>
   <th ng-show="workOrderModel.isOrderNumbers">זיהוי</th>
   <th>    פק' עבודה  </th>
+  <th>הכל</th>
+  <th>הכנות</th>
+  <th>סרוויס</th>
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.orderView track by woItem.properties.order.id"
@@ -48,6 +51,24 @@
       <input type="checkbox"
              ng-model="woItem.isInWorkOrder"
              ng-change="workOrderModel.setOrderInWorkOrder($index)">
+    </td>
+    <td>
+      <input type="radio"
+             ng-model="woItem.properties.prepScope"
+             ng-change="workOrderModel.setPrepScope($index)"
+             value="all">
+    </td>
+    <td>
+      <input type="radio"
+             ng-model="woItem.properties.prepScope"
+             ng-change="workOrderModel.setPrepScope($index)"
+             value="prep">
+    </td>
+    <td>
+      <input type="radio"
+             ng-model="woItem.properties.prepScope"
+             ng-change="workOrderModel.setPrepScope($index)"
+             value="service">
     </td>
   </tr>
   </tbody>

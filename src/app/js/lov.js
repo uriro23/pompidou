@@ -350,17 +350,6 @@ angular.module('myApp')
       }
     ],
 
-    prepTimings: [
-      {
-        id: 0,
-        label: 'הכנות'
-      },
-      {
-        id: 1,
-        label: 'סרוויס'
-      }
-    ],
-
     descChangeActions: [
       {
         id: 0,

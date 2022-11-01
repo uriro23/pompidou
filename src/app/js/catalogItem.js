@@ -518,9 +518,6 @@ angular.module('myApp')
      if (model.item.view.specialType) {
        model.item.properties.specialType = model.item.view.specialType.id;
      }
-     if (model.item.view.prepTiming) {
-       model.item.properties.prepTiming = model.item.view.prepTiming.id;
-     }
      model.item.properties.muFactor = Number(model.item.properties.muFactor);
      model.item.properties.packageFactor = Number(model.item.properties.packageFactor);
      model.item.properties.priceQuantity = Number(model.item.properties.priceQuantity);
@@ -618,11 +615,6 @@ angular.module('myApp')
           return mu.isDefault;
         })[0];
         model.item.view.packageMeasurementUnit = measurementUnits[0];
-        if (typeof model.item.properties.prepTiming === 'number') {
-          model.item.view.prepTiming = model.prepTimings.filter(function (st) {
-            return st.id === model.item.properties.prepTiming;
-          }) [0];
-        }
         model.item.isCopyToShortDesc = true;
       } else {
         model.item.view.category = model.categories.filter(function (cat) {
@@ -645,11 +637,6 @@ angular.module('myApp')
         if (typeof model.item.properties.specialType === 'number') {
           model.item.view.specialType = lov.specialTypes.filter(function (st) {
             return st.id === model.item.properties.specialType;
-          }) [0];
-        }
-        if (typeof model.item.properties.prepTiming === 'number') {
-          model.item.view.prepTiming = model.prepTimings.filter(function (st) {
-            return st.id === model.item.properties.prepTiming;
           }) [0];
         }
         model.item.properties.exitList.forEach(function(ex) {
@@ -768,7 +755,6 @@ angular.module('myApp')
     model.measurementUnits = measurementUnits;
     model.sensitivities = sensitivities;
     model.specialTypes = lov.specialTypes;
-    model.prepTimings = lov.prepTimings;
     model.isNewItem = $state.current.name==='newCatalogItem';
    if (model.isNewItem) {
      $rootScope.title = 'קטלוג - פריט חדש';
@@ -783,9 +769,6 @@ angular.module('myApp')
      model.item.properties.productionQuantity = null;
      if (model.currentDomain.id === 1) {
        model.item.properties.isInMenu = true;
-     }
-     if (model.currentDomain.id === 2) {
-       model.item.properties.prepTiming = 0;
      }
      model.item.properties.exitList = [];
      model.item.properties.components = [];

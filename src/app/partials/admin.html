@@ -165,6 +165,8 @@
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(prep.id)">
           <span>הכנה:</span>
+            <span>{{prep.category.label}}</span>
+            <span>/</span>
           <span ng-class="prep.properties.isDeleted?'myCanceledEvent':'null'">
             {{prep.properties.productName}}
           </span>
@@ -184,7 +186,9 @@
             <div ng-show="prepMaterial.properties.domain===3" style="color: blue; height: 0.6cm ; vertical-align: middle">
               <div style="cursor: pointer;width: 37.5%; display: inline-block"
                    ng-click="adminModel.selectCatItem(prepMaterial.id)">
-                <span>חומר:</span>
+                <span>מצרך:</span>
+                <span>{{prepMaterial.category.label}}</span>
+                <span>/</span>
                 <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
               {{prepMaterial.properties.productName}}
             </span>
@@ -195,10 +199,12 @@
                 <span>{{prepMaterial.measurementUnit.label}}</span>
               </div>
             </div>
-            <div ng-show="prepMaterial.properties.domain===4" style="color: green; height: 0.6cm ; vertical-align: middle">
+            <div ng-show="prepMaterial.properties.domain===4" style="color: brown; height: 0.6cm ; vertical-align: middle">
               <div style="cursor: pointer;width: 37.5%; display: inline-block"
                    ng-click="adminModel.selectCatItem(prepMaterial.id)">
                 <span>מטלה:</span>
+                <span>{{prepMaterial.category.label}}</span>
+                <span>/</span>
                 <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
               {{prepMaterial.properties.productName}}
             </span>
@@ -215,9 +221,11 @@
           <div style="height: 0.6cm ; vertical-align: middle">
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(material.id)">
-          <span>חומר:</span>
+          <span>מצרך:</span>
           <span ng-class="material.properties.isDeleted?'myCanceledEvent':'null'">
-            {{material.properties.productName}}
+                 <span>{{material.category.label}}</span>
+                <span>/</span>
+           {{material.properties.productName}}
           </span>
           </div>
           <div style="width: 18.4%;display: inline-block">
@@ -281,7 +289,6 @@
              ng-show="adminModel.productNamesDomain.id===1">
            {{sensitivity.label}}
          </th>
-         <th ng-show="adminModel.productNamesDomain.id===2">תזמון</th>
          <th ng-show="adminModel.productNamesDomain.id>1">מלאי?</th>
          <th></th>
          </thead>
@@ -313,12 +320,7 @@
              <input type="checkbox" ng-model="potSens.isTrue"
                     ng-change="adminModel.productNameItemChanged(productNameItem)">
            </td>
-           <td ng-show="adminModel.productNamesDomain.id===2">
-             <select ng-model="productNameItem.prepTimingObject"
-                     ng-change="adminModel.productNameItemChanged(productNameItem)"
-                     ng-options="prepTiming.label for prepTiming in adminModel.prepTimings"></select>
-           </td>
-           <td ng-show="adminModel.productNamesDomain.id>1">
+         <td ng-show="adminModel.productNamesDomain.id>1">
              <input type="checkbox" ng-model="productNameItem.properties.isInStock"
                     ng-change="adminModel.productNameItemChanged(productNameItem)">
            </td>

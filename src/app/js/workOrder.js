@@ -54,88 +54,90 @@ angular.module('myApp')
       var workItemInd;
       var that = this;
       this.workOrder.forEach(function(inWorkOrderItem) {
-        var inWorkItem = inWorkOrderItem.properties;
-        if (inWorkItem.domain === 0) {
-          var items = inWorkItem.order.quotes[inWorkItem.order.activeQuote].items;
+        if (inWorkOrderItem.properties.domain === 0) {
+          var items =
+            inWorkOrderItem.properties.order.quotes[inWorkOrderItem.properties.order.activeQuote].items;
           items.forEach(function(item) {
-            if (item.isDescChanged && item.isCosmeticChange) {  // if only cosmetic change, ignore it for work order
-              item.isDescChanged = false;
-            }
-            // change measurement unit to prod mu and adjust quantity
-            var catItem = catalog.filter(function(cat) {
-              return cat.id === item.catalogId;
-            })[0].properties;
-            if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
-              item.measurementUnit = measurementUnits.filter(function(mu) {
-                return mu.tId === catItem.prodMeasurementUnit;
-              })[0];
-              item.quantity = item.quantity * catItem.muFactor;
-            }
-            workItemInd = undefined;
-            that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
-              if (workItem.properties.domain === 1 && // unless their description is changed
-                !item.isDescChanged &&  !workItem.properties.isDescChanged &&
-                workItem.properties.catalogId === item.catalogId) {
-                workItemInd = ind;
+            if (item.category.type < 3) {  // exclude non food items
+              if (item.isDescChanged && item.isCosmeticChange) {  // if only cosmetic change, ignore it for work order
+                item.isDescChanged = false;
               }
-            });
-            if (workItemInd) {  // item already in list, just add quantity
-              workItem = that.workOrder[workItemInd];
-              workItem.properties.quantity += item.quantity;
-              if (inWorkOrderItem.properties.order.orderStatus===2) {
-                workItem.properties.notFinalQuantity += item.quantity;
+              // change measurement unit to prod mu and adjust quantity
+              var catItem = catalog.filter(function (cat) {
+                return cat.id === item.catalogId;
+              })[0].properties;
+              if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
+                item.measurementUnit = measurementUnits.filter(function (mu) {
+                  return mu.tId === catItem.prodMeasurementUnit;
+                })[0];
+                item.quantity = item.quantity * catItem.muFactor;
               }
-              workItem.properties.originalQuantity = workItem.properties.quantity;
-              workItem.properties.backTrace.push({
-                id: inWorkOrderItem.id,
-                domain: 0,
-                quantity: item.quantity
-              });
-              that.woOrders.forEach(function(o,i) {
-                if (o.id === inWorkOrderItem.id) {
-                  orderInd = i;
+              workItemInd = undefined;
+              that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
+                if (workItem.properties.domain === 1 && // unless their description is changed
+                  !item.isDescChanged && !workItem.properties.isDescChanged &&
+                  workItem.properties.catalogId === item.catalogId) {
+                  workItemInd = ind;
                 }
               });
-              workItem.properties.orderQuant[orderInd].quantity += item.quantity;
-               } else { // create new item
-              workItem = api.initWorkOrder();
-              workItem.properties.woId = woId;
-              workItem.properties.catalogId = item.catalogId;
-              workItem.properties.productName = item.productName;
-              workItem.properties.isDescChanged = item.isDescChanged;
-              if (item.isDescChanged) {
-                workItem.properties.productDescription = item.productDescription;
-              }
-              workItem.properties.quantity = workItem.properties.originalQuantity = item.quantity;
-              if (inWorkOrderItem.properties.order.orderStatus===2) {
-                workItem.properties.notFinalQuantity = item.quantity;
-              }
-              workItem.properties.category = item.category;
-              workItem.properties.domain = 1;
-              workItem.properties.measurementUnit = item.measurementUnit;
-              workItem.properties.backTrace = [{
-                id: inWorkOrderItem.id,
-                domain: 0,
-                quantity: item.quantity
-              }];
-              workItem.properties.orderQuant = []; // create array of order quantities for detailed menu item view
-              for (var i=0;i<that.woOrders.length;i++) {  // initialize to all zero quantity
-                workItem.properties.orderQuant[i] = {
-                  id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
-                  quantity: 0,
-                  status: that.woOrders[i].properties.order.orderStatus
-                };
-              }
-              that.woOrders.forEach(function(o,i) {
-                if (o.id === inWorkOrderItem.id) {
-                  orderInd = i;
+              if (workItemInd) {  // item already in list, just add quantity
+                workItem = that.workOrder[workItemInd];
+                workItem.properties.quantity += item.quantity;
+                if (inWorkOrderItem.properties.order.orderStatus === 2) {
+                  workItem.properties.notFinalQuantity += item.quantity;
                 }
-              });
-              workItem.properties.orderQuant[orderInd].quantity = item.quantity;
-              if (item.isDescChanged) {
-                workItem.properties.orderQuant[orderInd].productDescription = item.productDescription;
+                workItem.properties.originalQuantity = workItem.properties.quantity;
+                workItem.properties.backTrace.push({
+                  id: inWorkOrderItem.id,
+                  domain: 0,
+                  quantity: item.quantity
+                });
+                that.woOrders.forEach(function (o, i) {
+                  if (o.id === inWorkOrderItem.id) {
+                    orderInd = i;
+                  }
+                });
+                workItem.properties.orderQuant[orderInd].quantity += item.quantity;
+              } else { // create new item
+                workItem = api.initWorkOrder();
+                workItem.properties.woId = woId;
+                workItem.properties.catalogId = item.catalogId;
+                workItem.properties.productName = item.productName;
+                workItem.properties.isDescChanged = item.isDescChanged;
+                if (item.isDescChanged) {
+                  workItem.properties.productDescription = item.productDescription;
+                }
+                workItem.properties.quantity = workItem.properties.originalQuantity = item.quantity;
+                if (inWorkOrderItem.properties.order.orderStatus === 2) {
+                  workItem.properties.notFinalQuantity = item.quantity;
+                }
+                workItem.properties.category = item.category;
+                workItem.properties.domain = 1;
+                workItem.properties.measurementUnit = item.measurementUnit;
+                workItem.properties.backTrace = [{
+                  id: inWorkOrderItem.id,
+                  domain: 0,
+                  quantity: item.quantity
+                }];
+                workItem.properties.orderQuant = []; // create array of order quantities for detailed menu item view
+                for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
+                  workItem.properties.orderQuant[i] = {
+                    id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
+                    quantity: 0,
+                    status: that.woOrders[i].properties.order.orderStatus
+                  };
+                }
+                that.woOrders.forEach(function (o, i) {
+                  if (o.id === inWorkOrderItem.id) {
+                    orderInd = i;
+                  }
+                });
+                workItem.properties.orderQuant[orderInd].quantity = item.quantity;
+                if (item.isDescChanged) {
+                  workItem.properties.orderQuant[orderInd].productDescription = item.productDescription;
+                }
+                that.workOrder.push(workItem);
               }
-              that.workOrder.push(workItem);
             }
           });
         }
@@ -269,6 +271,7 @@ angular.module('myApp')
             viewItem.properties.color = colors.filter(function(color) {  // copy order's color to wo
               return color.tId === order.properties.color;
             })[0];
+            viewItem.properties.prepScope = 'all';
             viewItem.isInWorkOrder = false;
             that.orderView.push(viewItem);
             }
@@ -405,6 +408,10 @@ angular.module('myApp')
  //       this.woIndex.properties.domainStatus[dd] = false;
  //     }
  //     api.saveObj(this.woIndex);
+    };
+
+    this.setPrepScope = function(ind) {
+      api.saveObj(this.orderView[ind]);
     };
 
    this.createNewWorkOrder = function (isAutoDetect) {
