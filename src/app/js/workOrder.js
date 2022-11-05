@@ -249,6 +249,68 @@ angular.module('myApp')
       });
     };
 
+    // for each preparation, create an array of orders in which menuItems containing this preparation appear.
+    // each entry contains an array of menuItems.
+    // this is an inverse of the prep menuItems array.
+    //
+    this.createPrepOrderView = function () {
+      var that = this;
+      this.workOrder.forEach(function (currentPrep) {
+        if (currentPrep.properties.domain === 2) {
+          currentPrep.properties.orders = [];
+          currentPrep.properties.backTrace.forEach(function (prepBackTrace) {
+            var originalMenuItem = that.workOrder.filter(function(mi) {
+              return mi.id === prepBackTrace.id;
+            })[0];
+            var viewMenuItemIndex;
+            var t = currentPrep.properties.menuItems.filter(function(mi,ind) {
+              if (mi.id === originalMenuItem.id) {
+                viewMenuItemIndex = ind;
+                return true;
+              } else {
+                return false;
+              }
+            })[0];
+            originalMenuItem.properties.backTrace.forEach(function(miBackTrace) {
+              var temp = currentPrep.properties.orders.filter(function(ord) {
+                return ord.id === miBackTrace.id;
+              });
+              var currentOrder;
+              if (temp.length===0) {  // first appearance of this order
+                var originalOrder = that.woOrders.filter(function(ord) {
+                  return ord.id === miBackTrace.id;
+                })[0];
+                var orderObj = {
+                  id: originalOrder.id,
+                  customer: originalOrder.properties.customer.firstName,
+                  day: that.dayName(originalOrder.properties.order.eventDate),
+                  totalQuantity: 0,
+                  menuItems: []
+                };
+                currentPrep.properties.orders.push(orderObj);
+                currentOrder = currentPrep.properties.orders[currentPrep.properties.orders.length-1];
+              } else {
+                currentOrder = temp[0];
+             }
+              var t2 = currentOrder.menuItems.filter(function(mi) {
+                return mi.seq === viewMenuItemIndex;
+              });
+              if (t2.length === 0) { // this will happen all the time unless menuItem appears twice in order
+                currentOrder.menuItems[viewMenuItemIndex] = {
+                  seq: viewMenuItemIndex,
+                  quantity: 0
+                };
+              }
+              currentOrder.menuItems[viewMenuItemIndex].quantity +=
+                miBackTrace.quantity * prepBackTrace.quantity / originalMenuItem.properties.quantity;
+            });
+          });
+          console.log(currentPrep.properties.productName);
+          console.log(currentPrep.properties.orders);
+        }
+      });
+    };
+
     this.createOrderView = function () {
       var that = this;
       this.orderView = [];
@@ -458,9 +520,12 @@ angular.module('myApp')
         return wo.properties.domain === domain;
       });
       this.isProcessing = true;
+      console.log ('saving '+woItemsToSave.length+' objects for domain '+ domain);
+      console.log(woItemsToSave);
       return api.saveObjects(woItemsToSave)
         .then(function () {
           that.isProcessing = false;
+          console.log('saved');
         }, function () {
           alert('workOrder multiple save failed');
           that.isProcessing = false;
@@ -555,6 +620,7 @@ angular.module('myApp')
         } else if (targetDomain === 2) {
           that.createComponents(2);
           that.createMenuItemView();
+          that.createPrepOrderView();
         } else if (targetDomain === 3) {
           that.createComponents(3);
         } else {
@@ -565,6 +631,10 @@ angular.module('myApp')
             api.queryWorkOrder(woId)    // requery work order to get ids for newly created items
               .then(function (wo) {
                 that.workOrder = wo;
+                var tt = that.workOrder.filter(function(ttt) {
+                  return ttt.properties.domain === targetDomain;
+                });
+                console.log('requeried '+tt.length+' items of '+targetDomain+' domain');
                 that.splitWorkOrder();
                for (var d = 0; d < 5; d++) {
                   that.isActiveTab[d] = false;
