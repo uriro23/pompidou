@@ -144,6 +144,7 @@ angular.module('myApp')
       });
    };
 
+    // create targetDomain records based on lower domain components
   this.createComponents = function (targetDomain) {
       var workItemInd;
       var workItem;
@@ -198,6 +199,7 @@ angular.module('myApp')
                       domain: inWorkItem.domain,
                       quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
                     }];
+                    workItem.properties.select = "delay";
                     that.workOrder.push(workItem);
                   } else {
                     alert('output catalog item ' + component.id + ' has been deleted');
@@ -283,32 +285,65 @@ angular.module('myApp')
                 var orderObj = {
                   id: originalOrder.id,
                   customer: originalOrder.properties.customer.firstName,
+                  date: originalOrder.properties.order.eventDate,
                   day: that.dayName(originalOrder.properties.order.eventDate),
                   totalQuantity: 0,
-                  menuItems: []
+                  menuItems: [],
+                  select: 'delay'
                 };
+                currentPrep.properties.menuItems.forEach(function(mu,ind) {
+                  orderObj.menuItems[ind] = {
+                    seq: ind,
+                    quantity: 0
+                  }
+                });
                 currentPrep.properties.orders.push(orderObj);
                 currentOrder = currentPrep.properties.orders[currentPrep.properties.orders.length-1];
               } else {
                 currentOrder = temp[0];
              }
-              var t2 = currentOrder.menuItems.filter(function(mi) {
-                return mi.seq === viewMenuItemIndex;
-              });
-              if (t2.length === 0) { // this will happen all the time unless menuItem appears twice in order
-                currentOrder.menuItems[viewMenuItemIndex] = {
-                  seq: viewMenuItemIndex,
-                  quantity: 0
-                };
-              }
               currentOrder.menuItems[viewMenuItemIndex].quantity +=
+                miBackTrace.quantity * prepBackTrace.quantity / originalMenuItem.properties.quantity;
+              currentOrder.totalQuantity +=
                 miBackTrace.quantity * prepBackTrace.quantity / originalMenuItem.properties.quantity;
             });
           });
-          console.log(currentPrep.properties.productName);
-          console.log(currentPrep.properties.orders);
-        }
+          currentPrep.properties.orders.sort(function(a,b) {
+            return a.date - b.date;
+          });
+         }
       });
+    };
+
+    // propogate selection to all orders in prep item and save item
+    this.setPrepSelect = function (woItem) {
+      if (woItem.properties.domain === 2) {  // should always be
+        woItem.properties.orders.forEach(function(ord) {
+          ord.select = woItem.properties.select;
+        });
+        api.saveObj(woItem);
+      }
+    };
+
+    // if select values of all orders in prep are identical, set select value of prep accordingly
+    // else set prep's select to "mix" which disables its control
+    this.setPrepOrderSelect = function (woItem) {
+      if (woItem.properties.domain === 2) {  // should always be
+        var s = 'none';
+        woItem.properties.orders.forEach(function(ord) {
+          if (s === 'none') {
+            s = ord.select;
+          } else if (s !== ord.select) {
+            s = 'mix';
+          }
+        });
+        woItem.properties.select = s;
+        api.saveObj(woItem);
+      }
+    };
+
+    this.saveWoItem = function (woItem) {
+      api.saveObj(woItem);
     };
 
     this.createOrderView = function () {
@@ -476,6 +511,17 @@ angular.module('myApp')
       api.saveObj(this.orderView[ind]);
     };
 
+    this.setStockFilter = function() {
+      var that = this;
+      this.workOrder.forEach(function(woItem) {
+        if (that.isIncludeStock) {
+          woItem.isShow = true;
+        } else {
+          woItem.isShow = !woItem.properties.isInStock;
+        }
+      });
+    };
+
    this.createNewWorkOrder = function (isAutoDetect) {
       var that = this;
       var ackDelModal = $modal.open({
@@ -520,20 +566,17 @@ angular.module('myApp')
         return wo.properties.domain === domain;
       });
       this.isProcessing = true;
-      console.log ('saving '+woItemsToSave.length+' objects for domain '+ domain);
-      console.log(woItemsToSave);
-      return api.saveObjects(woItemsToSave)
+       return api.saveObjects(woItemsToSave)
         .then(function () {
           that.isProcessing = false;
-          console.log('saved');
         }, function () {
           alert('workOrder multiple save failed');
           that.isProcessing = false;
         });
     };
 
+    // split wo by domains and categories
     this.splitWorkOrder = function () {
-      // split wo by domains and categories
       var that = this;
       this.hierarchicalWorkOrder = [];
       for (var d = 1; d < 5; d++) {
@@ -544,7 +587,10 @@ angular.module('myApp')
       }
       this.workOrder.forEach(function(woi) {
         var wo = woi.properties;
-        woi.isInStock = wo.isInStock; // for ng-repeat filter
+        woi.isShow = !wo.isInStock;
+        if (wo.select === 'mix') { // force display order details for preps whose timing selection is mixed
+          woi.isShowDetails = true;
+        }
         if (wo.domain > 0) {
           var catInd;
           var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
@@ -634,7 +680,6 @@ angular.module('myApp')
                 var tt = that.workOrder.filter(function(ttt) {
                   return ttt.properties.domain === targetDomain;
                 });
-                console.log('requeried '+tt.length+' items of '+targetDomain+' domain');
                 that.splitWorkOrder();
                for (var d = 0; d < 5; d++) {
                   that.isActiveTab[d] = false;

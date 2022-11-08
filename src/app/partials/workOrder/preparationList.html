@@ -10,22 +10,14 @@
   <span style="font-size: large">{{workOrderModel.domains[2].forWorkItem}}</span>
     </td>
       <td style="width: 15%">
-        <button class="btn btn-default"
-                ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
-        <a href="#/todaysPrep/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
-           ng-disabled="workOrderModel.isProcessing"
-           ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
-          הכנות יומיות
-          </a>
-        </button>
       <span ng-hide="workOrderModel.woIndex.properties.domainStatus[2]">
         --- לא מעודכן ---
       </span>
       </td>
        <td style="width: 20%">
         <span>כולל מלאי?</span>
-        <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
+        <input type="checkbox" ng-model="workOrderModel.isIncludeStock"
+               ng-change="workOrderModel.setStockFilter()">
       </td>
       <td  style="width: 10%">
         <button class="btn btn-default"
@@ -49,10 +41,10 @@
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
-  <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
+  <table ng-show="cat.isShow" class="table table-hover" style="width:100%">
     <tbody>
-    <tr ng-hide="workOrderModel.isIncludeStock"
-        ng-repeat="woItem in cat.list | filter : {isInStock:false} track by woItem.id">
+    <tr ng-class="woItem.properties.isInStock?'bg-warning':'null'"
+        ng-repeat="woItem in cat.list | filter : {isShow:true} track by woItem.id">
       <td style="width: 20%">{{woItem.properties.productName}}</td>
       <td style="width: 5%">
         {{woItem.properties.quantity | number:2}}
@@ -60,106 +52,74 @@
       <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
       <td style="widt:10%">
         <span>פירוט</span>
-        <input type="checkbox" ng-model="woItem.isShowDetails">
+        <input type="checkbox" ng-model="woItem.isShowDetails"
+               ng-change="workOrderModel.saveWoItem(woItem)"
+               ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td style="width: 13%"
-          ng-hide= "!workOrderModel.woIndex.properties.domainStatus[2]">
-        <span>להיום: </span>
-        <input type="checkbox" ng-model="woItem.properties.isForToday"
-               ng-change="workOrderModel.setIsForToday(woItem)">
+      <td ng-hide="woItem.isShowDetails" style="width: 10%">
+        <span>עוד לא</span>
+        <input type="radio" ng-model="woItem.properties.select" value="delay"
+               ng-change="workOrderModel.setPrepSelect(woItem)"
+               ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td style="width: 10%">
-        <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
-                class="btn btn-default btn-sm">
-          מחק
-        </button>
+      <td ng-hide="woItem.isShowDetails" style="width: 10%">
+        <span>להיום</span>
+        <input type="radio" ng-model="woItem.properties.select" value="today"
+               ng-change="workOrderModel.setPrepSelect(woItem)"
+               ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td style="width: 70%" ng-show="woItem.isShowDetails">
-        <!--
-        <table class="table table-hover" border="1" style="width: 100%">
+      <td ng-hide="woItem.isShowDetails" style="width: 10%">
+        <span>בוצע</span>
+        <input type="radio" ng-model="woItem.properties.select" value="done"
+               ng-change="workOrderModel.setPrepSelect(woItem)"
+               ng-disabled="woItem.properties.select==='mix'">
+      </td>
+      <td ng-hide="woItem.isShowDetails" style="width: 28%"></td>
+      <td colspan="4" style="width: 58%" ng-show="woItem.isShowDetails">
+         <table class="table table-hover" border="1" style="width:100%">
           <thead>
-          <th style="width: 35%">מנה</th>
-          <th style="width: 10%">כמות</th>
-          <th ng-repeat="order in workOrderModel.woOrders track by order.id">
-            <span>{{order.properties.customer.firstName}}</span>
-            <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
-          </th>
-          </thead>
-          <tr ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
-            <td>{{menuItem.productName}}</td>
-            <td>{{menuItem.quantity | number:2}}</td>
-            <td ng-repeat="order in menuItem.orders track by order.seq">
-              <span ng-show="order.quantity">{{order.quantity | number:2}}</span>
-            </td>
-          </tr>
-        </table>
-        -->
-        <table class="table table-hover" border="1" style="width:100%">
-          <thead>
-          <th colspan="2">מנות ואירועים</th>
-          </thead>
-          <thead>
-          <th style="width: 60%">לקוח</th>
-          <th style="width: 20%">יום</th>
+          <th style="width: 15%">לקוח</th>
+          <th style="width: 10%">יום</th>
           <th ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
             <span>{{menuItem.productName}}</span>
-            <span>{{menuItem.quantity | number : 2}}</span>
           </th>
-          <th style="width: 20%">להיום</th>
+          <th style="width: 10%">סה"כ</th>
+          <th style="width: 10%">עוד לא</th>
+          <th style="width: 10%">להיום</th>
+          <th style="width: 10%">בוצע</th>
           </thead>
           <tbody>
           <tr ng-repeat="order in woItem.properties.orders track by order.id">
             <td>{{order.customer}}</td>
             <td>{{order.day}}</td>
             <td ng-repeat="menuItem in order.menuItems track by menuItem.seq">
-              {{menuItem.quantity}}
+              {{menuItem.quantity | number:2}}
+            </td>
+            <td>{{order.totalQuantity | number:2}}</td>
+            <td>
+              <input type="radio"
+                     ng-model="order.select" value="delay"
+                     ng-change="workOrderModel.setPrepOrderSelect(woItem)">
+            </td>
+            <td>
+              <input type="radio"
+                     ng-model="order.select" value="today"
+                     ng-change="workOrderModel.setPrepOrderSelect(woItem)">
+            </td>
+           <td>
+             <input type="radio"
+                    ng-model="order.select" value="done"
+                    ng-change="workOrderModel.setPrepOrderSelect(woItem)">
             </td>
           </tr>
           </tbody>
-        </table>
-      </td>
-    </tr>
-    <tr ng-show="workOrderModel.isIncludeStock"
-        ng-repeat="woItem in cat.list track by woItem.id">
-      <td style="width: 20%">{{woItem.properties.productName}}</td>
-      <td style="width: 5%">
-        {{woItem.properties.quantity | number:2}}
-      </td>
-      <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
-      <td style="widt:10%">
-        <span>פירוט</span>
-        <input type="checkbox" ng-model="woItem.isShowDetails">
-      </td>
-      <td style="width: 13%"
-          ng-hide= "!workOrderModel.woIndex.properties.domainStatus[2]">
-        <span>להיום: </span>
-        <input type="checkbox" ng-model="woItem.properties.isForToday"
-               ng-change="workOrderModel.setIsForToday(woItem)">
-      </td>
-      <td style="width: 10%">
-        <button ng-click="workOrderModel.delItem(2,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[2]"
-                class="btn btn-default btn-sm">
-          מחק
-        </button>
-      </td>
-      <td style="width: 70%" ng-show="woItem.isShowDetails">
-        <table class="table table-hover" border="1" style="width: 100%">
-          <thead>
-          <th style="width: 35%">מנה</th>
-          <th style="width: 10%">כמות</th>
-          <th ng-repeat="order in workOrderModel.woOrders track by order.id">
-            <span>{{order.properties.customer.firstName}}</span>
-            <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
-          </th>
-          </thead>
-          <tr ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
-            <td>{{menuItem.productName}}</td>
-            <td>{{menuItem.quantity | number:2}}</td>
-            <td ng-repeat="order in menuItem.orders track by order.seq">
-              <span ng-show="order.quantity">{{order.quantity | number:2}}</span>
-            </td>
+          <tr>
+          <td><label>סה"כ</label></td>
+          <td></td>
+          <td ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
+            <span>{{menuItem.quantity | number : 2}}</span>
+          </td>
+            <td>{{woItem.properties.quantity | number:2}}</td>
           </tr>
         </table>
       </td>
