@@ -90,7 +90,8 @@ angular.module('myApp')
                 workItem.properties.backTrace.push({
                   id: inWorkOrderItem.id,
                   domain: 0,
-                  quantity: item.quantity
+                  quantity: item.quantity,
+                  prepScope: inWorkOrderItem.properties.prepScope
                 });
                 that.woOrders.forEach(function (o, i) {
                   if (o.id === inWorkOrderItem.id) {
@@ -117,7 +118,8 @@ angular.module('myApp')
                 workItem.properties.backTrace = [{
                   id: inWorkOrderItem.id,
                   domain: 0,
-                  quantity: item.quantity
+                  quantity: item.quantity,
+                  prepScope: inWorkOrderItem.properties.prepScope
                 }];
                 workItem.properties.orderQuant = []; // create array of order quantities for detailed menu item view
                 for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
@@ -144,6 +146,18 @@ angular.module('myApp')
       });
    };
 
+    function calcQuantity (orders, isService) {
+      var quantity = 0;
+      orders.forEach(function(order) {
+        if (order.prepScope === 'all' ||
+          (isService && order.prepScope === 'service') ||
+          (!isService && order.prepScope === 'prep')) {
+          quantity += order.quantity;
+        }
+      });
+       return quantity;
+    }
+
     // create targetDomain records based on lower domain components
   this.createComponents = function (targetDomain) {
       var workItemInd;
@@ -152,28 +166,34 @@ angular.module('myApp')
       this.workOrder.forEach(function(inWorkOrder) {
         var inWorkItem = inWorkOrder.properties;
         if (inWorkItem.domain > 0) {  // skip orders
-          var inCatObj = catalog.filter(function (cat) {
+         var inCatObj = catalog.filter(function (cat) {
             return cat.id === inWorkItem.catalogId;
           })[0];
           if (inCatObj) {
             var inCatItem = inCatObj.properties;
             inCatItem.components.forEach(function(component) {
               if (component.domain === targetDomain) {
-                var temp = that.workOrder.filter(function (workItem, ind) {
-                  if (workItem.properties.catalogId === component.id) {
+                var temp = that.workOrder.filter(function (wi, ind) {
+                  if (wi.properties.catalogId === component.id) {
                     workItemInd = ind;
                     return true;
                   }
                 });
                 if (temp.length > 0) {  // item already exists, just add quantity
                   workItem = that.workOrder[workItemInd];
-                  workItem.properties.quantity += inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                    var menuItemActualQuantity = component.domain===2 ?
+                      calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
+                      : inWorkItem.quantity;
+                  workItem.properties.quantity +=
+                    menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.originalQuantity = workItem.properties.quantity;
-                  workItem.properties.backTrace.push({
-                    id: inWorkOrder.id,
-                    domain: inWorkItem.domain,
-                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
-                  });
+                  if (menuItemActualQuantity > 0) { // don't create bt if prep not in prepScope
+                    workItem.properties.backTrace.push({
+                      id: inWorkOrder.id,
+                      domain: inWorkItem.domain,
+                      quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
+                    });
+                  }
                 } else {
                   var outCatObj = catalog.filter(function (cat) {
                     return cat.id === component.id;
@@ -184,8 +204,6 @@ angular.module('myApp')
                     workItem.properties.woId = woId;
                     workItem.properties.catalogId = component.id;
                     workItem.properties.productName = outCatItem.productName;
-                    workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                    workItem.properties.originalQuantity = workItem.properties.quantity;
                     workItem.properties.category = allCategories.filter(function (cat) {
                       return cat.tId === outCatItem.category;
                     })[0];
@@ -194,13 +212,20 @@ angular.module('myApp')
                       return mes.tId === outCatItem.measurementUnit;
                     })[0];
                     workItem.properties.isInStock = outCatItem.isInStock;
+                    menuItemActualQuantity = component.domain===2 ?
+                      calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
+                      : inWorkItem.quantity;
+                    workItem.properties.quantity = menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
+                    workItem.properties.originalQuantity = workItem.properties.quantity;
                     workItem.properties.backTrace = [{
                       id: inWorkOrder.id,
                       domain: inWorkItem.domain,
-                      quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                      quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
                     }];
                     workItem.properties.select = "delay";
-                    that.workOrder.push(workItem);
+                    if (menuItemActualQuantity > 0) { // don't create item if not in prepScope
+                      that.workOrder.push(workItem);
+                    }
                   } else {
                     alert('output catalog item ' + component.id + ' has been deleted');
                   }
@@ -273,7 +298,16 @@ angular.module('myApp')
                 return false;
               }
             })[0];
-            originalMenuItem.properties.backTrace.forEach(function(miBackTrace) {
+            var menuItemCatalog = that.catalog.filter(function(cat) {
+              return cat.id === originalMenuItem.properties.catalogId;
+            })[0];
+            var prepCatalog = that.catalog.filter(function(cat) {
+              return cat.id === currentPrep.properties.catalogId;
+            })[0];
+            var prepComponent = menuItemCatalog.properties.components.filter(function(comp) {
+              return comp.id === prepCatalog.id;
+            })[0];
+             originalMenuItem.properties.backTrace.forEach(function(miBackTrace) {
               var temp = currentPrep.properties.orders.filter(function(ord) {
                 return ord.id === miBackTrace.id;
               });
@@ -302,12 +336,21 @@ angular.module('myApp')
               } else {
                 currentOrder = temp[0];
              }
+              var prepQuantity =
+                ((currentPrep.properties.category.type===11 &
+                    (miBackTrace.prepScope==='all' || miBackTrace.prepScope==='service')) ||
+                  (currentPrep.properties.category.type!==11 &
+                    (miBackTrace.prepScope==='all' || miBackTrace.prepScope==='prep') ) )
+                  ?  miBackTrace.quantity : 0;
               currentOrder.menuItems[viewMenuItemIndex].quantity +=
-                miBackTrace.quantity * prepBackTrace.quantity / originalMenuItem.properties.quantity;
+                prepQuantity * prepComponent.quantity / menuItemCatalog.properties.productionQuantity;
               currentOrder.totalQuantity +=
-                miBackTrace.quantity * prepBackTrace.quantity / originalMenuItem.properties.quantity;
+                prepQuantity * prepComponent.quantity / menuItemCatalog.properties.productionQuantity;
             });
           });
+          currentPrep.properties.orders = currentPrep.properties.orders.filter(function(ord) {
+            return ord.totalQuantity > 0;
+          })
           currentPrep.properties.orders.sort(function(a,b) {
             return a.date - b.date;
           });
@@ -491,12 +534,13 @@ angular.module('myApp')
             indToDelete = woInd;
           }
         });
+        var savedProperties = that.orderView[ind].properties;
         that.workOrder.splice(indToDelete, 1);
         api.deleteObj(that.orderView[ind])
-          .then(function (obj) {
+          .then(function () {
             // create new item with same content as deleted one so we can restore it in DB if user changes his mind
             var newItem = api.initWorkOrder();
-            newItem.properties = obj.properties;
+            newItem.properties = savedProperties;
             that.orderView[ind] = newItem;
             that.createSmallOrderView();
           });
