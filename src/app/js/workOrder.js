@@ -358,9 +358,23 @@ angular.module('myApp')
       });
     };
 
+    // propagate selection to all preps in domain
+    this.setGlobalSelect = function() {
+      var that = this;
+      this.workOrder.forEach(function(woItem) {
+        if (woItem.properties.domain === 2) {
+          woItem.properties.select = that.select;
+          that.setPrepSelect(woItem, false);
+        }
+      });
+    };
+
     // propogate selection to all orders in prep item and save item
-    this.setPrepSelect = function (woItem) {
+    this.setPrepSelect = function (woItem, isDirect) {
       if (woItem.properties.domain === 2) {  // should always be
+        if (isDirect) {
+          that.select = 'mix';
+        }
         woItem.properties.orders.forEach(function(ord) {
           ord.select = woItem.properties.select;
         });
@@ -372,6 +386,7 @@ angular.module('myApp')
     // else set prep's select to "mix" which disables its control
     this.setPrepOrderSelect = function (woItem) {
       if (woItem.properties.domain === 2) {  // should always be
+        that.select = 'mix';
         var s = 'none';
         woItem.properties.orders.forEach(function(ord) {
           if (s === 'none') {
@@ -691,6 +706,15 @@ angular.module('myApp')
           }
         });
       });
+    };
+
+    this.setGlobalDetail = function() {
+      var that = this;
+      this.workOrder.forEach(function(woi) {
+        if (woi.properties.select !== 'mix') {
+          woi.isShowDetails = that.isShowDetails;
+        }
+      })
     };
 
     this.createWorkOrderDomain = function (targetDomain) {

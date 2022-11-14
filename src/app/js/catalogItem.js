@@ -352,9 +352,15 @@ angular.module('myApp')
      var ids = model.item.properties.components.map(function(comp) {
        return comp.id;
      }).filter(function(id) {
-       return id !== config.unhandledItemComponent && id !== config.unhandledItemMaterial;
-
+       return id !== config.unhandledItemComponent &&
+              id !== config.unhandledItemMaterial &&
+              id !== config.unhandledPrepComponent;
      });
+     if (model.item.properties.domain === 2) {
+       console.log(model.item.properties.productName);
+       console.log(model.item.properties.components);
+       console.log(ids);
+     }
      api.queryCatalogByIds(ids)
        .then(function(res) {
          res.forEach(function(comp) {
@@ -546,6 +552,19 @@ angular.module('myApp')
          domain: 3,
          quantity: 1
        });
+     }
+     // if no actions were specified for prep insert dummy
+     if (model.currentDomain.id === 2) {
+       var temp = model.item.properties.components.filter(function(comp) {
+         return comp.domain === 4;
+       });
+       if (temp.length === 0) {
+         model.item.properties.components.push({
+           id: config.unhandledPrepComponent,
+           domain: 4,
+           quantity: 1
+         });
+       }
      }
 
      api.saveObj(model.item)

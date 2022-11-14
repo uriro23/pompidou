@@ -1,25 +1,46 @@
-  <table style="width: 60%">
+  <table class="table" style="width: 100%">
     <tr>
-      <td style="width:15%">
+      <td ng-hide="workOrderModel.woIndex.properties.domainStatus[2]">
+      <span>
+        --- לא מעודכן ---
+      </span>
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width:6%">
         <span>&nbsp;הצג</span>
         <input type="checkbox"
                ng-model="workOrderModel.hierarchicalWorkOrder[2].isShowAll"
                ng-change="workOrderModel.setShowAll(2)">
       </td>
-      <td style="width:20%">
+      <td style="width:17%">
   <span style="font-size: large">{{workOrderModel.domains[2].forWorkItem}}</span>
     </td>
-      <td style="width: 15%">
-      <span ng-hide="workOrderModel.woIndex.properties.domainStatus[2]">
-        --- לא מעודכן ---
-      </span>
-      </td>
-       <td style="width: 20%">
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 12%">
         <span>כולל מלאי?</span>
         <input type="checkbox" ng-model="workOrderModel.isIncludeStock"
                ng-change="workOrderModel.setStockFilter()">
       </td>
-      <td  style="width: 10%">
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
+        <span>פירוט</span>
+        <input type="checkbox"
+               ng-model="workOrderModel.isShowDetails"
+               ng-change="workOrderModel.setGlobalDetail()">
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
+        <span>עוד לא</span>
+        <input type="radio" ng-model="workOrderModel.select" value="delay"
+               ng-change="workOrderModel.setGlobalSelect()">
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
+        <span>להיום</span>
+        <input type="radio" ng-model="workOrderModel.select" value="today"
+               ng-change="workOrderModel.setGlobalSelect()">
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
+        <span>בוצע</span>
+        <input type="radio" ng-model="workOrderModel.select" value="done"
+               ng-change="workOrderModel.setGlobalSelect()">
+      </td>
+      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
                 ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
@@ -27,7 +48,7 @@
           {{'חשב '+workOrderModel.domains[4].forWorkItem}}
         </button>
       </td>
-      <td  style="width: 10%">
+      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
                 ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
@@ -35,8 +56,10 @@
           {{'חשב '+workOrderModel.domains[3].forWorkItem}}
         </button>
       </td>
+      <td style="width: 13%"></td>
     </tr>
   </table>
+  <hr>
 
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
@@ -59,19 +82,19 @@
       <td ng-hide="woItem.isShowDetails" style="width: 10%">
         <span>עוד לא</span>
         <input type="radio" ng-model="woItem.properties.select" value="delay"
-               ng-change="workOrderModel.setPrepSelect(woItem)"
+               ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
       <td ng-hide="woItem.isShowDetails" style="width: 10%">
         <span>להיום</span>
         <input type="radio" ng-model="woItem.properties.select" value="today"
-               ng-change="workOrderModel.setPrepSelect(woItem)"
+               ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
       <td ng-hide="woItem.isShowDetails" style="width: 10%">
         <span>בוצע</span>
         <input type="radio" ng-model="woItem.properties.select" value="done"
-               ng-change="workOrderModel.setPrepSelect(woItem)"
+               ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
       <td ng-hide="woItem.isShowDetails" style="width: 28%"></td>

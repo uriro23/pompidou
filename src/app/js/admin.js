@@ -1615,7 +1615,37 @@ angular.module('myApp')
 
         });
     };
-          */
+
+  this.unhandledPreps = function() {
+     console.log('starting');
+     api.queryCatalog(2,['domain','components'])
+       .then(function(items) {
+         var c = 0;
+         console.log('read '+items.length+' items');
+         items.forEach(function(item) {
+           var temp = item.properties.components.filter(function(comp) {
+             return comp.domain === 4;
+           });
+           if (temp.length === 0) {
+             c++;
+             item.properties.components.push({
+               id: config.properties.unhandledPrepComponent,
+               domain: 4,
+               quantity: 1
+             })
+           }
+         });
+         console.log(c+' preps modified');
+         console.log('updating');
+         api.saveObjects(items)
+           .then(function() {
+             console.log('done');
+           });
+
+       });
+   };
+     */
+
     // end conversions
 
   });
