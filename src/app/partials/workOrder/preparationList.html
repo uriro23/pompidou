@@ -16,8 +16,7 @@
     </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 12%">
         <span>כולל מלאי?</span>
-        <input type="checkbox" ng-model="workOrderModel.isIncludeStock"
-               ng-change="workOrderModel.setStockFilter()">
+        <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
         <span>פירוט</span>
@@ -26,19 +25,12 @@
                ng-change="workOrderModel.setGlobalDetail()">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-        <span>עוד לא</span>
-        <input type="radio" ng-model="workOrderModel.select" value="delay"
-               ng-change="workOrderModel.setGlobalSelect()">
+       </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
+        <span>רק להיום</span>
+        <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-        <span>להיום</span>
-        <input type="radio" ng-model="workOrderModel.select" value="today"
-               ng-change="workOrderModel.setGlobalSelect()">
-      </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-        <span>בוצע</span>
-        <input type="radio" ng-model="workOrderModel.select" value="done"
-               ng-change="workOrderModel.setGlobalSelect()">
       </td>
       <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
         <button class="btn btn-default"
@@ -58,6 +50,32 @@
       </td>
       <td style="width: 13%"></td>
     </tr>
+    <tr ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: left"><label>
+        קבע לכולם:
+      </label></td>
+      <td style="width: 10%">
+        <span>עוד לא</span>
+        <input type="radio" ng-model="workOrderModel.select" value="delay"
+               ng-change="workOrderModel.setGlobalSelect()">
+      </td>
+      <td style="width: 10%">
+        <span>להיום</span>
+        <input type="radio" ng-model="workOrderModel.select" value="today"
+               ng-change="workOrderModel.setGlobalSelect()">
+      </td>
+      <td style="width: 10%">
+        <span>בוצע</span>
+        <input type="radio" ng-model="workOrderModel.select" value="done"
+               ng-change="workOrderModel.setGlobalSelect()">
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+     </tr>
   </table>
   <hr>
 
@@ -67,7 +85,8 @@
   <table ng-show="cat.isShow" class="table table-hover" style="width:100%">
     <tbody>
     <tr ng-class="woItem.properties.isInStock?'bg-warning':'null'"
-        ng-repeat="woItem in cat.list | filter : {isShow:true} track by woItem.id">
+        ng-repeat="woItem in cat.list  track by woItem.id"
+        ng-show="workOrderModel.isShowItem(woItem)">
       <td style="width: 20%">{{woItem.properties.productName}}</td>
       <td style="width: 5%">
         {{woItem.properties.quantity | number:2}}
@@ -135,7 +154,6 @@
                     ng-change="workOrderModel.setPrepOrderSelect(woItem)">
             </td>
           </tr>
-          </tbody>
           <tr>
           <td><label>סה"כ</label></td>
           <td></td>
@@ -144,6 +162,7 @@
           </td>
             <td>{{woItem.properties.quantity | number:2}}</td>
           </tr>
+          </tbody>
         </table>
       </td>
     </tr>

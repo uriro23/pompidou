@@ -358,6 +358,22 @@ angular.module('myApp')
       });
     };
 
+    // decide if item will be shown
+    this.isShowItem = function (woItem) {
+      var that = this;
+      var isShowByStock = that.isIncludeStock ? true : !woItem.properties.isInStock;
+      var isItemToday = woItem.properties.select==='today';
+      if (woItem.properties.select==='mix') {
+        woItem.properties.orders.forEach(function(ord) {
+          if (ord.select === 'today') {
+            isItemToday = true;
+          }
+         });
+      }
+      var isShowByToday = that.isShowTodayOnly ? isItemToday : true;
+      return isShowByStock && isShowByToday;
+    };
+
     // propagate selection to all preps in domain
     this.setGlobalSelect = function() {
       var that = this;
@@ -570,18 +586,7 @@ angular.module('myApp')
       api.saveObj(this.orderView[ind]);
     };
 
-    this.setStockFilter = function() {
-      var that = this;
-      this.workOrder.forEach(function(woItem) {
-        if (that.isIncludeStock) {
-          woItem.isShow = true;
-        } else {
-          woItem.isShow = !woItem.properties.isInStock;
-        }
-      });
-    };
-
-   this.createNewWorkOrder = function (isAutoDetect) {
+    this.createNewWorkOrder = function (isAutoDetect) {
       var that = this;
       var ackDelModal = $modal.open({
         templateUrl: isAutoDetect ? 'app/partials/workOrder/ackAutoDelete.html' : 'app/partials/workOrder/ackDelete.html',
@@ -781,13 +786,6 @@ angular.module('myApp')
       });
     };
 
-    this.setIsForToday = function (woItem) {
-      if (woItem.properties.isForToday) {
-        woItem.properties.quantityForToday = woItem.properties.quantity;
-      }
-      this.saveWI(woItem);
-    };
-
       this.delItem = function (dom, cat, item) {
       var that = this;
       api.deleteObj(this.hierarchicalWorkOrder[dom].categories[cat].list[item])
@@ -932,5 +930,6 @@ angular.module('myApp')
     this.toDate = new Date(dater.today());
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
     this.toDate.setDate(this.toDate.getDate()-1);
+    this.isShowDelay = this.isShowToday = this.isShowDone = true;
     this.switchWorkOrders();
   });
