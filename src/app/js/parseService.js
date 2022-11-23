@@ -12,7 +12,7 @@ angular.module('myApp')
     console.log('initializing '+env);
     Parse.initialize(secrets[env].parseKey, secrets[env].parseSecret);
     if (env === 'test') {
-      Parse.serverURL = 'https://pompidou-test.herokuapp.com';
+      Parse.serverURL = 'https://pompidou2-test.herokuapp.com';
     } else {
       Parse.serverURL = 'https://pompidou-prod.herokuapp.com';
     }
@@ -784,7 +784,7 @@ angular.module('myApp')
     if (window.location.href.indexOf('localhost') === -1) { // not localhost meaning prod
       this.setEnvironment('prod');
     } else {
-      this.setEnvironment('prod');  // todo: fix test server
+      this.setEnvironment('test');
     }
 
 

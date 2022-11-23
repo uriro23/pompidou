@@ -166,77 +166,80 @@ angular.module('myApp')
       this.workOrder.forEach(function(inWorkOrder) {
         var inWorkItem = inWorkOrder.properties;
         if (inWorkItem.domain > 0) {  // skip orders
-         var inCatObj = catalog.filter(function (cat) {
+          // if (targetDomain === 4 && // if preps are filtered for today only, skip preps not for today
+          //   inWorkItem.domain === 2 &&
+          //   that.isShowTodayOnly &&
+          //   inWorkItem.select !== 'today') {
+          var inCatObj = catalog.filter(function (cat) {
             return cat.id === inWorkItem.catalogId;
           })[0];
-          if (inCatObj) {
-            var inCatItem = inCatObj.properties;
-            inCatItem.components.forEach(function(component) {
-              if (component.domain === targetDomain) {
-                var temp = that.workOrder.filter(function (wi, ind) {
-                  if (wi.properties.catalogId === component.id) {
-                    workItemInd = ind;
-                    return true;
-                  }
-                });
-                if (temp.length > 0) {  // item already exists, just add quantity
-                  workItem = that.workOrder[workItemInd];
-                    var menuItemActualQuantity = component.domain===2 ?
-                      calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
-                      : inWorkItem.quantity;
-                  workItem.properties.quantity +=
-                    menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
-                  workItem.properties.originalQuantity = workItem.properties.quantity;
-                  if (menuItemActualQuantity > 0) { // don't create bt if prep not in prepScope
-                    workItem.properties.backTrace.push({
-                      id: inWorkOrder.id,
-                      domain: inWorkItem.domain,
-                      quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
-                    });
-                  }
-                } else {
-                  var outCatObj = catalog.filter(function (cat) {
-                    return cat.id === component.id;
-                  })[0];
-                  if (outCatObj) {    // if component has been deleted from catalog, skip it
-                    var outCatItem = outCatObj.properties;
-                    workItem = api.initWorkOrder();
-                    workItem.properties.woId = woId;
-                    workItem.properties.catalogId = component.id;
-                    workItem.properties.productName = outCatItem.productName;
-                    workItem.properties.category = allCategories.filter(function (cat) {
-                      return cat.tId === outCatItem.category;
-                    })[0];
-                    workItem.properties.domain = targetDomain;
-                    workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
-                      return mes.tId === outCatItem.measurementUnit;
-                    })[0];
-                    workItem.properties.isInStock = outCatItem.isInStock;
-                    menuItemActualQuantity = component.domain===2 ?
-                      calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
-                      : inWorkItem.quantity;
-                    workItem.properties.quantity = menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
-                    workItem.properties.originalQuantity = workItem.properties.quantity;
-                    workItem.properties.backTrace = [{
-                      id: inWorkOrder.id,
-                      domain: inWorkItem.domain,
-                      quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
-                    }];
-                    workItem.properties.select = "delay";
-                    if (menuItemActualQuantity > 0) { // don't create item if not in prepScope
-                      that.workOrder.push(workItem);
-                    }
-                  } else {
-                    alert('output catalog item ' + component.id + ' has been deleted');
-                  }
+          var inCatItem = inCatObj.properties;
+          inCatItem.components.forEach(function (component) {
+            if (component.domain === targetDomain) {
+              var temp = that.workOrder.filter(function (wi, ind) {
+                if (wi.properties.catalogId === component.id) {
+                  workItemInd = ind;
+                  return true;
+                }
+              });
+              if (temp.length > 0) {  // item already exists, just add quantity
+                workItem = that.workOrder[workItemInd];
+                var menuItemActualQuantity = component.domain === 2 ?
+                  calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
+                  : inWorkItem.quantity;
+                workItem.properties.quantity +=
+                  menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
+                workItem.properties.originalQuantity = workItem.properties.quantity;
+                if (menuItemActualQuantity > 0) { // don't create bt if prep not in prepScope
+                  workItem.properties.backTrace.push({
+                    id: inWorkOrder.id,
+                    domain: inWorkItem.domain,
+                    quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
+                  });
+                }
+              } else {
+                var outCatObj = catalog.filter(function (cat) {
+                  return cat.id === component.id;
+                })[0];
+                var outCatItem = outCatObj.properties;
+                workItem = api.initWorkOrder();
+                workItem.properties.woId = woId;
+                workItem.properties.catalogId = component.id;
+                workItem.properties.productName = outCatItem.productName;
+                workItem.properties.category = allCategories.filter(function (cat) {
+                  return cat.tId === outCatItem.category;
+                })[0];
+                workItem.properties.domain = targetDomain;
+                workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
+                  return mes.tId === outCatItem.measurementUnit;
+                })[0];
+                workItem.properties.isInStock = outCatItem.isInStock;
+                workItem.isInStock = workItem.properties.isInStock;
+                // todo: remove this when better filtering implemented for shopping
+                menuItemActualQuantity = component.domain === 2 ?
+                  calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
+                  : inWorkItem.quantity;
+                workItem.properties.quantity = menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
+                workItem.properties.originalQuantity = workItem.properties.quantity;
+                workItem.properties.backTrace = [{
+                  id: inWorkOrder.id,
+                  domain: inWorkItem.domain,
+                  quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
+                }];
+                workItem.properties.select = "delay";
+                if (menuItemActualQuantity > 0) { // don't create item if not in prepScope
+                  that.workOrder.push(workItem);
                 }
               }
-            });
-          } else {
-            alert('input catalog item ' + inWorkItem.catalogId + ' has been deleted');
-          }
-        }
+            }
+          });
+  //      }
+       }
       });
+      var shopping = this.workOrder.filter(function(wo) {
+        return wo.properties.domain === 3;
+      });
+      console.log(shopping);
     };
 
     // for each preparation, create an array of menu items in which it appears for detailed listing
@@ -358,7 +361,7 @@ angular.module('myApp')
       });
     };
 
-    // decide if item will be shown
+    // decide if item will be shown on prep and shopping lists
     this.isShowItem = function (woItem) {
       var that = this;
       var isShowByStock = that.isIncludeStock ? true : !woItem.properties.isInStock;
@@ -370,7 +373,8 @@ angular.module('myApp')
           }
          });
       }
-      var isShowByToday = that.isShowTodayOnly ? isItemToday : true;
+      var isShowByToday = woItem.properties.domain === 2 ?
+        (that.isShowTodayOnly ? isItemToday : true) : true;
       return isShowByStock && isShowByToday;
     };
 
@@ -722,6 +726,7 @@ angular.module('myApp')
       })
     };
 
+    // create work order items for specified domain from lower domain itens
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
       if (targetDomain===1) { // clicking <compute menuItems> signifies that order selection is complete
@@ -736,14 +741,12 @@ angular.module('myApp')
         });
         if (targetDomain === 1) {
           that.createOrderItems();
-        } else if (targetDomain === 2) {
-          that.createComponents(2);
+        } else {
+          that.createComponents(targetDomain);
+        }
+        if (targetDomain === 2) {
           that.createMenuItemView();
           that.createPrepOrderView();
-        } else if (targetDomain === 3) {
-          that.createComponents(3);
-        } else {
-          that.createComponents(4);
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {
@@ -754,13 +757,13 @@ angular.module('myApp')
                   return ttt.properties.domain === targetDomain;
                 });
                 that.splitWorkOrder();
-               for (var d = 0; d < 5; d++) {
-                  that.isActiveTab[d] = false;
-                }
+                that.isActiveTab.forEach(function(tab) {
+                  tab = false;
+                });
                 that.isActiveTab[targetDomain] = true;
                 that.woIndex.properties.domainStatus[targetDomain] = true; // the domain just created is valid
                 if (targetDomain < 3) {
-                  for (var dd = targetDomain + 1; dd < 5; dd++) {                     // all further domains - invalid
+                  for (var dd = targetDomain + 1; dd < 5; dd++) {  // all further domains - invalid
                     that.woIndex.properties.domainStatus[dd] = false;
                   }
                 }
