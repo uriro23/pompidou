@@ -14,7 +14,7 @@ angular.module('myApp')
     if (env === 'test') {
       Parse.serverURL = 'https://pompidou2-test.herokuapp.com';
     } else {
-      Parse.serverURL = 'https://pompidou-prod.herokuapp.com';
+      Parse.serverURL = 'https://pompidou2-prod.herokuapp.com';
     }
       $rootScope.environment = this.environment = env;
   };
