@@ -53,8 +53,7 @@
   <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
     <thead>
     <th>מנה</th>
-    <th>כמות</th>
-    <th></th>
+    <th colspan="2">כמות</th>
     <th ng-repeat="order in workOrderModel.woOrders track by order.id"
         ng-hide="workOrderModel.woOrders.length>15">
       <span>{{order.properties.customer.firstName}}</span>
@@ -63,6 +62,8 @@
       <img ng-show="workOrderModel.isOrderColors" ng-src="app/img/smallColors/{{order.properties.color.stickerColor}}.jpg"/>
       <label ng-show="workOrderModel.isOrderNumbers">[{{order.properties.color.tId}}]</label>
     </th>
+    <th></th>
+    <th></th>
     </thead>
     <tbody>
     <tr ng-repeat="woItem in cat.list track by woItem.id">
@@ -89,13 +90,6 @@
            {{order.quantity ? order.quantity : 0}}
          </span>
        </td>
-      <td>
-        <button ng-click="workOrderModel.backInfo(woItem)"
-                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]"
-                class="btn btn-default btn-sm">
-          פרטים
-        </button>
-      </td>
       <td>
         <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
                 ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]"
