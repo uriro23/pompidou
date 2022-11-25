@@ -201,34 +201,36 @@ angular.module('myApp')
                 var outCatObj = catalog.filter(function (cat) {
                   return cat.id === component.id;
                 })[0];
-                var outCatItem = outCatObj.properties;
-                workItem = api.initWorkOrder();
-                workItem.properties.woId = woId;
-                workItem.properties.catalogId = component.id;
-                workItem.properties.productName = outCatItem.productName;
-                workItem.properties.category = allCategories.filter(function (cat) {
-                  return cat.tId === outCatItem.category;
-                })[0];
-                workItem.properties.domain = targetDomain;
-                workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
-                  return mes.tId === outCatItem.measurementUnit;
-                })[0];
-                workItem.properties.isInStock = outCatItem.isInStock;
-                workItem.isInStock = workItem.properties.isInStock;
-                // todo: remove this when better filtering implemented for shopping
-                menuItemActualQuantity = component.domain === 2 ?
-                  calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
-                  : inWorkItem.quantity;
-                workItem.properties.quantity = menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
-                workItem.properties.originalQuantity = workItem.properties.quantity;
-                workItem.properties.backTrace = [{
-                  id: inWorkOrder.id,
-                  domain: inWorkItem.domain,
-                  quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
-                }];
-                workItem.properties.select = "delay";
-                if (menuItemActualQuantity > 0) { // don't create item if not in prepScope
-                  that.workOrder.push(workItem);
+                if (outCatObj) {
+                  var outCatItem = outCatObj.properties;
+                  workItem = api.initWorkOrder();
+                  workItem.properties.woId = woId;
+                  workItem.properties.catalogId = component.id;
+                  workItem.properties.productName = outCatItem.productName;
+                  workItem.properties.category = allCategories.filter(function (cat) {
+                    return cat.tId === outCatItem.category;
+                  })[0];
+                  workItem.properties.domain = targetDomain;
+                  workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
+                    return mes.tId === outCatItem.measurementUnit;
+                  })[0];
+                  workItem.properties.isInStock = outCatItem.isInStock;
+                  menuItemActualQuantity = component.domain === 2 ?
+                    calcQuantity(inWorkItem.backTrace, workItem.properties.category.type === 11)
+                    : inWorkItem.quantity;
+                  workItem.properties.quantity = menuItemActualQuantity * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.originalQuantity = workItem.properties.quantity;
+                  workItem.properties.backTrace = [{
+                    id: inWorkOrder.id,
+                    domain: inWorkItem.domain,
+                    quantity: menuItemActualQuantity * component.quantity / inCatItem.productionQuantity
+                  }];
+                  workItem.properties.select = "delay";
+                  if (menuItemActualQuantity > 0) { // don't create item if not in prepScope
+                    that.workOrder.push(workItem);
+                  }
+                } else {
+                  alert('missing catalog entry for component '+ component.id+' of item '+inCatItem.productName);
                 }
               }
             }
@@ -236,11 +238,12 @@ angular.module('myApp')
   //      }
        }
       });
-      var shopping = this.workOrder.filter(function(wo) {
-        return wo.properties.domain === 3;
-      });
-      console.log(shopping);
-    };
+    var shopping = this.workOrder.filter(function(wo) {
+      return wo.properties.domain === 3;
+    });
+    console.log('shopping:');
+    console.log(shopping);
+  };
 
     // for each preparation, create an array of menu items in which it appears for detailed listing
     this.createMenuItemView = function() {
@@ -661,20 +664,20 @@ angular.module('myApp')
         }
         if (wo.domain > 0) {
           var catInd;
-          var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
-            if (c.category.tId === wo.category.tId) {
-              catInd = ind;
-              return true;
-            }
-          });
-          if (!temp.length) {  // if category appears for 1st time, create it's object
-            that.hierarchicalWorkOrder[wo.domain].categories.splice(0, 0, {
-              category: wo.category,
-              isShow: true,
-              list: []
+            var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
+              if (c.category.tId === wo.category.tId) {
+                catInd = ind;
+                return true;
+              }
             });
-            catInd = 0;
-          }
+            if (!temp.length) {  // if category appears for 1st time, create it's object
+              that.hierarchicalWorkOrder[wo.domain].categories.splice(0, 0, {
+                category: wo.category,
+                isShow: true,
+                list: []
+              });
+              catInd = 0;
+            }
           that.hierarchicalWorkOrder[wo.domain].categories[catInd].list.push(woi); //add wo item to proper category list
         }
       });
@@ -768,6 +771,7 @@ angular.module('myApp')
                   }
                 }
                 api.saveObj(that.woIndex);
+                that.isIncludeStock = true;
               });
           });
       });
@@ -907,6 +911,7 @@ angular.module('myApp')
                 that.createNewWorkOrder(true);
               }
               that.isProcessing = false;
+              that.isIncludeStock = true;
             });
         });
     };
