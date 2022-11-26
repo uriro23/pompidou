@@ -410,6 +410,33 @@
       </tr>
      </table>
    </tab>
+       <tab heading="העברת מצרכים" select="adminModel.loadXferShopping()">
+         <h3>העברת מצרכים בקטגוריית אריזה מתחת למנה אל הכנה שיש לה פעולת אריזה</h3>
+         <table class="table table-hover" style="width: 70%">
+           <thead>
+           <th>קטגוריה</th>
+           <th>מנה</th>
+           <th>מצרך</th>
+           <th>להכנה</th>
+           <th></th>
+           </thead>
+           <tbody>
+           <tr ng-repeat="item in adminModel.xferShoppingList track by item.ind">
+             <td>{{item.menuItemCategory.label}}</td>
+             <td>{{item.menuItemName}}</td>
+             <td>{{item.shoppingName}}</td>
+             <td>{{item.prepName}}</td>
+             <td>
+               <button class="btn btn-default"
+                       ng-disabled="item.prepError"
+                       ng-click="adminModel.doXfer(item)">
+                 העבר
+               </button>
+             </td>
+           </tr>
+           </tbody>
+         </table>
+       </tab>
      </tabset>
    </tab>
    <tab heading="לקוחות" select="adminModel.loadCustomers2()">

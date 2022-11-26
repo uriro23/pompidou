@@ -644,6 +644,127 @@ angular.module('myApp')
         });
     };
 
+    // xfer shoppings in category אריזה from under menuItems to under prep who has אריזה actions
+    this.loadXferShopping = function (item) {
+      var that = this;
+      this.xferShoppingList = [];
+      this.xferCatalog = [
+        {
+          domain: 1,
+          items: []
+        },
+        {
+          domain: 2,
+          items: []
+        },
+        {
+          domain: 3,
+          items: []
+        },
+        {
+          domain: 4,
+          items: []
+        }
+      ];
+      api.queryCatalog()
+        .then(function(catalog) {
+          catalog.forEach(function(cat) {
+            var catDomain = that.xferCatalog.filter(function(xf) {
+              return xf.domain === cat.properties.domain;
+            })[0];
+            catDomain.items.push(cat);
+          });
+          var catMenuItems = that.xferCatalog.filter(function(xf) {
+            return xf.domain === 1;
+          })[0];
+          var catPreps = that.xferCatalog.filter(function(xf) {
+            return xf.domain === 2;
+          })[0];
+          var catShoppings = that.xferCatalog.filter(function(xf) {
+            return xf.domain === 3;
+          })[0];
+          var catActions = that.xferCatalog.filter(function(xf) {
+            return xf.domain === 4;
+          })[0];
+          var ind = 0;
+          catMenuItems.items.forEach(function(mi) {
+            if (!mi.properties.isDeleted) {
+            mi.properties.components.forEach(function(mic) {
+              if (mic.domain === 3 && mic.id !== 'Ui6ySqWZUd' && mic.id !== '3s9Lgtx4sQ') {
+                // exclude unhandled item & satiety index
+                var shop = catShoppings.items.filter(function(cat) {
+                  return cat.id === mic.id;
+                })[0];
+                if (!shop.properties.isDeleted) {
+                  if (shop.properties.category === 21) { // אריזות
+                  // now find preps that have actions in category 58 - אריזה
+                  var preps = [];
+                  mi.properties.components.forEach(function (mic2) {
+                    if (mic2.domain === 2) {
+                      var prep = catPreps.items.filter(function (pr) {
+                        return pr.id === mic2.id;
+                      })[0];
+                      if (!prep.properties.isDeleted) {
+                         prep.properties.components.forEach(function (pc) {
+                          if (pc.domain === 4) {
+                            var action = catActions.items.filter(function (ac) {
+                              return ac.id === pc.id;
+                            })[0];
+                            if (!action.properties.isDeleted && action.properties.category === 58) {
+                              preps.push(prep);
+                            }
+                          }
+                        })
+                      }
+                    }
+                  });
+                  var prepError = undefined;
+                  if (preps.length === 0) {
+                    prepError = '--- אין הכנה מתאימה';
+                  } else if (preps.length > 1) {
+                    prepError = '--- יותר מהכנה מתאימה אחת';
+                  }
+                  that.xferShoppingList.push({
+                    ind: ++ind,
+                    menuItemName: mi.properties.productName,
+                    menuItemCategory: categories.filter(function(cat) {
+                      return cat.tId === mi.properties.category;
+                    })[0],
+                    shoppingName: shop.properties.productName,
+                    prepName: prepError ? prepError : preps[0],
+                    prepError: prepError
+                  });
+                } else {
+                    that.xferShoppingList.push({
+                      ind: ++ind,
+                      menuItemName: mi.properties.productName,
+                      menuItemCategory: categories.filter(function(cat) {
+                        return cat.tId === mi.properties.category;
+                      })[0],
+                      shoppingName: shop.properties.productName,
+                      prepName: '--- לא אריזה',
+                      prepError: '--- לא אריזה'
+                    });
+                  }
+               }
+                }
+              });
+            }
+            });
+          that.xferShoppingList.sort(function(a,b) {
+            if (a.menuItemCategory.order > b.menuItemCategory.order) {
+              return 1;
+            } else if (a.menuItemCategory.order < b.menuItemCategory.order) {
+              return -1;
+            } else if (a.menuItemName > b.menuItemName) {
+              return 1;
+            } else if (a.menuItemName < b.menuItemName) {
+              return -1;
+            } else return a.shoppingName - b.shoppingName;
+              });
+          });
+    };
+
     // customers tab
     this.loadCustomers = function() {
       var that = this;
