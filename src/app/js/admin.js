@@ -701,6 +701,7 @@ angular.module('myApp')
                   var preps = [];
                   mi.properties.components.forEach(function (mic2) {
                     if (mic2.domain === 2) {
+                      var isFirstTime = true;
                       var prep = catPreps.items.filter(function (pr) {
                         return pr.id === mic2.id;
                       })[0];
@@ -710,40 +711,83 @@ angular.module('myApp')
                             var action = catActions.items.filter(function (ac) {
                               return ac.id === pc.id;
                             })[0];
-                            if (!action.properties.isDeleted && action.properties.category === 58) {
+                            if (!action.properties.isDeleted &&
+                                action.properties.category === 58 &&
+                                isFirstTime) {
                               preps.push(prep);
+                              isFirstTime = false; // if multiple packaging actions for prep, use only one
                             }
                           }
                         })
                       }
                     }
                   });
-                  var prepError = undefined;
+                  var status, err;
                   if (preps.length === 0) {
-                    prepError = '--- אין הכנה מתאימה';
+                    status = 'אין הכנה מתאימה';
+                    err = 1;
                   } else if (preps.length > 1) {
-                    prepError = '--- יותר מהכנה מתאימה אחת';
+                    status = 'בחר הכנה';
+                    err = 2;
+                  } else {
+                    var suggestedPrep = preps[0];
+                    status = '';
+                    err = 0;
                   }
                   that.xferShoppingList.push({
                     ind: ++ind,
-                    menuItemName: mi.properties.productName,
+                    menuItem: mi,
                     menuItemCategory: categories.filter(function(cat) {
                       return cat.tId === mi.properties.category;
                     })[0],
+                    component: mic,
                     shoppingName: shop.properties.productName,
-                    prepName: prepError ? prepError : preps[0],
-                    prepError: prepError
+                    suggestedPrep: suggestedPrep,
+                    preps: preps,
+                    status: status,
+                    err: err,
+                    isDone: false
                   });
-                } else {
-                    that.xferShoppingList.push({
+                } else { // not packaging
+                    var temp = mi.properties.components.filter(function(mc) {
+                      return mc.domain === 2;
+                    });
+                    if (temp.length === 1) { // if single prep under menuItem - use it
+                      suggestedPrep = catPreps.items.filter(function(pr) {
+                        return pr.id === temp[0].id;
+                      })[0];
+                      status = "";
+                      err = 0;
+                    } else if (temp.length > 1) {
+                      preps = [];
+                      mi.properties.components.forEach(function(mc) {
+                        if (mc.domain === 2) {
+                          var temp2 = catPreps.items.filter(function(pr) {
+                            return pr.id === mc.id;
+                          })[0];
+                          preps.push(temp2);
+                        }
+                      });
+                      status = "בחר הכנה";
+                      err = 3;
+                    } else { // no preps
+                      preps = undefined;
+                      status = "אין הכנה";
+                      err = 4;
+                    }
+                      that.xferShoppingList.push({
                       ind: ++ind,
-                      menuItemName: mi.properties.productName,
+                      menuItem: mi,
                       menuItemCategory: categories.filter(function(cat) {
                         return cat.tId === mi.properties.category;
                       })[0],
+                      component: mic,
                       shoppingName: shop.properties.productName,
-                      prepName: '--- לא אריזה',
-                      prepError: '--- לא אריזה'
+                      suggestedPrep: suggestedPrep,
+                      preps: preps,
+                      status: status,
+                      err: err,
+                      isDone: false
                     });
                   }
                }
@@ -756,13 +800,39 @@ angular.module('myApp')
               return 1;
             } else if (a.menuItemCategory.order < b.menuItemCategory.order) {
               return -1;
-            } else if (a.menuItemName > b.menuItemName) {
+            } else if (a.menuItem.properties.productName > b.menuItem.properties.productName) {
               return 1;
-            } else if (a.menuItemName < b.menuItemName) {
+            } else if (a.menuItem.properties.productName < b.menuItem.properties.productName) {
               return -1;
             } else return a.shoppingName - b.shoppingName;
               });
           });
+    };
+
+    this.doXfer = function (item) {
+      var that = this;
+      var ind;
+      var temp = item.menuItem.properties.components.filter(function(cp,i){
+        if (cp.id === item.component.id) {
+          ind = i;
+          return true;
+        } else {
+          return false;
+        }
+      });
+      if (ind) {
+        item.menuItem.properties.components.splice(ind,1); // delete component from menuItem
+        item.suggestedPrep.properties.components.push(item.component); // insert it in prep
+        api.saveObj(item.menuItem) // save menuItem & prep
+          .then(function() {
+            api.saveObj(item.suggestedPrep)
+              .then(function() {
+                item.isDone = true;
+              });
+          });
+      } else {
+        alert('המצרך לא נמצא במנה');
+      }
     };
 
     // customers tab

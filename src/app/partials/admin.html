@@ -411,28 +411,40 @@
      </table>
    </tab>
        <tab heading="העברת מצרכים" select="adminModel.loadXferShopping()">
-         <h3>העברת מצרכים בקטגוריית אריזה מתחת למנה אל הכנה שיש לה פעולת אריזה</h3>
-         <table class="table table-hover" style="width: 70%">
+         <h3>העברת מצרכים ממנה להכנה</h3>
+         <table class="table table-hover" style="width: 100%">
            <thead>
            <th>קטגוריה</th>
            <th>מנה</th>
            <th>מצרך</th>
-           <th>להכנה</th>
+           <th>סטטוס</th>
+           <th>הכנה מוצעת</th>
            <th></th>
            </thead>
            <tbody>
-           <tr ng-repeat="item in adminModel.xferShoppingList track by item.ind">
+           <tr ng-repeat="item in adminModel.xferShoppingList track by item.ind"
+               ng-class="item.isDone ? 'bg-success' : item.err ? 'bg-warning' : null">
              <td>{{item.menuItemCategory.label}}</td>
-             <td>{{item.menuItemName}}</td>
+             <td>{{item.menuItem.properties.productName}}</td>
              <td>{{item.shoppingName}}</td>
-             <td>{{item.prepName}}</td>
-             <td>
+             <td>{{item.status}}</td>
+             <td ng-show="item.err===0">{{item.suggestedPrep.properties.productName}}</td>
+             <td ng-show="item.err===2 || item.err===3">
+               <select ng-model="item.suggestedPrep"
+                       ng-options="prep.properties.productName for prep in item.preps">
+                 <option value=""></option>
+               </select>
+             </td>
+             <td ng-show="item.err===1 || item.err===4"></td>
+             <td ng-hide="item.isDone || item.err===1 || item.err===4">
                <button class="btn btn-default"
-                       ng-disabled="item.prepError"
+                       ng-disabled="!item.suggestedPrep"
                        ng-click="adminModel.doXfer(item)">
                  העבר
                </button>
              </td>
+             <td ng-show="item.isDone">הועבר</td>
+             <td ng-show="item.err===1 || item.err===4"></td>
            </tr>
            </tbody>
          </table>
