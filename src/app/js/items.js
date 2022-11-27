@@ -208,6 +208,7 @@ angular.module('myApp')
       thisItem.isDescChanged = true;
       thisItem.isCosmeticChange = false;
       thisItem.isMajorChange = false;
+      thisItem.isKitchenRemark = true;
       orderService.setDescChangeActions(this.order, this.descChangeActions);
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
       orderService.quoteChanged(this.order);
@@ -240,6 +241,7 @@ angular.module('myApp')
       thisItem.isDescChanged = thisItem.descChangeAction.isDescChanged;
       thisItem.isCosmeticChange = thisItem.descChangeAction.isCosmeticChange;
       thisItem.isMajorChange = thisItem.descChangeAction.isMajorChange;
+      thisItem.isKitchenRemark = thisItem.descChangeAction.isKitchenRemark;
       if (!thisItem.isDescChanged) {
         api.queryCatalogById(thisItem.catalogId)
           .then(function(cat) {
@@ -253,6 +255,13 @@ angular.module('myApp')
         orderService.quoteChanged(this.order);
         thisItem.isChanged = true;
       }
+    };
+
+    this.setKitchenRemark = function (ind) {
+      var thisItem = this.order.view.quote.items[ind];
+      orderService.calcTotal(this.order.view.quote, this.order); // because tasks are also updated here
+      orderService.quoteChanged(this.order);
+      thisItem.isChanged = true;
     };
 
 

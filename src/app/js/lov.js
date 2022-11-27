@@ -356,28 +356,32 @@ angular.module('myApp')
         label: 'מקור',
         isDescChanged: false,
         isCosmeticChange: false,
-        isMajorChange: false
+        isMajorChange: false,
+        isKitchenRemark: false
       },
       {
         id: 1,
         label: 'לסרוויס',
         isDescChanged: true,
         isCosmeticChange: false,
-        isMajorChange: false
+        isMajorChange: false,
+        isKitchenRemark: true
       },
       {
         id: 2,
         label: 'גם לאריזה',
         isDescChanged: true,
         isCosmeticChange: false,
-        isMajorChange: true
+        isMajorChange: true,
+        isKitchenRemark: true
       },
       {
         id: 3,
         label: 'רק ללקוח',
         isDescChanged: true,
         isCosmeticChange: true,
-        isMajorChange: false
+        isMajorChange: false,
+        isKitchenRemark: false
       }
     ],
 

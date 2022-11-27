@@ -134,21 +134,18 @@
                  ng-change="itemsModel.setProductDescription($index)"
                  ng-disabled="itemsModel.readOnly.is"
                  ng-class="item.errors.productDescription?'bg-danger':null">
-          <!--
-          <input type="checkbox" ng-model="item.isCosmeticChange"
-                 ng-show="item.isDescChanged"
-                 ng-change="itemsModel.setCosmeticChange($index)"
-                 ng-disabled="itemsModel.readOnly.is">
-          <button ng-show="item.isDescChanged"
-                  class="btn btn-default btn-sm bg-success"
-                  ng-click="itemsModel.resetDescChange($index)">מקור</button>
-                  -->
-          <select ng-show="item.isDescChanged"
+         <select ng-show="item.isDescChanged"
                   ng-model="item.descChangeAction"
                   ng-change="itemsModel.setDescChangeBooleans($index)"
                   ng-disabled="itemsModel.readOnly.is"
                   ng-options="descChangeAction.label for descChangeAction in itemsModel.descChangeActions">
           </select>
+          <input type="text" size="86" ng-model="item.kitchenRemark"
+                 ng-show="item.isKitchenRemark"
+                 ng-change="itemsModel.setKitchenRemark($index)"
+                 ng-disabled="itemsModel.readOnly.is"
+                 placeholder="הערה למטבח"
+                 ng-class="item.errors.productDescription?'bg-danger':null">
         </td>
         <td>{{item.measurementUnit.label}}</td>
         <td>
