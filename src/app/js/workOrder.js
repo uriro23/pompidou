@@ -106,7 +106,13 @@ angular.module('myApp')
                 workItem.properties.productName = item.productName;
                 workItem.properties.isDescChanged = item.isDescChanged;
                 if (item.isDescChanged) {
-                  workItem.properties.productDescription = item.productDescription;
+                  workItem.properties.productDescription =
+                    // has to refer both to boolean and text field
+                    // user might change status of description change after entering text
+                    // user might also leave text empty
+                    // in both cases, use changed productDescription
+                    (item.isKitchenRemark && item.kitchenRemark) ?
+                      item.kitchenRemark : item.productDescription;
                 }
                 workItem.properties.quantity = workItem.properties.originalQuantity = item.quantity;
                 if (inWorkOrderItem.properties.order.orderStatus === 2) {
@@ -136,7 +142,8 @@ angular.module('myApp')
                 });
                 workItem.properties.orderQuant[orderInd].quantity = item.quantity;
                 if (item.isDescChanged) {
-                  workItem.properties.orderQuant[orderInd].productDescription = item.productDescription;
+                  workItem.properties.orderQuant[orderInd].productDescription =
+                    workItem.properties.productDescription;
                 }
                 that.workOrder.push(workItem);
               }

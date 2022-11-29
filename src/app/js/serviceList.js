@@ -192,6 +192,9 @@ angular.module('myApp')
         item.packageMeasurementUnit = measurementUnits.filter(function(mu) {
           return mu.tId === catItem.packageMeasurementUnit;
         })[0];
+        if (item.isKitchenRemark && item.kitchenRemark) {
+          item.productDescription = item.kitchenRemark;
+        }
 
         ind++;
         that.vec[ind] = {
@@ -237,7 +240,8 @@ angular.module('myApp')
         return {
           index: item.index,
           productName: catalogItem.productName,
-          productDescription: item.productDescription,
+          productDescription: (item.isKitchenRemark && item.kitchenRemark) ?
+            item.kitchenRemark : item.productDescription,
           isDescChanged: item.isDescChanged & (!item.isCosmeticChange),
           quantity: item.quantity,
           measurementUnitLabel: item.measurementUnit.label
@@ -280,7 +284,6 @@ angular.module('myApp')
     this.separates.push(editItems(order,CATEGORY_SNACKS,catalog,categories));
     this.separates.push(editItems(order,CATEGORY_SANDWICHES,catalog,categories));
     this.separates.push(editItems(order,CATEGORY_DESSERTS,catalog,categories));
-    console.log(this.separates[2]);
 
     this.splitSeparates = this.separates.sort(function(a,b) {
       return (b.items.length - a.items.length);
