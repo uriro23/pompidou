@@ -255,6 +255,7 @@ angular.module('myApp')
     // for each preparation, create an array of menu items in which it appears for detailed listing
     this.createMenuItemView = function() {
       var that = this;
+      var remarkCnt = 0;
       this.workOrder.forEach(function(currentPrep) {
         if(currentPrep.properties.domain === 2) {
           currentPrep.properties.menuItems = [];
@@ -266,6 +267,11 @@ angular.module('myApp')
               return wo.id === currentBackTrace.id;
             })[0];
             currentMenuItem.productName = originalMenuItem.properties.productName;
+            if (originalMenuItem.properties.isDescChanged) {
+              currentMenuItem.isRemark = true;
+              currentMenuItem.remarkNo = ++remarkCnt;
+              currentMenuItem.remarkText = originalMenuItem.properties.productDescription;
+            }
             currentMenuItem.orders = [];  // initialize orders array: set seq to unique values for ng-repeat
             for (var n = 0; n < that.woOrders.length; n++) {
               currentMenuItem.orders[n] = {seq: n, quantity: 0};

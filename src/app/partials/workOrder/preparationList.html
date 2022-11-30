@@ -124,6 +124,9 @@
           <th style="width: 10%">יום</th>
           <th ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
             <span>{{menuItem.productName}}</span>
+            <span ng-show="menuItem.isRemark">
+              <label>{{"("+menuItem.remarkNo+")"}}</label>
+            </span>
           </th>
           <th style="width: 10%">סה"כ</th>
           <th style="width: 10%">עוד לא</th>
@@ -164,6 +167,10 @@
           </tr>
           </tbody>
         </table>
+        <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} ">
+          <label>{{"התאמה אישית מס'"+remark.remarkNo+":"}}</label>
+          <span>{{remark.remarkText}}</span>
+        </div>
       </td>
     </tr>
     </tbody>
