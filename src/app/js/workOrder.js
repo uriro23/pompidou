@@ -255,10 +255,10 @@ angular.module('myApp')
     // for each preparation, create an array of menu items in which it appears for detailed listing
     this.createMenuItemView = function() {
       var that = this;
-      var remarkCnt = 0;
       this.workOrder.forEach(function(currentPrep) {
         if(currentPrep.properties.domain === 2) {
           currentPrep.properties.menuItems = [];
+          var remarkCnt = 0;
           currentPrep.properties.backTrace.forEach(function (currentBackTrace) {
             var currentMenuItem = {};
             currentMenuItem.id = currentBackTrace.id;
@@ -674,6 +674,14 @@ angular.module('myApp')
         woi.isShow = !wo.isInStock;
         if (wo.select === 'mix') { // force display order details for preps whose timing selection is mixed
           woi.isShowDetails = true;
+        }
+        if (wo.domain === 2) {
+          woi.isAnyRemark = false;
+          wo.menuItems.forEach(function(mi) {
+            if (mi.isRemark) {
+              woi.isAnyRemark = true;
+            }
+          });
         }
         if (wo.domain > 0) {
           var catInd;

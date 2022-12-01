@@ -95,7 +95,6 @@
       <td style="widt:10%">
         <span>פירוט</span>
         <input type="checkbox" ng-model="woItem.isShowDetails"
-               ng-change="workOrderModel.saveWoItem(woItem)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
       <td ng-hide="woItem.isShowDetails" style="width: 10%">
@@ -116,7 +115,9 @@
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td ng-hide="woItem.isShowDetails" style="width: 28%"></td>
+      <td ng-hide="woItem.isShowDetails" style="width: 28%">
+        <label ng-show="woItem.isAnyRemark">יש התאמות אישיות. ראה בפירוט</label>
+      </td>
       <td colspan="4" style="width: 58%" ng-show="woItem.isShowDetails">
          <table class="table table-hover" border="1" style="width:100%">
           <thead>
@@ -167,7 +168,7 @@
           </tr>
           </tbody>
         </table>
-        <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} ">
+        <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} track by remark.id">
           <label>{{"התאמה אישית מס'"+remark.remarkNo+":"}}</label>
           <span>{{remark.remarkText}}</span>
         </div>
