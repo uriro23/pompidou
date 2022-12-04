@@ -166,6 +166,10 @@ a:link, a:visited  {
   width: 40%
 }
 
+.verticalLine {
+  border-right: 4px solid green;
+}
+
 .column {
   float: right;
   width: 50%;

@@ -36,6 +36,14 @@
         <button class="btn btn-default"
                 ng-disabled="workOrderModel.isProcessing"
                 ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
+                ng-click="workOrderModel.toggleOrderFilter()">
+          {{workOrderModel.isOrderFilter ? "הסתר אירועים" : "הצג אירועים"}}
+        </button>
+      </td>
+      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
+        <button class="btn btn-default"
+                ng-disabled="workOrderModel.isProcessing"
+                ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
                 ng-click="workOrderModel.createWorkOrderDomain(4)">
           {{'חשב '+workOrderModel.domains[4].forWorkItem}}
         </button>
@@ -48,7 +56,7 @@
           {{'חשב '+workOrderModel.domains[3].forWorkItem}}
         </button>
       </td>
-      <td style="width: 13%"></td>
+      <td style="width: 7%"></td>
     </tr>
     <tr ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
       <td></td>
@@ -77,6 +85,93 @@
       <td></td>
      </tr>
   </table>
+  <div ng-show="workOrderModel.woIndex.properties.domainStatus[2] && workOrderModel.isOrderFilter">
+    <table class="table table-hover" style="width:90%">
+      <thead>
+      <tr>
+        <th></th>
+        <th colspan="4">קבע לפי אירוע</th>
+        <th colspan="4"></th>
+        <th colspan="3" class="verticalLine">מתי מבצעים?</th>
+        <th colspan="3" class="verticalLine">מה מבצעים?</th>
+        <th class="verticalLine"></th>
+      </tr>
+      <tr>
+      <th>    מספר  </th>
+      <th>   תאריך  </th>
+      <th>    מסירה  </th>
+      <th>יציאה  </th>
+      <th>    לקוח  </th>
+      <th>    סועדים  </th>
+      <th>    תפריט  </th>
+      <th>    סטטוס  </th>
+      <th>זיהוי</th>
+     <th class="verticalLine">עוד לא</th>
+      <th>להיום</th>
+      <th>בוצע</th>
+        <th class="verticalLine">הכל</th>
+        <th>הכנות</th>
+        <th>סרוויס</th>
+        <th class="verticalLine" style="width: 6px"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="woItem in workOrderModel.woOrders track by woItem.id"
+          ng-class="woItem.properties.orderStatus.id===1?'bg-active':
+                        woItem.properties.orderStatus.id===2?'bg-warning':
+                        (woItem.properties.orderStatus.id>=3 && woItem.properties.orderStatus.id<=5)?'bg-success':
+                        woItem.properties.orderStatus.id===6?'active myCanceledEvent':null">
+        <td>
+          <a ng-href="#/editOrderView/{{woItem.properties.order.id}}/0">{{woItem.properties.order.number}}</a>
+        </td>
+        <td>{{woItem.properties.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
+        <td>{{woItem.properties.order.eventTime | date: 'HH:mm'}}</td>
+        <td>{{woItem.properties.order.exitTime | date: 'HH:mm'}}</td>
+        <td>{{woItem.properties.customer.firstName+' '+woItem.properties.customer.lastName}}</td>
+        <td>{{woItem.properties.order.noOfParticipants}}</td>
+        <td>{{woItem.properties.order.header.title}}</td>
+        <td  ng-style="workOrderModel.isOrderColors ? woItem.properties.color.style : null">
+          {{woItem.properties.orderStatus.name}}
+        </td>
+        <td>{{woItem.properties.color.tId}}</td>
+     <td class="verticalLine">
+          <input type="radio" ng-model="woItem.properties.select"
+                 ng-change="workOrderModel.setOrderSelect(woItem)"
+                 value="delay">
+        </td>
+        <td>
+          <input type="radio" ng-model="woItem.properties.select"
+                 ng-change="workOrderModel.setOrderSelect(woItem)"
+                 value="today">
+        </td>
+        <td>
+          <input type="radio" ng-model="woItem.properties.select"
+                 ng-change="workOrderModel.setOrderSelect(woItem)"
+                 value="done">
+        </td>
+        <td class="verticalLine">
+          <input type="radio" ng-model="woItem.properties.prepScope"
+                 ng-change="workOrderModel.setOrderPrepScope(woItem)"
+                 ng-disabled="woItem.properties.select!=='today'"
+                 value="all">
+        </td>
+        <td>
+          <input type="radio" ng-model="woItem.properties.prepScope"
+                 ng-change="workOrderModel.setOrderPrepScope(woItem)"
+                 ng-disabled="woItem.properties.select!=='today'"
+                 value="prep">
+        </td>
+        <td>
+          <input type="radio" ng-model="woItem.properties.prepScope"
+                 ng-change="workOrderModel.setOrderPrepScope(woItem)"
+                 ng-disabled="woItem.properties.select!=='today'"
+                 value="service">
+        </td>
+        <td class="verticalLine"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
   <hr>
 
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories track by cat.category.tId">
