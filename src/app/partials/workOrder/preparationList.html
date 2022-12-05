@@ -183,8 +183,17 @@
         ng-repeat="woItem in cat.list  track by woItem.id"
         ng-show="workOrderModel.isShowItem(woItem)">
       <td style="width: 20%">{{woItem.properties.productName}}</td>
-      <td style="width: 5%">
+      <td ng-hide="woItem.properties.quantityForToday" style="width: 5%">
         {{woItem.properties.quantity | number:2}}
+      </td>
+      <td ng-show="woItem.properties.quantityForToday>0 &&
+                   woItem.properties.quantityForToday<woItem.properties.quantity" style="width: 5%">
+        <div class="myCanceledEvent">{{woItem.properties.quantity | number:2}}</div>
+        <div style="color:blue">{{woItem.properties.quantityForToday | number:2}}</div>
+      </td>
+      <td ng-show="woItem.properties.quantityForToday>0 &&
+                   woItem.properties.quantityForToday===woItem.properties.quantity" style="width: 5%">
+        <div style="color:blue">{{woItem.properties.quantityForToday | number:2}}</div>
       </td>
       <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
       <td style="widt:10%">

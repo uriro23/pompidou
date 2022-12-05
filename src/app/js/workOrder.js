@@ -201,6 +201,7 @@ angular.module('myApp')
                   workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.originalQuantity = workItem.properties.quantity;
+                  workItem.properties.quantityForToday = 0;
                   workItem.properties.backTrace = [{
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
@@ -361,6 +362,16 @@ angular.module('myApp')
       return isShowByStock && isShowByToday;
     };
 
+    this.computeQuantityForToday = function (woItem) {
+      var quant = 0;
+      woItem.properties.orders.forEach(function (ord) {
+        if (ord.select === 'today') {
+          quant += ord.totalQuantity;
+        }
+      });
+      woItem.properties.quantityForToday = quant;
+    };
+
     // propagate selection to all preps in domain
     this.setGlobalSelect = function() {
       var that = this;
@@ -370,6 +381,7 @@ angular.module('myApp')
           woItem.properties.prepScope = 'all';
         } else if (woItem.properties.domain === 2) {
           woItem.properties.select = that.select;
+          that.computeQuantityForToday(woItem);
           that.setPrepSelect(woItem, false);
         }
       });
@@ -385,6 +397,7 @@ angular.module('myApp')
           wo.orders.forEach(function (ord) {
             if (ord.id === woItem.id) {
               ord.select = woItem.properties.select;
+              that.computeQuantityForToday(woi);
               that.setPrepOrderSelect(woi);
             }
           });
@@ -403,6 +416,7 @@ angular.module('myApp')
         woItem.properties.orders.forEach(function(ord) {
           ord.select = woItem.properties.select;
         });
+        this.computeQuantityForToday(woItem);
         api.saveObj(woItem);
       }
     };
@@ -425,6 +439,7 @@ angular.module('myApp')
           woItem.isShowDetails = true;
         }
         api.saveObj(woItem);
+        this.computeQuantityForToday(woItem);
       }
     };
 
@@ -488,6 +503,7 @@ angular.module('myApp')
                  }
                }
             }
+            that.computeQuantityForToday(woi);
             that.setPrepOrderSelect(woi);
           });
         }
