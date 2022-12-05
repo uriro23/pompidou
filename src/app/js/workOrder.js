@@ -428,6 +428,34 @@ angular.module('myApp')
       }
     };
 
+    // "select" of order in preps is set according to 3 factors:
+    // a. prepScope of order set now by user ("all", "prep", "done");
+    // b. select value of order in prep ("delay", "today", "done");
+    // c. is prep considered "prep" or "service" as determined by its category (type===11 => service).
+    //
+    // The following table depicts decision rules:
+    // +--------+---------++-------------------------+-----------------------------------------------------+
+    // |  prep  | prep    || order prepScope seting  |                                                     |
+    // +  order |category ++-------+-------+---------+    remarks                                          |
+    // | select | type    ||  all  | prep  | service |                                                     |
+    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
+    // |        | prep    || today | today | N/C     |  select relevant preps for today                    |
+    // | delay  +---------++-------+-------+---------|  leave irrelevant ones unchanged                    |
+    // |        | service || today | N/C   | today   |                                                     |
+    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
+    // |        | prep    || N/C   | N/C   | done    | selecting service for today implies preps are done  |
+    // | today  +---------++-------+-------+---------|                                                     |
+    // |        | service || N/C   | delay | N/C     | selecting prep for today implies service is delayed |
+    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
+    // |        | prep    || N/C   | N/C   | N/C     |   if prep is done, don't change it                  |
+    // | done   +---------++-------+-------+---------|                                                     |
+    // |        | service || N/C   | N/C   | N/C     |                                                     |
+    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
+    //
+    //  this logic changes the select value of the order within the prep. the select value of the prep
+    //  itself is changed, if necessary by calling setPrepOrderSelect function
+
+    // propogates change of an order prepScope to all occurances of that order in preps
     this.setOrderPrepScope = function (woItem) {
       var that = this;
       api.saveObj(woItem);
