@@ -218,14 +218,17 @@
       </td>
       <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly" style="width: 10%"></td>
       <td ng-hide="woItem.isShowDetails" style="width: 28%">
-        <label ng-show="woItem.isAnyRemark">יש התאמות אישיות. ראה בפירוט</label>
+        <label ng-show="(!workOrderModel.isShowTodayOnly && woItem.isAnyRemark) ||
+                        (workOrderModel.isShowTodayOnly && woItem.isRemarkForToday)">
+          יש התאמות אישיות. ראה בפירוט</label>
       </td>
       <td colspan="4" style="width: 58%" ng-show="woItem.isShowDetails">
          <table class="table table-hover" border="1" style="width:100%">
           <thead>
           <th style="width: 15%">לקוח</th>
           <th style="width: 10%">יום</th>
-          <th ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
+          <th ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id"
+              ng-hide="workOrderModel.isShowTodayOnly && menuItem.quantityForToday===0">
             <span>{{menuItem.productName}}</span>
             <span ng-show="menuItem.isRemark">
               <label>{{"("+menuItem.remarkNo+")"}}</label>
@@ -241,7 +244,9 @@
               ng-repeat="order in woItem.properties.orders track by order.id">
             <td>{{order.customer}}</td>
             <td>{{order.day}}</td>
-            <td ng-repeat="menuItem in order.menuItems track by menuItem.seq">
+            <td ng-repeat="menuItem in order.menuItems track by menuItem.seq"
+                ng-hide="workOrderModel.isShowTodayOnly &&
+                         woItem.properties.menuItems[menuItem.seq].quantityForToday===0">
               {{menuItem.quantity | number:2}}
             </td>
             <td>{{order.totalQuantity | number:2}}</td>
@@ -264,7 +269,8 @@
           <tr>
           <td><label>סה"כ</label></td>
           <td></td>
-          <td ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id">
+          <td ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id"
+              ng-hide="workOrderModel.isShowTodayOnly && menuItem.quantityForToday===0">
             <span ng-hide="workOrderModel.isShowTodayOnly">{{menuItem.quantity | number : 2}}</span>
             <span ng-show="workOrderModel.isShowTodayOnly">{{menuItem.quantityForToday | number : 2}}</span>
           </td>
@@ -273,7 +279,8 @@
           </tr>
           </tbody>
         </table>
-        <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} track by remark.id">
+        <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} track by remark.id"
+             ng-hide="workOrderModel.isShowTodayOnly && remark.quantityForToday===0">
           <label>{{"התאמה אישית מס'"+remark.remarkNo+":"}}</label>
           <span>{{remark.remarkText}}</span>
         </div>

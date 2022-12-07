@@ -364,12 +364,19 @@ angular.module('myApp')
     };
 
     // reset detailed view for today only, otherwise turn it on for mixed preps
+    // also check if there are remarks for today's menuItems
     this.setPrepsTodayOnly = function () {
       var that = this;
       if (this.isShowTodayOnly) {
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
             woItem.isShowDetails = that.isShowDetails;
+            woItem.isRemarkForToday = false;
+            woItem.properties.menuItems.forEach(function (mi) {
+              if (mi.isRemark && mi.quantityForToday>0) {
+                woItem.isRemarkForToday = true;
+              }
+            })
           }
         });
       } else {
