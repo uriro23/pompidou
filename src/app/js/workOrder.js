@@ -236,6 +236,7 @@ angular.module('myApp')
             var currentMenuItem = {};
             currentMenuItem.id = currentBackTrace.id;
             currentMenuItem.quantity = currentBackTrace.quantity;
+            currentMenuItem.quantityForToday = 0;
             var originalMenuItem = that.workOrder.filter(function (wo) {
               return wo.id === currentBackTrace.id;
             })[0];
@@ -362,14 +363,42 @@ angular.module('myApp')
       return isShowByStock && isShowByToday;
     };
 
-    this.computeQuantityForToday = function (woItem) {
+    // reset detailed view for today only, otherwise turn it on for mixed preps
+    this.setPrepsTodayOnly = function () {
+      var that = this;
+      if (this.isShowTodayOnly) {
+        this.workOrder.forEach(function(woItem) {
+          if (woItem.properties.domain === 2) {
+            woItem.isShowDetails = that.isShowDetails;
+          }
+        });
+      } else {
+        this.workOrder.forEach(function(woItem) {
+          if (woItem.properties.domain === 2) {
+            if (woItem.properties.select === 'mix') {
+              woItem.isShowDetails = true;
+            }
+          }
+        });
+      }
+    };
+
+    // sum quantity of all orders marked for today and of each menuItem they include
+   this.computeQuantityForToday = function (woItem) {
       var quant = 0;
+      woItem.properties.menuItems.forEach(function (mi0) {
+        mi0.quantityForToday = 0;
+      });
       woItem.properties.orders.forEach(function (ord) {
         if (ord.select === 'today') {
           quant += ord.totalQuantity;
+          ord.menuItems.forEach(function(mi) {
+            woItem.properties.menuItems[mi.seq].quantityForToday += mi.quantity;
+          });
         }
       });
       woItem.properties.quantityForToday = quant;
+
     };
 
     // propagate selection to all preps in domain
@@ -438,8 +467,8 @@ angular.module('myApp')
         if (s === 'mix') {
           woItem.isShowDetails = true;
         }
-        api.saveObj(woItem);
         this.computeQuantityForToday(woItem);
+        api.saveObj(woItem);
       }
     };
 
@@ -815,8 +844,10 @@ angular.module('myApp')
     this.setGlobalDetail = function() {
       var that = this;
       this.workOrder.forEach(function(woi) {
-        if (woi.properties.select !== 'mix') {
-          woi.isShowDetails = that.isShowDetails;
+        if (woi.properties.domain === 2) {
+          if (that.isShowTodayOnly ||  woi.properties.select !== 'mix') {
+            woi.isShowDetails = that.isShowDetails;
+          }
         }
       })
     };
