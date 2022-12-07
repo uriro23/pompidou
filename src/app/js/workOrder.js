@@ -368,6 +368,7 @@ angular.module('myApp')
     this.setPrepsTodayOnly = function () {
       var that = this;
       if (this.isShowTodayOnly) {
+        this.isOrderFilter = false;  // turn off order selection table
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
             woItem.isShowDetails = that.isShowDetails;
