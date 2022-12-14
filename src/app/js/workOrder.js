@@ -198,7 +198,7 @@ angular.module('myApp')
                   workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
                     return mes.tId === outCatItem.measurementUnit;
                   })[0];
-                  workItem.properties.isInStock = outCatItem.isInStock;
+                  workItem.properties.isIncludeStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.originalQuantity = workItem.properties.quantity;
                   workItem.properties.quantityForToday = 0;
@@ -350,6 +350,7 @@ angular.module('myApp')
     this.isShowItem = function (woItem) {
       var that = this;
       var isShowByStock = that.isIncludeStock ? true : !woItem.properties.isInStock;
+      var isShowByDone = that.isShowDone ? true : !(woItem.properties.select==='done');
       var isItemToday = woItem.properties.select==='today';
       if (woItem.properties.select==='mix') {
         woItem.properties.orders.forEach(function(ord) {
@@ -360,7 +361,7 @@ angular.module('myApp')
       }
       var isShowByToday = woItem.properties.domain === 2 ?
         (that.isShowTodayOnly ? isItemToday : true) : true;
-      return isShowByStock && isShowByToday;
+      return isShowByStock && isShowByToday && isShowByDone;
     };
 
     // reset detailed view for today only, otherwise turn it on for mixed preps
@@ -843,11 +844,7 @@ angular.module('myApp')
           }
         });
       });
-    };
-
-    this.toggleOrderFilter = function () {
-      this.isOrderFilter = !this.isOrderFilter;
-    };
+      };
 
     this.setGlobalDetail = function() {
       var that = this;
@@ -941,7 +938,7 @@ angular.module('myApp')
       });
     };
 
-    this.backInfo = function (woItem) {
+   this.backInfo = function (woItem) {
       var backTraceModal = $modal.open({
           templateUrl: 'app/partials/workOrder/backTrace.html',
         controller: 'WorkOrderBackTraceCtrl as workOrderBackTraceModel',
@@ -1069,6 +1066,6 @@ angular.module('myApp')
     this.toDate = new Date(dater.today());
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
     this.toDate.setDate(this.toDate.getDate()-1);
-    this.isShowDelay = this.isShowToday = this.isShowDone = true;
+    this.isShowDone = true;
     this.switchWorkOrders();
   });

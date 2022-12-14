@@ -696,7 +696,8 @@ angular.module('myApp')
                   return cat.id === mic.id;
                 })[0];
                 if (!shop.properties.isDeleted) {
-                  if (shop.properties.category === 21) { // אריזות
+                  // for now ignore the packaging stuff
+                  if (/*shop.properties.category === 21*/ false) { // אריזות
                   // now find preps that have actions in category 58 - אריזה
                   var preps = [];
                   mi.properties.components.forEach(function (mic2) {

@@ -11,35 +11,37 @@
                ng-model="workOrderModel.hierarchicalWorkOrder[2].isShowAll"
                ng-change="workOrderModel.setShowAll(2)">
       </td>
-      <td style="width:17%">
-  <span style="font-size: large">{{workOrderModel.domains[2].forWorkItem}}</span>
+      <td style="width:12%; font-size: large">
+        <span>{{workOrderModel.domains[2].forWorkItem}}</span>
+        <span ng-show="workOrderModel.isShowTodayOnly">להיום</span>
     </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 12%">
-        <span>כולל מלאי?</span>
-        <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
-      </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-        <span>פירוט</span>
+        <span>הצג פירוט</span>
         <input type="checkbox"
                ng-model="workOrderModel.isShowDetails"
                ng-change="workOrderModel.setGlobalDetail()">
       </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-       </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-        <span>הכנות להיום</span>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 12%">
+        <span>כולל מלאי?</span>
+        <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 15%">
+        <span>כולל הכנות שבוצעו</span>
+        <input type="checkbox" ng-model="workOrderModel.isShowDone"
+               ng-change="workOrderModel.setPrepsDone()">
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 15%">
+        <span>הצג רק להיום</span>
         <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly"
                ng-change="workOrderModel.setPrepsTodayOnly()">
       </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
-      </td>
-      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
-        <button class="btn btn-default"
+      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 18%">
+        <span>סינון לפי אירועים</span>
+        <input type="checkbox"  ng-model="workOrderModel.isOrderFilter"
                 ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowTodayOnly"
-                ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
-                ng-click="workOrderModel.toggleOrderFilter()">
-          {{workOrderModel.isOrderFilter ? "הסתר אירועים" : "הצג אירועים"}}
-        </button>
+                ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
+      </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 5%">
       </td>
       <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
         <button class="btn btn-default"
@@ -57,13 +59,13 @@
           {{'חשב '+workOrderModel.domains[3].forWorkItem}}
         </button>
       </td>
-      <td style="width: 7%"></td>
+      <td style="width: 12%"></td>
     </tr>
+  </table>
+  <table class="table" style="width: 100%">
     <tr ng-show="workOrderModel.woIndex.properties.domainStatus[2] && !workOrderModel.isShowTodayOnly">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td style="text-align: left"><label>
+      <td style="width: 22%"></td>
+      <td style="text-align: left; width: 20%"><label>
         קבע לכולם:
       </label></td>
       <td style="width: 10%">
@@ -81,9 +83,7 @@
         <input type="radio" ng-model="workOrderModel.select" value="done"
                ng-change="workOrderModel.setGlobalSelect()">
       </td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td style="width: 28%"></td>
      </tr>
   </table>
   <div ng-show="workOrderModel.woIndex.properties.domainStatus[2] && workOrderModel.isOrderFilter">
