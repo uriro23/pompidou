@@ -13,7 +13,7 @@
       </td>
       <td style="width:12%; font-size: large">
         <span>{{workOrderModel.domains[2].forWorkItem}}</span>
-        <span ng-show="workOrderModel.isShowTodayOnly">להיום</span>
+        <span ng-show="workOrderModel.isShowPrepsTodayOnly">להיום</span>
     </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
         <span>הצג פירוט</span>
@@ -32,13 +32,13 @@
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 15%">
         <span>הצג רק להיום</span>
-        <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly"
+        <input type="checkbox" ng-model="workOrderModel.isShowPrepsTodayOnly"
                ng-change="workOrderModel.setPrepsTodayOnly()">
       </td>
       <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 18%">
         <span>סינון לפי אירועים</span>
         <input type="checkbox"  ng-model="workOrderModel.isOrderFilter"
-                ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowTodayOnly"
+                ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowPrepsTodayOnly"
                 ng-show="workOrderModel.woIndex.properties.domainStatus[2]">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 5%">
@@ -63,7 +63,7 @@
     </tr>
   </table>
   <table class="table" style="width: 100%">
-    <tr ng-show="workOrderModel.woIndex.properties.domainStatus[2] && !workOrderModel.isShowTodayOnly">
+    <tr ng-show="workOrderModel.woIndex.properties.domainStatus[2] && !workOrderModel.isShowPrepsTodayOnly">
       <td style="width: 22%"></td>
       <td style="text-align: left; width: 20%"><label>
         קבע לכולם:
@@ -184,42 +184,42 @@
         ng-repeat="woItem in cat.list  track by woItem.id"
         ng-show="workOrderModel.isShowItem(woItem)">
       <td style="width: 20%">{{woItem.properties.productName}}</td>
-      <td ng-hide="workOrderModel.isShowTodayOnly" style="width: 5%">
+      <td ng-hide="workOrderModel.isShowPrepsTodayOnly" style="width: 5%">
         {{woItem.properties.quantity | number:2}}
       </td>
-      <td ng-show="workOrderModel.isShowTodayOnly" style="width: 5%">
+      <td ng-show="workOrderModel.isShowPrepsTodayOnly" style="width: 5%">
         {{woItem.properties.quantityForToday | number:2}}
       </td>
       <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
       <td style="widt:10%">
         <span>פירוט</span>
         <input type="checkbox" ng-model="woItem.isShowDetails"
-               ng-disabled="!workOrderModel.isShowTodayOnly && woItem.properties.select==='mix'">
+               ng-disabled="!workOrderModel.isShowPrepsTodayOnly && woItem.properties.select==='mix'">
       </td>
-      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly" style="width: 10%">
+      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowPrepsTodayOnly" style="width: 10%">
         <span>עוד לא</span>
         <input type="radio" ng-model="woItem.properties.select" value="delay"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly" style="width: 10%"></td>
-      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly" style="width: 10%">
+      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowPrepsTodayOnly" style="width: 10%"></td>
+      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowPrepsTodayOnly" style="width: 10%">
         <span>להיום</span>
         <input type="radio" ng-model="woItem.properties.select" value="today"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly" style="width: 10%"></td>
-      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly" style="width: 10%">
+      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowPrepsTodayOnly" style="width: 10%"></td>
+      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowPrepsTodayOnly" style="width: 10%">
         <span>בוצע</span>
         <input type="radio" ng-model="woItem.properties.select" value="done"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
       </td>
-      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly" style="width: 10%"></td>
+      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowPrepsTodayOnly" style="width: 10%"></td>
       <td ng-hide="woItem.isShowDetails" style="width: 28%">
-        <label ng-show="(!workOrderModel.isShowTodayOnly && woItem.isAnyRemark) ||
-                        (workOrderModel.isShowTodayOnly && woItem.isRemarkForToday)">
+        <label ng-show="(!workOrderModel.isShowPrepsTodayOnly && woItem.isAnyRemark) ||
+                        (workOrderModel.isShowPrepsTodayOnly && woItem.isRemarkForToday)">
           יש התאמות אישיות. ראה בפירוט</label>
       </td>
       <td colspan="4" style="width: 58%" ng-show="woItem.isShowDetails">
@@ -228,39 +228,39 @@
           <th style="width: 15%">לקוח</th>
           <th style="width: 10%">יום</th>
           <th ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id"
-              ng-hide="workOrderModel.isShowTodayOnly && menuItem.quantityForToday===0">
+              ng-hide="workOrderModel.isShowPrepsTodayOnly && menuItem.quantityForToday===0">
             <span>{{menuItem.productName}}</span>
             <span ng-show="menuItem.isRemark">
               <label>{{"("+menuItem.remarkNo+")"}}</label>
             </span>
           </th>
           <th style="width: 10%">סה"כ</th>
-          <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly">עוד לא</th>
-          <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly">להיום</th>
-          <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly">בוצע</th>
+          <th style="width: 10%" ng-hide="workOrderModel.isShowPrepsTodayOnly">עוד לא</th>
+          <th style="width: 10%" ng-hide="workOrderModel.isShowPrepsTodayOnly">להיום</th>
+          <th style="width: 10%" ng-hide="workOrderModel.isShowPrepsTodayOnly">בוצע</th>
           </thead>
           <tbody>
-          <tr ng-show="!workOrderModel.isShowTodayOnly || order.select==='today'"
+          <tr ng-show="!workOrderModel.isShowPrepsTodayOnly || order.select==='today'"
               ng-repeat="order in woItem.properties.orders track by order.id">
             <td>{{order.customer}}</td>
             <td>{{order.day}}</td>
             <td ng-repeat="menuItem in order.menuItems track by menuItem.seq"
-                ng-hide="workOrderModel.isShowTodayOnly &&
+                ng-hide="workOrderModel.isShowPrepsTodayOnly &&
                          woItem.properties.menuItems[menuItem.seq].quantityForToday===0">
               {{menuItem.quantity | number:2}}
             </td>
             <td>{{order.totalQuantity | number:2}}</td>
-            <td ng-hide="workOrderModel.isShowTodayOnly">
+            <td ng-hide="workOrderModel.isShowPrepsTodayOnly">
               <input type="radio"
                      ng-model="order.select" value="delay"
                      ng-change="workOrderModel.setPrepOrderSelect(woItem)">
             </td>
-            <td ng-hide="workOrderModel.isShowTodayOnly">
+            <td ng-hide="workOrderModel.isShowPrepsTodayOnly">
               <input type="radio"
                      ng-model="order.select" value="today"
                      ng-change="workOrderModel.setPrepOrderSelect(woItem)">
             </td>
-           <td ng-hide="workOrderModel.isShowTodayOnly">
+           <td ng-hide="workOrderModel.isShowPrepsTodayOnly">
              <input type="radio"
                     ng-model="order.select" value="done"
                     ng-change="workOrderModel.setPrepOrderSelect(woItem)">
@@ -270,17 +270,17 @@
           <td><label>סה"כ</label></td>
           <td></td>
           <td ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id"
-              ng-hide="workOrderModel.isShowTodayOnly && menuItem.quantityForToday===0">
-            <span ng-hide="workOrderModel.isShowTodayOnly">{{menuItem.quantity | number : 2}}</span>
-            <span ng-show="workOrderModel.isShowTodayOnly">{{menuItem.quantityForToday | number : 2}}</span>
+              ng-hide="workOrderModel.isShowPrepsTodayOnly && menuItem.quantityForToday===0">
+            <span ng-hide="workOrderModel.isShowPrepsTodayOnly">{{menuItem.quantity | number : 2}}</span>
+            <span ng-show="workOrderModel.isShowPrepsTodayOnly">{{menuItem.quantityForToday | number : 2}}</span>
           </td>
-            <td ng-hide="workOrderModel.isShowTodayOnly">{{woItem.properties.quantity | number:2}}</td>
-            <td ng-show="workOrderModel.isShowTodayOnly">{{woItem.properties.quantityForToday | number:2}}</td>
+            <td ng-hide="workOrderModel.isShowPrepsTodayOnly">{{woItem.properties.quantity | number:2}}</td>
+            <td ng-show="workOrderModel.isShowPrepsTodayOnly">{{woItem.properties.quantityForToday | number:2}}</td>
           </tr>
           </tbody>
         </table>
         <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} track by remark.id"
-             ng-hide="workOrderModel.isShowTodayOnly && remark.quantityForToday===0">
+             ng-hide="workOrderModel.isShowPrepsTodayOnly && remark.quantityForToday===0">
           <label>{{"התאמה אישית מס'"+remark.remarkNo+":"}}</label>
           <span>{{remark.remarkText}}</span>
         </div>

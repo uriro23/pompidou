@@ -35,7 +35,8 @@ angular.module('myApp')
     this.destroyWorkOrderDomains = function (domain) {
       var that = this;
       var woItemsToDelete = this.workOrder.filter(function (wo) {
-        return wo.properties.domain >= domain;
+        // for shopping domain, don't delete actions
+        return domain===3 ? (wo.properties.domain === domain) : (wo.properties.domain >= domain);
       });
       this.isProcessing = true;
       return api.deleteObjects(woItemsToDelete)
@@ -86,7 +87,6 @@ angular.module('myApp')
                 if (inWorkOrderItem.properties.order.orderStatus === 2) {
                   workItem.properties.notFinalQuantity += item.quantity;
                 }
-                workItem.properties.originalQuantity = workItem.properties.quantity;
                 workItem.properties.backTrace.push({
                   id: inWorkOrderItem.id,
                   domain: 0,
@@ -113,7 +113,7 @@ angular.module('myApp')
                     (item.isKitchenRemark && item.kitchenRemark) ?
                       item.kitchenRemark : item.productDescription;
                 }
-                workItem.properties.quantity = workItem.properties.originalQuantity = item.quantity;
+                workItem.properties.quantity = item.quantity;
                 if (inWorkOrderItem.properties.order.orderStatus === 2) {
                   workItem.properties.notFinalQuantity = item.quantity;
                 }
@@ -174,14 +174,17 @@ angular.module('myApp')
               if (temp.length > 0) {  // item already exists, just add quantity
                 workItem = that.workOrder[workItemInd];
                 workItem.properties.quantity +=
-                  inWorkItem.quantity* component.quantity / inCatItem.productionQuantity;
-                workItem.properties.originalQuantity = workItem.properties.quantity;
-                  workItem.properties.backTrace.push({
+                  inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                workItem.properties.quantityForToday +=
+                  inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                workItem.properties.backTrace.push({
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
-                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
+                    quantityForToday: inWorkItem.quantityForToday * component.quantity /
+                                      inCatItem.productionQuantity
                   });
-              } else {
+              } else {  // first time component appears
                 var outCatObj = catalog.filter(function (cat) {
                   return cat.id === component.id;
                 })[0];
@@ -198,14 +201,14 @@ angular.module('myApp')
                   workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
                     return mes.tId === outCatItem.measurementUnit;
                   })[0];
-                  workItem.properties.isIncludeStock = outCatItem.isInStock;
+                 workItem.properties.isIncludeStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                  workItem.properties.originalQuantity = workItem.properties.quantity;
-                  workItem.properties.quantityForToday = 0;
-                  workItem.properties.backTrace = [{
+                 workItem.properties.quantityForToday = inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                 workItem.properties.backTrace = [{
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
-                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
+                    quantityForToday: inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity
                   }];
                   workItem.properties.select = "delay";
                   that.workOrder.push(workItem);
@@ -360,7 +363,7 @@ angular.module('myApp')
          });
       }
       var isShowByToday = woItem.properties.domain === 2 ?
-        (that.isShowTodayOnly ? isItemToday : true) : true;
+        (that.isShowPrepsTodayOnly ? isItemToday : true) : true;
       return isShowByStock && isShowByToday && isShowByDone;
     };
 
@@ -368,7 +371,7 @@ angular.module('myApp')
     // also check if there are remarks for today's menuItems
     this.setPrepsTodayOnly = function () {
       var that = this;
-      if (this.isShowTodayOnly) {
+      if (this.isShowPrepsTodayOnly) {
         this.isOrderFilter = false;  // turn off order selection table
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
@@ -850,7 +853,7 @@ angular.module('myApp')
       var that = this;
       this.workOrder.forEach(function(woi) {
         if (woi.properties.domain === 2) {
-          if (that.isShowTodayOnly ||  woi.properties.select !== 'mix') {
+          if (that.isShowPrepsTodayOnly ||  woi.properties.select !== 'mix') {
             woi.isShowDetails = that.isShowDetails;
           }
         }
@@ -868,7 +871,10 @@ angular.module('myApp')
       this.destroyWorkOrderDomains(targetDomain)
         .then(function () {
         that.workOrder = that.workOrder.filter(function (wo) {
-          return wo.properties.domain < targetDomain;
+          // for shopping domain, include actions
+          return targetDomain===3 ?
+            (wo.properties.domain === 4 || wo.properties.domain < targetDomain) :
+            (wo.properties.domain < targetDomain);
         });
         if (targetDomain === 1) {
           that.createOrderItems();
