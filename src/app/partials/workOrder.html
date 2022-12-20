@@ -38,23 +38,28 @@
 </div>
 <tabset ng-hide="workOrderModel.isProcessing">
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
-       active="workOrderModel.isActiveTab[3]">
-    <ng-include src="'app/partials/workOrder/shoppingList.html'"></ng-include>
+       active="workOrderModel.isActiveTab[3]"
+       select="workOrderModel.setDomain(3)">
+    <ng-include src="'app/partials/workOrder/domainList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[4].forWorkItem}}"
-       active="workOrderModel.isActiveTab[4]">
-    <ng-include src="'app/partials/workOrder/actionList.html'"></ng-include>
+       active="workOrderModel.isActiveTab[4]"
+       select="workOrderModel.setDomain(4)">
+    <ng-include src="'app/partials/workOrder/domainList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[2].forWorkItem}}"
-       active="workOrderModel.isActiveTab[2]">
+       active="workOrderModel.isActiveTab[2]"
+       select="workOrderModel.setDomain(2)">
     <ng-include src="'app/partials/workOrder/preparationList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[1].forWorkItem}}"
-       active="workOrderModel.isActiveTab[1]">
+       active="workOrderModel.isActiveTab[1]"
+       select="workOrderModel.setDomain(1)">
     <ng-include src="'app/partials/workOrder/menuItemList.html'"></ng-include>
   </tab>
   <tab heading="{{workOrderModel.domains[0].forWorkItem}}"
-       active="workOrderModel.isActiveTab[0]">
+       active="workOrderModel.isActiveTab[0]"
+       select="workOrderModel.setDomain(0)">
     <ng-include ng-show="workOrderModel.woIndex.properties.domainStatus[0]"
                 src="'app/partials/workOrder/orderList.html'"></ng-include>
     <ng-include ng-show="!workOrderModel.woIndex.properties.domainStatus[0] && !workOrderModel.woIndex.properties.isQuery"

@@ -18,12 +18,24 @@ angular.module('myApp')
 
     var woId;
 
+    this.isShowTodayOnly = [];
+    this.isShowDetails = [];
+    this.isPrint = [];
+
     this.dayName = function(dat) {
       var dayNames = ['א','ב','ג','ד','ה','ו','ש'];
       return dayNames[dat.getDay()]+"'";
     };
 
-
+    this.setDomain = function(domain) {
+      this.domain = domain;
+      if (!this.woIndex.properties.domainStatus[domain]) {
+        var prevDomain = domain===4 ? 2 : domain - 1;
+        if (domain===1 || this.woIndex.properties.domainStatus[prevDomain]) {
+          this.createWorkOrderDomain(domain);
+        }
+      }
+  }
 
     this.setShowAll = function(domain) {
       var that = this;
@@ -221,15 +233,10 @@ angular.module('myApp')
   //      }
        }
       });
-    var shopping = this.workOrder.filter(function(wo) {
-      return wo.properties.domain === 3;
-    });
-    console.log('shopping:');
-    console.log(shopping);
-  };
+    };
 
     // for each preparation, create an array of menu items in which it appears for detailed listing
-    this.createMenuItemView = function() {
+    this.createPrepMenuItemView = function() {
       var that = this;
       this.workOrder.forEach(function(currentPrep) {
         if(currentPrep.properties.domain === 2) {
@@ -275,7 +282,6 @@ angular.module('myApp')
     // for each preparation, create an array of orders in which menuItems containing this preparation appear.
     // each entry contains an array of menuItems.
     // this is an inverse of the prep menuItems array.
-    //
     this.createPrepOrderView = function () {
       var that = this;
       this.workOrder.forEach(function (currentPrep) {
@@ -349,7 +355,56 @@ angular.module('myApp')
       });
     };
 
-    // decide if item will be shown on prep and shopping lists
+    // for each shopping or action item, find its breakdown to individual orders, based on
+    // the prep order view it comes from
+    this.createShoppingAndActionsOrderView = function(targetDomain) {
+    var that = this;
+    that.workOrder.forEach(function(currentItem) {
+      if (currentItem.properties.domain === targetDomain) {
+        var itemCatalogItem = catalog.filter(function (cat) {
+          return cat.id === currentItem.properties.catalogId;
+        })[0];
+        currentItem.properties.orders = [];
+        currentItem.properties.backTrace.forEach(function(itemBackTrace) {
+          if (itemBackTrace.domain === 2) {
+            var originalPrep = that.workOrder.filter(function (prep) {
+              return prep.id === itemBackTrace.id;
+            })[0];
+            var prepCatalogItem = that.catalog.filter(function (cat) {
+              return cat.id === originalPrep.properties.catalogId;
+            })[0];
+            var component = prepCatalogItem.properties.components.filter(function (comp) {
+              return comp.id === itemCatalogItem.id;
+            })[0];
+            originalPrep.properties.orders.forEach(function (prepOrder) {
+              var temp = currentItem.properties.orders.filter(function (itemOrder) {
+                return itemOrder.id === prepOrder.id;
+              });
+              var currentOrder;
+              if (temp.length === 0) { // order doesn't exists in item
+                currentOrder = {
+                  id: prepOrder.id,
+                  customer: prepOrder.customer,
+                  date: prepOrder.date,
+                  day: prepOrder.day,
+                  totalQuantity: 0,
+                  menuItems: [],
+                  select: prepOrder.select
+                };
+                currentItem.properties.orders.push(currentOrder);
+              } else {
+                currentOrder = temp[0];
+              }
+              currentOrder.totalQuantity +=
+                prepOrder.totalQuantity * component.quantity / prepCatalogItem.properties.productionQuantity;
+            });
+          }
+        })
+      }
+    })
+    };
+
+    // decide if item will be shown on prep list
     this.isShowItem = function (woItem) {
       var that = this;
       var isShowByStock = that.isIncludeStock ? true : !woItem.properties.isInStock;
@@ -375,7 +430,7 @@ angular.module('myApp')
         this.isOrderFilter = false;  // turn off order selection table
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
-            woItem.isShowDetails = that.isShowDetails;
+            woItem.isShowDetails = that.isShowDetails[that.domain];
             woItem.isRemarkForToday = false;
             woItem.properties.menuItems.forEach(function (mi) {
               if (mi.isRemark && mi.quantityForToday>0) {
@@ -458,8 +513,13 @@ angular.module('myApp')
           ord.select = woItem.properties.select;
         });
         this.computeQuantityForToday(woItem);
-        api.saveObj(woItem);
-      }
+        api.saveObj(woItem)
+          .then(function () {
+            that.woIndex.properties.domainStatus[3] = false;
+            that.woIndex.properties.domainStatus[4] = false;
+            api.saveObj(that.woIndex);
+          })
+     }
     };
 
     // if select values of all orders in prep are identical, set select value of prep accordingly
@@ -480,7 +540,12 @@ angular.module('myApp')
           woItem.isShowDetails = true;
         }
         this.computeQuantityForToday(woItem);
-        api.saveObj(woItem);
+        api.saveObj(woItem)
+          .then(function () {
+            that.woIndex.properties.domainStatus[3] = false;
+            that.woIndex.properties.domainStatus[4] = false;
+            api.saveObj(that.woIndex);
+          })
       }
     };
 
@@ -854,7 +919,7 @@ angular.module('myApp')
       this.workOrder.forEach(function(woi) {
         if (woi.properties.domain === 2) {
           if (that.isShowPrepsTodayOnly ||  woi.properties.select !== 'mix') {
-            woi.isShowDetails = that.isShowDetails;
+            woi.isShowDetails = that.isShowDetails[that.domain];
           }
         }
       })
@@ -882,8 +947,11 @@ angular.module('myApp')
           that.createComponents(targetDomain);
         }
         if (targetDomain === 2) {
-          that.createMenuItemView();
+          that.createPrepMenuItemView();
           that.createPrepOrderView();
+        } else if (targetDomain === 3 || targetDomain === 4) {
+        //  that.createShoppingAndActionsMenuItemView();
+          that.createShoppingAndActionsOrderView(targetDomain);
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {

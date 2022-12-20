@@ -18,7 +18,7 @@
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
         <span>הצג פירוט</span>
         <input type="checkbox"
-               ng-model="workOrderModel.isShowDetails"
+               ng-model="workOrderModel.isShowDetails[workOrderModel.domain]"
                ng-change="workOrderModel.setGlobalDetail()">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 12%">
@@ -43,23 +43,7 @@
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 5%">
       </td>
-      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
-        <button class="btn btn-default"
-                ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
-                ng-click="workOrderModel.createWorkOrderDomain(4)">
-          {{'חשב '+workOrderModel.domains[4].forWorkItem}}
-        </button>
-      </td>
-      <td  ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 6%">
-        <button class="btn btn-default"
-                ng-disabled="workOrderModel.isProcessing"
-                ng-show="workOrderModel.woIndex.properties.domainStatus[2]"
-                ng-click="workOrderModel.createWorkOrderDomain(3)">
-          {{'חשב '+workOrderModel.domains[3].forWorkItem}}
-        </button>
-      </td>
-      <td style="width: 12%"></td>
+    <td style="width: 12%"></td>
     </tr>
   </table>
   <table class="table" style="width: 100%">

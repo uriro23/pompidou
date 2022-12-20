@@ -34,14 +34,6 @@
         </a>
       </button>
     </td>
-    <td style="width:10%">
-  <button class="btn btn-default"
-          ng-disabled="workOrderModel.isProcessing"
-          ng-show="workOrderModel.woIndex.properties.domainStatus[1]"
-          ng-click="workOrderModel.createWorkOrderDomain(2)">
-    {{'חשב '+workOrderModel.domains[2].forWorkItem}}
-  </button>
-    </td>
   </tr>
 </table>
 <div ng-show="workOrderModel.woOrders.length>15">
