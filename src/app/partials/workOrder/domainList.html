@@ -6,28 +6,31 @@
              ng-model="workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].isShowAll"
              ng-change="workOrderModel.setShowAll(workOrderModel.domain)">
     </td>
-    <td style="width:40%;font-size: large" ng-hide="workOrderModel.isPrint[workOrderModel.domain]">
+    <td style="width:20%;font-size: large" ng-hide="workOrderModel.isPrint[workOrderModel.domain]">
       {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
       <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
       <span ng-hide="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
         --- לא מעודכן ---
       </span>
     </td>
-    <td style="width:40%;font-size: large" ng-show="workOrderModel.isPrint[workOrderModel.domain]">
+    <td style="width:20%;font-size: large" ng-show="workOrderModel.isPrint[workOrderModel.domain]">
       {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
-      <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
-        להיום
-      </span>
+      <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
     </td>
-    <td style="width: 20%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
-      <span>פירוט</span>
-      <input type="checkbox" ng-model="workOrderModel.isShowDetails[workOrderModel.domain]">
+    <td style="width: 15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+      <span>הצג פירוט</span>
+      <input type="checkbox" ng-model="workOrderModel.isShowDetails[workOrderModel.domain]"
+             ng-change="workOrderModel.setGlobalDetail()">
     </td>
-    <td style="width: 20%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+    <td style="width: 15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+      <span>כולל מלאי</span>
+      <input type="checkbox" ng-model="workOrderModel.isIncludeStock[workOrderModel.domain]">
+    </td>
+    <td style="width: 15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>הצג רק להיום</span>
       <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
     </td>
-    <td style="width:20%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+    <td style="width:15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>להדפסה</span>
       <input type="checkbox" ng-model="workOrderModel.isPrint[workOrderModel.domain]">
     </td>
@@ -38,10 +41,15 @@
               !workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
+  <span>&nbsp;&nbsp;פירוט</span>
+  <input type="checkbox" ng-model="cat.isShowDetails" ng-change="workOrderModel.setCategoryDetail(cat)">
   <table ng-show="cat.isShow" class="table table-hover" style="width:90%">
     <tbody>
     <tr ng-repeat="woItem in cat.list track by woItem.id"
-        ng-hide="workOrderModel.isShowTodayOnly[workOrderModel.domain] && woItem.properties.quantityForToday===0">
+        ng-class="woItem.properties.isInStock?'bg-warning':'null'"
+        ng-hide="(workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
+         woItem.properties.quantityForToday===0) ||
+         (!workOrderModel.isIncludeStock[workOrderModel.domain] && woItem.properties.isInStock)">
       <td style="width: 30%">{{woItem.properties.productName}}</td>
       <td style="width: 5%" ng-hide="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
         {{woItem.properties.quantity | number:2}}
@@ -64,7 +72,7 @@
           מחק
         </button>
       </td>
-      <td style="width: 41%" ng-show="workOrderModel.isShowDetails[workOrderModel.domain]">
+      <td style="width: 41%" ng-show="woItem.isShowDetails">
         <table class="table">
           <thead>
           <th>לקוח</th>

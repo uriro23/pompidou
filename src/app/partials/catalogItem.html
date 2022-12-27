@@ -442,7 +442,7 @@
             <option value=""></option>
           </select>
       </tr>
-       <tr ng-show="catalogItemModel.currentDomain.id===2 || catalogItemModel.currentDomain.id===3">
+       <tr ng-show="catalogItemModel.currentDomain.id>1">
          <td><label>האם מלאי?</label></td>
          <td>
            <input type="checkbox" ng-model="catalogItemModel.item.properties.isInStock"

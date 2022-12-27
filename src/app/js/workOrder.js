@@ -19,6 +19,7 @@ angular.module('myApp')
     var woId;
 
     this.isShowTodayOnly = [];
+    this.isIncludeStock = [];
     this.isShowDetails = [];
     this.isPrint = [];
 
@@ -126,6 +127,7 @@ angular.module('myApp')
                       item.kitchenRemark : item.productDescription;
                 }
                 workItem.properties.quantity = item.quantity;
+                workItem.properties.quantityForToday = 0;
                 if (inWorkOrderItem.properties.order.orderStatus === 2) {
                   workItem.properties.notFinalQuantity = item.quantity;
                 }
@@ -213,7 +215,7 @@ angular.module('myApp')
                   workItem.properties.measurementUnit = measurementUnits.filter(function (mes) {
                     return mes.tId === outCatItem.measurementUnit;
                   })[0];
-                 workItem.properties.isIncludeStock = outCatItem.isInStock;
+                 workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                  workItem.properties.quantityForToday = inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
                  workItem.properties.backTrace = [{
@@ -407,7 +409,7 @@ angular.module('myApp')
     // decide if item will be shown on prep list
     this.isShowItem = function (woItem) {
       var that = this;
-      var isShowByStock = that.isIncludeStock ? true : !woItem.properties.isInStock;
+      var isShowByStock = that.isIncludeStock[woItem.properties.domain] ? true : !woItem.properties.isInStock;
       var isShowByDone = that.isShowDone ? true : !(woItem.properties.select==='done');
       var isItemToday = woItem.properties.select==='today';
       if (woItem.properties.select==='mix') {
@@ -808,15 +810,44 @@ angular.module('myApp')
               if (!that.woIndex.properties.isQuery) {
                 that.createOrderView();
               }
-              for (var dd = 0; dd < 5; dd++) {                     // all domains - invalid
-                that.woIndex.properties.domainStatus[dd] = false;
-              }
+              that.woIndex.properties.domainStatus.forEach(function(ds) {
+                ds = false;
+              });
               api.saveObj(that.woIndex);
-              that.isWoValid = true;
+              that.isWoChanged = false;
             });
         }
       });
     };
+
+    this.deleteWorkOrder = function () {
+      that.isActiveTab = [true, false, false, false]; // show orders tab
+      // first keep orders in existing work order so they will be inserted in the new wo
+      that.prevOrdersInWo = that.workOrder.filter(function (o) {
+        return o.properties.domain === 0;
+      });
+      that.orderView = [];
+      that.destroyWorkOrderDomains(0)
+        .then(function () {
+          that.workOrder = [];
+          that.hierarchicalWorkOrder = [];
+          that.woOrders = [];
+          if (!that.woIndex.properties.isQuery) {
+            that.createOrderView();
+          }
+          for(var dd=0;dd<5;dd++) {
+            that.woIndex.properties.domainStatus[dd] = false;
+          }
+          api.saveObj(that.woIndex);
+          that.isWoChanged = false;
+          that.isWoMajorChange = false;
+        });
+    };
+
+    this.ignoreWorkOrderChanges = function () {
+      that.isWoChanged = false;
+      that.isWoMajorChange = false;
+    }
 
     this.saveWorkOrder = function (domain) {
       var woItemsToSave = this.workOrder.filter(function (wo) {
@@ -917,12 +948,32 @@ angular.module('myApp')
     this.setGlobalDetail = function() {
       var that = this;
       this.workOrder.forEach(function(woi) {
-        if (woi.properties.domain === 2) {
-          if (that.isShowPrepsTodayOnly ||  woi.properties.select !== 'mix') {
-            woi.isShowDetails = that.isShowDetails[that.domain];
+        if (woi.properties.domain === that.domain) {
+          if (woi.properties.domain === 2) {
+            if (that.isShowPrepsTodayOnly || woi.properties.select !== 'mix') {
+              woi.isShowDetails = that.isShowDetails[2];
+            }
+          } else {
+            woi.isShowDetails = that.isShowDetails[woi.properties.domain];
           }
         }
-      })
+      });
+      this.hierarchicalWorkOrder[that.domain].categories.forEach(function (cat) {
+        cat.isShowDetails = that.isShowDetails[that.domain];
+      });
+    };
+
+    this.setCategoryDetail = function(category) {
+      var that = this;
+      category.list.forEach(function(woi) {
+        if (woi.properties.domain === 2) {
+          if (that.isShowPrepsTodayOnly || woi.properties.select !== 'mix') {
+            woi.isShowDetails = category.isShowDetails;
+          }
+        } else {
+          woi.isShowDetails = category.isShowDetails;
+        }
+      });
     };
 
     // create work order items for specified domain from lower domain itens
@@ -973,7 +1024,7 @@ angular.module('myApp')
                   }
                 }
                 api.saveObj(that.woIndex);
-                that.isIncludeStock = true;
+                that.isIncludeStock[targetDomain] = true;
               });
           });
       });
@@ -1088,6 +1139,8 @@ angular.module('myApp')
       var that = this;
       woId = this.woIndex.properties.woId;
        this.isProcessing = true;
+      var horizonDate = new Date();
+      horizonDate.setDate(new Date().getDate()+8);
       api.queryWorkOrder(woId)
         .then(function(wo) {
           that.workOrder = wo;
@@ -1096,26 +1149,159 @@ angular.module('myApp')
           that.isActiveTab = [false, true, false, false]; // show menu items by default
           that.splitWorkOrder();
           // check if any order in wo has passed or has been changed since last wo creation
-          that.isWoValid = true;
-          api.queryFutureOrders(['number'])
+          that.isWoChanged = false;
+          that.isWoMajorChange = false;
+          that.changedOrders = [];
+          var reason = {};
+          var diffItems = [];
+          api.queryFutureOrders()
             .then(function(futureOrders) {
               that.woOrders.forEach(function(woOrder) {
-                var ord = futureOrders.filter(function(futureOrder) {
+                var ord = futureOrders.filter(function (futureOrder) {
                   return futureOrder.properties.number === woOrder.properties.order.number;
                 })[0];
-                if (!ord) {
-                  that.isWoValid = false;
-                } else if (ord.updatedAt > that.woIndex.updatedAt) {
-                  that.isWoValid = false;
+                if (!ord) { // order occured in the past
+                  that.isWoChanged = true;
+                  that.isWoMajorChange = true;
+                  that.changedOrders.push({
+                    reason: {id: 1, label: 'עבר', isRemove: true, isRecalc: false, isNew: false},
+                    order: woOrder.properties.order,
+                    orderStatus: woOrder.properties.orderStatus,
+                    customer: woOrder.properties.customer,
+                    items: diffItems
+                  });
+                } else {
+                  ord.isInWo = true;
+                  if (ord.updatedAt > that.woIndex.updatedAt) { // order updated
+                  that.isWoChanged = true;
+                  if (ord.properties.orderStatus === 6 || ord.properties.orderStatus < 2) {
+                    that.isWoMajorChange = true;
+                    reason = {id:2, label: 'בוטל', isRemove: true, isRecalc: false, isNew: false};
+                  } else {
+                    var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
+                    if (dateDiff !== 0  && ord.properties.eventDate >= horizonDate) {
+                      that.isWoMajorChange = true;
+                      reason = {id:3, label: 'נדחה', isRemove: true, isRecalc: false, isNew: false};
+                 } else if (dateDiff !== 0 && ord.properties.eventDate < horizonDate) {
+                    reason = {id:4, label: 'הוזז', isRemove: false, isRecalc: false, isNew: false};
+                  } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
+                            woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
+                      that.isWoMajorChange = true;
+                      reason = {id:5, label: 'תפריט אחר', isRemove: false, isRecalc: true, isNew: false};
+                  } else {
+                    diffItems = that.compareItems(
+                      angular.copy(ord.properties.quotes[ord.properties.activeQuote].items),
+                      angular.copy(woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].items)
+                    );
+                    if (diffItems.length) {
+                      that.isWoMajorChange = true;
+                      reason = {id: 6, label: 'שינוי מנות', isRemove: false, isRecalc: true, isNew: false};
+                    } else {
+                      reason = {id: 8, label: 'שינוי אחר', isRemove: false, isRecalc: false, isNew: false};
+                    }
+                  }
+                  }
+                    that.changedOrders.push({
+                    reason: reason,
+                    order: woOrder.properties.order,
+                    orderStatus: lov.orderStatuses.filter(function(st) {
+                      return st.id === ord.properties.orderStatus;
+                    })[0],
+                    customer: customers.filter(function(cust) {
+                      return cust.id === ord.properties.customer;
+                    })[0].properties,
+                    items: diffItems
+                  });
                 }
-              });
-              if (!that.isWoValid) {
-                that.createNewWorkOrder(true);
               }
+              });
+              var newOrders = futureOrders.filter(function(ord) {
+                return !ord.isInWo &&
+                  ord.properties.eventDate < horizonDate &&
+                  ord.properties.orderStatus > 1 &&
+                  ord.properties.orderStatus < 6;
+              });
+              newOrders.forEach(function(newOrd) {
+                that.isWoChanged = true;
+                that.isWoMajorChange = true;
+                that.changedOrders.push({
+                  reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: false, isNew: true},
+                  order: newOrd.properties,
+                  orderStatus: lov.orderStatuses.filter(function(st) {
+                    return st.id === newOrd.properties.orderStatus;
+                  })[0],
+                  customer: customers.filter(function(cust) {
+                    return cust.id === newOrd.properties.customer
+                  })[0].properties,
+                  items: diffItems
+                });
+              });
+              // if (that.isWoChanged) {
+              //   that.createNewWorkOrder(true);
+              // }
               that.isProcessing = false;
-              that.isIncludeStock = true;
+              that.isIncludeStock[2] = true;
+              that.isIncludeStock[3] = true;
+              that.isIncludeStock[4] = true;
             });
         });
+    };
+
+    this.compareItems = function (newItems, oldItems) {
+      var that = this;
+      var reason;
+      var diffList = [];
+      newItems.forEach(function(newItem) {
+        if (newItem.category.type < 3) {
+          var temp = oldItems.filter(function (it) {
+            return it.index === newItem.index;
+          });
+          if (temp.length) {
+            var oldItem = temp[0];
+            var isDiff = false;
+            oldItem.isVisited = true;
+            if (newItem.catalogId !== oldItem.catalogId) {
+              alert('שינוי לא סביר של פריט: ' + oldItem.productName + ' ל ' + newItem.productName);
+            }
+            if (newItem.quantity !== oldItem.quantity) {
+              isDiff = true;
+              reason = {id: 3, label: 'כמות'};
+            } else {
+              var newDescChange = newItem.isKitchenRemark || newItem.isMajorChange;
+              var oldDescChange = oldItem.isKitchenRemark || oldItem.isMajorChange;
+              if (newDescChange !== oldDescChange ||
+                (newDescChange && oldDescChange && (newItem.productDescription !== oldItem.productDescription) ||
+                  newItem.isKitchenRemark != oldItem.isKitchenRemark)) {
+                isDiff = true;
+                reason = {id: 4, label: 'התאמה אישית'};
+              }
+            }
+          } else { // added item
+            isDiff = true;
+            reason = {id: 1, label: 'נוסף'};
+            oldItem = {};
+          }
+          if (isDiff) {
+            diffList.push({
+              newItem: newItem,
+              oldItem: oldItem,
+              reason: reason
+            })
+          }
+        }
+      });
+      oldItems.forEach(function(oldItem) {
+        if (!oldItem.isVisited) {
+          if (oldItem.category.type < 3) {
+            diffList.push({
+              newItem: oldItem,  // for view: always use newItem for item's details
+              oldItem: oldItem,
+              reason: {id: 9, label: 'בוטל'}
+            })
+          }
+        }
+      });
+      return diffList;
     };
 
     // main block

@@ -1,0 +1,81 @@
+<H4>אירועים שעברו / בוטלו / השתנו / התווספו</H4>
+<table class="table" style="width: 80%">
+  <thead>
+  <th style="width: 10%">    מספר  </th>
+  <th style="width: 15%">   תאריך  </th>
+  <th style="width: 8%">    מסירה  </th>
+  <th style="width: 7%">יציאה  </th>
+  <th style="width: 10%">    לקוח  </th>
+  <th style="width: 10%">    סועדים  </th>
+  <th style="width: 10%">    תפריט  </th>
+  <th style="width: 10%">    סטטוס  </th>
+  <th style="width: 10%">זיהוי</th>
+  <th style="width: 10%">סיבה</th>
+  </thead>
+</table>
+<div ng-repeat="woItem in workOrderModel.changedOrders track by woItem.order.id">
+<table class="table" style="width: 80%">
+  <tbody>
+  <tr ng-class="woItem.orderStatus.id===1?'bg-active':
+                        woItem.orderStatus.id===2?'bg-warning':
+                        (woItem.orderStatus.id>=3 && woItem.orderStatus.id<=5)?'bg-success':
+                        woItem.orderStatus.id===6?'active myCanceledEvent':null">
+    <td style="width: 10%">
+      <a ng-href="#/editOrderView/{{woItem.order.id}}/0">{{woItem.order.number}}</a>
+    </td>
+    <td style="width: 15%">{{woItem.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
+    <td style="width: 8%">{{woItem.order.eventTime | date: 'HH:mm'}}</td>
+    <td style="width: 7%">{{woItem.order.exitTime | date: 'HH:mm'}}</td>
+    <td style="width: 10%">{{woItem.customer.firstName+' '+woItem.customer.lastName}}</td>
+    <td style="width: 10%">{{woItem.order.noOfParticipants}}</td>
+    <td style="width: 10%">{{woItem.order.header.title}}</td>
+    <td style="width: 10%" ng-style="workOrderModel.isOrderColors ? woItem.order.color.style : null">
+      {{woItem.orderStatus.name}}
+    </td>
+    <td style="width: 10%">{{woItem.order.color.tId}}</td>
+    <td style="width: 10%">{{woItem.reason.label}}</td>
+  </tr>
+  </tbody>
+</table>
+  <div style="margin-right: 5%" ng-show="woItem.reason.id===6">
+  <table class="table table-hover" style="width: 75%">
+    <thead>
+    <th style="width: 25%">מנה</th>
+    <th style="width: 7%">כמות קודמת</th>
+    <th style="width: 7%">כמות חדשה</th>
+    <th style="width: 25%">התאמה אישית קודמת</th>
+    <th style="width: 25%">התאמה אישית חדשה</th>
+    <th style="width: 11%">סיבה</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in woItem.items track by item.newItem.index">
+      <td>{{item.newItem.productName}}</td>
+      <td ng-hide="item.reason.id===1">{{item.oldItem.quantity | number:2}}</td>
+      <td ng-show="item.reason.id===1">{{0 | number:2}}</td>
+      <td ng-hide="item.reason.id===9">{{item.newItem.quantity | number:2}}</td>
+      <td ng-show="item.reason.id===9">{{0 | number:2}}</td>
+      <td ng-hide="item.reason.id===1">
+        {{item.oldItem.isDescChanged && !item.oldItem.isCosmeticChange ?
+          item.oldItem.kitchenRemark ? item.oldItem.kitchenRemark : item.oldItem.productDescription : 'אין'}}
+      </td>
+      <td ng-show="item.reason.id===1"></td>
+      <td ng-hide="item.reason.id===9">
+        {{item.newItem.isDescChanged && !item.newItem.isCosmeticChange ?
+        item.newItem.kitchenRemark ? item.newItem.kitchenRemark : item.newItem.productDescription : 'אין'}}
+      </td>
+      <td ng-show="item.reason.id===9"></td>
+      <td>{{item.reason.label}}</td>
+    </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+<button class="btn btn-primary"
+        ng-show="workOrderModel.isWoMajorChange"
+        ng-click="workOrderModel.deleteWorkOrder()">
+  עדכן
+</button>
+<button class="btn btn-warning" ng-click="workOrderModel.ignoreWorkOrderChanges()">
+  <span ng-show="workOrderModel.isWoMajorChange">התעלם</span>
+  <span ng-hide="workOrderModel.isWoMajorChange">OK</span>
+</button>

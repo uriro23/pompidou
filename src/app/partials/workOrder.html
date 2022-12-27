@@ -3,7 +3,7 @@
     <td style="width: 50%;font-size: x-large">
   פקודת עבודה
 <span>{{workOrderModel.woIndex.properties.label}}</span>
-      <span ng-hide="workOrderModel.isWoValid">
+      <span ng-show="workOrderModel.isWoChanged">
       <bold style="font-size: x-large">לא מעודכנת</bold>
     </span>
     </td>
@@ -36,7 +36,10 @@
   <span>עד תאריך</span>
   <span>{{workOrderModel.toDate | date:'dd/MM/yy'}}</span>
 </div>
-<tabset ng-hide="workOrderModel.isProcessing">
+<div ng-show=" !workOrderModel.isProcessing && workOrderModel.isWoChanged">
+  <ng-include src="'app/partials/workOrder/changedOrderList.html'"></ng-include>
+</div>
+<tabset ng-hide="workOrderModel.isProcessing || workOrderModel.isWoChanged">
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
        active="workOrderModel.isActiveTab[3]"
        select="workOrderModel.setDomain(3)">

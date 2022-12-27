@@ -23,7 +23,7 @@
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 12%">
         <span>כולל מלאי?</span>
-        <input type="checkbox" ng-model="workOrderModel.isIncludeStock">
+        <input type="checkbox" ng-model="workOrderModel.isIncludeStock[workOrderModel.domain]">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 15%">
         <span>כולל הכנות שבוצעו</span>
@@ -162,6 +162,8 @@
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
+  <span>&nbsp;&nbsp;פירוט</span>
+  <input type="checkbox" ng-model="cat.isShowDetails" ng-change="workOrderModel.setCategoryDetail(cat)">
   <table ng-show="cat.isShow" class="table table-hover" style="width:100%">
     <tbody>
     <tr ng-class="woItem.properties.isInStock?'bg-warning':'null'"
