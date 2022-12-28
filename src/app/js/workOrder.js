@@ -1182,8 +1182,6 @@ angular.module('myApp')
                     if (dateDiff !== 0  && ord.properties.eventDate >= horizonDate) {
                       that.isWoMajorChange = true;
                       reason = {id:3, label: 'נדחה', isRemove: true, isRecalc: false, isNew: false};
-                 } else if (dateDiff !== 0 && ord.properties.eventDate < horizonDate) {
-                    reason = {id:4, label: 'הוזז', isRemove: false, isRecalc: false, isNew: false};
                   } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
                             woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
                       that.isWoMajorChange = true;
@@ -1196,6 +1194,8 @@ angular.module('myApp')
                     if (diffItems.length) {
                       that.isWoMajorChange = true;
                       reason = {id: 6, label: 'שינוי מנות', isRemove: false, isRecalc: true, isNew: false};
+                    } else if (dateDiff !== 0 && ord.properties.eventDate < horizonDate) {
+                      reason = {id:4, label: 'הוזז', isRemove: false, isRecalc: false, isNew: false};
                     } else {
                       reason = {id: 8, label: 'שינוי אחר', isRemove: false, isRecalc: false, isNew: false};
                     }
@@ -1222,11 +1222,13 @@ angular.module('myApp')
                   ord.properties.orderStatus < 6;
               });
               newOrders.forEach(function(newOrd) {
-                that.isWoChanged = true;
+               that.isWoChanged = true;
                 that.isWoMajorChange = true;
+                var temp = angular.copy(newOrd.properties);
+                temp.id = newOrd.id;
                 that.changedOrders.push({
                   reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: false, isNew: true},
-                  order: newOrd.properties,
+                  order: temp,
                   orderStatus: lov.orderStatuses.filter(function(st) {
                     return st.id === newOrd.properties.orderStatus;
                   })[0],
