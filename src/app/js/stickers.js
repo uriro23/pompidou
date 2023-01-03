@@ -243,16 +243,11 @@ angular.module('myApp')
       return order.order.quotes[order.order.activeQuote].items.filter(function(item) {
         return item.category.tId === category;
       }).map(function(item) {
-        var catalogItem = catalog.filter(function(cat) {
-          return cat.id===item.catalogId;
-        }).map(function(itm) {
-          itm.properties.id = itm.id;  // include id for ng-repeat uniqueness
-          return itm.properties;
-        })[0];
         return {
-          id: catalogItem.id,
-          productName: catalogItem.productName,
-          productDescription: item.productDescription,
+          id: item.index,   // for ng-repeat track by
+          productName: item.productName,
+          productDescription: (item.isKitchenRemark && item.kitchenRemark) ?
+                                item.kitchenRemark :  item.productDescription,
           isDescChanged: item.isDescChanged & (!item.isCosmeticChange),
           quantity: item.quantity,
           measurementUnitLabel: item.measurementUnit.label

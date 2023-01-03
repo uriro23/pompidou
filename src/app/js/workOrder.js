@@ -61,7 +61,7 @@ angular.module('myApp')
         });
     };
 
-
+/*
     this.createOrderItems = function () {
       var workItem;
       var orderInd;
@@ -163,9 +163,112 @@ angular.module('myApp')
           });
         }
       });
-   };
+    };
+*/
+    this.createOrderItems = function () {
+      var workItem;
+      var orderInd;
+      var workItemInd;
+      var that = this;
+      this.changedOrders.forEach(function(changedOrder) {
+        if (changedOrder.reason.isRecalc) {
+          var items =
+            changedOrder.order.quotes[changedOrder.order.activeQuote].items;
+          items.forEach(function (item) {
+            if (item.category.type < 3) {  // exclude non food items
+              if (item.isDescChanged && item.isCosmeticChange) {  // if only cosmetic change, ignore it for work order
+                item.isDescChanged = false;
+              }
+              // change measurement unit to prod mu and adjust quantity
+              var catItem = catalog.filter(function (cat) {
+                return cat.id === item.catalogId;
+              })[0].properties;
+              if (catItem.prodMeasurementUnit !== catItem.measurementUnit) {
+                item.measurementUnit = measurementUnits.filter(function (mu) {
+                  return mu.tId === catItem.prodMeasurementUnit;
+                })[0];
+                item.quantity = item.quantity * catItem.muFactor;
+              }
+              workItemInd = undefined;
+              that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
+                if (workItem.properties.domain === 1 && // unless their description is changed
+                  !item.isDescChanged && !workItem.properties.isDescChanged &&
+                  workItem.properties.catalogId === item.catalogId) {
+                  workItemInd = ind;
+                }
+              });
+              if (workItemInd) {  // item already in list, just add quantity
+                workItem = that.workOrder[workItemInd];
+                workItem.properties.quantity += item.quantity;
+                if (changedOrder.order.orderStatus === 2) {
+                  workItem.properties.notFinalQuantity += item.quantity;
+                }
+                workItem.properties.backTrace.push({
+                  id: changedOrder.woItem.id,
+                  domain: 0,
+                  quantity: item.quantity
+                });
+                that.woOrders.forEach(function (o, i) {
+                  if (o.id === changedOrder.woItem.id) {
+                    orderInd = i;
+                  }
+                });
+                workItem.properties.orderQuant[orderInd].quantity += item.quantity;
+              } else { // create new item
+                workItem = api.initWorkOrder();
+                workItem.properties.woId = woId;
+                workItem.properties.catalogId = item.catalogId;
+                workItem.properties.productName = item.productName;
+                workItem.properties.isDescChanged = item.isDescChanged;
+                if (item.isDescChanged) {
+                  workItem.properties.productDescription =
+                    // has to refer both to boolean and text field
+                    // user might change status of description change after entering text
+                    // user might also leave text empty
+                    // in both cases, use changed productDescription
+                    (item.isKitchenRemark && item.kitchenRemark) ?
+                      item.kitchenRemark : item.productDescription;
+                }
+                workItem.properties.quantity = item.quantity;
+                workItem.properties.quantityForToday = 0;
+                if (changedOrder.order.orderStatus === 2) {
+                  workItem.properties.notFinalQuantity = item.quantity;
+                }
+                workItem.properties.category = item.category;
+                workItem.properties.domain = 1;
+                workItem.properties.measurementUnit = item.measurementUnit;
+                workItem.properties.backTrace = [{
+                  id: changedOrder.woItem.id,
+                  domain: 0,
+                  quantity: item.quantity
+                }];
+                workItem.properties.orderQuant = []; // create array of order quantities for detailed menu item view
+                for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
+                  workItem.properties.orderQuant[i] = {
+                    id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
+                    quantity: 0,
+                    status: that.woOrders[i].properties.order.orderStatus
+                  };
+                }
+                that.woOrders.forEach(function (o, i) {
+                  if (o.id === changedOrder.woItem.id) {
+                    orderInd = i;
+                  }
+                });
+                workItem.properties.orderQuant[orderInd].quantity = item.quantity;
+                if (item.isDescChanged) {
+                  workItem.properties.orderQuant[orderInd].productDescription =
+                    workItem.properties.productDescription;
+                }
+                that.workOrder.push(workItem);
+              }
+            }
+          });
+        }
+      });
+    };
 
-  // create targetDomain records based on lower domain components
+    // create targetDomain records based on lower domain components
   this.createComponents = function (targetDomain) {
       var workItemInd;
       var workItem;
@@ -810,9 +913,9 @@ angular.module('myApp')
               if (!that.woIndex.properties.isQuery) {
                 that.createOrderView();
               }
-              that.woIndex.properties.domainStatus.forEach(function(ds) {
-                ds = false;
-              });
+              for (var d=0;d<5;d++) {
+                that.woIndex.properties.domainStatus[d] = false;
+              }
               api.saveObj(that.woIndex);
               that.isWoChanged = false;
             });
@@ -992,6 +1095,18 @@ angular.module('myApp')
             (wo.properties.domain === 4 || wo.properties.domain < targetDomain) :
             (wo.properties.domain < targetDomain);
         });
+        that.changedOrders = that.workOrder.filter(function(ord) {
+          return ord.properties.domain === 0;
+        }).map(function(woOrd) {
+         return {
+            reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: true, isNew: false},
+            woItem: woOrd,
+            order: woOrd.properties.order,
+            orderStatus: woOrd.properties.orderStatus,
+            customer: woOrd.properties.customer,
+            items: []
+         }
+        });
         if (targetDomain === 1) {
           that.createOrderItems();
         } else {
@@ -1001,7 +1116,6 @@ angular.module('myApp')
           that.createPrepMenuItemView();
           that.createPrepOrderView();
         } else if (targetDomain === 3 || targetDomain === 4) {
-        //  that.createShoppingAndActionsMenuItemView();
           that.createShoppingAndActionsOrderView(targetDomain);
         }
         that.saveWorkOrder(targetDomain)
