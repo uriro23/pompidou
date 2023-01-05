@@ -171,7 +171,7 @@ angular.module('myApp')
       var workItemInd;
       var that = this;
       this.changedOrders.forEach(function(changedOrder) {
-        if (changedOrder.reason.isRecalc) {
+        if (changedOrder.action === 'recalc') {
           var items =
         changedOrder.woItem.properties.order.quotes[changedOrder.woItem.properties.order.activeQuote].items;
           items.forEach(function (item) {
@@ -939,16 +939,16 @@ angular.module('myApp')
       var ordersToUpdate = [];
       var ordersToDelete = [];
       this.changedOrders.forEach(function(changedOrder, ind) {
-        if (changedOrder.reason.isRemove) {
+        if (changedOrder.action === 'delete') {
           ordersToDelete.push(changedOrder.woItem);
           that.workOrder = that.workOrder.filter(function(wo) {
             return wo.id !== changedOrder.woItem.id;
           });
-        } else if (changedOrder.reason.isNew) {
+        } else if (changedOrder.action === 'new') {
           if (changedOrder.isIncludeInWo) {
             ordersToCreate.push(changedOrder.woItem);
           }
-        } else if (changedOrder.reason.isUpdated) {
+        } else if (changedOrder.action === 'update') {
           ordersToUpdate.push(changedOrder.woItem);
         }
       });
@@ -1130,7 +1130,8 @@ angular.module('myApp')
           return ord.properties.domain === 0;
         }).map(function(woOrd) {
          return {
-            reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: true, isNew: false, isUpdated: false},
+            reason: 'חדש',
+            action: 'recalc',
             woItem: woOrd,
             items: []
          }
@@ -1295,7 +1296,7 @@ angular.module('myApp')
           that.isWoChanged = false;
           that.isWoMajorChange = false;
           that.changedOrders = [];
-          var reason = {};
+          var reason, action;
           var diffItems = [];
           api.queryFutureOrders()
             .then(function(futureOrders) {
@@ -1307,7 +1308,8 @@ angular.module('myApp')
                   that.isWoChanged = true;
                   that.isWoMajorChange = true;
                   that.changedOrders.push({
-                    reason: {id: 1, label: 'עבר', isRemove: true, isRecalc: false, isNew: false, isUpdated: false},
+                    reason: 'עבר',
+                    action: 'delete',
                     woItem: woOrder,
                     items: diffItems
                   });
@@ -1319,7 +1321,8 @@ angular.module('myApp')
                     that.isWoMajorChange = true;
                     woOrder.properties.order = ord.properties;
                     woOrder.properties.order.id = ord.id;
-                    reason = {id:2, label: 'בוטל', isRemove: true, isRecalc: false, isNew: false, isUpdated: false};
+                    reason = 'בוטל';
+                    action = 'delete';
                   } else {
                     var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
                     var timeDiff = (ord.properties.eventTime && woOrder.properties.order.eventTime) ?
@@ -1328,13 +1331,15 @@ angular.module('myApp')
                       that.isWoMajorChange = true;
                       woOrder.properties.order = ord.properties;
                       woOrder.properties.order.id = ord.id;
-                      reason = {id:3, label: 'נדחה', isRemove: true, isRecalc: false, isNew: false, isUpdated: false};
+                      reason = 'נדחה';
+                      action = 'delete';
                   } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
                             woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
                       that.isWoMajorChange = true;
                       woOrder.properties.order = ord.properties;
                       woOrder.properties.order.id = ord.id;
-                      reason = {id:5, label: 'תפריט אחר', isRemove: false, isRecalc: true, isNew: false, isUpdated: false};
+                      reason = 'תפריט אחר';
+                      action = 'recalc';
                   } else {
                     diffItems = that.compareItems(
                       angular.copy(ord.properties.quotes[ord.properties.activeQuote].items),
@@ -1344,22 +1349,26 @@ angular.module('myApp')
                       that.isWoMajorChange = true;
                       woOrder.properties.order = ord.properties;
                       woOrder.properties.order.id = ord.id;
-                      reason = {id: 6, label: 'שינוי מנות', isRemove: false, isRecalc: true, isNew: false, isUpdated: false};
+                      reason = 'שינוי מנות';
+                      action = 'itemChange';
                     } else if ((dateDiff !== 0 || timeDiff !== 0)
                                 && ord.properties.eventDate < horizonDate) {
                       that.isWoMajorChange = true;
                       woOrder.properties.order = ord.properties;
                       woOrder.properties.order.id = ord.id;
-                      reason = {id:4, label: 'הוזז', isRemove: false, isRecalc: false, isNew: false, isUpdated: true};
+                      reason = 'הוזז';
+                      action = 'update';
                     } else {
                       woOrder.properties.order = ord.properties;
                       woOrder.properties.order.id = ord.id;
-                      reason = {id: 8, label: 'שינוי אחר', isRemove: false, isRecalc: false, isNew: false, isUpdated: false};
+                      reason = 'שינוי אחר';
+                      action = 'none';
                     }
                   }
                   }
                     that.changedOrders.push({
                       reason: reason,
+                      action: action,
                       woItem: woOrder,
                       items: diffItems
                   });
@@ -1393,7 +1402,8 @@ angular.module('myApp')
                 orderWoItem.properties.prepScope = 'all';
                 orderWoItem.properties.select = 'delay';
                 that.changedOrders.push({
-                  reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: false, isNew: true, isUpdated: false},
+                  reason: 'חדש',
+                  action: 'new',
                   woItem: orderWoItem,
                   isIncludeInWo: true,
                   items: diffItems
@@ -1412,7 +1422,7 @@ angular.module('myApp')
 
     this.compareItems = function (newItems, oldItems) {
       var that = this;
-      var reason;
+      var reason, action;
       var diffList = [];
       newItems.forEach(function(newItem) {
         if (newItem.category.type < 3) {
@@ -1428,7 +1438,8 @@ angular.module('myApp')
             }
             if (newItem.quantity !== oldItem.quantity) {
               isDiff = true;
-              reason = {id: 3, label: 'כמות'};
+              reason = 'כמות';
+              action = 'update';
             } else {
               var newDescChange = newItem.isKitchenRemark || newItem.isMajorChange;
               var oldDescChange = oldItem.isKitchenRemark || oldItem.isMajorChange;
@@ -1436,19 +1447,22 @@ angular.module('myApp')
                 (newDescChange && oldDescChange && (newItem.productDescription !== oldItem.productDescription) ||
                   newItem.isKitchenRemark != oldItem.isKitchenRemark)) {
                 isDiff = true;
-                reason = {id: 4, label: 'התאמה אישית'};
+                reason = 'התאמה אישית';
+                action = 'update';
               }
             }
           } else { // added item
             isDiff = true;
-            reason = {id: 1, label: 'נוסף'};
+            reason = 'נוסף';
+            action = 'new';
             oldItem = {};
           }
           if (isDiff) {
             diffList.push({
               newItem: newItem,
               oldItem: oldItem,
-              reason: reason
+              reason: reason,
+              action: action
             })
           }
         }
@@ -1459,7 +1473,8 @@ angular.module('myApp')
             diffList.push({
               newItem: oldItem,  // for view: always use newItem for item's details
               oldItem: oldItem,
-              reason: {id: 9, label: 'בוטל'}
+              reason: 'בוטל',
+              action: 'delete'
             })
           }
         }

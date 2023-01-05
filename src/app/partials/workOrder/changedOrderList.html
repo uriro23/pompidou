@@ -21,7 +21,7 @@
     changedOrder.woItem.properties.orderStatus.id===2?'bg-warning':
    (changedOrder.woItem.properties.orderStatus.id>=3 && changedOrder.woItem.properties.orderStatus.id<=5)?'bg-success':
     changedOrder.woItem.properties.orderStatus.id===6?'active myCanceledEvent':null">
-    <td style="width: 9%"><label>{{changedOrder.reason.label}}</label></td>
+    <td style="width: 9%"><label>{{changedOrder.reason}}</label></td>
     <td style="width: 9%">
       <a ng-href="#/editOrderView/{{changedOrder.woItem.properties.order.id}}/0">{{changedOrder.woItem.properties.order.number}}</a>
     </td>
@@ -38,12 +38,12 @@
     </td>
     <td style="width: 9%">{{changedOrder.woItem.properties.order.color.tId}}</td>
     <td style="width: 7%">
-      <input type="checkbox" ng-show="changedOrder.reason.isNew" ng-model="changedOrder.isIncludeInWo">
+      <input type="checkbox" ng-show="changedOrder.action==='new'" ng-model="changedOrder.isIncludeInWo">
     </td>
   </tr>
   </tbody>
 </table>
-  <div style="margin-right: 5%" ng-show="changedOrder.reason.id===6">
+  <div style="margin-right: 5%" ng-show="changedOrder.action==='itemChange'">
   <table class="table table-hover" style="width: 75%">
     <thead>
     <th style="width: 11%">סיבה</th>
@@ -55,22 +55,22 @@
     </thead>
     <tbody>
     <tr ng-repeat="item in changedOrder.items track by item.newItem.index">
-      <td><label>{{item.reason.label}}</label></td>
+      <td><label>{{item.reason}}</label></td>
       <td>{{item.newItem.productName}}</td>
-      <td ng-hide="item.reason.id===1">{{item.oldItem.quantity | number:2}}</td>
-      <td ng-show="item.reason.id===1">{{0 | number:2}}</td>
-      <td ng-hide="item.reason.id===9">{{item.newItem.quantity | number:2}}</td>
-      <td ng-show="item.reason.id===9">{{0 | number:2}}</td>
-      <td ng-hide="item.reason.id===1">
+      <td ng-hide="item.action==='new'">{{item.oldItem.quantity | number:2}}</td>
+      <td ng-show="item.action==='new'">{{0 | number:2}}</td>
+      <td ng-hide="item.action==='delete'">{{item.newItem.quantity | number:2}}</td>
+      <td ng-show="item.action==='delete'">{{0 | number:2}}</td>
+      <td ng-hide="item.item.action==='new'">
         {{item.oldItem.isDescChanged && !item.oldItem.isCosmeticChange ?
           item.oldItem.kitchenRemark ? item.oldItem.kitchenRemark : item.oldItem.productDescription : 'אין'}}
       </td>
-      <td ng-show="item.reason.id===1"></td>
-      <td ng-hide="item.reason.id===9">
+      <td ng-show="item.action==='new'"></td>
+      <td ng-hide="item.action==='delete'">
         {{item.newItem.isDescChanged && !item.newItem.isCosmeticChange ?
         item.newItem.kitchenRemark ? item.newItem.kitchenRemark : item.newItem.productDescription : 'אין'}}
       </td>
-      <td ng-show="item.reason.id===9"></td>
+      <td ng-show="item.action==='delete'"></td>
     </tr>
     </tbody>
   </table>
