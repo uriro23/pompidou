@@ -239,7 +239,7 @@ angular.module('myApp')
     this.isOrderColors = config.isOrderColors;
     this.isOrderNumbers = config.isOrderNumbers;
 
-    function editItems (order, category, catalog) {
+    function editItems (order, category) {
       return order.order.quotes[order.order.activeQuote].items.filter(function(item) {
         return item.category.tId === category;
       }).map(function(item) {
@@ -264,8 +264,8 @@ angular.module('myApp')
     });
 
     this.woOrders.forEach(function(order) {
-      order.snacks = editItems(order,CATEGORY_SNACKS,catalog);
-      order.desserts = editItems(order,CATEGORY_DESSERTS,catalog);
+      order.snacks = editItems(order,CATEGORY_SNACKS);
+      order.desserts = editItems(order,CATEGORY_DESSERTS);
     });
 
 

@@ -173,7 +173,7 @@ angular.module('myApp')
       this.changedOrders.forEach(function(changedOrder) {
         if (changedOrder.reason.isRecalc) {
           var items =
-            changedOrder.order.quotes[changedOrder.order.activeQuote].items;
+        changedOrder.woItem.properties.order.quotes[changedOrder.woItem.properties.order.activeQuote].items;
           items.forEach(function (item) {
             if (item.category.type < 3) {  // exclude non food items
               if (item.isDescChanged && item.isCosmeticChange) {  // if only cosmetic change, ignore it for work order
@@ -200,7 +200,7 @@ angular.module('myApp')
               if (workItemInd) {  // item already in list, just add quantity
                 workItem = that.workOrder[workItemInd];
                 workItem.properties.quantity += item.quantity;
-                if (changedOrder.order.orderStatus === 2) {
+                if (changedOrder.woItem.properties.order.orderStatus === 2) {
                   workItem.properties.notFinalQuantity += item.quantity;
                 }
                 workItem.properties.backTrace.push({
@@ -231,7 +231,7 @@ angular.module('myApp')
                 }
                 workItem.properties.quantity = item.quantity;
                 workItem.properties.quantityForToday = 0;
-                if (changedOrder.order.orderStatus === 2) {
+                if (changedOrder.woItem.properties.order.orderStatus === 2) {
                   workItem.properties.notFinalQuantity = item.quantity;
                 }
                 workItem.properties.category = item.category;
@@ -426,6 +426,7 @@ angular.module('myApp')
                 var orderObj = {
                   id: originalOrder.id,
                   customer: originalOrder.properties.customer.firstName,
+                  //todo: eventDate should be taken from orderView at view time, so it can be changed
                   date: originalOrder.properties.order.eventDate,
                   day: that.dayName(originalOrder.properties.order.eventDate),
                   totalQuantity: 0,
@@ -763,6 +764,7 @@ angular.module('myApp')
           });
           api.saveObjects(ordersToSave)
             .then(function () {
+              // todo: remove requery, save returns ids
                api.queryWorkOrder(woId) // we assume that the only records in wo are those just stored
                 .then(function (ov) { // requery them to get their ids
                   ov.forEach(function(o) {
@@ -818,6 +820,7 @@ angular.module('myApp')
           });
           api.saveObjects(that.orderView)
             .then(function() {
+              // todo: remove requery, save returns ids
               api.queryWorkOrder(woId)    // requery to get ids
                 .then(function(woOrders) {
                   woOrders.forEach(function(wo) {
@@ -923,34 +926,62 @@ angular.module('myApp')
       });
     };
 
-    this.deleteWorkOrder = function () {
-      that.isActiveTab = [true, false, false, false]; // show orders tab
-      // first keep orders in existing work order so they will be inserted in the new wo
-      that.prevOrdersInWo = that.workOrder.filter(function (o) {
-        return o.properties.domain === 0;
-      });
-      that.orderView = [];
-      that.destroyWorkOrderDomains(0)
-        .then(function () {
-          that.workOrder = [];
-          that.hierarchicalWorkOrder = [];
-          that.woOrders = [];
-          if (!that.woIndex.properties.isQuery) {
-            that.createOrderView();
-          }
-          for(var dd=0;dd<5;dd++) {
-            that.woIndex.properties.domainStatus[dd] = false;
-          }
-          api.saveObj(that.woIndex);
-          that.isWoChanged = false;
-          that.isWoMajorChange = false;
-        });
-    };
 
     this.ignoreWorkOrderChanges = function () {
       that.isWoChanged = false;
       that.isWoMajorChange = false;
-    }
+    };
+
+    this.updateWorkOrder = function () {
+      var that = this;
+      //  phase 1: update orders
+      var ordersToCreate = [];
+      var ordersToUpdate = [];
+      var ordersToDelete = [];
+      this.changedOrders.forEach(function(changedOrder, ind) {
+        if (changedOrder.reason.isRemove) {
+          ordersToDelete.push(changedOrder.woItem);
+          that.workOrder = that.workOrder.filter(function(wo) {
+            return wo.id !== changedOrder.woItem.id;
+          });
+        } else if (changedOrder.reason.isNew) {
+          if (changedOrder.isIncludeInWo) {
+            ordersToCreate.push(changedOrder.woItem);
+          }
+        } else if (changedOrder.reason.isUpdated) {
+          ordersToUpdate.push(changedOrder.woItem);
+        }
+      });
+      api.saveObjects(ordersToCreate)
+        .then(function (orders) {
+          if (ordersToCreate.length) {
+            console.log(ordersToCreate.length+' orders created:');
+            console.log(orders);
+          }
+          orders.forEach(function(ord) {
+            that.workOrder.push(ord);
+          });
+          api.saveObjects(ordersToUpdate)
+            .then(function() {
+              if (ordersToUpdate.length) {
+                console.log(ordersToUpdate.length+' orders updated:');
+                console.log(ordersToUpdate);
+              }
+              api.deleteObjects(ordersToDelete)
+                .then(function() {
+                  if (ordersToDelete.length) {
+                    console.log(ordersToDelete.length+' orders deleted:');
+                    console.log(ordersToDelete);
+                  }
+
+                  //phase 2: update menu items
+                  var misToCreate = [];
+                  var misToUpdate = [];
+                  var misToDelete = [];
+                });
+          });
+      });
+    };
 
     this.saveWorkOrder = function (domain) {
       var woItemsToSave = this.workOrder.filter(function (wo) {
@@ -1099,11 +1130,8 @@ angular.module('myApp')
           return ord.properties.domain === 0;
         }).map(function(woOrd) {
          return {
-            reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: true, isNew: false},
+            reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: true, isNew: false, isUpdated: false},
             woItem: woOrd,
-            order: woOrd.properties.order,
-            orderStatus: woOrd.properties.orderStatus,
-            customer: woOrd.properties.customer,
             items: []
          }
         });
@@ -1120,6 +1148,7 @@ angular.module('myApp')
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {
+            // todo: remove requery, save returns ids
             api.queryWorkOrder(woId)    // requery work order to get ids for newly created items
               .then(function (wo) {
                 that.workOrder = wo;
@@ -1278,10 +1307,8 @@ angular.module('myApp')
                   that.isWoChanged = true;
                   that.isWoMajorChange = true;
                   that.changedOrders.push({
-                    reason: {id: 1, label: 'עבר', isRemove: true, isRecalc: false, isNew: false},
-                    order: woOrder.properties.order,
-                    orderStatus: woOrder.properties.orderStatus,
-                    customer: woOrder.properties.customer,
+                    reason: {id: 1, label: 'עבר', isRemove: true, isRecalc: false, isNew: false, isUpdated: false},
+                    woItem: woOrder,
                     items: diffItems
                   });
                 } else {
@@ -1290,16 +1317,24 @@ angular.module('myApp')
                   that.isWoChanged = true;
                   if (ord.properties.orderStatus === 6 || ord.properties.orderStatus < 2) {
                     that.isWoMajorChange = true;
-                    reason = {id:2, label: 'בוטל', isRemove: true, isRecalc: false, isNew: false};
+                    woOrder.properties.order = ord.properties;
+                    woOrder.properties.order.id = ord.id;
+                    reason = {id:2, label: 'בוטל', isRemove: true, isRecalc: false, isNew: false, isUpdated: false};
                   } else {
                     var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
-                    if (dateDiff !== 0  && ord.properties.eventDate >= horizonDate) {
+                    var timeDiff = (ord.properties.eventTime && woOrder.properties.order.eventTime) ?
+                      ord.properties.eventTime - woOrder.properties.order.eventTime : 0;
+                    if ((dateDiff !== 0 || timeDiff !== 0) && ord.properties.eventDate >= horizonDate) {
                       that.isWoMajorChange = true;
-                      reason = {id:3, label: 'נדחה', isRemove: true, isRecalc: false, isNew: false};
+                      woOrder.properties.order = ord.properties;
+                      woOrder.properties.order.id = ord.id;
+                      reason = {id:3, label: 'נדחה', isRemove: true, isRecalc: false, isNew: false, isUpdated: false};
                   } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
                             woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
                       that.isWoMajorChange = true;
-                      reason = {id:5, label: 'תפריט אחר', isRemove: false, isRecalc: true, isNew: false};
+                      woOrder.properties.order = ord.properties;
+                      woOrder.properties.order.id = ord.id;
+                      reason = {id:5, label: 'תפריט אחר', isRemove: false, isRecalc: true, isNew: false, isUpdated: false};
                   } else {
                     diffItems = that.compareItems(
                       angular.copy(ord.properties.quotes[ord.properties.activeQuote].items),
@@ -1307,24 +1342,26 @@ angular.module('myApp')
                     );
                     if (diffItems.length) {
                       that.isWoMajorChange = true;
-                      reason = {id: 6, label: 'שינוי מנות', isRemove: false, isRecalc: true, isNew: false};
-                    } else if (dateDiff !== 0 && ord.properties.eventDate < horizonDate) {
-                      reason = {id:4, label: 'הוזז', isRemove: false, isRecalc: false, isNew: false};
+                      woOrder.properties.order = ord.properties;
+                      woOrder.properties.order.id = ord.id;
+                      reason = {id: 6, label: 'שינוי מנות', isRemove: false, isRecalc: true, isNew: false, isUpdated: false};
+                    } else if ((dateDiff !== 0 || timeDiff !== 0)
+                                && ord.properties.eventDate < horizonDate) {
+                      that.isWoMajorChange = true;
+                      woOrder.properties.order = ord.properties;
+                      woOrder.properties.order.id = ord.id;
+                      reason = {id:4, label: 'הוזז', isRemove: false, isRecalc: false, isNew: false, isUpdated: true};
                     } else {
-                      reason = {id: 8, label: 'שינוי אחר', isRemove: false, isRecalc: false, isNew: false};
+                      woOrder.properties.order = ord.properties;
+                      woOrder.properties.order.id = ord.id;
+                      reason = {id: 8, label: 'שינוי אחר', isRemove: false, isRecalc: false, isNew: false, isUpdated: false};
                     }
                   }
                   }
                     that.changedOrders.push({
-                    reason: reason,
-                    order: woOrder.properties.order,
-                    orderStatus: lov.orderStatuses.filter(function(st) {
-                      return st.id === ord.properties.orderStatus;
-                    })[0],
-                    customer: customers.filter(function(cust) {
-                      return cust.id === ord.properties.customer;
-                    })[0].properties,
-                    items: diffItems
+                      reason: reason,
+                      woItem: woOrder,
+                      items: diffItems
                   });
                 }
               }
@@ -1338,17 +1375,27 @@ angular.module('myApp')
               newOrders.forEach(function(newOrd) {
                that.isWoChanged = true;
                 that.isWoMajorChange = true;
-                var temp = angular.copy(newOrd.properties);
-                temp.id = newOrd.id;
+                var orderWoItem = api.initWorkOrder();
+                // create the object for now, but we don't store it until user decides to include it in WO
+                orderWoItem.properties.woId = woId;
+                orderWoItem.properties.domain = 0;
+                orderWoItem.properties.order = newOrd.properties;
+                orderWoItem.properties.order.id = newOrd.id;
+                orderWoItem.properties.customer = customers.filter(function (cust) {
+                  return cust.id === newOrd.properties.customer;
+                })[0].properties;
+                orderWoItem.properties.orderStatus = lov.orderStatuses.filter(function(st) {
+                  return st.id === newOrd.properties.orderStatus;
+                })[0];
+                orderWoItem.properties.color = colors.filter(function(color) {  // copy order's color to wo
+                  return color.tId === newOrd.properties.color;
+                })[0];
+                orderWoItem.properties.prepScope = 'all';
+                orderWoItem.properties.select = 'delay';
                 that.changedOrders.push({
-                  reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: false, isNew: true},
-                  order: temp,
-                  orderStatus: lov.orderStatuses.filter(function(st) {
-                    return st.id === newOrd.properties.orderStatus;
-                  })[0],
-                  customer: customers.filter(function(cust) {
-                    return cust.id === newOrd.properties.customer
-                  })[0].properties,
+                  reason: {id: 9, label: 'חדש', isRemove: false, isRecalc: false, isNew: true, isUpdated: false},
+                  woItem: orderWoItem,
+                  isIncludeInWo: true,
                   items: diffItems
                 });
               });
