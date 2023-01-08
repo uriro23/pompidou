@@ -30,13 +30,13 @@ angular.module('myApp')
 
     this.setDomain = function(domain) {
       this.domain = domain;
-      if (!this.woIndex.properties.domainStatus[domain]) {
-        var prevDomain = domain===4 ? 2 : domain - 1;
-        if (domain===1 || this.woIndex.properties.domainStatus[prevDomain]) {
-          this.createWorkOrderDomain(domain);
+        if (!this.woIndex.properties.domainStatus[domain]) {
+          var prevDomain = domain === 4 ? 2 : domain - 1;
+          if (domain === 1 || this.woIndex.properties.domainStatus[prevDomain]) {
+            this.createWorkOrderDomain(domain);
+          }
         }
-      }
-  }
+  };
 
     this.setShowAll = function(domain) {
       var that = this;
@@ -902,7 +902,7 @@ angular.module('myApp')
 
       ackDelModal.result.then(function (isDelete) {
         if (isDelete) {
-          that.isActiveTab = [true, false, false, false]; // show orders tab
+          that.isActiveTab = [true, false, false, false, false, false]; // show orders tab
           // first keep orders in existing work order so they will be inserted in the new wo
           that.prevOrdersInWo = that.workOrder.filter(function (o) {
             return o.properties.domain === 0;
@@ -930,6 +930,7 @@ angular.module('myApp')
     this.ignoreWorkOrderChanges = function () {
       that.isWoChanged = false;
       that.isWoMajorChange = false;
+      that.isActiveTab = [false, true, false, false, false, false]; // show menu items tab
     };
 
     this.updateWorkOrder = function () {
@@ -975,9 +976,41 @@ angular.module('myApp')
                   }
 
                   //phase 2: update menu items
-                  var misToCreate = [];
-                  var misToUpdate = [];
-                  var misToDelete = [];
+                  var menuItemsToCreate = [];
+                  var menuItemsToUpdate = [];
+                  var menuItemsToDelete = [];
+                  that.changedOrders.forEach(function(changedOrder) {
+                    if (changedOrder.action === 'delete' || changedOrder.action === 'recalc') {
+                      // delete all mis for this order
+                      that.workOrder.forEach(function (woi) {
+                        var wo = woi.properties;
+                        if (wo.domain === 1) {
+                         wo.backTrace.forEach(function(bt, ind) {
+                           if (bt.id === changedOrder.woItem.id) {
+                             if (wo.backTrace.length === 1) { // mi only in this order, just delete it
+                               menuItemsToDelete.push(woi);
+                               woi.isToDelete = true;
+                             } else {
+                               wo.quantity -= bt.quantity;
+                               if (changedOrder.woItem.properties.order.orderStatus === 2) {
+                                 wo.notFinalQuantity -= bt.quantity;
+                               }
+                               //todo: handle notFinalQuantity when order status changes
+                               bt.splice(ind,1);
+                               menuItemsToUpdate.push(woi);
+                             }
+                           }
+                         });
+                        }
+                      });
+                    }
+                    if (changedOrder.action === 'new' || changedOrder.action === 'recalc') {
+                      // add all mis for this order
+                    }
+                    if (changedOrder.action === 'itemChange') {
+                      // handle specific mis in order
+                    }
+                  });
                 });
           });
       });
@@ -1130,7 +1163,8 @@ angular.module('myApp')
           return ord.properties.domain === 0;
         }).map(function(woOrd) {
          return {
-            reason: 'חדש',
+           id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
+           reason: 'חדש',
             action: 'recalc',
             woItem: woOrd,
             items: []
@@ -1290,7 +1324,6 @@ angular.module('myApp')
           that.workOrder = wo;
           that.createSmallOrderView();
           that.orderView = [];
-          that.isActiveTab = [false, true, false, false]; // show menu items by default
           that.splitWorkOrder();
           // check if any order in wo has passed or has been changed since last wo creation
           that.isWoChanged = false;
@@ -1308,6 +1341,7 @@ angular.module('myApp')
                   that.isWoChanged = true;
                   that.isWoMajorChange = true;
                   that.changedOrders.push({
+                    id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
                     reason: 'עבר',
                     action: 'delete',
                     woItem: woOrder,
@@ -1367,6 +1401,7 @@ angular.module('myApp')
                   }
                   }
                     that.changedOrders.push({
+                      id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
                       reason: reason,
                       action: action,
                       woItem: woOrder,
@@ -1402,6 +1437,7 @@ angular.module('myApp')
                 orderWoItem.properties.prepScope = 'all';
                 orderWoItem.properties.select = 'delay';
                 that.changedOrders.push({
+                  id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
                   reason: 'חדש',
                   action: 'new',
                   woItem: orderWoItem,
@@ -1412,6 +1448,11 @@ angular.module('myApp')
               // if (that.isWoChanged) {
               //   that.createNewWorkOrder(true);
               // }
+              if (that.changedOrders.length) {
+                that.isActiveTab = [false, false, false, false, false, true]; // show diff tab
+              } else {
+                that.isActiveTab = [false, true, false, false, false, false]; // show menu items tab
+              }
               that.isProcessing = false;
               that.isIncludeStock[2] = true;
               that.isIncludeStock[3] = true;

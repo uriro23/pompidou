@@ -36,10 +36,15 @@
   <span>עד תאריך</span>
   <span>{{workOrderModel.toDate | date:'dd/MM/yy'}}</span>
 </div>
+<!--
 <div ng-show=" !workOrderModel.isProcessing && workOrderModel.isWoChanged">
   <ng-include src="'app/partials/workOrder/changedOrderList.html'"></ng-include>
 </div>
-<tabset ng-hide="workOrderModel.isProcessing || workOrderModel.isWoChanged">
+-->
+<tabset ng-hide="workOrderModel.isProcessing ">
+  <tab heading="שינויים" active="workOrderModel.isActiveTab[5]">
+    <ng-include src="'app/partials/workOrder/changedOrderList.html'"></ng-include>
+  </tab>
   <tab heading="{{workOrderModel.domains[3].forWorkItem}}"
        active="workOrderModel.isActiveTab[3]"
        select="workOrderModel.setDomain(3)">
