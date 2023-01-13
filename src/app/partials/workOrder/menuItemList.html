@@ -48,11 +48,11 @@
     <th colspan="2">כמות</th>
     <th ng-repeat="order in workOrderModel.woOrders track by order.id"
         ng-hide="workOrderModel.woOrders.length>15">
-      <span>{{order.properties.customer.firstName}}</span>
+      <span>{{order.view.customer.firstName}}</span>
       <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
       <span>{{order.properties.order.exitTime | date:'HH:mm'}}</span>
-      <img ng-show="workOrderModel.isOrderColors" ng-src="app/img/smallColors/{{order.properties.color.stickerColor}}.jpg"/>
-      <label ng-show="workOrderModel.isOrderNumbers">[{{order.properties.color.tId}}]</label>
+      <img ng-show="workOrderModel.isOrderColors" ng-src="app/img/smallColors/{{order.view.color.stickerColor}}.jpg"/>
+      <label ng-show="workOrderModel.isOrderNumbers">[{{order.view.color.tId}}]</label>
     </th>
     <th></th>
     <th></th>
@@ -75,8 +75,8 @@
                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]">
       </td>
       -->
-      <td ng-repeat="order in woItem.properties.orderQuant track by order.id"
-          ng-hide="woItem.properties.orderQuant.length>15"
+      <td ng-repeat="order in woItem.view.orderQuant track by $index"
+          ng-hide="woItem.view.orderQuant.length>15"
           ng-class="order.quantity && order.status===2?'bg-warning':null"> <!-- mark events not in final status -->
          <span>
            {{order.quantity ? order.quantity : 0}}

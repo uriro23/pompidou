@@ -1,4 +1,7 @@
-<H4>אירועים שעברו / בוטלו / השתנו / התווספו</H4>
+<H4>
+  <span>אירועים שעברו / בוטלו / השתנו / התווספו עד לתאריך</span>
+  <span>{{workOrderModel.horizonDate | date:'dd/MM/yy'}}</span>
+</H4>
 <table class="table" style="width: 80%">
   <thead>
   <th style="width: 9%">סיבה</th>
@@ -17,10 +20,10 @@
 <div ng-repeat="changedOrder in workOrderModel.changedOrders track by changedOrder.id">
 <table class="table" style="width: 80%">
   <tbody>
-  <tr ng-class="changedOrder.woItem.properties.orderStatus.id===1?'bg-active':
-    changedOrder.woItem.properties.orderStatus.id===2?'bg-warning':
-   (changedOrder.woItem.properties.orderStatus.id>=3 && changedOrder.woItem.properties.orderStatus.id<=5)?'bg-success':
-    changedOrder.woItem.properties.orderStatus.id===6?'active myCanceledEvent':null">
+  <tr ng-class="changedOrder.woItem.view.orderStatus.id===1?'bg-active':
+    changedOrder.woItem.view.orderStatus.id===2?'bg-warning':
+   (changedOrder.woItem.view.orderStatus.id>=3 && changedOrder.woItem.view.orderStatus.id<=5)?'bg-success':
+    changedOrder.woItem.view.orderStatus.id===6?'active myCanceledEvent':null">
     <td style="width: 9%"><label>{{changedOrder.reason}}</label></td>
     <td style="width: 9%">
       <a ng-href="#/editOrderView/{{changedOrder.woItem.properties.order.id}}/0">{{changedOrder.woItem.properties.order.number}}</a>
@@ -28,15 +31,15 @@
     <td style="width: 15%">{{changedOrder.woItem.properties.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
     <td style="width: 8%">{{changedOrder.woItem.properties.order.eventTime | date: 'HH:mm'}}</td>
     <td style="width: 7%">{{changedOrder.woItem.properties.order.exitTime | date: 'HH:mm'}}</td>
-    <td style="width: 9%">{{changedOrder.woItem.properties.customer.firstName+' '+
-                            changedOrder.woItem.properties.customer.lastName}}</td>
+    <td style="width: 9%">{{changedOrder.woItem.view.customer.firstName+' '+
+                            changedOrder.woItem.view.customer.lastName}}</td>
     <td style="width: 9%">{{changedOrder.woItem.properties.order.noOfParticipants}}</td>
     <td style="width: 9%">{{changedOrder.woItem.properties.order.header.title}}</td>
     <td style="width: 9%" ng-style="workOrderModel.isOrderColors ?
-       changedOrder.woItem.properties.order.color.style : null">
-      {{changedOrder.woItem.properties.orderStatus.name}}
+       changedOrder.woItem.view.color.style : null">
+      {{changedOrder.woItem.view.orderStatus.name}}
     </td>
-    <td style="width: 9%">{{changedOrder.woItem.properties.order.color.tId}}</td>
+    <td style="width: 9%">{{changedOrder.woItem.view.color.tId}}</td>
     <td style="width: 7%">
       <input type="checkbox" ng-show="changedOrder.action==='new'" ng-model="changedOrder.isIncludeInWo">
     </td>

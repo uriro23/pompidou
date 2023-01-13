@@ -208,12 +208,6 @@ angular.module('myApp')
                   domain: 0,
                   quantity: item.quantity
                 });
-                that.woOrders.forEach(function (o, i) {
-                  if (o.id === changedOrder.woItem.id) {
-                    orderInd = i;
-                  }
-                });
-                workItem.properties.orderQuant[orderInd].quantity += item.quantity;
               } else { // create new item
                 workItem = api.initWorkOrder();
                 workItem.properties.woId = woId;
@@ -242,26 +236,9 @@ angular.module('myApp')
                   domain: 0,
                   quantity: item.quantity
                 }];
-                workItem.properties.orderQuant = []; // create array of order quantities for detailed menu item view
-                for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
-                  workItem.properties.orderQuant[i] = {
-                    id: that.woOrders[i].id,    //id needed only for uniqueness of ng-repeat
-                    quantity: 0,
-                    status: that.woOrders[i].properties.order.orderStatus
-                  };
-                }
-                that.woOrders.forEach(function (o, i) {
-                  if (o.id === changedOrder.woItem.id) {
-                    orderInd = i;
-                  }
-                });
-                workItem.properties.orderQuant[orderInd].quantity = item.quantity;
-                if (item.isDescChanged) {
-                  workItem.properties.orderQuant[orderInd].productDescription =
-                    workItem.properties.productDescription;
-                }
                 that.workOrder.push(workItem);
               }
+              that.createViewForMenuItem(workItem);
             }
           });
         }
@@ -425,7 +402,7 @@ angular.module('myApp')
                 })[0];
                 var orderObj = {
                   id: originalOrder.id,
-                  customer: originalOrder.properties.customer.firstName,
+                  customer: originalOrder.view.customer.firstName,
                   //todo: eventDate should be taken from orderView at view time, so it can be changed
                   date: originalOrder.properties.order.eventDate,
                   day: that.dayName(originalOrder.properties.order.eventDate),
@@ -536,7 +513,7 @@ angular.module('myApp')
         this.isOrderFilter = false;  // turn off order selection table
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
-            woItem.isShowDetails = that.isShowDetails[that.domain];
+            woItem.isShowDetails = that.isShowDetails[that.domain]; // xxx
             woItem.isRemarkForToday = false;
             woItem.properties.menuItems.forEach(function (mi) {
               if (mi.isRemark && mi.quantityForToday>0) {
@@ -735,44 +712,39 @@ angular.module('myApp')
               viewItem.properties.domain = 0;
               viewItem.properties.order = order.properties;
               viewItem.properties.order.id = order.id;
-              viewItem.properties.customer = customers.filter(function (cust) {
-                return cust.id === order.properties.customer;
-              })[0].properties;
-            viewItem.properties.orderStatus = lov.orderStatuses.filter(function(st) {
-              return st.id === order.properties.orderStatus;
-            })[0];
-            viewItem.properties.color = colors.filter(function(color) {  // copy order's color to wo
-              return color.tId === order.properties.color;
-            })[0];
-            viewItem.properties.prepScope = 'all';
-            viewItem.properties.select = 'delay';
-            viewItem.isInWorkOrder = false;
-            that.orderView.push(viewItem);
+              viewItem.properties.prepScope = 'all';
+              viewItem.properties.select = 'delay';
+              viewItem.isInWorkOrder = false;
+              that.createViewForOrder(viewItem);
+              that.orderView.push(viewItem);
             }
           });
+          console.log('orderView before save:');
+          console.log(that.orderView);
           var ordersToSave = [];  // now include all orders from prev order view in wo
           that.orderView.forEach(function(ovOrder){
             if (that.prevOrdersInWo.filter(function (po) {
                 return po.properties.order.number === ovOrder.properties.order.number;
               }).length > 0) { // order was in prev wo
+              ovOrder.isInWorkOrder = true;
                ordersToSave.push(ovOrder);
               ovOrder.isToBeTemporarilyDeleted = true;
             }
           });
-          that.orderView = that.orderView.filter(function (ov) {
-            return !ov.isToBeTemporarilyDeleted;
-          });
+          // that.orderView = that.orderView.filter(function (ov) {
+          //   return !ov.isToBeTemporarilyDeleted;
+          // });
           api.saveObjects(ordersToSave)
-            .then(function () {
-              // todo: remove requery, save returns ids
-               api.queryWorkOrder(woId) // we assume that the only records in wo are those just stored
-                .then(function (ov) { // requery them to get their ids
+            .then(function (ov) {
+              console.log('orders saved:');
+              console.log(ov);
                   ov.forEach(function(o) {
                     that.workOrder.push(o);
-                    o.isInWorkOrder = true;
                     that.orderView.push(o);
                   });
-                  that.orderView.sort(function (a, b) {
+              console.log('orderView after save:');
+              console.log(that.orderView);
+              that.orderView.sort(function (a, b) {
                     if (a.properties.order.eventDate > b.properties.order.eventDate) {
                       return 1;
                     } else if (a.properties.order.eventDate < b.properties.order.eventDate){
@@ -787,11 +759,8 @@ angular.module('myApp')
                       return -1;
                     }
                   });
-                  that.orderView.forEach(function(o) {
-                  });
-                  that.createSmallOrderView();
+                   that.createSmallOrderView();
                 });
-            });
         });
     };
 
@@ -809,28 +778,19 @@ angular.module('myApp')
             viewItem.properties.domain = 0;
             viewItem.properties.order = ord.properties;
             viewItem.properties.order.id = ord.id;
-            viewItem.properties.customer = customers.filter(function (cust) {
-              return cust.id === ord.properties.customer;
-            })[0].properties;
-            viewItem.properties.orderStatus = lov.orderStatuses.filter(function(st) {
-              return st.id === ord.properties.orderStatus;
-            })[0];
             viewItem.isInWorkOrder = true;
+            that.createViewForOrder(viewItem);
             that.orderView.push(viewItem);
           });
           api.saveObjects(that.orderView)
-            .then(function() {
-              // todo: remove requery, save returns ids
-              api.queryWorkOrder(woId)    // requery to get ids
-                .then(function(woOrders) {
-                  woOrders.forEach(function(wo) {
-                    wo.isInWorkOrder = true;
-                  });
-                  that.orderView = that.workOrder = woOrders;
-                  that.createSmallOrderView();
-                  that.createWorkOrderDomain(1);
-                });
-           });
+            .then(function(woOrders) {
+               woOrders.forEach(function(wo) {
+                wo.isInWorkOrder = true;
+              });
+              that.orderView = that.workOrder = woOrders;
+              that.createSmallOrderView();
+              that.createWorkOrderDomain(1);
+            });
          });
     };
 
@@ -877,6 +837,8 @@ angular.module('myApp')
             // create new item with same content as deleted one so we can restore it in DB if user changes his mind
             var newItem = api.initWorkOrder();
             newItem.properties = savedProperties;
+            that.createViewForOrder(newItem);
+            //todo: fully initialize order item here
             that.orderView[ind] = newItem;
             that.createSmallOrderView();
           });
@@ -1017,14 +979,18 @@ angular.module('myApp')
     };
 
     this.saveWorkOrder = function (domain) {
-      var woItemsToSave = this.workOrder.filter(function (wo) {
-        return wo.properties.domain === domain;
+      var that = this;
+      var woItemsToSave = this.workOrder.filter(function (woi) {
+        return woi.properties.domain === domain;
       });
       this.isProcessing = true;
        return api.saveObjects(woItemsToSave)
-        .then(function () {
+        .then(function (domainItems) {
           that.isProcessing = false;
-        }, function () {
+          that.workOrder = that.workOrder.filter(function (woi) { // merge workOrder to add ids on new items
+            return woi.properties.domain !== domain;
+          }).concat(domainItems);
+          }, function () {
           alert('workOrder multiple save failed');
           that.isProcessing = false;
         });
@@ -1183,27 +1149,19 @@ angular.module('myApp')
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {
-            // todo: remove requery, save returns ids
-            api.queryWorkOrder(woId)    // requery work order to get ids for newly created items
-              .then(function (wo) {
-                that.workOrder = wo;
-                var tt = that.workOrder.filter(function(ttt) {
-                  return ttt.properties.domain === targetDomain;
-                });
-                that.splitWorkOrder();
-                that.isActiveTab.forEach(function(tab) {
-                  tab = false;
-                });
-                that.isActiveTab[targetDomain] = true;
-                that.woIndex.properties.domainStatus[targetDomain] = true; // the domain just created is valid
-                if (targetDomain < 3) {
-                  for (var dd = targetDomain + 1; dd < 5; dd++) {  // all further domains - invalid
-                    that.woIndex.properties.domainStatus[dd] = false;
-                  }
-                }
-                api.saveObj(that.woIndex);
-                that.isIncludeStock[targetDomain] = true;
-              });
+            that.splitWorkOrder();
+            that.isActiveTab.forEach(function(tab) {
+              tab = false;
+            });
+            that.isActiveTab[targetDomain] = true;
+            that.woIndex.properties.domainStatus[targetDomain] = true; // the domain just created is valid
+            if (targetDomain < 3) {
+              for (var dd = targetDomain + 1; dd < 5; dd++) {  // all further domains - invalid
+                that.woIndex.properties.domainStatus[dd] = false;
+              }
+            }
+            api.saveObj(that.woIndex);
+            that.isIncludeStock[targetDomain] = true;
           });
       });
     };
@@ -1313,141 +1271,199 @@ angular.module('myApp')
       });
      };
 
+    // check if any order in wo has passed or has been changed since last wo creation
+     this.checkDiff = function () {
+       that.isWoChanged = false;
+       that.isWoMajorChange = false;
+       that.changedOrders = [];
+       var reason, action;
+       var diffItems = [];
+       return api.queryFutureOrders()
+         .then(function(futureOrders) {
+           that.woOrders.forEach(function (woOrder) {
+             var ord = futureOrders.filter(function (futureOrder) {
+               return futureOrder.properties.number === woOrder.properties.order.number;
+             })[0];
+             if (!ord) { // order occured in the past
+               that.isWoChanged = true;
+               that.isWoMajorChange = true;
+               that.changedOrders.push({
+                 id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
+                 reason: 'עבר',
+                 action: 'delete',
+                 woItem: woOrder,
+                 items: diffItems
+               });
+             } else {
+               ord.isInWo = true;
+               if (ord.updatedAt > that.woIndex.updatedAt) { // order updated
+                 that.isWoChanged = true;
+                 if (ord.properties.orderStatus === 6 || ord.properties.orderStatus < 2) {
+                   that.isWoMajorChange = true;
+                   woOrder.properties.order = ord.properties;
+                   woOrder.properties.order.id = ord.id;
+                   reason = 'בוטל';
+                   action = 'delete';
+                 } else {
+                   var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
+                   var timeDiff = (ord.properties.eventTime && woOrder.properties.order.eventTime) ?
+                     ord.properties.eventTime - woOrder.properties.order.eventTime : 0;
+                   if ((dateDiff !== 0 || timeDiff !== 0) && ord.properties.eventDate > that.horizonDate) {
+                     that.isWoMajorChange = true;
+                     woOrder.properties.order = ord.properties;
+                     woOrder.properties.order.id = ord.id;
+                     reason = 'נדחה';
+                     action = 'delete';
+                   } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
+                     woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
+                     that.isWoMajorChange = true;
+                     woOrder.properties.order = ord.properties;
+                     woOrder.properties.order.id = ord.id;
+                     reason = 'תפריט אחר';
+                     action = 'recalc';
+                   } else {
+                     diffItems = that.compareItems(
+                       angular.copy(ord.properties.quotes[ord.properties.activeQuote].items),
+                       angular.copy(woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].items)
+                     );
+                     if (diffItems.length) {
+                       that.isWoMajorChange = true;
+                       woOrder.properties.order = ord.properties;
+                       woOrder.properties.order.id = ord.id;
+                       reason = 'שינוי מנות';
+                       action = 'itemChange';
+                     } else if ((dateDiff !== 0 || timeDiff !== 0)
+                       && ord.properties.eventDate <= that.horizonDate) {
+                       that.isWoMajorChange = true;
+                       woOrder.properties.order = ord.properties;
+                       woOrder.properties.order.id = ord.id;
+                       reason = 'הוזז';
+                       action = 'update';
+                     } else {
+                       woOrder.properties.order = ord.properties;
+                       woOrder.properties.order.id = ord.id;
+                       reason = 'שינוי אחר';
+                       action = 'none';
+                     }
+                   }
+                 }
+                 that.changedOrders.push({
+                   id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
+                   reason: reason,
+                   action: action,
+                   woItem: woOrder,
+                   items: diffItems
+                 });
+               }
+             }
+           });
+           var newOrders = futureOrders.filter(function (ord) {
+             return !ord.isInWo &&
+               ord.properties.eventDate <= that.horizonDate &&
+               ord.properties.orderStatus > 1 &&
+               ord.properties.orderStatus < 6;
+           });
+           newOrders.forEach(function (newOrd) {
+             that.isWoChanged = true;
+             that.isWoMajorChange = true;
+             var orderWoItem = api.initWorkOrder();
+             // create the object for now, but we don't store it until user decides to include it in WO
+             orderWoItem.properties.woId = woId;
+             orderWoItem.properties.domain = 0;
+             orderWoItem.properties.order = newOrd.properties;
+             orderWoItem.properties.order.id = newOrd.id;
+             orderWoItem.properties.prepScope = 'all';
+             orderWoItem.properties.select = 'delay';
+             that.createViewForOrder(orderWoItem);
+             that.changedOrders.push({
+               id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
+               reason: 'חדש',
+               action: 'new',
+               woItem: orderWoItem,
+               isIncludeInWo: true,
+               items: diffItems
+             });
+           });
+         });
+     };
+
+     this.createViewForOrder = function(woi) {
+       woi.view = {};
+       woi.view.orderStatus = lov.orderStatuses.filter(function(os) {
+         return os.id === woi.properties.order.orderStatus;
+       })[0];
+       woi.view.customer = customers.filter(function(c) {
+         return c.id === woi.properties.order.customer;
+       })[0].properties;
+       if (woi.properties.order.color) {
+         woi.view.color = colors.filter(function (color) {
+           return color.tId === woi.properties.order.color;
+         })[0];
+       }
+     };
+
+     this.createViewForMenuItem = function (woi) {
+       woi.view = {};
+       woi.view.orderQuant = []; // create array of order quantities for detailed menu item view
+       for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
+         woi.view.orderQuant[i] = {
+           id: that.woOrders[i].id,
+           quantity: 0,
+           status: that.woOrders[i].view.orderStatus
+         };
+       }
+       woi.properties.backTrace.forEach(function(bt) {
+         woi.view.orderQuant.forEach(function(oq) {
+           if (oq.id === bt.id) {
+             oq.quantity = bt.quantity;
+           }
+         });
+       });
+     };
+
+     this.createViewForPrep = function (woi) {
+       woi.view = {};
+     };
+
+     this.createView = function () {
+       var that = this;
+       for (var domain=0;domain<5;domain++) {
+         that.workOrder.forEach(function(woi) {
+           if (woi.properties.domain === domain) {
+             woi.view = {};
+             switch (domain) {
+               case 0:
+                 that.createViewForOrder(woi);
+                 break;
+               case 1:
+                 that.createViewForMenuItem(woi);
+                 break;
+               case 2:
+                 that.createViewForPrep(woi);
+                 break;
+               case 3:
+                 break;
+               case 4:
+                 break;
+             }
+           }
+         })
+       }
+     };
+
     this.switchWorkOrders = function () {
       var that = this;
       woId = this.woIndex.properties.woId;
        this.isProcessing = true;
-      var horizonDate = new Date();
-      horizonDate.setDate(new Date().getDate()+8);
-      api.queryWorkOrder(woId)
+       api.queryWorkOrder(woId)
         .then(function(wo) {
           that.workOrder = wo;
           that.createSmallOrderView();
+          that.createView();
           that.orderView = [];
           that.splitWorkOrder();
-          // check if any order in wo has passed or has been changed since last wo creation
-          that.isWoChanged = false;
-          that.isWoMajorChange = false;
-          that.changedOrders = [];
-          var reason, action;
-          var diffItems = [];
-          api.queryFutureOrders()
-            .then(function(futureOrders) {
-              that.woOrders.forEach(function(woOrder) {
-                var ord = futureOrders.filter(function (futureOrder) {
-                  return futureOrder.properties.number === woOrder.properties.order.number;
-                })[0];
-                if (!ord) { // order occured in the past
-                  that.isWoChanged = true;
-                  that.isWoMajorChange = true;
-                  that.changedOrders.push({
-                    id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
-                    reason: 'עבר',
-                    action: 'delete',
-                    woItem: woOrder,
-                    items: diffItems
-                  });
-                } else {
-                  ord.isInWo = true;
-                  if (ord.updatedAt > that.woIndex.updatedAt) { // order updated
-                  that.isWoChanged = true;
-                  if (ord.properties.orderStatus === 6 || ord.properties.orderStatus < 2) {
-                    that.isWoMajorChange = true;
-                    woOrder.properties.order = ord.properties;
-                    woOrder.properties.order.id = ord.id;
-                    reason = 'בוטל';
-                    action = 'delete';
-                  } else {
-                    var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
-                    var timeDiff = (ord.properties.eventTime && woOrder.properties.order.eventTime) ?
-                      ord.properties.eventTime - woOrder.properties.order.eventTime : 0;
-                    if ((dateDiff !== 0 || timeDiff !== 0) && ord.properties.eventDate >= horizonDate) {
-                      that.isWoMajorChange = true;
-                      woOrder.properties.order = ord.properties;
-                      woOrder.properties.order.id = ord.id;
-                      reason = 'נדחה';
-                      action = 'delete';
-                  } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
-                            woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
-                      that.isWoMajorChange = true;
-                      woOrder.properties.order = ord.properties;
-                      woOrder.properties.order.id = ord.id;
-                      reason = 'תפריט אחר';
-                      action = 'recalc';
-                  } else {
-                    diffItems = that.compareItems(
-                      angular.copy(ord.properties.quotes[ord.properties.activeQuote].items),
-                      angular.copy(woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].items)
-                    );
-                    if (diffItems.length) {
-                      that.isWoMajorChange = true;
-                      woOrder.properties.order = ord.properties;
-                      woOrder.properties.order.id = ord.id;
-                      reason = 'שינוי מנות';
-                      action = 'itemChange';
-                    } else if ((dateDiff !== 0 || timeDiff !== 0)
-                                && ord.properties.eventDate < horizonDate) {
-                      that.isWoMajorChange = true;
-                      woOrder.properties.order = ord.properties;
-                      woOrder.properties.order.id = ord.id;
-                      reason = 'הוזז';
-                      action = 'update';
-                    } else {
-                      woOrder.properties.order = ord.properties;
-                      woOrder.properties.order.id = ord.id;
-                      reason = 'שינוי אחר';
-                      action = 'none';
-                    }
-                  }
-                  }
-                    that.changedOrders.push({
-                      id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
-                      reason: reason,
-                      action: action,
-                      woItem: woOrder,
-                      items: diffItems
-                  });
-                }
-              }
-              });
-              var newOrders = futureOrders.filter(function(ord) {
-                return !ord.isInWo &&
-                  ord.properties.eventDate < horizonDate &&
-                  ord.properties.orderStatus > 1 &&
-                  ord.properties.orderStatus < 6;
-              });
-              newOrders.forEach(function(newOrd) {
-               that.isWoChanged = true;
-                that.isWoMajorChange = true;
-                var orderWoItem = api.initWorkOrder();
-                // create the object for now, but we don't store it until user decides to include it in WO
-                orderWoItem.properties.woId = woId;
-                orderWoItem.properties.domain = 0;
-                orderWoItem.properties.order = newOrd.properties;
-                orderWoItem.properties.order.id = newOrd.id;
-                orderWoItem.properties.customer = customers.filter(function (cust) {
-                  return cust.id === newOrd.properties.customer;
-                })[0].properties;
-                orderWoItem.properties.orderStatus = lov.orderStatuses.filter(function(st) {
-                  return st.id === newOrd.properties.orderStatus;
-                })[0];
-                orderWoItem.properties.color = colors.filter(function(color) {  // copy order's color to wo
-                  return color.tId === newOrd.properties.color;
-                })[0];
-                orderWoItem.properties.prepScope = 'all';
-                orderWoItem.properties.select = 'delay';
-                that.changedOrders.push({
-                  id: Math.round(Math.random()*1000000),  // just for ng-repeat uniqueness
-                  reason: 'חדש',
-                  action: 'new',
-                  woItem: orderWoItem,
-                  isIncludeInWo: true,
-                  items: diffItems
-                });
-              });
-              // if (that.isWoChanged) {
-              //   that.createNewWorkOrder(true);
-              // }
+          that.checkDiff()
+            .then(function() {
               if (that.changedOrders.length) {
                 that.isActiveTab = [false, false, false, false, false, true]; // show diff tab
               } else {
@@ -1545,6 +1561,10 @@ angular.module('myApp')
     this.toDate = new Date(dater.today());
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
     this.toDate.setDate(this.toDate.getDate()-1);
+    var horizon = [6,5,4,3,4,3,2];
+    // Sunday-Wednsday -> horizon till Saturday; Thursday-Saturday -> horizon till Monday
+    this.horizonDate = new Date(dater.today());
+    this.horizonDate.setDate(this.horizonDate.getDate() + horizon[this.horizonDate.getDay()]);
     this.isShowDone = true;
     this.switchWorkOrders();
   });
