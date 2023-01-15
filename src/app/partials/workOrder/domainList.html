@@ -81,7 +81,7 @@
           <th>מתי</th>
           </thead>
           <tbody>
-          <tr ng-repeat="order in woItem.properties.orders track by order.id"
+          <tr ng-repeat="order in woItem.view.orders track by $index"
               ng-hide="workOrderModel.isShowTodayOnly[workOrderModel.domain] && order.select!=='today'">
             <td>{{order.customer}}</td>
             <td>{{order.day}}</td>

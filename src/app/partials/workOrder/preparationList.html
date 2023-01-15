@@ -102,23 +102,23 @@
       </thead>
       <tbody>
       <tr ng-repeat="woItem in workOrderModel.woOrders track by woItem.id"
-          ng-class="woItem.properties.orderStatus.id===1?'bg-active':
-                        woItem.properties.orderStatus.id===2?'bg-warning':
-                        (woItem.properties.orderStatus.id>=3 && woItem.properties.orderStatus.id<=5)?'bg-success':
-                        woItem.properties.orderStatus.id===6?'active myCanceledEvent':null">
+          ng-class="woItem.view.orderStatus.id===1?'bg-active':
+                        woItem.view.orderStatus.id===2?'bg-warning':
+                        (woItem.view.orderStatus.id>=3 && woItem.view.orderStatus.id<=5)?'bg-success':
+                        woItem.view.orderStatus.id===6?'active myCanceledEvent':null">
         <td>
           <a ng-href="#/editOrderView/{{woItem.properties.order.id}}/0">{{woItem.properties.order.number}}</a>
         </td>
         <td>{{woItem.properties.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
         <td>{{woItem.properties.order.eventTime | date: 'HH:mm'}}</td>
         <td>{{woItem.properties.order.exitTime | date: 'HH:mm'}}</td>
-        <td>{{woItem.properties.customer.firstName+' '+woItem.properties.customer.lastName}}</td>
+        <td>{{woItem.view.customer.firstName+' '+woItem.view.customer.lastName}}</td>
         <td>{{woItem.properties.order.noOfParticipants}}</td>
         <td>{{woItem.properties.order.header.title}}</td>
-        <td  ng-style="workOrderModel.isOrderColors ? woItem.properties.color.style : null">
-          {{woItem.properties.orderStatus.name}}
+        <td  ng-style="workOrderModel.isOrderColors ? woItem.view.color.style : null">
+          {{woItem.view.orderStatus.name}}
         </td>
-        <td>{{woItem.properties.color.tId}}</td>
+        <td>{{woItem.view.color.tId}}</td>
      <td class="verticalLine">
           <input type="radio" ng-model="woItem.properties.select"
                  ng-change="workOrderModel.setOrderSelect(woItem)"
@@ -213,7 +213,7 @@
           <thead>
           <th style="width: 15%">לקוח</th>
           <th style="width: 10%">יום</th>
-          <th ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id"
+          <th ng-repeat="menuItem in woItem.view.menuItems track by menuItem.id"
               ng-hide="workOrderModel.isShowPrepsTodayOnly && menuItem.quantityForToday===0">
             <span>{{menuItem.productName}}</span>
             <span ng-show="menuItem.isRemark">
@@ -227,35 +227,35 @@
           </thead>
           <tbody>
           <tr ng-show="!workOrderModel.isShowPrepsTodayOnly || order.select==='today'"
-              ng-repeat="order in woItem.properties.orders track by order.id">
+              ng-repeat="order in woItem.view.orders track by order.id">
             <td>{{order.customer}}</td>
             <td>{{order.day}}</td>
             <td ng-repeat="menuItem in order.menuItems track by menuItem.seq"
                 ng-hide="workOrderModel.isShowPrepsTodayOnly &&
-                         woItem.properties.menuItems[menuItem.seq].quantityForToday===0">
+                         woItem.view.menuItems[menuItem.seq].quantityForToday===0">
               {{menuItem.quantity | number:2}}
             </td>
             <td>{{order.totalQuantity | number:2}}</td>
             <td ng-hide="workOrderModel.isShowPrepsTodayOnly">
               <input type="radio"
                      ng-model="order.select" value="delay"
-                     ng-change="workOrderModel.setPrepOrderSelect(woItem)">
+                     ng-change="workOrderModel.setPrepOrderSelect(woItem,order)">
             </td>
             <td ng-hide="workOrderModel.isShowPrepsTodayOnly">
               <input type="radio"
                      ng-model="order.select" value="today"
-                     ng-change="workOrderModel.setPrepOrderSelect(woItem)">
+                     ng-change="workOrderModel.setPrepOrderSelect(woItem,order)">
             </td>
            <td ng-hide="workOrderModel.isShowPrepsTodayOnly">
              <input type="radio"
                     ng-model="order.select" value="done"
-                    ng-change="workOrderModel.setPrepOrderSelect(woItem)">
+                    ng-change="workOrderModel.setPrepOrderSelect(woItem,order)">
             </td>
           </tr>
           <tr>
           <td><label>סה"כ</label></td>
           <td></td>
-          <td ng-repeat="menuItem in woItem.properties.menuItems track by menuItem.id"
+          <td ng-repeat="menuItem in woItem.view.menuItems track by menuItem.id"
               ng-hide="workOrderModel.isShowPrepsTodayOnly && menuItem.quantityForToday===0">
             <span ng-hide="workOrderModel.isShowPrepsTodayOnly">{{menuItem.quantity | number : 2}}</span>
             <span ng-show="workOrderModel.isShowPrepsTodayOnly">{{menuItem.quantityForToday | number : 2}}</span>
@@ -265,7 +265,7 @@
           </tr>
           </tbody>
         </table>
-        <div ng-repeat="remark in woItem.properties.menuItems | filter:{isRemark:true} track by remark.id"
+        <div ng-repeat="remark in woItem.view.menuItems | filter:{isRemark:true} track by remark.id"
              ng-hide="workOrderModel.isShowPrepsTodayOnly && remark.quantityForToday===0">
           <label>{{"התאמה אישית מס'"+remark.remarkNo+":"}}</label>
           <span>{{remark.remarkText}}</span>
