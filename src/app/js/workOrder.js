@@ -19,6 +19,7 @@ angular.module('myApp')
     var woId;
 
     this.isShowTodayOnly = [];
+    this.isShowDone = [];
     this.isIncludeStock = [];
     this.isShowDetails = [];
     this.isPrint = [];
@@ -224,7 +225,6 @@ angular.module('myApp')
                       item.kitchenRemark : item.productDescription;
                 }
                 workItem.properties.quantity = item.quantity;
-                workItem.properties.quantityForToday = 0;
                 if (changedOrder.woItem.properties.order.orderStatus === 2) {
                   workItem.properties.notFinalQuantity = item.quantity;
                 }
@@ -269,8 +269,12 @@ angular.module('myApp')
                 workItem = that.workOrder[workItemInd];
                 workItem.properties.quantity +=
                   inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                workItem.properties.quantityForToday +=
-                  inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                if (targetDomain > 2) {
+                  workItem.properties.quantityForToday +=
+                    inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.quantityDone +=
+                    inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity;
+                }
                 if (targetDomain === 2) {
                   // adding orders that were not there before
                    inWorkItem.backTrace.forEach(function(bt) {
@@ -289,9 +293,11 @@ angular.module('myApp')
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
                     quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
-                    quantityForToday: inWorkItem.quantityForToday * component.quantity /
-                                      inCatItem.productionQuantity
-                  });
+                    quantityForToday: inWorkItem.domain===2 ? 0 :
+                      inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity,
+                    quantityDone: inWorkItem.domain===2 ? 0 :
+                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity
+                });
               } else {  // first time component appears
                 var outCatObj = catalog.filter(function (cat) {
                   return cat.id === component.id;
@@ -311,12 +317,20 @@ angular.module('myApp')
                   })[0];
                  workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                 workItem.properties.quantityForToday = inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
-                 workItem.properties.backTrace = [{
+                  workItem.properties.quantityForToday =
+                    inWorkItem.domain===2 ? 0 :
+                      inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.quantityDone =
+                    targetDomain===2 ? 0 :
+                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.backTrace = [{
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
                     quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
-                    quantityForToday: inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity
+                    quantityForToday: inWorkItem.domain===2 ? 0 :
+                      inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity,
+                    quantityDone: inWorkItem.domain===2 ? 0 :
+                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity
                   }];
                   workItem.properties.select = "delay";
                   // orders array in prep is used only to record the select state of order in prep
@@ -344,7 +358,7 @@ angular.module('myApp')
       });
     };
 
-    // for each preparation, create an array of menu items in which it appears for detailed listing
+    // create an array of menu items in which it appears for detailed listing
     this.createPrepMenuItemView = function(currentPrep) {
       var that = this;
          currentPrep.view.menuItems = [];
@@ -354,6 +368,7 @@ angular.module('myApp')
             currentMenuItem.id = currentBackTrace.id;
             currentMenuItem.quantity = currentBackTrace.quantity;
             currentMenuItem.quantityForToday = 0;
+            currentMenuItem.quantityDone = 0;
             var originalMenuItem = that.workOrder.filter(function (wo) {
               return wo.id === currentBackTrace.id;
             })[0];
@@ -363,15 +378,11 @@ angular.module('myApp')
               currentMenuItem.remarkNo = ++remarkCnt;
               currentMenuItem.remarkText = originalMenuItem.properties.productDescription;
             }
-            var totalQuantity = 0;
-            originalMenuItem.properties.backTrace.forEach(function (ord) {
-              totalQuantity += ord.quantity;
-            });
             currentPrep.view.menuItems.push(currentMenuItem);
           });
     };
 
-    // for each preparation, create an array of orders in which menuItems containing this preparation appear.
+    // create an array of orders in which menuItems containing this preparation appear.
     // each entry contains an array of menuItems.
     this.createPrepOrderView = function (currentPrep) {
       var that = this;
@@ -443,14 +454,23 @@ angular.module('myApp')
       });
       currentPrep.view.orders = currentPrep.view.orders.filter(function(ord) {
         return ord.totalQuantity > 0;
-      })
+      });
+      // update quantityForToday and quantityDone of menuItem array based on order's select values
+      currentPrep.view.menuItems.forEach(function(menuItem, ind) {
+        currentPrep.view.orders.forEach(function(ord) {
+          if (ord.select === 'today') {
+            menuItem.quantityForToday += ord.menuItems[ind].quantity;
+          } else if (ord.select === 'done') {
+            menuItem.quantityDone += ord.menuItems[ind].quantity;
+          }
+        });
+      });
       currentPrep.view.orders.sort(function(a,b) {
         return a.date - b.date;
       });
     };
 
-    // for each shopping or action item, find its breakdown to individual orders, based on
-    // the prep order view it comes from
+    // find item's breakdown to individual orders, based on the prep order view it comes from
     this.createShoppingAndActionsOrderView = function(currentItem,targetDomain) {
     var that = this;
       if (currentItem.properties.domain === targetDomain) {
@@ -500,30 +520,48 @@ angular.module('myApp')
     this.isShowItem = function (woItem) {
       var that = this;
       var isShowByStock = that.isIncludeStock[woItem.properties.domain] ? true : !woItem.properties.isInStock;
-      var isShowByDone = that.isShowDone ? true : !(woItem.properties.select==='done');
       var isItemToday = woItem.properties.select==='today';
       if (woItem.properties.select==='mix') {
         woItem.view.orders.forEach(function(ord) {
           if (ord.select === 'today') {
             isItemToday = true;
           }
-         });
+        });
+      }
+      var isItemDone = woItem.properties.select==='done';
+      if (woItem.properties.select==='mix') {
+        woItem.view.orders.forEach(function(ord) {
+          if (ord.select !== 'done') {
+            isItemDone = false;
+          }
+        });
       }
       var isShowByToday = woItem.properties.domain === 2 ?
-        (that.isShowPrepsTodayOnly ? isItemToday : true) : true;
+        (that.isShowTodayOnly[2] ? isItemToday : true) : true;
+      var isShowByDone = woItem.properties.domain === 2 ?
+        (that.isShowDone[2] ? true : !isItemDone) : true;
       return isShowByStock && isShowByToday && isShowByDone;
+    };
+
+    // show category only if any of its items will be shown
+    this.isShowCategory = function(cat) {
+      var that = this;
+      var temp = cat.list.filter(function(woItem) {
+        return that.isShowItem(woItem);
+      });
+      return temp.length;
     };
 
     // reset detailed view for today only, otherwise turn it on for mixed preps
     // also check if there are remarks for today's menuItems
     this.setPrepsTodayOnly = function () {
       var that = this;
-      if (this.isShowPrepsTodayOnly) {
+      if (this.isShowTodayOnly[2]) {
         this.isOrderFilter = false;  // turn off order selection table
-        this.isShowDone = false;
+        this.isShowDone[2] = false;
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
-            woItem.isShowDetails = that.isShowDetails[that.domain]; // xxx
+            woItem.isShowDetails = that.isShowDetails[that.domain];
             woItem.isRemarkForToday = false;
             woItem.view.menuItems.forEach(function (mi) {
               if (mi.isRemark && mi.quantityForToday>0) {
@@ -543,22 +581,47 @@ angular.module('myApp')
       }
     };
 
-    // sum quantity of all orders marked for today and of each menuItem they include
-   this.computeQuantityForToday = function (woItem) {
-      var quant = 0;
+    this.setPrepsDone = function () {
+      var that = this;
+      if (this.isShowDone[2]) {
+
+      } else {
+        this.workOrder.forEach(function(woItem) {
+          if (woItem.properties.domain === 2) {
+            woItem.isAnyRemarkNotDone = false;
+            woItem.view.menuItems.forEach(function (mi) {
+              if (mi.isRemark && mi.quantityDone===0) {
+                woItem.isAnyRemarkNotDone = true;
+              }
+            })
+          }
+        });
+      }
+    };
+
+    // sum quantity of all orders marked for today or done and of each menuItem they include
+   this.computeSelectQuantities = function (woItem) { // xxx
+      var quantToday = 0;
+      var quantDone = 0;
       woItem.view.menuItems.forEach(function (mi0) {
         mi0.quantityForToday = 0;
+        mi0.quantityDone = 0;
       });
       woItem.view.orders.forEach(function (ord) {
         if (ord.select === 'today') {
-          quant += ord.totalQuantity;
+          quantToday += ord.totalQuantity;
           ord.menuItems.forEach(function(mi) {
             woItem.view.menuItems[mi.seq].quantityForToday += mi.quantity;
           });
+        } else if (ord.select === 'done') {
+          quantDone += ord.totalQuantity;
+          ord.menuItems.forEach(function(mi) {
+            woItem.view.menuItems[mi.seq].quantityDone += mi.quantity;
+          });
         }
       });
-      woItem.properties.quantityForToday = quant;
-
+     woItem.properties.quantityForToday = quantToday;
+     woItem.properties.quantityDone = quantDone;
     };
 
     // propagate selection to all preps in domain
@@ -570,7 +633,7 @@ angular.module('myApp')
           woItem.properties.prepScope = 'all';
         } else if (woItem.properties.domain === 2) {
           woItem.properties.select = that.select;
-          that.computeQuantityForToday(woItem);
+          that.computeSelectQuantities(woItem);
           that.setPrepSelect(woItem, false);
         }
       });
@@ -586,7 +649,7 @@ angular.module('myApp')
           wo.orders.forEach(function (ord) {
             if (ord.id === woItem.id) {
               ord.select = woItem.properties.select;
-              that.computeQuantityForToday(woi);
+              that.computeSelectQuantities(woi);
               that.setPrepOrderSelect(woi,woItem);
             }
           });
@@ -608,7 +671,7 @@ angular.module('myApp')
         woItem.properties.orders.forEach(function(ord) {
           ord.select = woItem.properties.select;
         });
-        this.computeQuantityForToday(woItem);
+        this.computeSelectQuantities(woItem);
         api.saveObj(woItem)
           .then(function () {
             that.woIndex.properties.domainStatus[3] = false;
@@ -620,6 +683,8 @@ angular.module('myApp')
 
     // if select values of all orders in prep are identical, set select value of prep accordingly
     // else set prep's select to "mix" which disables its control
+    //todo: if not showing done items, they should not cause item to be mixed
+    //todo: also recall this when making done items visible / non visible
     this.setPrepOrderSelect = function (woItem, order) {
       if (woItem.properties.domain === 2) {  // should always be
         that.select = 'mix';
@@ -635,7 +700,7 @@ angular.module('myApp')
         if (s === 'mix') {
           woItem.isShowDetails = true;
         }
-        this.computeQuantityForToday(woItem);
+        this.computeSelectQuantities(woItem);
         // copy select value from view to properties, to save it
          var propOrder = woItem.properties.orders.filter(function(ord) {
           return ord.id === order.id;
@@ -715,7 +780,7 @@ angular.module('myApp')
                }
             }
           });
-          that.computeQuantityForToday(woi);
+          that.computeSelectQuantities(woi);
           that.setPrepOrderSelect(woi,woItem);
         }
       });
@@ -1105,7 +1170,7 @@ angular.module('myApp')
       this.workOrder.forEach(function(woi) {
         if (woi.properties.domain === that.domain) {
           if (woi.properties.domain === 2) {
-            if (that.isShowPrepsTodayOnly || woi.properties.select !== 'mix') {
+            if (that.isShowTodayOnly[2] || woi.properties.select !== 'mix') {
               woi.isShowDetails = that.isShowDetails[2];
             }
           } else {
@@ -1122,7 +1187,7 @@ angular.module('myApp')
       var that = this;
       category.list.forEach(function(woi) {
         if (woi.properties.domain === 2) {
-          if (that.isShowPrepsTodayOnly || woi.properties.select !== 'mix') {
+          if (that.isShowTodayOnly[2] || woi.properties.select !== 'mix') {
             woi.isShowDetails = category.isShowDetails;
           }
         } else {
@@ -1594,6 +1659,6 @@ angular.module('myApp')
     // Sunday-Wednsday -> horizon till Saturday; Thursday-Saturday -> horizon till Monday
     this.horizonDate = new Date(dater.today());
     this.horizonDate.setDate(this.horizonDate.getDate() + horizon[this.horizonDate.getDay()]);
-    this.isShowDone = true;
+    this.isShowDone[2] = true; //todo: maybe shd be false by default?
     this.switchWorkOrders();
   });

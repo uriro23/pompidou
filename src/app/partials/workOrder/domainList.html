@@ -37,8 +37,8 @@
   </tr>
 </table>
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].categories track by cat.category.tId"
-     ng-hide="workOrderModel.isPrint[workOrderModel.domain] ||
-              !workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+     ng-show="!workOrderModel.isPrint[workOrderModel.domain] &&
+              workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
   <span>&nbsp;&nbsp;פירוט</span>
@@ -57,7 +57,7 @@
       <td style="width: 5%" ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
         {{woItem.properties.quantityForToday | number:2}}
       </td>
-      <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
+      <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
       <td style="width: 7%">
         <button ng-click="workOrderModel.backInfo(woItem)"
                 ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]"
@@ -72,7 +72,11 @@
           מחק
         </button>
       </td>
-      <td style="width: 41%" ng-show="woItem.isShowDetails">
+      <td style="width: 7%">
+        <span>פירוט</span>
+        <input type="checkbox" ng-model="woItem.isShowDetails">
+      </td>
+      <td style="width: 32%" ng-show="woItem.isShowDetails">
         <table class="table">
           <thead>
           <th>לקוח</th>
@@ -93,7 +97,7 @@
           </tbody>
         </table>
       </td>
-      <td style="width: 34%" ng-hide="woItem.isShowDetails[workOrderModel.domain]"></td>
+      <td style="width: 32%" ng-hide="woItem.isShowDetails"></td>
     </tr>
     </tbody>
   </table>
