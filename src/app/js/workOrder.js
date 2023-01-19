@@ -231,6 +231,7 @@ angular.module('myApp')
                 workItem.properties.category = item.category;
                 workItem.properties.domain = 1;
                 workItem.properties.measurementUnit = item.measurementUnit;
+                workItem.properties.select = 'unknown';
                 workItem.properties.backTrace = [{
                   id: changedOrder.woItem.id,
                   domain: 0,
@@ -261,10 +262,12 @@ angular.module('myApp')
             if (component.domain === targetDomain) {
               var temp = that.workOrder.filter(function (wi, ind) {
                 if (wi.properties.catalogId === component.id) {
-                  workItemInd = ind;
-                  return true;
+                  if (targetDomain === 2 || wi.properties.select === inWorkItem.select) {
+                   workItemInd = ind;
+                    return true;
+                  }
                 }
-              });
+               });
               if (temp.length > 0) {  // item already exists, just add quantity
                 workItem = that.workOrder[workItemInd];
                 workItem.properties.quantity +=
@@ -318,11 +321,13 @@ angular.module('myApp')
                  workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.quantityForToday =
-                    inWorkItem.domain===2 ? 0 :
+                    targetDomain===2 ? 0 :
                       inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.quantityDone =
                     targetDomain===2 ? 0 :
                       inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.select =
+                    targetDomain===2 ? "delay" : inWorkItem.select;
                   workItem.properties.backTrace = [{
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
@@ -330,9 +335,9 @@ angular.module('myApp')
                     quantityForToday: inWorkItem.domain===2 ? 0 :
                       inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity,
                     quantityDone: inWorkItem.domain===2 ? 0 :
-                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity
+                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity,
+                    select: targetDomain===2 ? "delay" : inWorkItem.select
                   }];
-                  workItem.properties.select = "delay";
                   // orders array in prep is used only to record the select state of order in prep
                   if (targetDomain === 2) {
                     workItem.properties.orders = inWorkItem.backTrace.map(function(bt) {
@@ -516,10 +521,9 @@ angular.module('myApp')
       }
     };
 
-    // decide if item will be shown on prep list
+    // decide if item will be shown
     this.isShowItem = function (woItem) {
       var that = this;
-      var isShowByStock = that.isIncludeStock[woItem.properties.domain] ? true : !woItem.properties.isInStock;
       var isItemToday = woItem.properties.select==='today';
       if (woItem.properties.select==='mix') {
         woItem.view.orders.forEach(function(ord) {
@@ -536,10 +540,9 @@ angular.module('myApp')
           }
         });
       }
-      var isShowByToday = woItem.properties.domain === 2 ?
-        (that.isShowTodayOnly[2] ? isItemToday : true) : true;
-      var isShowByDone = woItem.properties.domain === 2 ?
-        (that.isShowDone[2] ? true : !isItemDone) : true;
+      var isShowByStock = this.isIncludeStock[woItem.properties.domain] ? true : !woItem.properties.isInStock;
+      var isShowByToday = this.isShowTodayOnly[this.domain] ? isItemToday : true;
+      var isShowByDone = this.isShowDone[this.domain] ? true : !isItemDone;
       return isShowByStock && isShowByToday && isShowByDone;
     };
 
@@ -551,6 +554,15 @@ angular.module('myApp')
       });
       return temp.length;
     };
+
+    this.isShowShoppingOrActionItem = function (woItem) {
+      /*
+         ng-hide="(workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
+         woItem.properties.quantityForToday===0) ||
+         (!workOrderModel.isIncludeStock[workOrderModel.domain] && woItem.properties.isInStock)">
+       */
+      var isShowByToday;
+    }
 
     // reset detailed view for today only, otherwise turn it on for mixed preps
     // also check if there are remarks for today's menuItems
@@ -1660,5 +1672,7 @@ angular.module('myApp')
     this.horizonDate = new Date(dater.today());
     this.horizonDate.setDate(this.horizonDate.getDate() + horizon[this.horizonDate.getDay()]);
     this.isShowDone[2] = true; //todo: maybe shd be false by default?
+    this.isShowDone[3] = true;
+    this.isShowDone[4] = true;
     this.switchWorkOrders();
   });
