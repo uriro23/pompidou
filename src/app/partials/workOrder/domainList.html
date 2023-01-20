@@ -108,7 +108,7 @@
           </tbody>
         </table>
       </td>
-      <td style="width: 32%" ng-hide="woItem.isShowDetails">
+      <td style="width: 32%" ng-show="!woItem.isShowDetails && !workOrderModel.isShowTodayOnly[workOrderModel.domain]">
         {{woItem.properties.select==="delay"?"עוד לא":
           woItem.properties.select==="today"?"להיום":
           woItem.properties.select==="done"?"בוצע":
@@ -117,20 +117,31 @@
             "שגיאה"
         }}
       </td>
+      <td style="width: 32%" ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+      </td>
     </tr>
     </tbody>
   </table>
 </div>
 </div>
-<div style="margin-right: 2%;margin-bottom: 2cm;margin-top: 1cm">
-  <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].categories track by cat.category.tId"
-       ng-show="workOrderModel.isPrint[workOrderModel.domain] && workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+<div style="margin-right: 2%;margin-bottom: 2cm;margin-top: 1cm"
+ ng-show="workOrderModel.isPrint[workOrderModel.domain] &&
+          workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+  <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].categories
+                  track by cat.category.tId"
+       ng-show="workOrderModel.isShowCategory(cat)">
     <label ng-show="cat.isShow" style="font-size: x-large">{{cat.category.label}}</label>
     <div ng-show="cat.isShow" style="column-count: 2; width:90%">
       <div ng-repeat="woItem in cat.list track by woItem.id" style="font-size: large"
-           ng-hide="workOrderModel.isShowTodayOnly[workOrderModel.domain] && woItem.properties.quantityForToday===0">
-        <span style="position: relative;right:0%" ng-hide="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+           ng-show="workOrderModel.isShowItem(woItem)">
+        <span style="position: relative;right:0%"
+              ng-show="!workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
+                        workOrderModel.isShowDone[workOrderModel.domain]">
           {{woItem.properties.quantity | number:2}}</span>
+        <span style="position: relative;right:0%"
+               ng-show="!workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
+                        !workOrderModel.isShowDone[workOrderModel.domain]">
+        {{woItem.properties.quantity - woItem.properties.quantityDone | number:2}}</span>
         <span style="position: relative;right:0%" ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
           {{woItem.properties.quantityForToday | number:2}}</span>
         <span style="position: relative;right:4%">{{woItem.properties.measurementUnit.label}}</span>

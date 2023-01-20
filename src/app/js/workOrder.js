@@ -612,7 +612,7 @@ angular.module('myApp')
     };
 
     // sum quantity of all orders marked for today or done and of each menuItem they include
-   this.computeSelectQuantities = function (woItem) { // xxx
+   this.computeSelectQuantities = function (woItem) {
       var quantToday = 0;
       var quantDone = 0;
       woItem.view.menuItems.forEach(function (mi0) {
@@ -1108,7 +1108,7 @@ angular.module('myApp')
       this.workOrder.forEach(function(woi) {
         var wo = woi.properties;
         woi.isShow = !wo.isInStock;
-        if (wo.select === 'mix') { // force display order details for preps whose timing selection is mixed
+        if (wo.domain === 2 && wo.select === 'mix') {
           woi.isShowDetails = true;
         }
         if (wo.domain === 2) {
