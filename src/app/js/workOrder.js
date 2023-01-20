@@ -321,10 +321,10 @@ angular.module('myApp')
                  workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.quantityForToday =
-                    targetDomain===2 ? 0 :
+                    targetDomain===2 || inWorkItem.domain === 1 ? 0 :
                       inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.quantityDone =
-                    targetDomain===2 ? 0 :
+                    targetDomain===2 || inWorkItem.domain === 1 ? 0 :
                       inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.select =
                     targetDomain===2 ? "delay" : inWorkItem.select;

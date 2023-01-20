@@ -158,6 +158,8 @@
         <td style="width: 50%; vertical-align: top"
             ng-repeat="compDomain in catalogItemModel.compDomains track by compDomain.id">
           <h4>{{compDomain.label}}</h4>
+          <span ng-hide="catalogItemModel.item.properties.domain === 1 && compDomain.id === 3">
+            <!-- disable adding shoppings directly under menuItems -->
           <span>הוסף:</span>&nbsp;
            <select ng-model="compDomain.currentCategory"
                     ng-change="catalogItemModel.setCompCategory(compDomain)"
@@ -171,6 +173,7 @@
                   ng-click="catalogItemModel.addItem(compDomain.id,compDomain.currentCategory.tId)">
             {{compDomain.single}}&nbsp;חדשה
           </button>
+          </span>
           <table class="table table-hover" style="width:90%">
             <thead>
             <th style="width:15%"><label>קטגוריה</label></th>
