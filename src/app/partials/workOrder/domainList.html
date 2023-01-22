@@ -102,7 +102,12 @@
             <td>{{order.day}}</td>
             <td>{{order.totalQuantity | number:2}}</td>
             <td>
-              {{order.select==="delay"?"עוד לא":order.select==="today"?"להיום":"בוצע"}}
+              {{order.select==="delay"?"עוד לא":
+                order.select==="today"?"להיום":
+                order.select==="done"?"בוצע":
+                order.select==="unknown"?"לא ידוע":
+                  "שגיאה"
+              }}
             </td>
           </tr>
           </tbody>

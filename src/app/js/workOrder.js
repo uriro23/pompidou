@@ -262,21 +262,22 @@ angular.module('myApp')
             if (component.domain === targetDomain) {
               var temp = that.workOrder.filter(function (wi, ind) {
                 if (wi.properties.catalogId === component.id) {
-                  if (targetDomain === 2 || wi.properties.select === inWorkItem.select) {
                    workItemInd = ind;
                     return true;
                   }
-                }
                });
               if (temp.length > 0) {  // item already exists, just add quantity
                 workItem = that.workOrder[workItemInd];
                 workItem.properties.quantity +=
                   inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                if (targetDomain > 2) {
+                if (targetDomain > 2 && inWorkItem.domain === 2) {
                   workItem.properties.quantityForToday +=
                     inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.quantityDone +=
                     inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity;
+                  if (inWorkItem.select !== workItem.properties.select) {
+                    workItem.properties.select = 'mix';
+                  }
                 }
                 if (targetDomain === 2) {
                   // adding orders that were not there before
@@ -296,9 +297,9 @@ angular.module('myApp')
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
                     quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
-                    quantityForToday: inWorkItem.domain===2 ? 0 :
+                    quantityForToday: inWorkItem.domain===2 || inWorkItem.domain === 1 ? 0 :
                       inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity,
-                    quantityDone: inWorkItem.domain===2 ? 0 :
+                    quantityDone: inWorkItem.domain===2 || inWorkItem.domain === 1 ? 0 :
                       inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity
                 });
               } else {  // first time component appears
@@ -494,30 +495,79 @@ angular.module('myApp')
             var component = prepCatalogItem.properties.components.filter(function (comp) {
               return comp.id === itemCatalogItem.id;
             })[0];
-            originalPrep.view.orders.forEach(function (prepOrder) {
-              var temp = currentItem.view.orders.filter(function (itemOrder) {
-                return itemOrder.id === prepOrder.id;
+            if (!component) {
+              alert('המצרך '+itemCatalogItem.properties.productName+
+                ' הוסר ממרכיביה של ההכנה '+prepCatalogItem.properties.productName+
+                '. בצע חישוב מחדש של מצרכים');
+            } else {
+              originalPrep.view.orders.forEach(function (prepOrder) {
+                var temp = currentItem.view.orders.filter(function (itemOrder) {
+                  return itemOrder.id === prepOrder.id && itemOrder.select === prepOrder.select;
+                });
+                var currentOrder;
+                if (temp.length === 0) { // order doesn't exists in item
+                  currentOrder = {
+                    id: prepOrder.id,
+                    customer: prepOrder.customer,
+                    date: prepOrder.date,
+                    day: prepOrder.day,
+                    totalQuantity: 0,
+                    menuItems: [],
+                    select: prepOrder.select
+                  };
+                  currentItem.view.orders.push(currentOrder);
+                } else {
+                  currentOrder = temp[0];
+                }
+                currentOrder.totalQuantity +=
+                  prepOrder.totalQuantity * component.quantity / prepCatalogItem.properties.productionQuantity;
               });
-              var currentOrder;
-              if (temp.length === 0) { // order doesn't exists in item
-                currentOrder = {
-                  id: prepOrder.id,
-                  customer: prepOrder.customer,
-                  date: prepOrder.date,
-                  day: prepOrder.day,
-                  totalQuantity: 0,
-                  menuItems: [],
-                  select: prepOrder.select
-                };
-                currentItem.view.orders.push(currentOrder);
-              } else {
-                currentOrder = temp[0];
-              }
-              currentOrder.totalQuantity +=
-                prepOrder.totalQuantity * component.quantity / prepCatalogItem.properties.productionQuantity;
-            });
+            }
+          } else if (itemBackTrace.domain === 1) { // shopping item directly under menuItem
+            var originalMenuItem = that.workOrder.filter(function (mi) {
+              return mi.id === itemBackTrace.id;
+            })[0];
+            var miCatalogItem = that.catalog.filter(function (cat) {
+              return cat.id === originalMenuItem.properties.catalogId;
+            })[0];
+            component = miCatalogItem.properties.components.filter(function (comp) {
+              return comp.id === itemCatalogItem.id;
+            })[0];
+            if (!component) {
+              alert('המצרך '+itemCatalogItem.properties.productName+
+                          ' הוסר ממרכיביה של המנה '+miCatalogItem.properties.productName+
+                          '. בצע חישוב מחדש של מצרכים');
+            } else {
+              originalMenuItem.properties.backTrace.forEach(function (bt) {
+                var temp = currentItem.view.orders.filter(function (itemOrder) {
+                  return itemOrder.id === bt.id && itemOrder.select === 'unknown';
+                });
+                var originalOrder = that.workOrder.filter(function (ord) {
+                  return ord.id === bt.id;
+                })[0];
+                if (temp.length === 0) {
+                  var currentOrder = {
+                    id: originalOrder.id,
+                    customer: originalOrder.view.customer.firstName,
+                    date: originalOrder.properties.order.eventDate,
+                    day: that.dayName(originalOrder.properties.order.eventDate),
+                    totalQuantity: 0,
+                    menuItems: [],
+                    select: 'unknown'
+                  };
+                  currentItem.view.orders.push(currentOrder);
+                } else {
+                  currentOrder = temp[0];
+                }
+                currentOrder.totalQuantity +=
+                  bt.quantity * component.quantity / miCatalogItem.properties.productionQuantity;
+              });
+            }
           }
         });
+        currentItem.view.orders.sort(function(a,b) {
+          return a.date - b.date;
+        })
       }
     };
 
@@ -555,16 +605,7 @@ angular.module('myApp')
       return temp.length;
     };
 
-    this.isShowShoppingOrActionItem = function (woItem) {
-      /*
-         ng-hide="(workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
-         woItem.properties.quantityForToday===0) ||
-         (!workOrderModel.isIncludeStock[workOrderModel.domain] && woItem.properties.isInStock)">
-       */
-      var isShowByToday;
-    }
-
-    // reset detailed view for today only, otherwise turn it on for mixed preps
+     // reset detailed view for today only, otherwise turn it on for mixed preps
     // also check if there are remarks for today's menuItems
     this.setPrepsTodayOnly = function () {
       var that = this;
@@ -652,17 +693,17 @@ angular.module('myApp')
     };
 
     // propogate selection for event to all its occurances in preps
-    this.setOrderSelect = function(woItem) {
+    this.setOrderSelect = function(order) {
       var that = this;
-      api.saveObj(woItem);
+      api.saveObj(order);
       this.workOrder.forEach(function (woi) {
         var wo = woi.properties;
         if (wo.domain === 2) {
-          wo.orders.forEach(function (ord) {
-            if (ord.id === woItem.id) {
-              ord.select = woItem.properties.select;
+          woi.view.orders.forEach(function (ord) {
+            if (ord.id === order.id) {
+              ord.select = order.properties.select;
               that.computeSelectQuantities(woi);
-              that.setPrepOrderSelect(woi,woItem);
+              that.setPrepOrderSelect(woi,order);
             }
           });
         }
@@ -684,6 +725,7 @@ angular.module('myApp')
           ord.select = woItem.properties.select;
         });
         this.computeSelectQuantities(woItem);
+        //todo: invalidate further domains in other saves too
         api.saveObj(woItem)
           .then(function () {
             that.woIndex.properties.domainStatus[3] = false;
@@ -697,32 +739,32 @@ angular.module('myApp')
     // else set prep's select to "mix" which disables its control
     //todo: if not showing done items, they should not cause item to be mixed
     //todo: also recall this when making done items visible / non visible
-    this.setPrepOrderSelect = function (woItem, order) {
-      if (woItem.properties.domain === 2) {  // should always be
+    this.setPrepOrderSelect = function (prep, order) {
+      if (prep.properties.domain === 2) {  // should always be
         that.select = 'mix';
         var s = 'none';
-        woItem.view.orders.forEach(function(ord) {
+        prep.view.orders.forEach(function(ord) {
           if (s === 'none') {
             s = ord.select;
           } else if (s !== ord.select) {
             s = 'mix';
           }
         });
-        woItem.properties.select = s;
+        prep.properties.select = s;
         if (s === 'mix') {
-          woItem.isShowDetails = true;
+          prep.isShowDetails = true;
         }
-        this.computeSelectQuantities(woItem);
+        this.computeSelectQuantities(prep);
         // copy select value from view to properties, to save it
-         var propOrder = woItem.properties.orders.filter(function(ord) {
+         var propOrder = prep.properties.orders.filter(function(ord) {
           return ord.id === order.id;
         })[0];
         if (propOrder) {
-          propOrder.select = woItem.view.orders.filter(function (ord) {
+          propOrder.select = prep.view.orders.filter(function (ord) {
             return ord.id === order.id;
           })[0].select;
         }
-        api.saveObj(woItem)
+        api.saveObj(prep)
           .then(function () {
             that.woIndex.properties.domainStatus[3] = false;
             that.woIndex.properties.domainStatus[4] = false;
