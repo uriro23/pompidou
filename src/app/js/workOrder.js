@@ -49,7 +49,7 @@ angular.module('myApp')
     this.destroyWorkOrderDomains = function (domain) {
       var that = this;
       var woItemsToDelete = this.workOrder.filter(function (wo) {
-        // for shopping domain, don't delete actions
+        // for products domain, don't delete actions
         return domain===3 ? (wo.properties.domain === domain) : (wo.properties.domain >= domain);
       });
       this.isProcessing = true;
@@ -356,7 +356,7 @@ angular.module('myApp')
               if (targetDomain === 2) {
                 that.createViewForPrep(workItem);
               } else {
-                that.createViewForActionOrShopping(workItem,targetDomain);
+                that.createViewForActionOrProduct(workItem,targetDomain);
               }
             }
         });
@@ -429,6 +429,7 @@ angular.module('myApp')
                 customer: originalOrder.view.customer.firstName,
                 date: originalOrder.properties.order.eventDate,
                 day: that.dayName(originalOrder.properties.order.eventDate),
+                time: originalOrder.properties.order.eventTime,
                 totalQuantity: 0,
                 menuItems: [],
                 select: 'delay'
@@ -472,12 +473,22 @@ angular.module('myApp')
         });
       });
       currentPrep.view.orders.sort(function(a,b) {
-        return a.date - b.date;
+        var diff = a.date - b.date;
+        if (diff) {
+          return diff;
+        }
+        if (a.time && b.time) {
+          diff = a.time - b.time;
+          if (diff) {
+            return diff;
+          }
+        }
+        return a.id - b.id;
       });
     };
 
     // find item's breakdown to individual orders, based on the prep order view it comes from
-    this.createShoppingAndActionsOrderView = function(currentItem,targetDomain) {
+    this.createproductsAndActionsOrderView = function(currentItem,targetDomain) {
     var that = this;
       if (currentItem.properties.domain === targetDomain) {
         var itemCatalogItem = catalog.filter(function (cat) {
@@ -511,6 +522,7 @@ angular.module('myApp')
                     customer: prepOrder.customer,
                     date: prepOrder.date,
                     day: prepOrder.day,
+                    time: prepOrder.time,
                     totalQuantity: 0,
                     menuItems: [],
                     select: prepOrder.select
@@ -523,7 +535,7 @@ angular.module('myApp')
                   prepOrder.totalQuantity * component.quantity / prepCatalogItem.properties.productionQuantity;
               });
             }
-          } else if (itemBackTrace.domain === 1) { // shopping item directly under menuItem
+          } else if (itemBackTrace.domain === 1) { // product item directly under menuItem
             var originalMenuItem = that.workOrder.filter(function (mi) {
               return mi.id === itemBackTrace.id;
             })[0];
@@ -551,6 +563,7 @@ angular.module('myApp')
                     customer: originalOrder.view.customer.firstName,
                     date: originalOrder.properties.order.eventDate,
                     day: that.dayName(originalOrder.properties.order.eventDate),
+                    time: originalOrder.properties.order.eventTime,
                     totalQuantity: 0,
                     menuItems: [],
                     select: 'unknown'
@@ -566,8 +579,18 @@ angular.module('myApp')
           }
         });
         currentItem.view.orders.sort(function(a,b) {
-          return a.date - b.date;
-        })
+          var diff = a.date - b.date;
+          if (diff) {
+            return diff;
+          }
+          if (a.time && b.time) {
+            diff = a.time - b.time;
+            if (diff) {
+              return diff;
+            }
+          }
+          return a.id - b.id;
+        });
       }
     };
 
@@ -1261,7 +1284,7 @@ angular.module('myApp')
       this.destroyWorkOrderDomains(targetDomain)
         .then(function () {
         that.workOrder = that.workOrder.filter(function (wo) {
-          // for shopping domain, include actions
+          // for products domain, include actions
           return targetDomain===3 ?
             (wo.properties.domain === 4 || wo.properties.domain < targetDomain) :
             (wo.properties.domain < targetDomain);
@@ -1286,7 +1309,7 @@ angular.module('myApp')
         //   that.createPrepMenuItemView();
         //   that.createPrepOrderView();
         // } else if (targetDomain === 3 || targetDomain === 4) {
-        //   that.createShoppingAndActionsOrderView(targetDomain);
+        //   that.createproductsAndActionsOrderView(targetDomain);
         // }
         that.saveWorkOrder(targetDomain)
           .then(function () {
@@ -1568,9 +1591,9 @@ angular.module('myApp')
        this.createPrepOrderView(woi);
      };
 
-     this.createViewForActionOrShopping = function (woi,targetDomain) {
+     this.createViewForActionOrProduct = function (woi,targetDomain) {
        woi.view = {};
-       this.createShoppingAndActionsOrderView(woi,targetDomain);
+       this.createproductsAndActionsOrderView(woi,targetDomain);
      }
 
      this.createView = function () {
@@ -1591,7 +1614,7 @@ angular.module('myApp')
                  break;
                case 3:
                case 4:
-                 that.createViewForActionOrShopping(woi,domain);
+                 that.createViewForActionOrProduct(woi,domain);
                  break;
              }
            }
