@@ -631,15 +631,19 @@ angular.module('myApp')
       }
     };
 
+    this.horizonDate = function() {
+      var horizon = [6,5,4,3,4,3,2];
+      // Sunday-Wednsday -> horizon till Saturday; Thursday-Saturday -> horizon till Monday
+      var hDate = new Date(dater.today());
+      hDate.setDate(hDate.getDate() + horizon[hDate.getDay()]);
+      return hDate;
+    };
+
     this.generateOrderColors = function() {
-
-      var DAYS_TO_COLOR = 7;
-
       var fields = ['eventDate', 'eventTime', 'number','orderStatus','template','color'];
       var from = dater.today();
-      var to = angular.copy(from);
-      to.setDate(to.getDate()+ DAYS_TO_COLOR);
-       api.queryOrdersByRange('eventDate',from,to,fields)
+      var to = this.horizonDate();
+      api.queryOrdersByRange('eventDate',from,to,fields)
         .then(function(orders) {
             var newOrders = orders.filter(function(order) { // find orders without color assignment
             return  !order.properties.template &&

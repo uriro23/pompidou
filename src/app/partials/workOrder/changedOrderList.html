@@ -2,6 +2,7 @@
   <span>אירועים שעברו / בוטלו / השתנו / התווספו עד ליום</span>
   <span>{{workOrderModel.horizonDate | date:'EEE dd/MM/yy'}}</span>
 </H4>
+<div ng-show="workOrderModel.changedOrders.length">
 <table class="table" style="width: 80%">
   <thead>
   <th style="width: 9%">סיבה</th>
@@ -79,15 +80,10 @@
   </table>
   </div>
 </div>
-<button class="btn btn-success"
-        ng-show="workOrderModel.isWoMajorChange" ng-disabled="true"
+<button class="btn btn-primary"
+        ng-show="workOrderModel.isWoMajorChange" ng-disabled="false"
         ng-click="workOrderModel.updateWorkOrder()">
   עדכן פקודה קיימת
-</button>
-<button class="btn btn-primary"
-        ng-show="workOrderModel.isWoMajorChange"
-        ng-click="workOrderModel.createNewWorkOrder(true)">
-  צור פקודה חדשה
 </button>
 <button class="btn btn-warning"
         ng-show="workOrderModel.isWoChanged"
@@ -95,3 +91,7 @@
   <span ng-show="workOrderModel.isWoMajorChange">התעלם</span>
   <span ng-hide="workOrderModel.isWoMajorChange">OK</span>
 </button>
+</div>
+<div ng-hide="workOrderModel.changedOrders.length">
+  <h4>--- אין שינויים ---</h4>
+</div>

@@ -199,7 +199,7 @@ angular.module('myApp')
       orderService.calcTotal(thisQuote,this.order);
       orderService.quoteChanged(this.order);
       if (thisQuote.isActive) {
-        orderService.calcSpecialTypes(thisOrder);
+        orderService.calcSpecialTypes(this.order);
       }
     };
 
