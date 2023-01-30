@@ -1291,7 +1291,127 @@ angular.module('myApp')
         });
     };
 
-      this.saveWorkOrder = function (domain) {
+    // compares current wo to base wo to see if updates are done correctly
+    // base wo should be created from scratch with same orders as current wo
+    this.compareWorkOrder = function() {
+      var that = this;
+      var baseWoId = this.baseWoIndex.properties.woId;
+      api.queryWorkOrder(baseWoId)
+        .then(function(baseWo) {
+          that.baseWorkOrder = baseWo;
+          that.isCompareActive = true;
+          that.results = [];
+          that.compareWorkOrderDomain(0,
+            function(bWoi,woi){
+             return bWoi.properties.order.id === woi.properties.order.id;
+           },
+            function(bWoi,woi) {
+              return [];
+          });
+          that.compareWorkOrderDomain(1,
+            function(bWoi,woi){
+              return bWoi.properties.catalogId === woi.properties.catalogId &&
+                (Boolean(bWoi.properties.isDescChanged) === Boolean(woi.properties.isDescChanged)) &&
+                (!bWoi.properties.isDescChanged ||
+                  bWoi.properties.productDescription === woi.properties.productDescription);
+            },
+            function(bWoi,woi) {
+              return that.compareDishes(bWoi, woi);
+          });
+          that.compareWorkOrderDomain(2,
+            function(bWoi,woi){
+              return bWoi.properties.catalogId === woi.properties.catalogId;
+           },
+            function(bWoi,woi) {
+              return that.comparePreps(bWoi, woi);
+            });
+        });
+    };
+
+    this.compareWorkOrderDomain = function (domain, isMatch, compareContents) {
+      that.baseWorkOrder.forEach(function(bWoi) {
+        if (bWoi.properties.domain === domain) {
+          var matchingRecord = that.workOrder.filter(function(woi) {
+            return woi.properties.domain === domain && isMatch(bWoi, woi);
+          })[0];
+          if (!matchingRecord) {
+            that.results.push({
+              domain: domain,
+              type: 'missing',
+              reason: 'חסר',
+              baseRecord: bWoi,
+              newRecord: undefined
+            });
+          } else {
+            that.results = that.results.concat(compareContents(bWoi, matchingRecord));
+          }
+        }
+      });
+      that.workOrder.forEach(function(woi) {
+        if (woi.properties.domain === domain) {
+          var matchingRecord = that.baseWorkOrder.filter(function(bWoi) {
+            return bWoi.properties.domain === domain && isMatch(bWoi, woi);
+          })[0];
+          if (!matchingRecord) {
+            that.results.push({
+              domain: domain,
+              type: 'superfluous',
+              reason: 'עודף',
+              baseRecord: undefined,
+              newRecord: woi
+            });
+          }
+        }
+      })
+    };
+
+    this.compareDishes = function (bWoi, woi) {
+      var res = [];
+      if (woi.properties.quantity !== bWoi.properties.quantity) {
+        res.push({
+          domain: bWoi.properties.domain,
+          type: 'different',
+          reason: 'כמות שונה',
+          baseRecord: bWoi,
+          newRecord: woi
+        });
+      }
+      if (woi.properties.backTrace.length !== bWoi.properties.backTrace.length) {
+        res.push({
+          domain: bWoi.properties.domain,
+          type: 'different',
+          reason: 'מספר אירועים שונה',
+          baseRecord: bWoi,
+          newRecord: woi
+        });
+      }
+      return res;
+    };
+
+    this.comparePreps = function (bWoi, woi) {
+      var res = [];
+      if (woi.properties.quantity !== bWoi.properties.quantity) {
+        res.push({
+          domain: bWoi.properties.domain,
+          type: 'different',
+          reason: 'כמות שונה',
+          baseRecord: bWoi,
+          newRecord: woi
+        });
+      }
+      if (woi.properties.backTrace.length !== bWoi.properties.backTrace.length) {
+        res.push({
+          domain: bWoi.properties.domain,
+          type: 'different',
+          reason: 'מספר אירועים שונה',
+          baseRecord: bWoi,
+          newRecord: woi
+        });
+      }
+      return res;
+    };
+
+    this.saveWorkOrder = function (domain) {
       var that = this;
       var woItemsToSave = this.workOrder.filter(function (woi) {
         return woi.properties.domain === domain;
@@ -1754,9 +1874,17 @@ angular.module('myApp')
        }
      };
 
+     // setup list of workOrders to compare current woId against
+     this.setupBaseWoIndexes = function() {
+       this.baseWoIndexes = this.woIndexes.filter(function(woIndex) {
+         return !woIndex.properties.isQuery && woIndex.properties.woId !== woId;
+       });
+     };
+
     this.switchWorkOrders = function () {
       var that = this;
       woId = this.woIndex.properties.woId;
+      this.setupBaseWoIndexes();
        this.isProcessing = true;
        api.queryWorkOrder(woId)
         .then(function(wo) {
@@ -1865,5 +1993,7 @@ angular.module('myApp')
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
     this.toDate.setDate(this.toDate.getDate()-1);
     this.horizonDate = orderService.horizonDate();
+    this.isCompareActive = false;
+    this.baseWoIndex = undefined;
     this.switchWorkOrders();
   });

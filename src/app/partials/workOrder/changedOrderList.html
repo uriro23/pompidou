@@ -94,4 +94,45 @@
 </div>
 <div ng-hide="workOrderModel.changedOrders.length">
   <h4>--- אין שינויים ---</h4>
-</div>
+  <p></p>
+  <div>
+    <span>השווה לפקודת עבודה</span>
+    <select ng-model="workOrderModel.baseWoIndex" ng-change="workOrderModel.compareWorkOrder()"
+            ng-options="woIndex.properties.label for woIndex in workOrderModel.baseWoIndexes">                 <option value=""></option>
+            <option value=""></option>
+    </select>
+  </div>
+  <div ng-show="workOrderModel.results.length">
+    <table class="table table-hover">
+      <thead>
+      <th>תחום</th>
+      <th>ישות</th>
+      <th>סיבה</th>
+      </thead>
+      <tbody>
+      <tr ng-repeat="result in workOrderModel.results track by $index">
+        <td>{{result.domain===0?'אירוע':result.domain===1?'מנה':'הכנה'}}</td>
+        <td ng-show="result.domain===0 && result.type==='missing'">
+          {{result.baseRecord.properties.order.number}}
+        </td>
+        <td ng-show="result.domain===0 && result.type==='superfluous'">
+          {{result.newRecord.properties.order.number}}
+        </td>
+        <td ng-show="result.domain>0 && result.type==='missing'">
+          {{result.baseRecord.properties.productName}}
+        </td>
+        <td ng-show="result.domain>0 && result.type==='superfluous'">
+          {{result.newRecord.properties.productName}}
+        </td>
+        <td ng-show="result.domain>0 && result.type==='different'">
+          {{result.newRecord.properties.productName}}
+        </td>
+        <td>{{result.reason}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <h5 ng-show="workOrderModel.results.length===0 && workOrderModel.isCompareActive">
+--- אין הבדלים ---
+  </h5>
+  </div>
