@@ -213,7 +213,8 @@
       <td ng-hide="woItem.isShowDetails" style="width: 28%">
         <label ng-show="(!workOrderModel.isShowTodayOnly[2] && woItem.isAnyRemark) ||
                         (workOrderModel.isShowTodayOnly[2] && woItem.isRemarkForToday)">
-          יש התאמות אישיות. ראה בפירוט</label>
+          יש התאמות אישיות. </label>
+        <label class="bg-warning" ng-show="woItem.properties.warning">ההכנה שונתה</label>
       </td>
       <td colspan="4" style="width: 58%" ng-show="woItem.isShowDetails">
          <table class="table table-hover" border="1" style="width:100%">
@@ -237,7 +238,13 @@
           <tr ng-repeat="order in woItem.view.orders track by order.id"
               ng-hide="(workOrderModel.isShowTodayOnly[2] && order.select!=='today') ||
                        (!workOrderModel.isShowDone[2] && order.select==='done')">
-            <td>{{order.customer}}</td>
+            <td>
+              <span>{{order.customer}}</span>
+              <span ng-show="order.addedQuantity" class="bg-warning">
+                נוספו
+                {{order.addedQuantity}}
+          </span>
+            </td>
             <td>{{order.day}}</td>
             <td ng-repeat="menuItem in order.menuItems track by menuItem.seq"
                 ng-hide="(workOrderModel.isShowTodayOnly[2] &&

@@ -34,6 +34,7 @@
   <button class="btn btn-default" ng-click="adminModel.prepTiming()">תזמון</button>
    <button class="btn btn-default" ng-click="adminModel.unhandledPreps()">הכנות ללא פירוק</button>
 -->
+  <button class="btn btn-default" ng-click="adminModel.undefinedBacktrace()">תיקון מנות</button>
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -139,6 +140,15 @@
     </div>
     -->
   </tab>
+   <tab heading="פק' עבודה" select="adminModel.loadWoIndexes()">
+     <span>בחר פקודה למחיקה:</span>
+     <select ng-model="adminModel.woIndex"
+             ng-options="woIndex.properties.label for woIndex in adminModel.woIndexes"></select>
+     <button class="btn btn-warning" ng-click="adminModel.deleteWorkOrder()"
+             ng-disabled="!adminModel.woIndex">
+       מחק פקודת עבודה
+     </button>
+   </tab>
    <tab heading="ניהול קטלוג">
      <tabset>
   <tab heading="עץ מוצר" select="adminModel.productTreeInit()">

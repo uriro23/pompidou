@@ -229,7 +229,28 @@ angular.module('myApp')
 
   };
 
-//
+// workOrder tab
+    this.loadWoIndexes = function() {
+      var that = this;
+      api.queryWorkOrderIndex()
+        .then(function(woIndexes) {
+          that.woIndexes = woIndexes;
+        });
+    };
+
+    this.deleteWorkOrder = function() {
+      var that = this;
+      if (this.woIndex) {
+        api.queryWorkOrder(this.woIndex.properties.woId)
+          .then(function(workOrder) {
+            alert('ימחקו '+workOrder.length+' רשומות של פקודת העבודה '+that.woIndex.properties.label);
+            api.deleteObjects(workOrder)
+              .then(function() {
+                alert('בוצע');
+              });
+          });
+      }
+    };
 
     this.catalogReport = function() {
       var that = this;
@@ -1838,6 +1859,27 @@ angular.module('myApp')
    };
      */
 
+    this.undefinedBacktrace = function() {
+      var that = this;
+      api.queryWorkOrder(0,1)
+        .then(function(dishes) {
+          var backTraces = [];
+          dishes.forEach(function(dish) {
+            dish.properties.backTrace.forEach(function(bt) {
+              if (!bt.id) {
+                backTraces.push({
+                  dishId: dish.id,
+                  dishName: dish.properties.productName,
+                  btDomain: bt.domain,
+                  btQuantity: bt.quantity
+                });
+              }
+            });
+          });
+          console.log(backTraces.length+' bad backTraces found');
+          console.log(backTraces);
+        });
+    };
     // end conversions
 
   });

@@ -65,16 +65,8 @@
           <label>התאמה אישית מס' {{woItem.descCnt}}</label>
         </div>
       </td>
-      <td ng-class="woItem.properties.notFinalQuantity?'bg-warning':null">{{woItem.properties.quantity}}</td>
+      <td>{{woItem.properties.quantity}}</td>
       <td style="width: 20%">{{woItem.properties.measurementUnit.label}}</td>
-      <!--
-      <td ng-hide="workOrderModel.isShowMenuItemOrders">
-        <input type="text" money size="5"
-               ng-model="woItem.properties.quantity"
-               ng-change="workOrderModel.setQuantity(woItem,1)"
-               ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]">
-      </td>
-      -->
       <td ng-repeat="order in woItem.view.orderQuant track by $index"
           ng-hide="woItem.view.orderQuant.length>15"
           ng-class="order.quantity && order.status===2?'bg-warning':null"> <!-- mark events not in final status -->

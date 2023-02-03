@@ -111,15 +111,12 @@ angular.module('myApp')
       if (workItemInd) {  // item already in list, just add quantity
         workItem = that.workOrder[workItemInd];
         workItem.properties.quantity += item.quantity;
-        if (order.properties.order.orderStatus === 2) {
-          workItem.properties.notFinalQuantity += item.quantity;
-        }
         workItem.properties.backTrace.push({
           id: order.id,
           domain: 0,
           quantity: item.quantity
         });
-        if (dishesToUpdate) {
+        if (dishesToUpdate && !workItem.isNewItem) { // don't update items just created. it will cause dups
           dishesToUpdate.push(workItem);
         }
       } else { // create new item
@@ -139,9 +136,6 @@ angular.module('myApp')
               item.kitchenRemark : item.productDescription;
         }
         workItem.properties.quantity = item.quantity;
-        if (order.properties.order.orderStatus === 2) {
-          workItem.properties.notFinalQuantity = item.quantity;
-        }
         workItem.properties.category = item.category;
         workItem.properties.domain = 1;
         workItem.properties.measurementUnit = item.measurementUnit;
@@ -154,10 +148,10 @@ angular.module('myApp')
         that.workOrder.push(workItem);
         if (dishesToCreate) {
           dishesToCreate.push(workItem);
-        }
+       }
       }
       that.createViewForMenuItem(workItem);
-   };
+    };
 
     // create targetDomain records based on lower domain components
   this.createComponentsDomain = function (targetDomain) {
@@ -209,12 +203,8 @@ angular.module('myApp')
                 workItem.properties.backTrace.push({
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
-                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
-                    quantityForToday: inWorkItem.domain===2 || inWorkItem.domain === 1 ? 0 :
-                      inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity,
-                    quantityDone: inWorkItem.domain===2 || inWorkItem.domain === 1 ? 0 :
-                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity
-                });
+                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                          });
               } else {  // first time component appears
                 var outCatObj = catalog.filter(function (cat) {
                   return cat.id === component.id;
@@ -245,13 +235,8 @@ angular.module('myApp')
                   workItem.properties.backTrace = [{
                     id: inWorkOrder.id,
                     domain: inWorkItem.domain,
-                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity,
-                    quantityForToday: inWorkItem.domain===2 ? 0 :
-                      inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity,
-                    quantityDone: inWorkItem.domain===2 ? 0 :
-                      inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity,
-                    select: targetDomain===2 ? "delay" : inWorkItem.select
-                  }];
+                    quantity: inWorkItem.quantity * component.quantity / inCatItem.productionQuantity
+                 }];
                   // orders array in prep is used only to record the select state of order in prep
                   if (targetDomain === 2) {
                     workItem.properties.orders = inWorkItem.backTrace.map(function(bt) {
@@ -301,7 +286,7 @@ angular.module('myApp')
           });
     };
 
-    // create an array of orders in which menuItems containing this preparation appear.
+    // create an array of orders in which dishes containing this preparation appear.
     // each entry contains an array of menuItems.
     this.createPrepOrderView = function (currentPrep) {
       var that = this;
@@ -325,7 +310,7 @@ angular.module('myApp')
           var prepCatalog = that.catalog.filter(function(cat) {
             return cat.id === currentPrep.properties.catalogId;
           })[0];
-          var prepComponent = menuItemCatalog.properties.components.filter(function(comp) {
+          var dishComponent = menuItemCatalog.properties.components.filter(function(comp) {
             return comp.id === prepCatalog.id;
           })[0];
            originalMenuItem.properties.backTrace.forEach(function(miBackTrace) {
@@ -360,9 +345,9 @@ angular.module('myApp')
            }
             var prepQuantity = miBackTrace.quantity;
             currentOrder.menuItems[viewMenuItemIndex].quantity +=
-              prepQuantity * prepComponent.quantity / menuItemCatalog.properties.productionQuantity;
+              prepQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
             currentOrder.totalQuantity +=
-              prepQuantity * prepComponent.quantity / menuItemCatalog.properties.productionQuantity;
+              prepQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
           });
         });
         // update select value based on prep item
@@ -371,7 +356,9 @@ angular.module('myApp')
           return mOrd.id === ord.id;
         })[0];
         ord.select = matchingOrder.select;
+        ord.addedQuantity = matchingOrder.addedQuantity;
       });
+
       currentPrep.view.orders = currentPrep.view.orders.filter(function(ord) {
         return ord.totalQuantity > 0;
       });
@@ -452,11 +439,6 @@ angular.module('myApp')
             var originalMenuItem = that.workOrder.filter(function (mi) {
               return mi.id === itemBackTrace.id;
             })[0];
-            if (!originalMenuItem) {
-              console.log(currentItem.properties.productName);
-              console.log(itemBackTrace);
-              console.log(currentItem);
-            }
             var miCatalogItem = that.catalog.filter(function (cat) {
               return cat.id === originalMenuItem.properties.catalogId;
             })[0];
@@ -972,6 +954,12 @@ angular.module('myApp')
       that.isActiveTab = [false, true, false, false, false, false]; // show menu items tab
     };
 
+    // note: It would have been much more straightforward to update all item types together
+    // following the changedOrders array only once.
+    // However in order to update dishes, we need all the order records to be in place and
+    // in order to update preps, we need all dish records to be in place
+    // so we have to do the updates gradually (breath first).
+    // Also, we can't delete items from workOrder array, before finishing all updates
     this.updateWorkOrder = function () {
       var that = this;
       this.updateOrders()
@@ -980,6 +968,9 @@ angular.module('myApp')
             .then(function() {
               that.updatePreps()
                 .then(function() {
+                  that.woIndex.properties.domainStatus[0] = true;
+                  that.woIndex.properties.domainStatus[1] = true;
+                  that.woIndex.properties.domainStatus[2] = true;
                   that.woIndex.properties.domainStatus[3] = false;
                   that.woIndex.properties.domainStatus[4] = false;
                   api.saveObj(that.woIndex);
@@ -1016,7 +1007,13 @@ angular.module('myApp')
       });
       return api.saveObjects(ordersToCreate)
         .then(function (orders) {
-         orders.forEach(function (order) {
+          orders.forEach(function (order) {
+            // save ids of newly created orders in changedOrders array
+            that.changedOrders.forEach(function(co) {
+              if (co.woItem.properties.order.id === order.properties.order.id) {
+                co.woItem.id = order.id;
+              }
+            });
             that.workOrder.push(order);
           });
           console.log(orders.length + ' orders created');
@@ -1027,15 +1024,10 @@ angular.module('myApp')
               console.log(ordersToUpdate);
               return api.deleteObjects(ordersToDelete)
                 .then(function () {
-                  that.workOrder.forEach(function (woi, ind) {
-                    if (woi.isToDelete) {
-                      that.workOrder.splice(ind, 1);
-                    }
-                  });
                   console.log(ordersToDelete.length + ' orders deleted');
                   console.log(ordersToDelete);
                   that.orderView = that.workOrder.filter(function(ord) {
-                    return ord.properties.domain === 0;
+                    return ord.properties.domain === 0 && !ord.isToDelete;
                   }).sort(function (a, b) {
                     if (a.properties.order.eventDate > b.properties.order.eventDate) {
                       return 1;
@@ -1065,9 +1057,11 @@ angular.module('myApp')
       var dishesToDelete = [];
        that.changedOrders.forEach(function(changedOrder) {
         if (changedOrder.action === 'delete' || changedOrder.action === 'recalc') {
-          // delete all dishes for this order
+          // delete/adjust all dishes for this order
           that.workOrder.forEach(function (dish) {
             if (dish.properties.domain === 1) {
+              dish.deletedBackTrace = [];
+              // backtrace entries to orders from which dish has been deleted will be saved here
              var matchingBt = undefined;
              var ind1;
              dish.properties.backTrace.forEach(function(bt, ind) {
@@ -1076,48 +1070,16 @@ angular.module('myApp')
                  ind1 = ind;
                }
              });
-             if (matchingBt) {
-               var dishDeletedQuantity = matchingBt.quantity;
-               if (dish.properties.backTrace.length === 1 &&
-                 matchingBt.quantity === dish.properties.quantity) { // dish only in this order, just delete it
+             if (matchingBt) { // found dish belonging to current order
+               if (dish.properties.backTrace.length === 1) { // dish only in this order, just delete it
                  dishesToDelete.push(dish);
                  dish.isToDelete = true;
                } else {
                  dish.properties.quantity -= matchingBt.quantity;
-                 if (changedOrder.woItem.properties.order.orderStatus === 2) {
-                   dish.properties.notFinalQuantity -= matchingBt.quantity;
-                 }
-                 //todo: handle notFinalQuantity when order status changes
+                 dish.properties.backTrace[ind1].quantity = 0;
+                 dish.deletedBackTrace.push(dish.properties.backTrace[ind1]);
                  dish.properties.backTrace.splice(ind1, 1);
                  dishesToUpdate.push(dish);
-               }
-               // now adjust or delete preps relating to deleted dish
-               if (false) {
-                 that.workOrder.forEach(function (prep) {
-                   if (prep.properties.domain === 2) {
-                     var matchingBt2 = undefined;
-                     var ind2;
-                     prep.properties.backTrace.forEach(function (bt, ind) {
-                       if (bt.id === dish.id) {
-                         matchingBt2 = bt;
-                         ind2 = ind;
-                       }
-                     });
-                     if (matchingBt2) {
-                       //todo: even if this is the only dish in prep's backtrace, doesn't mean the dish is gone
-                       if (prep.properties.backTrace.length === 1) {
-                         woiToDelete.push(prep);
-                         prep.isToDelete = true;
-                       } else {
-                         prep.properties.quantity -= matchingBt2.quantity;
-                         prep.properties.quantityForToday -= matchingBt2.quantityForToday;
-                         prep.properties.quantityDone -= matchingBt2.quantityDone;
-                         prep.properties.backTrace.splice(ind2, 1);
-                         woiToUpdate.push(prep);
-                       }
-                     }
-                   }
-                 });
                }
              }
             }
@@ -1126,7 +1088,6 @@ angular.module('myApp')
         if (changedOrder.action === 'new' || changedOrder.action === 'recalc') {
           // add all dishes for this order
           that.createOrderItems(changedOrder.woItem, dishesToCreate, dishesToUpdate);
-          //todo: adjust preps for new  / updated mis
         }
         if (changedOrder.action === 'itemChange') {
           // handle specific mis in order
@@ -1170,8 +1131,7 @@ angular.module('myApp')
                   console.log(matchDish);
                 } else {
                   if (diffItem.action === 'delete') {
-                    if (matchDish.properties.backTrace.length === 1 &&
-                      matchDishBt.quantity === diffItem.oldItem.quantity) {
+                    if (matchDish.properties.backTrace.length === 1) {
                       dishesToDelete.push(matchDish);
                       matchDish.isToDelete = true;
                     } else {
@@ -1193,35 +1153,7 @@ angular.module('myApp')
                     matchDish.properties.productDescription =  diffItem.newItem.productDescription;
                     dishesToUpdate.push(matchDish);
                   }
-                  // now adjust or delete preps relating to deleted dish
-                  if (false) {
-                    that.workOrder.forEach(function (prep) {
-                      if (prep.properties.domain === 2) {
-                        var matchingBt2 = undefined;
-                        var ind4;
-                        prep.properties.backTrace.forEach(function (bt, ind) {
-                          if (bt.id === matchDish.id) {
-                            matchingBt2 = bt;
-                            ind4 = ind;
-                          }
-                        });
-                        if (matchingBt2) {
-                          //todo: even if this is the only dish in prep's backtrace, doesn't mean the dish is gone
-                          if (prep.properties.backTrace.length === 1) {
-                            woiToDelete.push(prep);
-                            prep.isToDelete = true;
-                          } else {
-                            prep.properties.quantity -= matchingBt2.quantity;
-                            prep.properties.quantityForToday -= matchingBt2.quantityForToday;
-                            prep.properties.quantityDone -= matchingBt2.quantityDone;
-                            prep.properties.backTrace.splice(ind4, 1);
-                            woiToUpdate.push(prep);
-                          }
-                        }
-                      }
-                    });
-                  }
-                }
+                 }
               }
             } else if (diffItem.action === 'new') {
               that.createItem(changedOrder.woItem, diffItem.newItem, dishesToCreate, dishesToUpdate);
@@ -1245,11 +1177,6 @@ angular.module('myApp')
                console.log(dishesToUpdate);
                return api.deleteObjects(dishesToDelete)
                  .then(function() {
-                   that.workOrder.forEach(function(woi, ind) {
-                     if (woi.isToDelete) {
-                       that.workOrder.splice(ind,1);
-                     }
-                   });
                    console.log(dishesToDelete.length+' dishes deleted');
                    console.log(dishesToDelete);
                  });
@@ -1262,7 +1189,248 @@ angular.module('myApp')
       var prepsToCreate = [];
       var prepsToUpdate = [];
       var prepsToDelete = [];
-      //todo: do the thing
+      that.changedOrders.forEach(function(changedOrder) {
+        if (changedOrder.action === 'delete' || changedOrder.action === 'recalc') {
+          // delete/adjust all preps of dishes for this order
+          that.workOrder.forEach(function (dish) {
+            if (dish.properties.domain === 1) {
+              var dishCatalogItem = catalog.filter(function(cat) {
+                return cat.id === dish.properties.catalogId;
+              })[0];
+              // look for order in deleted dish backtrace entries too
+              if (dish.properties.backTrace.concat(dish.deletedBackTrace).filter(function(bt) {
+                return bt.id === changedOrder.woItem.id;
+                    }).length > 0) { // found a dish which is included in current order
+                // now find all preps whose backTrace points to this dish
+                that.workOrder.forEach(function(prep) {
+                  if (prep.properties.domain === 2) {
+                    var matchingBt = undefined;
+                    var ind1;
+                    prep.properties.backTrace.forEach(function (bt, ind) {
+                      if (bt.id === dish.id) {
+                        matchingBt = bt;
+                        ind1 = ind;
+                      }
+                    });
+                    if (matchingBt) { // found prep which stems from current dish
+                      var prepCatalogItem = catalog.filter(function(cat) {
+                        return cat.id === prep.properties.catalogId;
+                      })[0];
+                      var dishComponent = dishCatalogItem.properties.components.filter(function(comp) {
+                        return comp.id === prepCatalogItem.id;
+                      })[0];
+                      if (!dishComponent) {
+                        alert ('ההכנה '+prep.properties.productName+' לא נמצאה בין המרכיבים של המנה '+
+                                dish.properties.productName);
+                        return;
+                      }
+                      if (prep.properties.backTrace.length === 1 && dish.isToDelete) {
+                        // whole dish was deleted and prep only in this dish - delete prep
+                        prepsToDelete.push(prep);
+                        prep.isToDelete = true;
+                      } else if (dish.isToDelete) {
+                        // whole dish deleted, but prep belongs to other dishes too
+                        prep.properties.quantity -= matchingBt.quantity;
+                        prep.properties.backTrace.splice(ind1, 1);
+                        prepsToUpdate.push(prep);
+                      } else {
+                        // dish's quantity was adjusted
+                        var oldQuant = matchingBt.quantity;
+                        matchingBt.quantity =
+                          dish.properties.quantity * dishComponent.quantity /
+                              dishCatalogItem.properties.productionQuantity;
+                        prep.properties.quantity -= (oldQuant - matchingBt.quantity);
+                        prepsToUpdate.push(prep);
+                      }
+                    }
+                  }
+                });
+               }
+            }
+          });
+        }
+        if (changedOrder.action === 'new' || changedOrder.action === 'recalc') {
+          console.log('visiting order '+changedOrder.woItem.id);
+          // add / adjust all preps of dishes for this order
+          that.workOrder.forEach(function (dish) {
+            if (dish.properties.domain === 1) {
+              console.log('visiting dish '+dish.properties.productName);
+              var dishCatalogItem = catalog.filter(function(cat) {
+                return cat.id === dish.properties.catalogId;
+              })[0];
+              var dishBt = dish.properties.backTrace.filter(function(bt) {
+                return bt.id === changedOrder.woItem.id;
+                  })[0];
+              if (dishBt) { // found a dish which is included in current order
+                // now find all preps which are components of this dish
+                dishCatalogItem.properties.components.forEach(function (comp) {
+                  if (comp.domain === 2) {
+                    var tempCat = catalog.filter(function(cat) {
+                      return cat.id === comp.id
+                    })[0];
+                    console.log('looking at component '+tempCat.properties.productName);
+                    console.log(tempCat);
+                    console.log(comp);
+                    var prep = that.workOrder.filter(function (woi) {
+                      return woi.properties.catalogId === comp.id;
+                    })[0];
+                    if (prep) { // prep already in workOrder - adjust quantity
+                     console.log('revisiting prep '+prep.properties.productName);
+                      prep.properties.quantity +=
+                        dishBt.quantity *
+                        comp.quantity / dishCatalogItem.properties.productionQuantity;
+                      var prepBt = prep.properties.backTrace.filter(function(bt) {
+                        return bt.id === dish.id;
+                      })[0];
+                      if (prepBt) {
+                        prepBt.quantity += dishBt.quantity *
+                          comp.quantity / dishCatalogItem.properties.productionQuantity;
+                      } else {
+                        prep.properties.backTrace.push({
+                          id: dish.id,
+                          domain: 1,
+                          quantity: dishBt.quantity *
+                            comp.quantity / dishCatalogItem.properties.productionQuantity
+                        });
+                      }
+                      if (prep.properties.select !== 'delay') {
+                        prep.properties.select = 'mix';
+                        prep.properties.warning = 1;
+                        //todo: crear warnings when updating prep's select
+                      }
+                      var prepOrder = prep.properties.orders.filter(function(ord) {
+                        ord.id === changedOrder.woItem.id;
+                      })[0];
+                      if (prepOrder) {
+                        if (prepOrder.select !== 'delay') {
+                          // warn user of added quantity to prep
+                          prepOrder.addedQuantity += dish.properties.quantity *
+                            comp.quantity / dishCatalogItem.properties.productionQuantity;
+                        }
+                      } else {
+                        prep.properties.orders.push ({
+                          id: changedOrder.woItem.id,
+                          select: 'delay'
+                        });
+                      }
+                      if (!prep.isNewItem) {  // if prep was just created, update will cause duplicates
+                        prepsToUpdate.push(prep);
+                      }
+                    } else { // create new prep
+                      var prepCatalogItem = catalog.filter(function (cat) {
+                        return cat.id === comp.id;
+                      })[0];
+                      console.log('creating prep '+prepCatalogItem.properties.productName);
+                      prep = api.initWorkOrder();
+                      prep.isNewItem = true;
+                      prep.properties.woId = woId;
+                      prep.properties.catalogId = prepCatalogItem.id;
+                      prep.properties.productName = prepCatalogItem.properties.productName;
+                      prep.properties.category = allCategories.filter(function (cat) {
+                        return cat.tId === prepCatalogItem.properties.category;
+                      })[0];
+                      prep.properties.domain = 2;
+                      prep.properties.measurementUnit = measurementUnits.filter(function (mes) {
+                        return mes.tId === prepCatalogItem.properties.measurementUnit;
+                      })[0];
+                      prep.properties.isInStock = prepCatalogItem.properties.isInStock;
+                      prep.properties.quantity = dishBt.quantity *
+                                     comp.quantity / dishCatalogItem.properties.productionQuantity;
+                      prep.properties.quantityForToday = 0;
+                      prep.properties.quantityDone = 0;
+                      prep.properties.select = 'delay';
+                      prep.properties.backTrace = [{
+                        id: dish.id,
+                        domain: 1,
+                        quantity: dishBt.quantity *
+                                    comp.quantity / dishCatalogItem.properties.productionQuantity
+                      }];
+                      prep.properties.orders = [{
+                        id: changedOrder.woItem.id,
+                        select: 'delay'
+                      }];
+                      that.workOrder.push(prep);
+                      prepsToCreate.push(prep);
+                    }
+                  }
+                });
+              }
+            }
+          });
+        }
+        if (changedOrder.action === 'itemChange') {
+          // handle specific mis in order
+          changedOrder.items.forEach(function(diffItem) {
+            if (diffItem.action === 'delete' || diffItem.action === 'update') {
+              var matchDishes = that.workOrder.filter(function(dish) {
+                return dish.properties.domain === 1 &&
+                  dish.properties.catalogId === diffItem.oldItem.catalogId &&
+                  (Boolean(dish.properties.isDescChanged) === Boolean(diffItem.oldItem.isDescChanged)) &&
+                  (!dish.properties.isDescChanged ||
+                    dish.properties.productDescription === diffItem.oldItem.productDescription);
+              });
+              if (matchDishes.length === 0) {
+                console.log('item to be updated / deleted not found in workOrder');
+                console.log('order '+changedOrder.woItem.properties.order.number);
+                console.log('item '+diffItem.oldItem.productName+', catalogId '+diffItem.oldItem.catalogId);
+                console.log(diffItem);
+              } else if (matchDishes.length > 1) {
+                console.log('multiple items to be updated / deleted found in workOrder');
+                console.log('order '+changedOrder.woItem.properties.order.number);
+                console.log('item '+diffItem.oldItem.productName);
+                console.log(diffItem.oldItem.productName);
+                console.log('items found:');
+                console.log(matchDishes);
+              } else { // valid - exactly one item found
+                var matchDish = matchDishes[0];
+                var matchDishBt = undefined;
+                var ind3;
+                matchDish.properties.backTrace.forEach(function(bt, ind) {
+                  if (bt.id === changedOrder.woItem.id) {
+                    matchDishBt = bt;
+                    ind3 = ind;
+                  }
+                });
+                if (!matchDishBt) {
+                  console.log("can't find order "+changedOrder.woItem.properties.order.number+
+                    " in backTrace of "+diffItem.oldItem.productName);
+                  console.log('changedOrder:');
+                  console.log(changedOrder);
+                  console.log('matchDish:');
+                  console.log(matchDish);
+                } else {
+                  if (diffItem.action === 'delete') {
+                    if (matchDish.properties.backTrace.length === 1 &&
+                      matchDishBt.quantity === diffItem.oldItem.quantity) {
+                      dishesToDelete.push(matchDish);
+                      matchDish.isToDelete = true;
+                    } else {
+                      matchDish.properties.quantity -= diffItem.oldItem.quantity;
+                      if (matchDishBt.quantity === diffItem.oldItem.quantity) {
+                        matchDish.properties.backTrace.splice(ind3, 1);
+                      } else { // more than one occurence of dish in same order
+                        matchDishBt.quantity -= diffItem.oldItem.quantity;
+                      }
+                      dishesToUpdate.push(matchDish);
+                    }
+                  } else {  // diffItem.action === 'update'
+                    var quantityDiff = diffItem.newItem.quantity - diffItem.oldItem.quantity;
+                    if (quantityDiff) {
+                      matchDish.properties.quantity += quantityDiff;
+                      matchDishBt.quantity += quantityDiff;
+                    }
+                    matchDish.properties.isDescChanged =  diffItem.newItem.isDescChanged;
+                    matchDish.properties.productDescription =  diffItem.newItem.productDescription;
+                    dishesToUpdate.push(matchDish);
+                  }
+                }
+              }
+            } else if (diffItem.action === 'new') {
+              that.createItem(changedOrder.woItem, diffItem.newItem, dishesToCreate, dishesToUpdate);
+            };
+          });
+        }
+      });
       return api.saveObjects(prepsToCreate)
         .then(function(preps) {
           that.workOrder = that.workOrder.filter(function(woi) { //exclude newly created preps
@@ -1582,12 +1750,8 @@ angular.module('myApp')
       });
     };
 
-    this.saveWI = function (woItem) {
-      return api.saveObj(woItem);
-    };
-
-    this.setQuantity = function (woItem, domain) {
-      this.saveWI (woItem)
+   this.setQuantity = function (woItem, domain) {
+      api.saveObj (woItem)
         .then(function () {
           if (domain < 3) {
             for (var dd = domain + 1; dd < 5; dd++) {                     // set all further domains as invalid
