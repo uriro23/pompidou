@@ -1857,7 +1857,6 @@ angular.module('myApp')
 
        });
    };
-     */
 
     this.undefinedBacktrace = function() {
       var that = this;
@@ -1880,6 +1879,7 @@ angular.module('myApp')
           console.log(backTraces);
         });
     };
+      */
     // end conversions
 
   });

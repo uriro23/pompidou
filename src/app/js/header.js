@@ -131,6 +131,11 @@ angular.module('myApp')
       var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
       this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < dater.today();  // past dates not allowed
+      if (thisOrder.eventDate > orderService.horizonDate()) {
+        this.order.delAttributes = {color: true};
+        this.order.view.color = undefined;
+        orderService.orderChanged(this.order,'color');
+      }
       this.setReadOnly();
     };
 
