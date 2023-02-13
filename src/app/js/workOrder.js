@@ -612,22 +612,7 @@ angular.module('myApp')
      woItem.properties.quantityDone = quantDone;
     };
 
-    // propagate selection to all preps in domain
-    this.setGlobalSelect = function() {
-      var that = this;
-      this.workOrder.forEach(function(woItem) {
-        if (woItem.properties.domain === 0) {
-          woItem.properties.select = that.select;
-          woItem.properties.prepScope = 'all';
-        } else if (woItem.properties.domain === 2) {
-          woItem.properties.select = that.select;
-          that.computeSelectQuantities(woItem);
-          that.setPrepSelect(woItem, false);
-        }
-      });
-    };
-
-    // propogate selection for event to all its occurances in preps
+     // propogate selection for event to all its occurances in preps
     this.setOrderSelect = function(order) {
       var that = this;
       api.saveObj(order);
@@ -708,65 +693,16 @@ angular.module('myApp')
       }
     };
 
-    // "select" of order in preps is set according to 3 factors:
-    // a. prepScope of order set now by user ("all", "prep", "done");
-    // b. select value of order in prep ("delay", "today", "done");
-    // c. is prep considered "prep" or "service" as determined by its category (type===11 => service).
-    //
-    // The following table depicts decision rules:
-    // +--------+---------++-------------------------+-----------------------------------------------------+
-    // |  prep  | prep    || order prepScope seting  |                                                     |
-    // +  order |category ++-------+-------+---------+    remarks                                          |
-    // | select | type    ||  all  | prep  | service |                                                     |
-    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
-    // |        | prep    || today | today | N/C     |  select relevant preps for today                    |
-    // | delay  +---------++-------+-------+---------|  leave irrelevant ones unchanged                    |
-    // |        | service || today | N/C   | today   |                                                     |
-    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
-    // |        | prep    || N/C   | N/C   | done    | selecting service for today implies preps are done  |
-    // | today  +---------++-------+-------+---------|                                                     |
-    // |        | service || N/C   | delay | N/C     | selecting prep for today implies service is delayed |
-    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
-    // |        | prep    || N/C   | N/C   | N/C     |   if prep is done, don't change it                  |
-    // | done   +---------++-------+-------+---------|                                                     |
-    // |        | service || N/C   | N/C   | N/C     |                                                     |
-    // +--------+---------++-------+-------+---------+-----------------------------------------------------+
-    //
-    //  this logic changes the select value of the order within the prep. the select value of the prep
-    //  itself is changed, if necessary by calling setPrepOrderSelect function
-
-    // propogates change of an order prepScope to all occurances of that order in preps
-    this.setOrderPrepScope = function (woItem) {
+     this.setOrderServiceToday = function (woItem) {
       var that = this;
       api.saveObj(woItem);
       this.workOrder.forEach(function (woi) {
-        var wo = woi.properties;
-        if (wo.domain === 2) {
-            woi.view.orders.forEach(function (ord) {
+        if (woi.properties.domain === 2) {
+          woi.view.orders.forEach(function (ord) {
             if (ord.id === woItem.id) {
-               if (ord.select === 'delay') {
-                 if (woItem.properties.prepScope === 'all') {
-                   ord.select = 'today'
-                 } else if (woItem.properties.prepScope === 'prep') {
-                   if (wo.category.type !== 11) { // not service
-                     ord.select = 'today';
-                   }
-                 } else { // order prepscope is 'service'
-                   if (wo.category.type === 11) {
-                     ord.select = 'today';
-                   }
-                 }
-               } else if (ord.select === 'today') {
-                 if (woItem.properties.prepScope === 'prep') {
-                   if (wo.category.type === 11) {
-                     ord.select = 'delay'; // if prep was chosen, delay service preps
-                   }
-                 } else if (woItem.properties.prepScope === 'service') {
-                   if (wo.category.type !== 11) {
-                     ord.select = 'done'; // if service was chosen, assume preps are done
-                   }
-                 }
-               }
+              if (woi.properties.category.type === 11) {
+                ord.select = woItem.properties.isServiceToday ? 'today' : 'delay';
+              }
             }
           });
           that.computeSelectQuantities(woi);
@@ -788,7 +724,6 @@ angular.module('myApp')
               viewItem.properties.domain = 0;
               viewItem.properties.order = order.properties;
               viewItem.properties.order.id = order.id;
-              viewItem.properties.prepScope = 'all';
               viewItem.properties.select = 'delay';
               viewItem.isInWorkOrder = false;
               that.createViewForOrder(viewItem);
@@ -1009,7 +944,7 @@ angular.module('myApp')
       var ordersToUpdate = [];
       var ordersToDelete = [];
       this.changedOrders.forEach(function (changedOrder, ind) {
-        if (changedOrder.action === 'delete') {
+        if (changedOrder.action === 'delete' || changedOrder.action === 'past') {
           ordersToDelete.push(changedOrder.woItem);
           that.workOrder = that.workOrder.filter(function (wo) {
             return wo.id !== changedOrder.woItem.id;
@@ -1078,7 +1013,9 @@ angular.module('myApp')
         }
       });
        that.changedOrders.forEach(function(changedOrder) {
-        if (changedOrder.action === 'delete' || changedOrder.action === 'recalc') {
+        if (changedOrder.action === 'delete' ||
+            changedOrder.action === 'past' ||
+            changedOrder.action === 'recalc') {
           // delete/adjust all dishes for this order
           that.workOrder.forEach(function (dish) {
             if (dish.properties.domain === 1) {
@@ -1216,7 +1153,9 @@ angular.module('myApp')
       var prepsToUpdate = [];
       var prepsToDelete = [];
       that.changedOrders.forEach(function(changedOrder) {
-        if (changedOrder.action === 'delete' || changedOrder.action === 'recalc') {
+        if (changedOrder.action === 'delete' ||
+            changedOrder.action === 'past' ||
+            changedOrder.action === 'recalc') {
           console.log('deleting/adjusting preps for order '+changedOrder.woItem.properties.order.number);
           // delete/adjust all preps of dishes for this order
           that.workOrder.forEach(function (dish) {
@@ -1228,8 +1167,8 @@ angular.module('myApp')
               if (dish.properties.backTrace.concat(dish.deletedBackTrace).filter(function(bt) {
                 return bt.id === changedOrder.woItem.id;
                     }).length > 0) { // found a dish which is included in current order
-                // now find all preps whose backTrace points to this dish
                 console.log('found dish '+dish.properties.productName+' in order');
+                // now find all preps whose backTrace points to this dish
                 that.workOrder.forEach(function(prep) {
                   if (prep.properties.domain === 2) {
                     var matchingBt = undefined;
@@ -1241,37 +1180,55 @@ angular.module('myApp')
                       }
                     });
                     if (matchingBt) { // found prep which stems from current dish
-                      var prepCatalogItem = catalog.filter(function(cat) {
+                      var prepCatalogItem = catalog.filter(function (cat) {
                         return cat.id === prep.properties.catalogId;
                       })[0];
-                      var dishComponent = dishCatalogItem.properties.components.filter(function(comp) {
+                      var dishComponent = dishCatalogItem.properties.components.filter(function (comp) {
                         return comp.id === prepCatalogItem.id;
                       })[0];
                       if (!dishComponent) {
-                        alert ('ההכנה '+prep.properties.productName+' לא נמצאה בין המרכיבים של המנה '+
-                                dish.properties.productName);
+                        alert('ההכנה ' + prep.properties.productName + ' לא נמצאה בין המרכיבים של המנה ' +
+                          dish.properties.productName);
                         return;
                       }
-                      console.log('found existing prep '+prep.properties.productName+' for dish');
+                      console.log('found existing prep ' + prep.properties.productName + ' for dish');
                       if (prep.properties.backTrace.length === 1 && dish.isToDelete) {
                         // whole dish was deleted and prep only in this dish - delete prep
                         console.log('prep to be deleted');
                         prepsToDelete.push(prep);
                         prep.isToDelete = true;
-                      } else if (dish.isToDelete) {
-                        // whole dish deleted, but prep belongs to other dishes too
-                        prep.properties.quantity -= matchingBt.quantity;
-                        prep.properties.backTrace.splice(ind1, 1);
-                        console.log('dish deleted. Adjust prep quantity to '+prep.properties.quantity);
-                        prepsToUpdate.push(prep);
                       } else {
-                        // dish's quantity was adjusted
-                        var oldQuant = matchingBt.quantity;
-                        matchingBt.quantity =
-                          dish.properties.quantity * dishComponent.quantity /
-                              dishCatalogItem.properties.productionQuantity;
-                        prep.properties.quantity -= (oldQuant - matchingBt.quantity);
-                        console.log('adjust prep quantity to '+prep.properties.quantity);
+                        if (dish.isToDelete) {
+                          // whole dish deleted, but prep belongs to other dishes too
+                          prep.properties.quantity -= matchingBt.quantity;
+                          prep.properties.backTrace.splice(ind1, 1);
+                          console.log('dish deleted. Adjust prep quantity to ' + prep.properties.quantity);
+                        } else {
+                          // dish appears in other orders too - dish's quantity was adjusted
+                          var oldQuant = matchingBt.quantity;
+                          matchingBt.quantity =
+                            dish.properties.quantity * dishComponent.quantity /
+                            dishCatalogItem.properties.productionQuantity;
+                          prep.properties.quantity -= (oldQuant - matchingBt.quantity);
+                          console.log('adjust prep quantity to ' + prep.properties.quantity);
+                        }
+                        // delete order's entry in prep
+                        prep.properties.orders = prep.properties.orders.filter(function (ord) {
+                          return ord.id !== changedOrder.woItem.id;
+                        });
+                        // adjust prep's select value according to remaining orders
+                        var s = 'none';
+                        prep.view.orders.forEach(function (ord) {
+                          if (s === 'none') {
+                            s = ord.select;
+                          } else if (s !== ord.select) {
+                            s = 'mix';
+                          }
+                        });
+                        prep.properties.select = s;
+                        if (s === 'mix') {
+                          prep.isShowDetails = true;
+                        }
                         prepsToUpdate.push(prep);
                       }
                     }
@@ -1328,19 +1285,11 @@ angular.module('myApp')
                       }
                       if (prep.properties.select !== 'delay') {
                         prep.properties.select = 'mix';
-                        prep.properties.warning = 1;
-                        //todo: crear warnings when updating prep's select
                       }
                       var prepOrder = prep.properties.orders.filter(function(ord) {
                         ord.id === changedOrder.woItem.id;
                       })[0];
-                      if (prepOrder) {
-                        if (prepOrder.select !== 'delay') {
-                          // warn user of added quantity to prep
-                          prepOrder.addedQuantity += dish.properties.quantity *
-                            comp.quantity / dishCatalogItem.properties.productionQuantity;
-                        }
-                      } else {
+                      if (!prepOrder) { // new prep for this order
                         prep.properties.orders.push ({
                           id: changedOrder.woItem.id,
                           select: 'delay'
@@ -1938,56 +1887,7 @@ angular.module('myApp')
 
     };
 
-     this.preparationsEndDay = function () {
-      var that = this;
-      var ackEndDayModal = $modal.open({
-        templateUrl: 'app/partials/workOrder/ackEndDay.html',
-        controller: 'AckEndDayCtrl as ackEndDayModel',
-        resolve: {
-          todaysPreps: function () {
-            return that.workOrder.filter(function(wo) {
-              return wo.properties.domain===2 && wo.properties.isForToday;
-            });
-          }
-        },
-        size: 'lg'
-      });
-
-      ackEndDayModal.result.then(function (isEndDay) {
-        if (isEndDay) {
-          var saveList = [];
-          var deleteList = [];
-          for (var i=0;i<that.workOrder.length;i++) {
-            var wo = that.workOrder[i];
-            if (wo.properties.domain===2 && wo.properties.isForToday) {
-              if (wo.properties.quantityForToday >= wo.properties.quantity) {
-                deleteList.push(wo);
-                wo.isToDelete = true;
-              } else {
-                wo.properties.quantity -= wo.properties.quantityForToday;
-                wo.delAttributes = {quantityForToday: true}; // set to undefined on save
-                wo.properties.isForToday = false;
-                saveList.push(wo);
-              }
-            }
-          }
-          api.saveObjects(saveList)
-            .then(function () {
-              api.deleteObjects(deleteList)
-                .then(function () {
-                  that.workOrder = that.workOrder.filter (function(wo) {
-                    return !wo.isToDelete;
-                  });
-                  that.splitWorkOrder();
-                  that.woIndex.properties.domainStatus[3] = false;
-                  api.saveObj(that.woIndex);
-                });
-            });
-        }
-      });
-     };
-
-    // check if any order in wo has passed or has been changed since last wo creation
+      // check if any order in wo has passed or has been changed since last wo creation
      this.checkDiff = function () {
        that.isWoChanged = false;
        that.isWoMajorChange = false;
@@ -2006,7 +1906,7 @@ angular.module('myApp')
                that.changedOrders.push({
                  id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
                  reason: 'עבר',
-                 action: 'delete',
+                 action: 'past',
                  woItem: woOrder,
                  items: diffItems
                });
@@ -2088,12 +1988,11 @@ angular.module('myApp')
              orderWoItem.properties.domain = 0;
              orderWoItem.properties.order = newOrd.properties;
              orderWoItem.properties.order.id = newOrd.id;
-             orderWoItem.properties.prepScope = 'all';
              orderWoItem.properties.select = 'delay';
              that.createViewForOrder(orderWoItem);
              that.changedOrders.push({
                id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
-               reason: 'חדש',
+               reason: 'אירוע חדש',
                action: 'new',
                woItem: orderWoItem,
                isIncludeInWo: true,
