@@ -11,7 +11,10 @@
 <div class="modal-body">
   <div>
     <div ng-repeat="item in workOrderBackTraceModel.backTrace track by item.seq"
-         ng-show="item.generation>0" style="height: 30px">
+         ng-show="item.isShow" style="height: 30px">
+      <input type="checkbox"
+             ng-model="item.isExpand"
+             ng-change="workOrderBackTraceModel.setExpand($index)" ng-disabled="item.domain.id===0">
       <span>{{item.ident}}</span>
       <span ng-show="item.sibling > 0">בנוסף</span>
      <span>צריך</span>
@@ -20,9 +23,16 @@
       <span>{{workOrderBackTraceModel.backTrace[item.father].properties.productName}}</span>
       <span ng-show="item.domain.id > 0">
         <span>בשביל להכין</span>
+        <span ng-show="!item.isExpand && item.domain.id === 2">
+          <span>{{workOrderBackTraceModel.backTrace[item.seq+1].properties.quantity | number:2}}</span>
+          <span>{{workOrderBackTraceModel.backTrace[item.seq+1].properties.measurementUnit.label}}</span>
+          <span>{{workOrderBackTraceModel.backTrace[item.seq+1].properties.productName}}</span>
+         </span>
+      <span ng-hide="!item.isExpand && item.domain.id === 2">
         <span>{{item.properties.quantity | number:2}}</span>
         <span>{{item.properties.measurementUnit.label}}</span>
         <span>{{item.properties.productName}}</span>
+      </span>
       </span>
       <span ng-show="item.domain.id === 0">
         <span>לאירוע של</span>

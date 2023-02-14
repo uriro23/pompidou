@@ -37,6 +37,9 @@ angular.module('myApp')
             this.createWorkOrderDomain(domain);
           }
         }
+        if (domain === 4) { // force default show today only for actions
+          this.isShowTodayOnly[4] = true;
+        }
   };
 
     this.setShowAll = function(domain) {
@@ -855,10 +858,10 @@ angular.module('myApp')
  //     api.saveObj(this.woIndex);
     };
 
-    this.createNewWorkOrder = function (isAutoDetect) {
+    this.createNewWorkOrder = function () {
       var that = this;
       var ackDelModal = $modal.open({
-        templateUrl: isAutoDetect ? 'app/partials/workOrder/ackAutoDelete.html' : 'app/partials/workOrder/ackDelete.html',
+        templateUrl: 'app/partials/workOrder/ackDelete.html',
         controller: 'AckDelWorkOrderCtrl as ackDelWorkOrderModel',
         resolve: {
           workOrderType: function () {

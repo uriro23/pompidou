@@ -13,18 +13,6 @@ angular.module('myApp')
     $modalInstance.close(false);
   };
 })
-  .controller('AckEndDayCtrl', function ($modalInstance, todaysPreps) {
-
-    this.todaysPreps = todaysPreps;
-
-    this.setYes = function () {
-      $modalInstance.close(true);
-    };
-
-    this.setNo = function () {
-      $modalInstance.close(false);
-    };
-  })
 
   .controller('WorkOrderBackTraceCtrl', function ($modalInstance, $filter, workOrderItem, workOrder, domains) {
 
@@ -40,6 +28,7 @@ angular.module('myApp')
     function generateTrace(root, gen, sibling, quantity, workOrder, backTrace) {
     root.seq = seq++;
     root.generation = gen;
+    root.isShow = gen === 1;
     root.sibling = sibling;
     root.ident = ident[gen];
     root.quantity = quantity;
@@ -60,11 +49,55 @@ angular.module('myApp')
     }
   }
 
+  function findDescendants (root, backTrace) {
+      var descendants = [];
+      var cnt = 0;
+      backTrace.forEach(function(bt) {
+        if (bt.father === root.seq) {
+          cnt++;
+          descendants.push(bt);
+        }
+      });
+      if (cnt) {
+        descendants.forEach(function(descendant) {
+          descendants = descendants.concat(findDescendants(descendant,backTrace));
+        });
+      }
+      return descendants;
+  }
+
+  this.setExpand = function(ind) {
+      var that = this;
+     if (this.backTrace[ind].isExpand) {
+        this.backTrace.forEach(function(bt) {
+          if (bt.father === that.backTrace[ind].seq) {
+            bt.isShow = true;
+          }
+        });
+        } else {
+       var descendants = findDescendants(that.backTrace[ind], that.backTrace);
+       descendants.forEach(function(bt) {
+          bt.isExpand = false;
+          bt.isShow = false;
+       });
+      }
+  };
 
   this.workOrderItem = workOrderItem;
-  this.workOrder = workOrder;
+  var workOrder2 = angular.copy(workOrder);
+    workOrder2.forEach(function(woi) {
+      if (woi.properties.domain > 0) {
+        woi.properties.backTrace.sort(function (a, b) {
+          return b.quantity - a.quantity;
+        });
+      }
+  });
+    var workOrderItem2 = angular.copy(workOrderItem);
+    workOrderItem2.properties.backTrace.sort(function (a, b) {
+      return b.quantity - a.quantity;
+    });
   this.backTrace = [];
-  generateTrace(workOrderItem, 0, 0, 0, workOrder, this.backTrace);
+  generateTrace(workOrderItem2, 0, 0, 0, workOrder2, this.backTrace);
 
   this.done = function () {
     $modalInstance.close();
