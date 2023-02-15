@@ -305,8 +305,6 @@ angular.module('myApp')
    };
 
    model.setCompItem = function(compDomain) {
-     console.log('adding:');
-     console.log(compDomain.currentItem);
      var temp = compDomain.compItems.filter(function(item) {
        return item.id === compDomain.currentItem.id;
      });
@@ -356,12 +354,7 @@ angular.module('myApp')
               id !== config.unhandledItemMaterial &&
               id !== config.unhandledPrepComponent;
      });
-     if (model.item.properties.domain === 2) {
-       console.log(model.item.properties.productName);
-       console.log(model.item.properties.components);
-       console.log(ids);
-     }
-     api.queryCatalogByIds(ids)
+    api.queryCatalogByIds(ids)
        .then(function(res) {
          res.forEach(function(comp) {
            comp.view = {};

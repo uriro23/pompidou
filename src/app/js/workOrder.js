@@ -454,6 +454,11 @@ angular.module('myApp')
             var originalMenuItem = that.workOrder.filter(function (mi) {
               return mi.id === itemBackTrace.id;
             })[0];
+            if (!originalMenuItem) {
+              console.log('cant find originalMenuItem of product backTrace ' + currentItem.properties.productName);
+              console.log(currentItem);
+              console.log(itemBackTrace);
+            }
             var miCatalogItem = that.catalog.filter(function (cat) {
               return cat.id === originalMenuItem.properties.catalogId;
             })[0];
@@ -537,7 +542,7 @@ angular.module('myApp')
     // show category only if any of its items will be shown
     this.isShowCategory = function(cat) {
       var that = this;
-      var temp = cat.list.filter(function(woItem) {
+      var temp = cat.list.concat(cat.serviceList).filter(function(woItem) {
         return that.isShowItem(woItem);
       });
       return temp.length;
@@ -1711,31 +1716,45 @@ angular.module('myApp')
         }
         if (wo.domain > 0) {
           var catInd;
-            var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
-              if (c.category.tId === wo.category.tId) {
-                catInd = ind;
-                return true;
-              }
-            });
-            if (!temp.length) {  // if category appears for 1st time, create it's object
-              that.hierarchicalWorkOrder[wo.domain].categories.splice(0, 0, {
-                category: wo.category,
-                isShow: true,
-                list: []
-              });
-              catInd = 0;
+          var temp = that.hierarchicalWorkOrder[wo.domain].categories.filter(function (c, ind) {
+            if (c.category.tId === wo.category.tId) {
+              catInd = ind;
+              return true;
             }
-          that.hierarchicalWorkOrder[wo.domain].categories[catInd].list.push(woi); //add wo item to proper category list
+          });
+          if (!temp.length) {  // if category appears for 1st time, create it's object
+            that.hierarchicalWorkOrder[wo.domain].categories.splice(0, 0, {
+              category: wo.category,
+              isShow: true,
+              list: [],
+              serviceList: [] // only for actions
+            });
+            catInd = 0;
+          }
+          if (wo.domain === 4 && that.woIndex.properties.domainStatus[4]) {
+            var service = wo.backTrace.filter(function (serv) { // is this action based on at least 1 prep
+              return that.workOrder.filter(function(serv2) {
+                return serv2.id === serv.id;
+              })[0].properties.category.type === 11;
+            });
+            if (service.length) {
+              that.hierarchicalWorkOrder[4].categories[catInd].serviceList.push(woi);
+            } else {
+              that.hierarchicalWorkOrder[4].categories[catInd].list.push(woi);
+            }
+          } else {
+            that.hierarchicalWorkOrder[wo.domain].categories[catInd].list.push(woi);
+          }
         }
       });
 
       // sort categories of each domain and items within category
-      for (d = 1; d < 5; d++) {
-        this.hierarchicalWorkOrder[d].categories.sort(function (a, b) {
+      this.hierarchicalWorkOrder.forEach(function(domain) {
+        domain.categories.sort(function (a, b) {
           return a.category.order - b.category.order;
         });
-        for (var c = 0; c < this.hierarchicalWorkOrder[d].categories.length; c++) {
-          this.hierarchicalWorkOrder[d].categories[c].list.sort(function (a, b) {
+        domain.categories.forEach(function(cat) {
+          cat.list.sort(function (a, b) {
             if (a.properties.productName > b.properties.productName) {
               return 1;
             } else if (a.properties.productName < b.properties.productName){
@@ -1748,8 +1767,17 @@ angular.module('myApp')
               return 0;
             }
           });
-        }
-      }
+        });
+      });
+      this.hierarchicalWorkOrder[4].categories.forEach(function(cat) {
+        cat.serviceList.sort(function (a, b) {
+          if (a.properties.productName > b.properties.productName) {
+            return 1;
+          } else if (a.properties.productName < b.properties.productName){
+            return -1;
+          }
+        });
+      });
 
       // for order items domain only, add list of changed product descriptions per category
       this.hierarchicalWorkOrder[1].categories.forEach(function(cat) {
@@ -1765,7 +1793,7 @@ angular.module('myApp')
           }
         });
       });
-      };
+    };
 
     this.setGlobalDetail = function() {
       var that = this;
@@ -1821,7 +1849,6 @@ angular.module('myApp')
         }
         that.saveWorkOrder(targetDomain)
           .then(function () {
-            that.splitWorkOrder();
             that.isActiveTab.forEach(function(tab) {
               tab = false;
             });
@@ -1833,6 +1860,7 @@ angular.module('myApp')
               }
             }
             api.saveObj(that.woIndex);
+            that.splitWorkOrder();
             that.isIncludeStock[targetDomain] = true;
           });
       });
@@ -2053,26 +2081,28 @@ angular.module('myApp')
      this.createView = function () {
        var that = this;
        for (var domain=0;domain<5;domain++) {
-         that.workOrder.forEach(function(woi) {
-           if (woi.properties.domain === domain) {
-             woi.view = {};
-             switch (domain) {
-               case 0:
-                 that.createViewForOrder(woi);
-                 break;
-               case 1:
-                 that.createViewForMenuItem(woi);
-                 break;
-               case 2:
-                 that.createViewForPrep(woi);
-                 break;
-               case 3:
-               case 4:
-                 that.createViewForActionOrProduct(woi,domain);
-                 break;
+         if (that.woIndex.properties.domainStatus[domain]) {
+           that.workOrder.forEach(function (woi) {
+             if (woi.properties.domain === domain) {
+               woi.view = {};
+               switch (domain) {
+                 case 0:
+                   that.createViewForOrder(woi);
+                   break;
+                 case 1:
+                   that.createViewForMenuItem(woi);
+                   break;
+                 case 2:
+                   that.createViewForPrep(woi);
+                   break;
+                 case 3:
+                 case 4:
+                   that.createViewForActionOrProduct(woi, domain);
+                   break;
+               }
              }
-           }
-         })
+           })
+         }
        }
      };
 
