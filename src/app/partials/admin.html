@@ -35,6 +35,7 @@
    <button class="btn btn-default" ng-click="adminModel.unhandledPreps()">הכנות ללא פירוק</button>
   <button class="btn btn-default" ng-click="adminModel.undefinedBacktrace()">תיקון מנות</button>
 -->
+  <button class="btn btn-default" ng-click="adminModel.personalAdjustment()">התאמה אישית</button>
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -178,7 +179,7 @@
           <span>הכנה:</span>
             <span>{{prep.category.label}}</span>
             <span>/</span>
-          <span ng-class="prep.properties.isDeleted?'myCanceledEvent':'null'">
+          <span ng-class="prep.properties.isDeleted?'cancel':'null'">
             {{prep.properties.productName}}
           </span>
           </div>
@@ -200,7 +201,7 @@
                 <span>מצרך:</span>
                 <span>{{prepMaterial.category.label}}</span>
                 <span>/</span>
-                <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
+                <span ng-class="prepMaterial.properties.isDeleted?'cancel':'null'">
               {{prepMaterial.properties.productName}}
             </span>
               </div>
@@ -216,7 +217,7 @@
                 <span>מטלה:</span>
                 <span>{{prepMaterial.category.label}}</span>
                 <span>/</span>
-                <span ng-class="prepMaterial.properties.isDeleted?'myCanceledEvent':'null'">
+                <span ng-class="prepMaterial.properties.isDeleted?'cancel':'null'">
               {{prepMaterial.properties.productName}}
             </span>
               </div>
@@ -233,7 +234,7 @@
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(material.id)">
           <span>מצרך:</span>
-          <span ng-class="material.properties.isDeleted?'myCanceledEvent':'null'">
+          <span ng-class="material.properties.isDeleted?'cancel':'null'">
                  <span>{{material.category.label}}</span>
                 <span>/</span>
            {{material.properties.productName}}
@@ -307,7 +308,7 @@
          <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems track by productNameItem.id"
              ng-class="productNameItem.errors ? 'bg-danger' :
                        productNameItem.isChanged ? 'bg-success' :
-                       productNameItem.properties.isDeleted ? 'active myCanceledEvent' : bg-active">
+                       productNameItem.properties.isDeleted ? 'active cancel' : bg-active">
            <td>{{productNameItem.properties.productName}}</td>
            <td ng-show="adminModel.productNamesDomain.id===1">
              {{productNameItem.properties.priceQuantity}}
@@ -316,6 +317,7 @@
              {{productNameItem.properties.productionQuantity}}
            </td>
            <td ng-show="adminModel.productNamesDomain.id===3"></td>
+           <td ng-show="adminModel.productNamesDomain.id===4"></td>
            <td>{{productNameItem.measurementUnitLabel}}</td>
            <td>
              <input type="checkbox"
@@ -367,7 +369,7 @@
          <tr ng-repeat="productNameItem in adminModel.productNameCategoryItems track by productNameItem.id"
              ng-class="productNameItem.errors ? 'bg-danger' :
                        productNameItem.isChanged ? 'bg-success' :
-                       productNameItem.properties.isDeleted ? 'active myCanceledEvent' : bg-active">
+                       productNameItem.properties.isDeleted ? 'active cancel' : bg-active">
            <td ng-hide="adminModel.isDisableLink">
              <a  ng-href="#/editCatalogItem/{{productNameItem.id}}">
                {{productNameItem.properties.productName}}

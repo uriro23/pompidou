@@ -162,7 +162,7 @@ angular.module('myApp')
       var attr = this.order.properties;
       view.errors = {};
       view.changes = {};
-      orderService.setDescChangeActions(this.order,this.descChangeActions); // initialize object for drop down in all items
+      orderService.setDescChangeActions(this.order, this.descChangeActions); // initialize object for drop down in all items
       if ($state.current.name === 'editOrder' || $state.current.name === 'dupOrder') {  // existing order
         view.quote = attr.quotes[attr.activeQuote]; // load active quote
         if (view.quote && view.quote.endBoxType) {

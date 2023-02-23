@@ -7,6 +7,7 @@ angular.module('myApp')
     //objects
     this.order = $scope.orderModel.order;
     this.readOnly = $scope.orderModel.readOnly;
+    this.descChangeActions = $scope.orderModel.descChangeActions;
     this.categories = $scope.orderModel.categories;
     this.measurementUnits = $scope.orderModel.measurementUnits;
     this.descChangeActions = $scope.orderModel.descChangeActions;
@@ -203,6 +204,12 @@ angular.module('myApp')
       }
     };
 
+    function setPersonalAdjustment (item) {
+      return !item.isDescChanged || item.isCosmeticChange ? '' :
+              item.kitchenRemark ? item.kitchenRemark :
+              item.productDescription;
+    }
+
     this.setProductDescription = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
       thisItem.isDescChanged = true;
@@ -210,30 +217,12 @@ angular.module('myApp')
       thisItem.isMajorChange = false;
       thisItem.isKitchenRemark = true;
       orderService.setDescChangeActions(this.order, this.descChangeActions);
+      thisItem.personalAdjustment = setPersonalAdjustment(thisItem);
       thisItem.errors.productDescription = !Boolean(thisItem.productDescription);
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
     };
 
-  //   this.setCosmeticChange = function (ind ) {
-  //     var thisItem = this.order.view.quote.items[ind];
-  //     orderService.calcTotal(this.order.view.quote,this.order); // because tasks are also updated here
-  //     orderService.quoteChanged(this.order);
-  //     thisItem.isChanged = true;
-  //   };
-  //
-  //   this.resetDescChange = function (ind) {
-  //     var that = this;
-  //     var thisItem = this.order.view.quote.items[ind];
-  //     api.queryCatalogById(thisItem.catalogId)
-  //       .then(function(cat) {
-  //         thisItem.productDescription = cat[0].properties.productDescription;
-  //         thisItem.isDescChanged = false;
-  //         orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
-  //         orderService.quoteChanged(that.order);
-  //         thisItem.isChanged = true;
-  //       });
-  // };
 
     this.setDescChangeBooleans = function (ind ) {
       var that = this;
@@ -246,11 +235,13 @@ angular.module('myApp')
         api.queryCatalogById(thisItem.catalogId)
           .then(function(cat) {
             thisItem.productDescription = cat[0].properties.productDescription;
+            thisItem.personalAdjustment = setPersonalAdjustment(thisItem);
             orderService.calcTotal(that.order.view.quote,that.order); // because tasks are also updated here
             orderService.quoteChanged(that.order);
             thisItem.isChanged = true;
           });
       } else {
+        thisItem.personalAdjustment = setPersonalAdjustment(thisItem);
         orderService.calcTotal(this.order.view.quote, this.order); // because tasks are also updated here
         orderService.quoteChanged(this.order);
         thisItem.isChanged = true;
@@ -259,6 +250,7 @@ angular.module('myApp')
 
     this.setKitchenRemark = function (ind) {
       var thisItem = this.order.view.quote.items[ind];
+      thisItem.personalAdjustment = setPersonalAdjustment(thisItem);
       orderService.calcTotal(this.order.view.quote, this.order); // because tasks are also updated here
       orderService.quoteChanged(this.order);
       thisItem.isChanged = true;
@@ -488,7 +480,7 @@ angular.module('myApp')
           if (isPriceConflict) {
             alert('קיימת בעיה של מחירים קבועים בתבנית המועתקת. בדוק שגיאות מסומנות בשדה המחיר')
           }
-          orderService.setDescChangeActions(that.order,that.descChangeActions);
+          orderService.setDescChangeActions(that.order, that.descChangeActions);
           orderService.calcTotal(targetQuote,that.order);
           orderService.quoteChanged(that.order);
         });

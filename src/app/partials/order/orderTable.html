@@ -38,7 +38,7 @@
                         order.view.orderStatus.id===1?'bg-active':
                         order.view.orderStatus.id===2?'bg-warning':
                         (order.view.orderStatus.id>=3 && order.view.orderStatus.id<=5)?'bg-success':
-                        order.view.orderStatus.id===6?'active myCanceledEvent':null">
+                        order.view.orderStatus.id===6?'active cancel':null">
      <td ng-hide="orderTableModel.isDisableLink">
       <a  ng-href="#/editOrderView/{{order.id}}/0">
         {{order.properties.number}}
@@ -187,7 +187,7 @@
       </thead>
       <tbody>
       <tr ng-repeat="order in orderTableModel.orders track by order.id"
-          ng-class="order.view.orderStatus.id===6?'active myCanceledEvent':null">
+          ng-class="order.view.orderStatus.id===6?'active cancel':null">
         <td>
           <a ng-href="#/editOrderView/{{order.id}}/0">{{order.properties.header.menuType.label}}</a>
         </td>

@@ -22,33 +22,31 @@ angular.module('myApp')
 // Generic functions
 // -----------------
 
+    this.unset = function (obj, attr) {
+      obj.unset(attr);
+      obj.properties[attr] = undefined;
+    }
+
   this.saveObj = function (obj) {
     var promise = $q.defer();
 
 
     for (var propName in obj.properties) {
       if (obj.properties.hasOwnProperty(propName)) {
-        obj.set(propName, obj.properties[propName])
-      }
-    }
-
-    if (obj.delAttributes) {  // unset attributes
-      for (var delAttr in obj.delAttributes) {
-        if (obj.delAttributes.hasOwnProperty(delAttr)) {
-          obj.unset(delAttr)
+        if (typeof obj.properties[propName] !== 'undefined') {
+          obj.set(propName, obj.properties[propName]);
         }
       }
-      obj.delAttributes = undefined;
     }
 
-    obj.save().then(function(o) {
+     obj.save().then(function(o) {
         promise.resolve(o);
         $rootScope.$digest();
       },
       function (error) {
         alert('Save Error ' + error.code + ", " + error.message);
         promise.reject(error);
-        $rootScope.$digest();
+          $rootScope.$digest();
     });
     return promise.promise;
   };
@@ -56,23 +54,16 @@ angular.module('myApp')
   // saves an array of objects in parallel
   this.saveObjects = function (objs) {
     var promises = [];
-    for (var i = 0; i < objs.length; i++) {
-      for (var propName in objs[i].properties) {
-        if (objs[i].properties.hasOwnProperty(propName)) {
-          objs[i].set(propName, objs[i].properties[propName])
-        }
-      }
-      if (objs[i].delAttributes) {  // unset attributes
-        for (var delAttr in objs[i].delAttributes) {
-          if (objs[i].delAttributes.hasOwnProperty(delAttr)) {
-            objs[i].unset(delAttr)
+    objs.forEach(function(obj) {
+      for (var propName in obj.properties) {
+        if (obj.properties.hasOwnProperty(propName)) {
+          if (typeof obj.properties[propName] !== 'undefined') {
+            obj.set(propName, obj.properties[propName])
           }
         }
-        objs[i].delAttributes = undefined;
       }
-
-      promises.push(angular.copy(objs[i]).save()); // clone to avoid parse error 121
-    }
+     promises.push(angular.copy(obj).save()); // clone to avoid parse error 121
+    });
     return Promise.all(promises);
   };
 

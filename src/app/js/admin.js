@@ -1880,6 +1880,46 @@ angular.module('myApp')
         });
     };
       */
+
+    function setPersonalAdjustment (item) {
+      return !item.isDescChanged || item.isCosmeticChange ? '' :
+        item.kitchenRemark ? item.kitchenRemark :
+          item.productDescription;
+    }
+
+    this.personalAdjustment = function () {
+      api.queryFutureOrders()
+        .then(function (orders) {
+          console.log('read '+orders.length+ ' future orders');
+          orders.forEach(function(ord) {
+            ord.properties.quotes.forEach(function(quote) {
+              quote.items.forEach(function(item) {
+                item.personalAdjustment = setPersonalAdjustment(item);
+              })
+            });
+          });
+          api.saveObjects(orders)
+            .then(function() {
+              console.log('updated');
+              api.queryTemplateOrders()
+                .then(function (orders) {
+                  console.log('read '+orders.length+ ' templates');
+                  orders.forEach(function (ord) {
+                    ord.properties.quotes.forEach(function (quote) {
+                      quote.items.forEach(function (item) {
+                        item.personalAdjustment = setPersonalAdjustment(item);
+                      });
+                    });
+                  });
+                  api.saveObjects(orders)
+                    .then(function () {
+                      console.log('updated');
+                    });
+                });
+            });
+        });
+    };
+
     // end conversions
 
   });

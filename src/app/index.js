@@ -362,34 +362,6 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-     .state('todaysPrep', {
-      url: '/todaysPrep/:woId',
-      templateUrl: 'app/partials/todaysPrep.html',
-      controller: 'TodaysPrepCtrl as todaysPrepModel',
-      resolve: {
-        catalog: ['api', function (api) {
-          return api.queryCatalog(2).then(function (obj) {
-            return obj; // we return all preparations, including deleted items
-          });
-        }],
-        allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
-          return allCategoriesPromise;
-        }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-          return measurementUnitsPromise;
-        }],
-        workOrder: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
-            return workItems.map(function (wi) {
-              var att = wi.properties;
-              att.id = wi.id;
-              return att;
-            });
-          });
-        }]
-      }
-    })
-
     .state('snacksAndDesserts', {
       url: '/snacksAndDesserts/:woId',
       templateUrl: 'app/partials/snacksAndDesserts.html',

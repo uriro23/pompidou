@@ -42,7 +42,7 @@
     </thead>
      <tbody>
       <tr ng-repeat="catalogItem in catalogListModel.categoryItems track by catalogItem.id"
-          ng-class="catalogItem.properties.isDeleted?'myCanceledEvent':null">
+          ng-class="catalogItem.properties.isDeleted?'cancel':null">
         <td>{{catalogItem.view.category.label}}</td>
         <td style="cursor: pointer" ng-click="catalogListModel.editItem(catalogItem.id)">
           {{catalogItem.properties.productName}}

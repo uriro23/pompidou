@@ -286,18 +286,10 @@ angular.module('myApp')
      // thisOrder.customer = view.customer.id;
       // thisOrder.contact = view.contact.id;
       if (!thisOrder.contact) {   // if contact is changed to null, make sure it is deleted in parse. see api.saveObj
-        if (order.delAttributes) {
-          order.delAttributes.contact = true
-        } else {
-          order.delAttributes = {contact: true}
-        }
+        api.unset(order,'contact');
       }
       if (!thisOrder.referrer) {   // if referrer is changed to null, make sure it is deleted in parse. see api.saveObj
-        if (order.delAttributes) {
-          order.delAttributes.referrer = true
-        } else {
-          order.delAttributes = {referrer: true}
-        }
+        api.unset(order,'referrer');
       }
 
       this.setStatus(order);
@@ -617,12 +609,8 @@ angular.module('myApp')
             order.properties.closingDate = new Date();
           }
         } else {
-          if (order.delAttributes) {
-            order.delAttributes.closingDate = true;
-          } else {
-            order.delAttributes = {closingDate: true};
-          }
-        }
+          api.unset(order,'closingDate');
+       }
         if (order.view.orderStatus.id >= 1 && order.view.orderStatus.id <= 5 && // new status
             !order.properties.bidDate) {
           order.properties.bidDate = new Date();

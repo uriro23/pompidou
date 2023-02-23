@@ -24,7 +24,7 @@
   <tr ng-class="changedOrder.woItem.view.orderStatus.id===1?'bg-active':
     changedOrder.woItem.view.orderStatus.id===2?'bg-warning':
    (changedOrder.woItem.view.orderStatus.id>=3 && changedOrder.woItem.view.orderStatus.id<=5)?'bg-success':
-    changedOrder.woItem.view.orderStatus.id===6?'active myCanceledEvent':null">
+    changedOrder.woItem.view.orderStatus.id===6?'active cancel':null">
     <td style="width: 9%"><label>{{changedOrder.reason}}</label></td>
     <td style="width: 9%">
       <a ng-href="#/editOrderView/{{changedOrder.woItem.properties.order.id}}/0">{{changedOrder.woItem.properties.order.number}}</a>

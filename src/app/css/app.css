@@ -133,8 +133,12 @@ a:link, a:visited  {
 .myFinalEvent {
     background-color: chartreuse;
 }
-.myCanceledEvent {
+.cancel {
     text-decoration: line-through;
+}
+.prevQuant {
+  text-decoration: line-through;
+  font-size: small;
 }
 .myAlertEvent {
   color: red

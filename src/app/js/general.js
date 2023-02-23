@@ -57,7 +57,7 @@ angular.module('myApp')
 
 
     this.resetColor = function() {
-      this.order.delAttributes = {color:true};
+      api.unset(this.order,'color');
       this.order.view.color = undefined;
       orderService.orderChanged(this.order,'color');
     };

@@ -42,46 +42,60 @@
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
-  <table ng-show="cat.isShow" class="table table-hover" style="width:60%">
+  <table ng-show="cat.isShow" class="table table-hover" style="width:90%">
     <thead>
     <th>מנה</th>
     <th colspan="2">כמות</th>
     <th ng-repeat="order in workOrderModel.woOrders track by order.id"
-        ng-hide="workOrderModel.woOrders.length>15">
-      <span>{{order.view.customer.firstName}}</span>
-      <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
-      <span>{{order.properties.order.exitTime | date:'HH:mm'}}</span>
-      <img ng-show="workOrderModel.isOrderColors" ng-src="app/img/smallColors/{{order.view.color.stickerColor}}.jpg"/>
-      <label ng-show="workOrderModel.isOrderNumbers">[{{order.view.color.tId}}]</label>
+        ng-show="workOrderModel.woOrders.length<16 &&
+        (workOrderModel.isShowChanges || !(order.properties.status==='del'))">
+      <span ng-class="order.properties.status==='del' ? 'cancel' : null">
+        <span>{{order.view.customer.firstName}}</span>
+        <span>{{workOrderModel.dayName(order.properties.order.eventDate)}}</span>
+        <span>{{order.properties.order.exitTime | date:'HH:mm'}}</span>
+        <img ng-show="workOrderModel.isOrderColors"
+             ng-src="app/img/smallColors/{{order.view.color.stickerColor}}.jpg"/>
+        <label ng-show="workOrderModel.isOrderNumbers">[{{order.view.color.tId}}]</label>
+      </span>
     </th>
     <th></th>
     <th></th>
     </thead>
     <tbody>
-    <tr ng-repeat="woItem in cat.list track by woItem.id">
-      <td style="width: 60%">
+    <tr ng-repeat="woItem in cat.list track by woItem.id"
+        ng-show="workOrderModel.isShowChanges || !(woItem.properties.status==='del')"
+        ng-class="workOrderModel.isShowChanges ? (woItem.properties.status==='new' ? 'bg-success' :
+                woItem.properties.status==='upd' ? 'bg-warning' :
+                woItem.properties.status==='del' ? 'bg-active cancel' : null) : null">
+      <td style="width: 30%">
         {{woItem.properties.productName}}
-        <div ng-show="woItem.properties.isDescChanged">
+        <div ng-show="woItem.properties.personalAdjustment">
           <label>התאמה אישית מס' {{woItem.descCnt}}</label>
         </div>
       </td>
-      <td>{{woItem.properties.quantity}}</td>
-      <td style="width: 20%">{{woItem.properties.measurementUnit.label}}</td>
+      <td style="width: 7%">
+        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity"
+              class="prevQuant">
+          {{woItem.properties.originalQuantity}}
+        </span>
+        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity">&nbsp;</span>
+        <span>{{woItem.properties.quantity}}</span>
+      </td>
+      <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
       <td ng-repeat="order in woItem.view.orderQuant track by $index"
-          ng-hide="woItem.view.orderQuant.length>15"
-          ng-class="order.quantity && order.status===2?'bg-warning':null"> <!-- mark events not in final status -->
-         <span>
+          ng-show="workOrderModel.woOrders.length<16 &&
+        (workOrderModel.isShowChanges || !(order.status==='del'))"
+          ng-class="order.quantity && order.orderStatus===2?'bg-warning':null"> <!-- mark events not in final status -->
+        <span ng-show="workOrderModel.isShowChanges && order.originalQuantity"
+              class="prevQuant">
+          {{order.originalQuantity}}
+        </span>
+        <span ng-show="workOrderModel.isShowChanges && order.originalQuantity">&nbsp;</span>
+        <span>
            {{order.quantity ? order.quantity : 0}}
          </span>
        </td>
-      <td>
-        <button ng-click="workOrderModel.delItem(1,$parent.$index,$index)"
-                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[1]"
-                class="btn btn-default btn-sm">
-          מחק
-        </button>
-      </td>
-    </tr>
+   </tr>
     </tbody>
   </table>
 

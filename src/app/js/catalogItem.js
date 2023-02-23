@@ -493,11 +493,7 @@ angular.module('myApp')
      if (model.item.view.actionCategory) {
        model.item.properties.actionCategory = model.item.view.actionCategory.tId;
      } else {
-       if (model.item.delAttributes) {
-         model.item.delAttributes.actionCategory = true;
-       } else {
-         model.item.delAttributes = {actionCategory: true};
-       }
+       api.unset(model.item,'actionCategory');
      }
      if (!model.item.view.measurementUnit.tId) {
        alert('Missing measurement unit');

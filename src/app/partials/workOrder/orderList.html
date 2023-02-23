@@ -15,11 +15,11 @@
   </thead>
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.woOrders track by woItem.id"
-      ng-class="woItem.view.orderStatus.id===1?'bg-active':
-                        woItem.view.orderStatus.id===2?'bg-warning':
-                        (woItem.view.orderStatus.id>=3 && woItem.view.orderStatus.id<=5)?'bg-success':
-                        woItem.view.orderStatus.id===6?'active myCanceledEvent':null">
-    <td>
+      ng-show="workOrderModel.isShowChanges || !(woItem.properties.status==='del')"
+      ng-class="woItem.properties.status==='new' ? 'myNewEvent' :
+                woItem.properties.status==='upd' ? 'myChanged' :
+                woItem.properties.status==='del' ? 'cancel' : null">
+     <td>
       <a ng-href="#/editOrderView/{{woItem.properties.order.id}}/0">{{woItem.properties.order.number}}</a>
     </td>
     <td>{{woItem.properties.order.eventDate | date: 'EEE dd/MM/yyyy'}}</td>
