@@ -85,7 +85,9 @@
       <td ng-repeat="order in woItem.view.orderQuant track by $index"
           ng-show="workOrderModel.woOrders.length<16 &&
         (workOrderModel.isShowChanges || !(order.status==='del'))"
-          ng-class="order.quantity && order.orderStatus===2?'bg-warning':null"> <!-- mark events not in final status -->
+          ng-class="workOrderModel.isShowChanges && order.quantity ? (
+          order.status==='new' ? 'new' : order.status==='upd' ? 'changed' : order.status==='del' ? 'cancel' : null
+          ) : (order.quantity && order.orderStatus.id===2?'bg-warning':null)"> <!-- mark events not in final status -->
         <span ng-show="workOrderModel.isShowChanges && order.originalQuantity"
               class="cancel">
           {{order.originalQuantity}}

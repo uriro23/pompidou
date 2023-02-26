@@ -65,27 +65,27 @@ angular.module('myApp')
         });
     };
 
-    this.createMenuItemsDomain = function () {
+    this.createDishesDomain = function () {
       var that = this;
       this.workOrder.forEach(function(woItem) {
         if (woItem.properties.domain === 0) {
-          that.createOrderItems(woItem, undefined, undefined);
+          that.createDishes(woItem, undefined, undefined);
         }
       });
     };
 
-    this.createOrderItems = function (order, dishesToCreate, dishesToUpdate) {
+    this.createDishes = function (order, dishesToCreate, dishesToUpdate) {
       var that = this;
       var items = order.properties.order.quotes[order.properties.order.activeQuote].items;
       items.forEach(function(item) {
         if (item.category.type < 3) {
-          that.createItem(order, item, dishesToCreate, dishesToUpdate);
+          that.createDish(order, item, dishesToCreate, dishesToUpdate);
         }
       });
     };
 
 
-    this.createItem = function (order, item, dishesToCreate, dishesToUpdate) {
+    this.createDish = function (order, item, dishesToCreate, dishesToUpdate) {
       var workItem;
       var orderInd;
       var workItemInd;
@@ -103,15 +103,19 @@ angular.module('myApp')
       workItemInd = undefined;
       that.workOrder.forEach(function (workItem, ind) { // items are grouped by catalogId,
         if (workItem.properties.domain === 1 && // unless their description is changed
-          item.personalAdjustment === workItem.properties.personalAdjustment &&
-          workItem.properties.catalogId === item.catalogId) {
+          workItem.properties.catalogId === item.catalogId &&
+          Boolean(item.personalAdjustment) === Boolean(workItem.properties.personalAdjustment) &&
+          (!Boolean(item.personalAdjustment) ||
+            item.personalAdjustment === workItem.properties.personalAdjustment)) {
           workItemInd = ind;
         }
       });
       if (workItemInd) {  // item already in list, just add quantity
         workItem = that.workOrder[workItemInd];
-        if (!workItem.properties.originalQuantity) {
-          workItem.properties.originalQuantity = workItem.properties.quantity;
+        if (dishesToUpdate) {
+          if (!workItem.properties.originalQuantity) {
+            workItem.properties.originalQuantity = workItem.properties.quantity;
+          }
         }
         workItem.properties.quantity += item.quantity;
         var existingBt = workItem.properties.backTrace.filter(function(bt) {
@@ -124,7 +128,8 @@ angular.module('myApp')
             id: order.id,
             domain: 0,
             quantity: item.quantity,
-            originalQuantity: 0
+            originalQuantity: 0,
+            status: order.properties.status
           });
         }
         if (dishesToUpdate && !workItem.isNewItem) { // don't update items just created. it will cause dups
@@ -154,7 +159,8 @@ angular.module('myApp')
           id: order.id,
           domain: 0,
           originalQuantity: 0,
-          quantity: item.quantity
+          quantity: item.quantity,
+          status: order.properties.status
         }];
         workItem.deletedBackTrace = []; // needed in updatePreps
         that.workOrder.push(workItem);
@@ -162,7 +168,7 @@ angular.module('myApp')
           dishesToCreate.push(workItem);
        }
       }
-      that.createViewForMenuItem(workItem);
+      that.createViewForDish(workItem);
       return workItem;
     };
 
@@ -1022,6 +1028,7 @@ angular.module('myApp')
             });
             wo.backTrace.forEach(function (bt) {
               bt.originalQuantity = undefined;
+              bt.status = undefined;
             });
           }
           api.unset(woi,'status');
@@ -1200,13 +1207,12 @@ angular.module('myApp')
                   }
                 }
                 if (!dish.properties.originalQuantity) {
-                  console.log('set originalQuantity of '+dish.properties.productName+
-                              ' to '+dish.properties.quantity);
                   dish.properties.originalQuantity = dish.properties.quantity;
                 }
                 dish.properties.quantity -= matchingBt.quantity;
                 matchingBt.originalQuantity = matchingBt.quantity;
                 matchingBt.quantity = 0;
+                matchingBt.status = 'del';
                 dishesToUpdate.push(dish);
               }
             }
@@ -1215,7 +1221,7 @@ angular.module('myApp')
         if ((changedOrder.action === 'new' && changedOrder.isIncludeInWo) ||
              changedOrder.action === 'recalc') {
           // add/adjust all dishes for this order
-          that.createOrderItems(changedOrder.woItem, dishesToCreate, dishesToUpdate);
+          that.createDishes(changedOrder.woItem, dishesToCreate, dishesToUpdate);
         }
         if (changedOrder.action === 'itemChange') {
           // handle specific dish in order
@@ -1281,12 +1287,14 @@ angular.module('myApp')
                     }
                     dish.properties.quantity -= diffItem.oldItem.quantity;
                     matchDishBt.quantity -= diffItem.oldItem.quantity;
+                    matchDishBt.status = 'del';
          //todo: test multiple occurances of same dish in order
                   } else {  // diffItem.action === 'update'
                     var quantityDiff = diffItem.newItem.quantity - diffItem.oldItem.quantity;
                     if (quantityDiff) {
                       dish.properties.quantity += quantityDiff;
                       matchDishBt.quantity += quantityDiff;
+                      matchDishBt.status = 'upd';
                     }
                     // todo: how to mark description changes?
                     dish.properties.personalAdjustment =  diffItem.newItem.personalAdjustment;
@@ -1297,7 +1305,7 @@ angular.module('myApp')
               }
             } else if (diffItem.action === 'new') {
               diffItem.matchDish =
-                that.createItem(changedOrder.woItem, diffItem.newItem, dishesToCreate, dishesToUpdate);
+                that.createDish(changedOrder.woItem, diffItem.newItem, dishesToCreate, dishesToUpdate);
             };
           });
         }
@@ -2156,7 +2164,7 @@ angular.module('myApp')
             (wo.properties.domain < targetDomain);
         });
         if (targetDomain === 1) {
-          that.createMenuItemsDomain();
+          that.createDishesDomain();
         } else {
           that.createComponentsDomain(targetDomain);
         }
@@ -2364,7 +2372,7 @@ angular.module('myApp')
        }
      };
 
-     this.createViewForMenuItem = function (woi) {
+     this.createViewForDish = function (woi) {
        woi.view = {};
        woi.view.orderQuant = []; // create array of order quantities for detailed menu item view
        for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
@@ -2381,6 +2389,7 @@ angular.module('myApp')
            if (oq.id === bt.id) {
              oq.originalQuantity = bt.originalQuantity;
              oq.quantity = bt.quantity;
+             oq.status = bt.status;
            }
          });
        });
@@ -2409,7 +2418,7 @@ angular.module('myApp')
                    that.createViewForOrder(woi);
                    break;
                  case 1:
-                   that.createViewForMenuItem(woi);
+                   that.createViewForDish(woi);
                    break;
                  case 2:
                    that.createViewForPrep(woi);
