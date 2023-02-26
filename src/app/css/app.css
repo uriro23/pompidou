@@ -105,46 +105,22 @@ a:link, a:visited  {
     content: "";
     padding: 0;
 }
-
-
-.myError {
-    background-color: rgba(255, 32, 17, 0.33);
-}
-
-.myChanged {
-    background-color: rgba(0,255,0,0.33);
-}
-
-.myDeleted {
-    background-color: rgba(0,255,0,0.33);
-    text-decoration: line-through;
-}
-
-.mySelected {
-    background-color: deepskyblue;
-}
-
-.myNewEvent {
-    background-color: blanchedalmond;
-}
-.myActiveEvent {
-    background-color: gold;
-}
-.myFinalEvent {
-    background-color: chartreuse;
-}
 .cancel {
-    text-decoration: line-through;
-}
-.prevQuant {
   text-decoration: line-through;
-  font-size: small;
+}
+.new {
+  background-color: #80ee80;
+}
+.changed {
+  background-color: beige;
+}
+.inStock {
+  background-color: lavender;
+}
+.alert {
+  background-color: lightcoral;
 }
 .myAlertEvent {
-  color: red
-}
-.descChanged {
-  font-weight: bold;
   color: red
 }
 .taskRequired {

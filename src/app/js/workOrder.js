@@ -110,6 +110,9 @@ angular.module('myApp')
       });
       if (workItemInd) {  // item already in list, just add quantity
         workItem = that.workOrder[workItemInd];
+        if (!workItem.properties.originalQuantity) {
+          workItem.properties.originalQuantity = workItem.properties.quantity;
+        }
         workItem.properties.quantity += item.quantity;
         var existingBt = workItem.properties.backTrace.filter(function(bt) {
           return bt.id === order.id;
@@ -291,14 +294,15 @@ angular.module('myApp')
               console.log('originalMenuItem missing for backTrace of '+currentPrep.properties.productName);
               console.log(currentPrep);
               console.log(currentBackTrace);
-            }
-            currentMenuItem.status = originalMenuItem.properties.status;
-            currentMenuItem.productName = originalMenuItem.properties.productName;
-            if (originalMenuItem.properties.personalAdjustment) {
-              currentMenuItem.isRemark = true;
-              currentMenuItem.remarkNo = ++remarkCnt;
-              currentMenuItem.remarkText = originalMenuItem.properties.personalAdjustment;
-            }
+              return;
+             }
+              currentMenuItem.status = originalMenuItem.properties.status;
+              currentMenuItem.productName = originalMenuItem.properties.productName;
+              if (originalMenuItem.properties.personalAdjustment) {
+                currentMenuItem.isRemark = true;
+                currentMenuItem.remarkNo = ++remarkCnt;
+                currentMenuItem.remarkText = originalMenuItem.properties.personalAdjustment;
+              }
             currentPrep.view.menuItems.push(currentMenuItem);
           });
     };
@@ -307,11 +311,18 @@ angular.module('myApp')
     // each entry contains an array of menuItems.
     this.createPrepOrderView = function (currentPrep) {
       var that = this;
+      currentPrep.isAlert = false; // to indicate changes in orders marked for today
        currentPrep.view.orders = [];
         currentPrep.properties.backTrace.forEach(function (prepBackTrace) {
           var originalMenuItem = that.workOrder.filter(function(mi) {
             return mi.id === prepBackTrace.id;
           })[0];
+          if (!originalMenuItem) {
+            console.log('originalMenuItem missing for backTrace of '+currentPrep.properties.productName);
+            console.log(currentPrep);
+            console.log(prepBackTrace);
+            return;
+          }
           var viewMenuItemIndex;
           currentPrep.view.menuItems.forEach(function(mi,ind) {
             if (mi.id === originalMenuItem.id) {
@@ -350,8 +361,7 @@ angular.module('myApp')
                 totalOriginalQuantity: 0,
                 totalQuantity: 0,
                 menuItems: [],
-                select: 'delay',
-                status: originalOrder.properties.status
+                select: 'delay'
               };
               currentPrep.view.menuItems.forEach(function(mu,ind) {
                 orderObj.menuItems[ind] = {
@@ -365,6 +375,7 @@ angular.module('myApp')
             } else {
               currentOrder = temp[0];
            }
+            // todo: set status of orders in prep
              var prepQuantity = miBackTrace.quantity;
              currentOrder.menuItems[viewMenuItemIndex].quantity +=
                prepQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
@@ -384,6 +395,11 @@ angular.module('myApp')
         })[0];
         if (matchingOrder) {
           ord.select = matchingOrder.select;
+          if (ord.select === 'today') {
+            if (ord.totalOriginalQuantity) {
+              currentPrep.isAlert = true;
+            }
+          }
         } else {
           console.log('cant find matching order in prep record of '+currentPrep.properties.productName);
           console.log('view order:');
@@ -939,6 +955,15 @@ angular.module('myApp')
     // Also, we can't delete items from workOrder array, before finishing all updates
     this.updateWorkOrder = function () {
       var that = this;
+      if (!((this.woIndex.properties.domainStatus[0] &&
+            this.woIndex.properties.domainStatus[1] &&
+            this.woIndex.properties.domainStatus[2]) ||
+         (!this.woIndex.properties.domainStatus[0] &&
+          !this.woIndex.properties.domainStatus[1] &&
+          !this.woIndex.properties.domainStatus[2]))) {
+        alert('בכדי לבצע עדכון צריך לחשב קודם מנות והכנות');
+        return;
+      }
       this.clearPreviousUpdates()
         .then(function() {
           that.updateOrders()
@@ -950,12 +975,14 @@ angular.module('myApp')
                       that.workOrder = that.workOrder.filter(function(woi) {
                         return !woi.isToDelete;
                       });
+                      that.checkConsistency();
                      that.woIndex.properties.domainStatus = [true, true, true, false, false];
                       api.saveObj(that.woIndex);
                       that.createView();
                       that.splitWorkOrder();
                       that.isWoChanged = false;
                       that.isShowChanges = true;
+                      that.setShowChanges();
                       that.changedOrders = [];
                       that.isActiveTab = [false, true, false, false, false, false]; // show menu items tab
                        console.log('update workOrder completed');
@@ -963,6 +990,16 @@ angular.module('myApp')
                 });
             });
         });
+    };
+
+    // for preps, if showing changes, all preps must be visible
+    this.setShowChanges = function () {
+      if (this.isShowChanges) {
+        this.isShowTodayOnly[2] = false;
+        this.isShowDone[2] = true;
+      } else {
+        this.isShowDone[2] = false; // back to default
+      }
     };
 
     // erases all marks of previous updateWorkOrder:
@@ -976,19 +1013,19 @@ angular.module('myApp')
       var itemsToUpdate = [];
       var itemsToDelete = [];
       that.workOrder.forEach(function(woi) {
-        var wo = woi.properties;
-        if (wo.domain > 0) {
-          if (wo.status === 'new' || wo.status === 'upd') {
-            api.unset(woi,'originalQuantity');
+      var wo = woi.properties;
+        if (wo.status === 'new' || wo.status === 'upd') {
+          if (wo.domain > 0) {
+            api.unset(woi, 'originalQuantity');
             wo.backTrace = wo.backTrace.filter(function (bt) {
               return bt.quantity > 0;
             });
             wo.backTrace.forEach(function (bt) {
               bt.originalQuantity = undefined;
             });
-            api.unset(woi,'status');
-            itemsToUpdate.push(woi);
           }
+          api.unset(woi,'status');
+          itemsToUpdate.push(woi);
         }
       });
       itemsToDelete = that.workOrder.filter(function(woi) {
@@ -1419,7 +1456,7 @@ angular.module('myApp')
                       if (!matchingBt.originalQuantity) {
                         matchingBt.originalQuantity = matchingBt.quantity;
                       }
-                      if (prep.properties.backTrace.length === 1 && dish.properties.status === 'del') {
+                     if (prep.properties.backTrace.length === 1 && dish.properties.status === 'del') {
                         // whole dish was deleted and prep only in this dish - delete prep
                         console.log('prep to be deleted');
                         prep.properties.status = 'del';
@@ -1427,7 +1464,10 @@ angular.module('myApp')
                         matchingBt.quantity = 0;
                         prepsToUpdate.push(prep);
                       } else {
-                        if (dish.properties.status === 'del') {
+                       if (!prep.properties.status) {  // leave 'new' status unchanged
+                         prep.properties.status = 'upd';
+                       }
+                       if (dish.properties.status === 'del') {
                           // whole dish deleted, but prep belongs to other dishes too
                           prep.properties.quantity -= matchingBt.quantity;
                           matchingBt.quantity = 0;
@@ -1501,6 +1541,9 @@ angular.module('myApp')
                           quantity: dishBt.quantity *
                             comp.quantity / dishCatalogItem.properties.productionQuantity
                         });
+                      }
+                      if (!prep.properties.status) {  // leave 'new' status unchanged
+                        prep.properties.status = 'upd';
                       }
                       if (prep.properties.select !== 'delay') {
                         prep.properties.select = 'mix';
@@ -1667,6 +1710,9 @@ angular.module('myApp')
                              prep.properties.quantity += addedPrepQuantity;
                              console.log('prep quantity set to '+prep.properties.quantity);
                            }
+                           if (!prep.properties.status) {  // leave 'new' status unchanged
+                             prep.properties.status = 'upd';
+                           }
                          }
                          prepsToUpdate.push(prep);
                        }
@@ -1789,6 +1835,36 @@ angular.module('myApp')
                 });
             })
         });
+    };
+
+ // find any items whose backtrace points to non existing items
+    this.checkConsistency = function() {
+      var that = this;
+      console.log('starting consistency check');
+      var bug = 0;
+      this.workOrder.forEach(function(woi) {
+        if (woi.properties.domain > 0) {
+          woi.properties.backTrace.forEach(function(bt) {
+            var rec = that.workOrder.filter(function (woi2) {
+              return woi2.id === bt.id;
+            });
+            if (rec.length === 0) {
+              console.log('domain '+woi.properties.domain+
+                ', item '+woi.properties.productName+' points to non existent item '+
+                ' id '+bt.id);
+              console.log(bt);
+              console.log(woi);
+              bug++;
+            }
+          });
+        }
+      });
+      if (bug) {
+        console.log(bug+' inconsistencies found!');
+        alert ('נמצאו '+bug+' פריטים עם הצבעות לא תקינות. ראה קונסול');
+      } else {
+        console.log('consistency check OK');
+      }
     };
 
     // compares current wo to base wo to see if updates are done correctly

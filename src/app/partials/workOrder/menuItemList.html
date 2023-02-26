@@ -64,8 +64,8 @@
     <tbody>
     <tr ng-repeat="woItem in cat.list track by woItem.id"
         ng-show="workOrderModel.isShowChanges || !(woItem.properties.status==='del')"
-        ng-class="workOrderModel.isShowChanges ? (woItem.properties.status==='new' ? 'bg-success' :
-                woItem.properties.status==='upd' ? 'bg-warning' :
+        ng-class="workOrderModel.isShowChanges ? (woItem.properties.status==='new' ? 'new' :
+                woItem.properties.status==='upd' ? 'changed' :
                 woItem.properties.status==='del' ? 'bg-active cancel' : null) : null">
       <td style="width: 30%">
         {{woItem.properties.productName}}
@@ -75,7 +75,7 @@
       </td>
       <td style="width: 7%">
         <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity"
-              class="prevQuant">
+              class="cancel">
           {{woItem.properties.originalQuantity}}
         </span>
         <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity">&nbsp;</span>
@@ -87,7 +87,7 @@
         (workOrderModel.isShowChanges || !(order.status==='del'))"
           ng-class="order.quantity && order.orderStatus===2?'bg-warning':null"> <!-- mark events not in final status -->
         <span ng-show="workOrderModel.isShowChanges && order.originalQuantity"
-              class="prevQuant">
+              class="cancel">
           {{order.originalQuantity}}
         </span>
         <span ng-show="workOrderModel.isShowChanges && order.originalQuantity">&nbsp;</span>

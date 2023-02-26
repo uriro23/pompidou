@@ -57,7 +57,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="woItem in cat.serviceList track by woItem.id"
-        ng-class="woItem.properties.isInStock?'bg-warning':'null'"
+        ng-class="woItem.properties.isInStock?'inStock':'null'"
         ng-show="workOrderModel.isShowItem(woItem)">
       <td style="width: 30%">{{woItem.properties.productName}}</td>
       <td style="width: 5%"
@@ -134,7 +134,7 @@
   <table ng-show="cat.isShow" class="table table-hover" style="width:90%">
     <tbody>
     <tr ng-repeat="woItem in cat.list track by woItem.id"
-        ng-class="woItem.properties.isInStock?'bg-warning':'null'"
+        ng-class="woItem.properties.isInStock?'inStock':'null'"
         ng-show="workOrderModel.isShowItem(woItem)">
       <td style="width: 30%">{{woItem.properties.productName}}</td>
       <td style="width: 5%"

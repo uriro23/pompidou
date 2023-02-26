@@ -16,9 +16,15 @@
   <tbody>
   <tr ng-repeat="woItem in workOrderModel.woOrders track by woItem.id"
       ng-show="workOrderModel.isShowChanges || !(woItem.properties.status==='del')"
-      ng-class="woItem.properties.status==='new' ? 'myNewEvent' :
-                woItem.properties.status==='upd' ? 'myChanged' :
-                woItem.properties.status==='del' ? 'cancel' : null">
+      ng-class="workOrderModel.isShowChanges ? (
+                woItem.properties.status==='new' ? 'new' :
+                woItem.properties.status==='upd' ? 'changed' :
+                woItem.properties.status==='del' ? 'cancel' : null
+                ) : (
+                woItem.view.orderStatus.id===2?'bg-warning':
+                (woItem.view.orderStatus.id>=3 && woItem.view.orderStatus.id<=5)?'bg-success':
+                woItem.view.orderStatus.id===6?'active cancel':null
+                )">
      <td>
       <a ng-href="#/editOrderView/{{woItem.properties.order.id}}/0">{{woItem.properties.order.number}}</a>
     </td>
