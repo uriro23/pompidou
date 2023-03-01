@@ -610,6 +610,7 @@ angular.module('myApp')
           }
         } else {
           api.unset(order,'closingDate');
+          api.unset(order,'color');
        }
         if (order.view.orderStatus.id >= 1 && order.view.orderStatus.id <= 5 && // new status
             !order.properties.bidDate) {

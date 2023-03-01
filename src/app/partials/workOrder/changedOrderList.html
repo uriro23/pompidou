@@ -81,7 +81,7 @@
   </div>
 </div>
 <button class="btn btn-primary"
-        ng-show="workOrderModel.isWoMajorChange" ng-disabled="false"
+        ng-show="workOrderModel.isWoChanged && workOrderModel.isWoMajorChange"
         ng-click="workOrderModel.updateWorkOrder()">
   עדכן פקודה קיימת
 </button>
@@ -95,7 +95,9 @@
 <div ng-hide="workOrderModel.changedOrders.length">
   <h4>--- אין שינויים ---</h4>
   <p></p>
-  <div>
+</div>
+  <div ng-hide="workOrderModel.isWoChanged">
+    <div>
     <span>השווה לפקודת עבודה</span>
     <select ng-model="workOrderModel.baseWoIndex" ng-change="workOrderModel.compareWorkOrder()"
             ng-options="woIndex.properties.label for woIndex in workOrderModel.baseWoIndexes">                 <option value=""></option>
@@ -136,3 +138,4 @@
 --- אין הבדלים ---
   </h5>
   </div>
+

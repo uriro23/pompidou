@@ -128,7 +128,7 @@ angular.module('myApp')
             id: order.id,
             domain: 0,
             quantity: item.quantity,
-            originalQuantity: 0,
+            originalQuantity: -1,
             status: order.properties.status
           });
         }
@@ -151,6 +151,7 @@ angular.module('myApp')
         workItem.properties.productName = item.productName;
         workItem.properties.personalAdjustment = item.personalAdjustment;
          workItem.properties.quantity = item.quantity;
+         workItem.properties.originalQuantity = -1;
         workItem.properties.category = item.category;
         workItem.properties.domain = 1;
         workItem.properties.measurementUnit = item.measurementUnit;
@@ -158,7 +159,7 @@ angular.module('myApp')
         workItem.properties.backTrace = [{
           id: order.id,
           domain: 0,
-          originalQuantity: 0,
+          originalQuantity: -1,
           quantity: item.quantity,
           status: order.properties.status
         }];
@@ -364,15 +365,16 @@ angular.module('myApp')
                 date: originalOrder.properties.order.eventDate,
                 day: that.dayName(originalOrder.properties.order.eventDate),
                 time: originalOrder.properties.order.eventTime,
-                totalOriginalQuantity: 0,
+                totalOriginalQuantity: -1,
                 totalQuantity: 0,
                 menuItems: [],
-                select: 'delay'
+                select: 'delay',
+                status: originalOrder.properties.status
               };
               currentPrep.view.menuItems.forEach(function(mu,ind) {
                 orderObj.menuItems[ind] = {
                   seq: ind,
-                  originalQuantity: 0,
+                  originalQuantity: -1,
                   quantity: 0
                 }
               });
@@ -989,7 +991,7 @@ angular.module('myApp')
                       that.isWoChanged = false;
                       that.isShowChanges = true;
                       that.setShowChanges();
-                      that.changedOrders = [];
+                 //     that.changedOrders = [];
                       that.isActiveTab = [false, true, false, false, false, false]; // show menu items tab
                        console.log('update workOrder completed');
                     });
@@ -1545,7 +1547,7 @@ angular.module('myApp')
                         prep.properties.backTrace.push({
                           id: dish.id,
                           domain: 1,
-                          originalQuantity: 0,
+                          originalQuantity: -1,
                           quantity: dishBt.quantity *
                             comp.quantity / dishCatalogItem.properties.productionQuantity
                         });
@@ -1589,7 +1591,7 @@ angular.module('myApp')
                         return mes.tId === prepCatalogItem.properties.measurementUnit;
                       })[0];
                       prep.properties.isInStock = prepCatalogItem.properties.isInStock;
-                      prep.properties.originalQuantity = 0;
+                      prep.properties.originalQuantity = -1;
                       prep.properties.quantity = dishBt.quantity *
                                      comp.quantity / dishCatalogItem.properties.productionQuantity;
                       prep.properties.quantityForToday = 0;
@@ -1599,7 +1601,8 @@ angular.module('myApp')
                         id: dish.id,
                         domain: 1,
                         quantity: dishBt.quantity *
-                                    comp.quantity / dishCatalogItem.properties.productionQuantity
+                                    comp.quantity / dishCatalogItem.properties.productionQuantity,
+                        originalQuantity: -1
                       }];
                       prep.properties.orders = [{
                         id: changedOrder.woItem.id,
@@ -1752,7 +1755,7 @@ angular.module('myApp')
                              prep.properties.backTrace.push({
                                id: dish.id,
                                domain: 1,
-                               originalQuantity: 0,
+                               originalQuantity: -1,
                                quantity: diffItem.newItem.quantity *
                                  dishComponent.quantity / dishCatalogItem.properties.productionQuantity
                              });
@@ -1791,7 +1794,7 @@ angular.module('myApp')
                              return mes.tId === prepCatalogItem.properties.measurementUnit;
                            })[0];
                            prep.properties.isInStock = prepCatalogItem.properties.isInStock;
-                           prep.properties.originalQuantity = 0;
+                           prep.properties.originalQuantity = -1;
                            prep.properties.quantity = diffItem.newItem.quantity *
                              dishComponent.quantity / dishCatalogItem.properties.productionQuantity;
                            prep.properties.quantityForToday = 0;
@@ -1800,7 +1803,7 @@ angular.module('myApp')
                            prep.properties.backTrace = [{
                              id: dish.id,
                              domain: 1,
-                             originalQuantity: 0,
+                             originalQuantity: -1,
                              quantity: diffItem.newItem.quantity *
                                dishComponent.quantity / dishCatalogItem.properties.productionQuantity
                            }];
@@ -2378,7 +2381,7 @@ angular.module('myApp')
        for (var i = 0; i < that.woOrders.length; i++) {  // initialize to all zero quantity
          woi.view.orderQuant[i] = {
            id: that.woOrders[i].id,
-           originalQuantity: 0,
+           originalQuantity: -1,
            quantity: 0,
            orderStatus: that.woOrders[i].view.orderStatus,
            status: that.woOrders[i].properties.status

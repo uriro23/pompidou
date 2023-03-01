@@ -42,7 +42,7 @@
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories track by cat.category.tId">
   <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
   <label>{{cat.category.label}}</label>
-  <table ng-show="cat.isShow" class="table table-hover" style="width:90%">
+  <table ng-show="cat.isShow" class="table" style="width:90%">
     <thead>
     <th>מנה</th>
     <th colspan="2">כמות</th>
@@ -74,11 +74,11 @@
         </div>
       </td>
       <td style="width: 7%">
-        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity"
+        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0"
               class="cancel">
           {{woItem.properties.originalQuantity}}
         </span>
-        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity">&nbsp;</span>
+        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0">&nbsp;</span>
         <span>{{woItem.properties.quantity}}</span>
       </td>
       <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
@@ -88,11 +88,11 @@
           ng-class="workOrderModel.isShowChanges && order.quantity ? (
           order.status==='new' ? 'new' : order.status==='upd' ? 'changed' : order.status==='del' ? 'cancel' : null
           ) : (order.quantity && order.orderStatus.id===2?'bg-warning':null)"> <!-- mark events not in final status -->
-        <span ng-show="workOrderModel.isShowChanges && order.originalQuantity"
+        <span ng-show="workOrderModel.isShowChanges && order.originalQuantity>0"
               class="cancel">
           {{order.originalQuantity}}
         </span>
-        <span ng-show="workOrderModel.isShowChanges && order.originalQuantity">&nbsp;</span>
+        <span ng-show="workOrderModel.isShowChanges && order.originalQuantity>0">&nbsp;</span>
         <span>
            {{order.quantity ? order.quantity : 0}}
          </span>

@@ -60,7 +60,7 @@
      </tr>
   </table>
   <div ng-show="workOrderModel.woIndex.properties.domainStatus[2] && workOrderModel.isOrderFilter">
-    <table class="table table-hover" style="width:90%">
+    <table class="table" style="width:90%">
       <thead>
       <tr>
         <th></th>
@@ -117,7 +117,7 @@
   <label>{{cat.category.label}}</label>
   <span>&nbsp;&nbsp;פירוט</span>
   <input type="checkbox" ng-model="cat.isShowDetails" ng-change="workOrderModel.setCategoryDetail(cat)">
-  <table ng-show="cat.isShow" class="table table-hover" style="width:100%">
+  <table ng-show="cat.isShow" class="table" style="width:100%">
     <tbody>
     <tr ng-repeat="woItem in cat.list  track by woItem.id"
         ng-show="workOrderModel.isShowItem(woItem) &&
@@ -129,10 +129,10 @@
                  woItem.properties.isInStock ? 'inStock' : null">
     <td style="width: 15%">{{woItem.properties.productName}}</td>
       <td ng-show="!workOrderModel.isShowTodayOnly[2] && workOrderModel.isShowDone[2]" style="width: 10%">
-        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity" class="cancel">
+        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0" class="cancel">
           {{woItem.properties.originalQuantity | number:2}}
         </span>
-        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity">&nbsp;</span>
+        <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0">&nbsp;</span>
         <span>{{woItem.properties.quantity | number:2}}</span>
       </td>
       <td ng-show="!workOrderModel.isShowTodayOnly[2] && !workOrderModel.isShowDone[2]" style="width: 5%">
@@ -175,7 +175,7 @@
         <label class="bg-warning" ng-show="woItem.properties.warning">ההכנה שונתה</label>
       </td>
       <td colspan="4" style="width: 58%" ng-show="woItem.isShowDetails">
-         <table class="table table-hover" border="1" style="width:100%">
+         <table class="table" border="1" style="width:100%">
           <thead>
           <th style="width: 15%">לקוח</th>
           <th style="width: 10%">יום</th>
@@ -195,11 +195,13 @@
           <tbody>
           <tr ng-repeat="order in woItem.view.orders track by order.id"
               ng-hide="(workOrderModel.isShowTodayOnly[2] && order.select!=='today') ||
-                       (!workOrderModel.isShowDone[2] && order.select==='done')"
+                       (!workOrderModel.isShowDone[2] && order.select==='done') ||
+                        (!workOrderModel.isShowChanges && order.status==='del')"
           ng-class="workOrderModel.isShowChanges ? (
-              order.totalOriginalQuantity && order.select==='today' ? 'alert' : null
+              order.totalOriginalQuantity>0 && order.select==='today' ? 'alert' :
+              order.status === 'new' ? 'new' :
+              order.status === 'del' ? 'cancel' : null
              ) : null">
-            <!-- todo: dont show deleted if not showing changes -->
             <td>
               <span>{{order.customer}}</span>
              </td>
@@ -209,17 +211,17 @@
              woItem.view.menuItems[menuItem.seq].quantityForToday===0) ||
                        (!workOrderModel.isShowDone[2] &&
              woItem.view.menuItems[menuItem.seq].quantityDone===woItem.view.menuItems[menuItem.seq].quantity)">
-               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity" class="cancel">
+               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0" class="cancel">
                  {{menuItem.originalQuantity | number:2}}
                </span>
-               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity">&nbsp;</span>
+               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0">&nbsp;</span>
                <span>{{menuItem.quantity | number:2}}</span>
             </td>
             <td>
-               <span ng-show="workOrderModel.isShowChanges && order.totalOriginalQuantity" class="cancel">
+               <span ng-show="workOrderModel.isShowChanges && order.totalOriginalQuantity>0" class="cancel">
                  {{order.totalOriginalQuantity | number:2}}
                </span>
-              <span ng-show="workOrderModel.isShowChanges && order.totalOriginalQuantity">&nbsp;</span>
+              <span ng-show="workOrderModel.isShowChanges && order.totalOriginalQuantity>0">&nbsp;</span>
               <span>{{order.totalQuantity | number:2}}</span>
             </td>
             <td ng-hide="workOrderModel.isShowTodayOnly[2]">
@@ -245,10 +247,10 @@
               ng-hide="(workOrderModel.isShowTodayOnly[2] && menuItem.quantityForToday===0) ||
                        (!workOrderModel.isShowDone[2] && menuItem.quantityDone===menuItem.quantity)">
           <span ng-show="!workOrderModel.isShowTodayOnly[2] && workOrderModel.isShowDone[2]">
-             <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity" class="cancel">
+             <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0" class="cancel">
                  {{menuItem.originalQuantity | number:2}}
                </span>
-               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity">&nbsp;</span>
+               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0">&nbsp;</span>
                <span>{{menuItem.quantity | number : 2}}</span>
           </span>
             <span ng-show="!workOrderModel.isShowTodayOnly[2] && !workOrderModel.isShowDone[2]">
@@ -260,10 +262,10 @@
           </td>
             <td ng-show="!workOrderModel.isShowTodayOnly[2] && workOrderModel.isShowDone[2]">
               <span>{{woItem.properties.quantity | number:2}}</span>
-              <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity" class="cancel">
+              <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0" class="cancel">
                  {{woItem.properties.originalQuantity | number:2}}
                </span>
-              <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity">&nbsp;</span>
+              <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0">&nbsp;</span>
             </td>
             <td ng-show="!workOrderModel.isShowTodayOnly[2] && !workOrderModel.isShowDone[2]">
               {{woItem.properties.quantity - woItem.properties.quantityDone | number:2}}
