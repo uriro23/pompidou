@@ -79,7 +79,9 @@
           {{woItem.properties.originalQuantity}}
         </span>
         <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0">&nbsp;</span>
-        <span>{{woItem.properties.quantity}}</span>
+        <span ng-hide="workOrderModel.isShowChanges && woItem.properties.status==='del'">
+          {{woItem.properties.quantity}}
+        </span>
       </td>
       <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
       <td ng-repeat="order in woItem.view.orderQuant track by $index"
@@ -93,7 +95,7 @@
           {{order.originalQuantity}}
         </span>
         <span ng-show="workOrderModel.isShowChanges && order.originalQuantity>0">&nbsp;</span>
-        <span>
+        <span ng-hide="workOrderModel.isShowChanges && order.status==='del'">
            {{order.quantity ? order.quantity : 0}}
          </span>
        </td>

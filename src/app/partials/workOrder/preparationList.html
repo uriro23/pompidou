@@ -133,7 +133,9 @@
           {{woItem.properties.originalQuantity | number:2}}
         </span>
         <span ng-show="workOrderModel.isShowChanges && woItem.properties.originalQuantity>0">&nbsp;</span>
-        <span>{{woItem.properties.quantity | number:2}}</span>
+        <span ng-hide="workOrderModel.isShowChanges && woItem.properties.status==='del'">
+          {{woItem.properties.quantity | number:2}}
+        </span>
       </td>
       <td ng-show="!workOrderModel.isShowTodayOnly[2] && !workOrderModel.isShowDone[2]" style="width: 5%">
         {{woItem.properties.quantity - woItem.properties.quantityDone | number:2}}
@@ -198,7 +200,8 @@
                        (!workOrderModel.isShowDone[2] && order.select==='done') ||
                         (!workOrderModel.isShowChanges && order.status==='del')"
           ng-class="workOrderModel.isShowChanges ? (
-              order.totalOriginalQuantity>0 && order.select==='today' ? 'alert' :
+              (order.select==='today' && order.totalOriginalQuantity>0) ||
+              (order.select==='done' && order.totalQuantity > order.totalOriginalQuantity)? 'alert' :
               order.status === 'new' ? 'new' :
               order.status === 'del' ? 'cancel' : null
              ) : null">
@@ -215,14 +218,18 @@
                  {{menuItem.originalQuantity | number:2}}
                </span>
                <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0">&nbsp;</span>
-               <span>{{menuItem.quantity | number:2}}</span>
+               <span ng-hide="workOrderModel.isShowChanges && order.status === 'del'">
+                 {{menuItem.quantity | number:2}}
+               </span>
             </td>
             <td>
                <span ng-show="workOrderModel.isShowChanges && order.totalOriginalQuantity>0" class="cancel">
                  {{order.totalOriginalQuantity | number:2}}
                </span>
               <span ng-show="workOrderModel.isShowChanges && order.totalOriginalQuantity>0">&nbsp;</span>
-              <span>{{order.totalQuantity | number:2}}</span>
+              <span ng-hide="workOrderModel.isShowChanges && order.status === 'del'">
+                {{order.totalQuantity | number:2}}
+              </span>
             </td>
             <td ng-hide="workOrderModel.isShowTodayOnly[2]">
               <input type="radio"

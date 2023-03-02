@@ -407,6 +407,10 @@ angular.module('myApp')
             if (ord.totalOriginalQuantity) {
               currentPrep.isAlert = true;
             }
+          } else if (ord.select === 'done') {
+            if (ord.totalQuantity > ord.totalOriginalQuantity) {
+              currentPrep.isAlert = true;
+            }
           }
         } else {
           console.log('cant find matching order in prep record of '+currentPrep.properties.productName);
