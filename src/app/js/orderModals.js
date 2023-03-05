@@ -375,7 +375,7 @@ angular.module('myApp')
     this.msg = "<p>שלום</p><p>מבקש הצעת מחיר עבור השכרת ציוד לאירוע כמפורט ברשימה להלן.</p>" +
       "<p><span>האירוע יתקיים בתאריך </span><span></span>" + order.properties.eventDate.toLocaleDateString('en-IL') +
       "</span><span>&nbsp;</span><span>במיקום</span><span>&nbsp</span><span>" +
-      (order.properties.taskData.address?order.properties.taskData.address:"לאידוע") + "</span></p>" +
+      (order.properties.taskData.address?order.properties.taskData.address:"לא ידוע") + "</span></p>" +
       "<p>בברכה</p><p>יובל</p><p>טל' 054-7514061</p>";
     this.table = renderEquipTable(order);
 

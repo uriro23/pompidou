@@ -262,6 +262,36 @@ angular.module('myApp')
       return (url);
     };
 
+    this.downloadEquip = function (bid) {
+      if (this.order.view.customer) { // skip on premature calls to function
+        var serviceUrl = 'https://v2.convertapi.com/web/to/pdf?Secret=' + secrets.prod.web2pdfSecret;
+        var baseUrl = $location.absUrl();
+        baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim isFromNew flag
+        baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim orderId
+        baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // trim state name ('editOrder')
+
+        var eventDateStr = this.order.properties.eventDate ?
+          (this.order.properties.eventDate.getDate() + '-' +
+            (this.order.properties.eventDate.getMonth() + 1) + '-' +
+            this.order.properties.eventDate.getFullYear()) : "";
+        var sourceUrl = baseUrl + '/equip/' + bid.properties.uuid;
+        var encodedSource = encodeURIComponent(sourceUrl);
+        var params = "download=attachment&ConversionDelay=4&" +
+          "MarginBottom=5&MarginTop=5&MarginLeft=5&MarginRight=5&PageSize=a4" +
+          "&FileName=" +
+          encodeURIComponent("השכרת ציוד " +
+            bid.properties.customer.firstName + " " +
+            bid.properties.customer.lastName + " " +
+            (bid.properties.eventDateStr ?
+              (bid.properties.eventDateStr.replace('/','-').replace('/','-')) :
+              "") + " " + bid.properties.desc);
+        var payload = "&url=" + encodedSource + "&" + params;
+        var url = serviceUrl + payload;
+        return (url);
+      }
+    };
+
+
 
     this.sendMail = function () {
       var that = this;
@@ -392,9 +422,11 @@ angular.module('myApp')
 
       sendFeedbackMailModal.result.then(function () {
       });
-
-
     };
+
+
+
+
 
     this.createAccountingOrder = function() {
       accountingService.documentTypes(false);
@@ -403,4 +435,17 @@ angular.module('myApp')
     };
 
 
-  });
+  })
+
+.controller('EquipmentListCtrl', function (api, $state, $rootScope, bid) {
+    $rootScope.menuStatus = 'hide';
+    $rootScope.title = 'השכרת ציוד';
+
+    this.bid = bid;
+    this.equipList =
+      bid.properties.order.quotes[bid.properties.order.activeQuote].items.filter(function (item) {
+         return item.category.type === 5 && item.specialType === 2;  // equip rentals
+    });
+
+    });
+

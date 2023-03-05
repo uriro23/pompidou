@@ -997,6 +997,18 @@ config(function($stateProvider, $urlRouterProvider) {
       return configPromise;
     }]
   }
+})
+.state ('equipmentList', {
+  url: '/equip/:uuid',
+  templateUrl: 'app/partials/equipmentList.html',
+  controller: 'EquipmentListCtrl as equipmentListModel',
+  resolve: {
+    bid: ['$stateParams', 'api', function ($stateParams, api) {
+      return api.queryBidByUuid ($stateParams.uuid).then (function (bids) {
+        return bids[0];
+      });
+    }]
+  }
 });
 });
 

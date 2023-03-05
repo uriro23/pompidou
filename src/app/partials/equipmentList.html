@@ -1,0 +1,34 @@
+<div class="equip-list-frame">
+<h1>
+  <span>רשימת השכרת ציוד לאירוע של </span>
+  <span>{{equipmentListModel.bid.properties.customer.firstName+' '+
+          equipmentListModel.bid.properties.customer.lastName}}</span>
+  <span>בתאריך </span>
+  <span>{{equipmentListModel.bid.properties.eventDateStr}}</span>
+</h1>
+  <div style="font-weight: bold">
+<p>שלום</p><p>מבקש הצעת מחיר עבור השכרת ציוד לאירוע כמפורט ברשימה להלן.</p>
+<p>
+  <span>האירוע יתקיים בתאריך</span>
+  <span>{{equipmentListModel.bid.properties.eventDateStr}}</span>
+  <span>במיקום </span>
+  <span>{{equipmentListModel.bid.properties.order.taskData.address?
+    equipmentListModel.bid.properties.order.taskData.address:"לא ידוע"}}</span>
+</p>
+  <p></p>
+<p>בברכה</p><p>יובל</p><p>טל' 054-7514061</p><p></p>
+  </div>
+  <p></p>
+  <table class="table" border="1" style="width: 60%">
+  <thead>
+  <th style=width:80%>פריט</th>
+  <th style="width:20%">כמות</th>
+  </thead>
+  <tbody>
+  <tr ng-repeat="item in equipmentListModel.equipList track by $index">
+    <td>{{item.productDescription}}</td>
+    <td>{{item.quantity}}</td>
+  </tr>
+  </tbody>
+</table>
+</div>
