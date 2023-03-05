@@ -288,29 +288,29 @@ angular.module('myApp')
          currentPrep.view.menuItems = [];
           var remarkCnt = 0;
           currentPrep.properties.backTrace.forEach(function (currentBackTrace) {
-            var currentMenuItem = {};
-            currentMenuItem.id = currentBackTrace.id;
-            currentMenuItem.originalQuantity = currentBackTrace.originalQuantity;
-            currentMenuItem.quantity = currentBackTrace.quantity;
-            currentMenuItem.quantityForToday = 0;
-            currentMenuItem.quantityDone = 0;
-            var originalMenuItem = that.workOrder.filter(function (wo) {
+            var currentDish = {};
+            currentDish.id = currentBackTrace.id;
+            currentDish.originalQuantity = currentBackTrace.originalQuantity;
+            currentDish.quantity = currentBackTrace.quantity;
+            currentDish.quantityForToday = 0;
+            currentDish.quantityDone = 0;
+            var originalDish = that.workOrder.filter(function (wo) {
               return wo.id === currentBackTrace.id;
             })[0];
-            if (!originalMenuItem) {
-              console.log('originalMenuItem missing for backTrace of '+currentPrep.properties.productName);
+            if (!originalDish) {
+              console.log('originalDish missing for backTrace of '+currentPrep.properties.productName);
               console.log(currentPrep);
               console.log(currentBackTrace);
               return;
              }
-              currentMenuItem.status = originalMenuItem.properties.status;
-              currentMenuItem.productName = originalMenuItem.properties.productName;
-              if (originalMenuItem.properties.personalAdjustment) {
-                currentMenuItem.isRemark = true;
-                currentMenuItem.remarkNo = ++remarkCnt;
-                currentMenuItem.remarkText = originalMenuItem.properties.personalAdjustment;
+              currentDish.status = originalDish.properties.status;
+              currentDish.productName = originalDish.properties.productName;
+              if (originalDish.properties.personalAdjustment) {
+                currentDish.isRemark = true;
+                currentDish.remarkNo = ++remarkCnt;
+                currentDish.remarkText = originalDish.properties.personalAdjustment;
               }
-            currentPrep.view.menuItems.push(currentMenuItem);
+            currentPrep.view.menuItems.push(currentDish);
           });
     };
 
@@ -321,36 +321,36 @@ angular.module('myApp')
       currentPrep.isAlert = false; // to indicate changes in orders marked for today
        currentPrep.view.orders = [];
         currentPrep.properties.backTrace.forEach(function (prepBackTrace) {
-          var originalMenuItem = that.workOrder.filter(function(mi) {
+          var originalDish = that.workOrder.filter(function(mi) {
             return mi.id === prepBackTrace.id;
           })[0];
-          if (!originalMenuItem) {
-            console.log('originalMenuItem missing for backTrace of '+currentPrep.properties.productName);
+          if (!originalDish) {
+            console.log('originalDish missing for backTrace of '+currentPrep.properties.productName);
             console.log(currentPrep);
             console.log(prepBackTrace);
             return;
           }
           var viewMenuItemIndex;
           currentPrep.view.menuItems.forEach(function(mi,ind) {
-            if (mi.id === originalMenuItem.id) {
+            if (mi.id === originalDish.id) {
               viewMenuItemIndex = ind;
             }
           });
-          var menuItemCatalog = that.catalog.filter(function(cat) {
-            return cat.id === originalMenuItem.properties.catalogId;
+          var dishCatalog = that.catalog.filter(function(cat) {
+            return cat.id === originalDish.properties.catalogId;
           })[0];
           var prepCatalog = that.catalog.filter(function(cat) {
             return cat.id === currentPrep.properties.catalogId;
           })[0];
-          var dishComponent = menuItemCatalog.properties.components.filter(function(comp) {
+          var dishComponent = dishCatalog.properties.components.filter(function(comp) {
             return comp.id === prepCatalog.id;
           })[0];
           if (!dishComponent) {
             alert('ההכנה '+prepCatalog.properties.productName+' אינה בין רכיבי המנה '+
-                  menuItemCatalog.properties.productName+'. חשב מחדש את ההכנות');
+                  dishCatalog.properties.productName+'. חשב מחדש את ההכנות');
             return;
           }
-           originalMenuItem.properties.backTrace.forEach(function(miBackTrace) {
+           originalDish.properties.backTrace.forEach(function(miBackTrace) {
             var temp = currentPrep.view.orders.filter(function(ord) {
               return ord.id === miBackTrace.id;
             });
@@ -386,14 +386,14 @@ angular.module('myApp')
             // todo: set status of orders in prep
              var prepQuantity = miBackTrace.quantity;
              currentOrder.menuItems[viewMenuItemIndex].quantity +=
-               prepQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
+               prepQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              currentOrder.totalQuantity +=
-               prepQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
+               prepQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              var prepOriginalQuantity = miBackTrace.originalQuantity;
              currentOrder.menuItems[viewMenuItemIndex].originalQuantity +=
-               prepOriginalQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
+               prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              currentOrder.totalOriginalQuantity +=
-               prepOriginalQuantity * dishComponent.quantity / menuItemCatalog.properties.productionQuantity;
+               prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
            });
         });
         // update view select value based on prep DB item
@@ -424,13 +424,13 @@ angular.module('myApp')
       currentPrep.view.orders = currentPrep.view.orders.filter(function(ord) {
         return ord.totalQuantity > 0 || ord.totalOriginalQuantity > 0;
       });
-      // update quantityForToday and quantityDone of menuItem array based on order's select values
-      currentPrep.view.menuItems.forEach(function(menuItem, ind) {
+      // update quantityForToday and quantityDone of dish array based on order's select values
+      currentPrep.view.menuItems.forEach(function(dish, ind) {
         currentPrep.view.orders.forEach(function(ord) {
           if (ord.select === 'today') {
-            menuItem.quantityForToday += ord.menuItems[ind].quantity;
+            dish.quantityForToday += ord.menuItems[ind].quantity;
           } else if (ord.select === 'done') {
-            menuItem.quantityDone += ord.menuItems[ind].quantity;
+            dish.quantityDone += ord.menuItems[ind].quantity;
           }
         });
       });
@@ -497,17 +497,17 @@ angular.module('myApp')
                   prepOrder.totalQuantity * component.quantity / prepCatalogItem.properties.productionQuantity;
               });
             }
-          } else if (itemBackTrace.domain === 1) { // product item directly under menuItem
-            var originalMenuItem = that.workOrder.filter(function (mi) {
+          } else if (itemBackTrace.domain === 1) { // product item directly under dish
+            var originalDish = that.workOrder.filter(function (mi) {
               return mi.id === itemBackTrace.id;
             })[0];
-            if (!originalMenuItem) {
-              console.log('cant find originalMenuItem of product backTrace ' + currentItem.properties.productName);
+            if (!originalDish) {
+              console.log('cant find originalDish of product backTrace ' + currentItem.properties.productName);
               console.log(currentItem);
               console.log(itemBackTrace);
             }
             var miCatalogItem = that.catalog.filter(function (cat) {
-              return cat.id === originalMenuItem.properties.catalogId;
+              return cat.id === originalDish.properties.catalogId;
             })[0];
             component = miCatalogItem.properties.components.filter(function (comp) {
               return comp.id === itemCatalogItem.id;
@@ -517,7 +517,7 @@ angular.module('myApp')
                           ' הוסר ממרכיביה של המנה '+miCatalogItem.properties.productName+
                           '. בצע חישוב מחדש של מצרכים');
             } else {
-              originalMenuItem.properties.backTrace.forEach(function (bt) {
+              originalDish.properties.backTrace.forEach(function (bt) {
                 var temp = currentItem.view.orders.filter(function (itemOrder) {
                   return itemOrder.id === bt.id && itemOrder.select === 'unknown';
                 });
@@ -642,7 +642,7 @@ angular.module('myApp')
       }
     };
 
-    // sum quantity of all orders marked for today or done and of each menuItem they include
+    // sum quantity of all orders marked for today or done and of each dish they include
    this.computeSelectQuantities = function (woItem) {
       var quantToday = 0;
       var quantDone = 0;
@@ -1340,14 +1340,12 @@ angular.module('myApp')
     };
 
     this.updatePreps = function() {
-      console.log('starting updatePreps');
       var that = this;
       var prepsToCreate = [];
       var prepsToUpdate = [];
       var prepsToDelete = [];
       that.changedOrders.forEach(function(changedOrder) {
         if (changedOrder.action === 'past') {
-          console.log('deleting/adjusting preps for past order '+changedOrder.woItem.properties.order.number);
           // delete/adjust all preps of dishes for this order
           that.workOrder.forEach(function (dish) {
             if (dish.properties.domain === 1) {
@@ -1358,7 +1356,6 @@ angular.module('myApp')
               if (dish.properties.backTrace.concat(dish.deletedBackTrace).filter(function(bt) {
                 return bt.id === changedOrder.woItem.id;
                     }).length > 0) { // found a dish which is included in current order
-                console.log('found dish '+dish.properties.productName+' in order');
                 // now find all preps whose backTrace points to this dish
                 that.workOrder.forEach(function(prep) {
                   if (prep.properties.domain === 2) {
@@ -1382,10 +1379,8 @@ angular.module('myApp')
                           dish.properties.productName);
                         return;
                       }
-                      console.log('found existing prep ' + prep.properties.productName + ' for dish');
                       if (prep.properties.backTrace.length === 1 && dish.isToDelete) {
                         // whole dish was deleted and prep only in this dish - delete prep
-                        console.log('prep to be deleted');
                         prepsToDelete.push(prep);
                         prep.isToDelete = true;
                       } else {
@@ -1393,7 +1388,6 @@ angular.module('myApp')
                           // whole dish deleted, but prep belongs to other dishes too
                           prep.properties.quantity -= matchingBt.quantity;
                           prep.properties.backTrace.splice(ind1, 1);
-                          console.log('dish deleted. Adjust prep quantity to ' + prep.properties.quantity);
                         } else {
                           // dish appears in other orders too - dish's quantity was adjusted
                           var oldQuant = matchingBt.quantity;
@@ -1401,7 +1395,6 @@ angular.module('myApp')
                             dish.properties.quantity * dishComponent.quantity /
                             dishCatalogItem.properties.productionQuantity;
                           prep.properties.quantity -= (oldQuant - matchingBt.quantity);
-                          console.log('adjust prep quantity to ' + prep.properties.quantity);
                         }
                         // delete order's entry in prep
                         prep.properties.orders = prep.properties.orders.filter(function (ord) {
@@ -1429,7 +1422,6 @@ angular.module('myApp')
             }
           });
         } else if (changedOrder.action === 'delete' || changedOrder.action === 'recalc') {
-          console.log('deleting/adjusting preps for deleted/recalced order '+changedOrder.woItem.properties.order.number);
           // delete/adjust all preps of dishes for this order
           that.workOrder.forEach(function (dish) {
             if (dish.properties.domain === 1) {
@@ -1439,7 +1431,6 @@ angular.module('myApp')
               if (dish.properties.backTrace.filter(function(bt) {
                 return bt.id === changedOrder.woItem.id;
               }).length > 0) { // found a dish which is included in current order
-                console.log('found dish '+dish.properties.productName+' in order');
                 // now find all preps whose backTrace points to this dish
                 that.workOrder.forEach(function(prep) {
                   if (prep.properties.domain === 2) {
@@ -1463,7 +1454,6 @@ angular.module('myApp')
                           dish.properties.productName);
                         return;
                       }
-                      console.log('found existing prep ' + prep.properties.productName + ' for dish');
                       if (!prep.properties.originalQuantity) {
                         prep.properties.originalQuantity = prep.properties.quantity;
                       }
@@ -1472,7 +1462,6 @@ angular.module('myApp')
                       }
                      if (prep.properties.backTrace.length === 1 && dish.properties.status === 'del') {
                         // whole dish was deleted and prep only in this dish - delete prep
-                        console.log('prep to be deleted');
                         prep.properties.status = 'del';
                         prep.properties.quantity = 0;
                         matchingBt.quantity = 0;
@@ -1485,7 +1474,6 @@ angular.module('myApp')
                           // whole dish deleted, but prep belongs to other dishes too
                           prep.properties.quantity -= matchingBt.quantity;
                           matchingBt.quantity = 0;
-                          console.log('dish deleted. Adjust prep quantity to ' + prep.properties.quantity);
                         } else {
                           // dish appears in other orders too - dish's quantity was adjusted
                           var oldQuant = matchingBt.quantity;
@@ -1493,7 +1481,6 @@ angular.module('myApp')
                             dish.properties.quantity * dishComponent.quantity /
                             dishCatalogItem.properties.productionQuantity;
                           prep.properties.quantity -= (oldQuant - matchingBt.quantity);
-                          console.log('adjust prep quantity to ' + prep.properties.quantity);
                         }
                       prepsToUpdate.push(prep);
                       }
@@ -1506,11 +1493,9 @@ angular.module('myApp')
         }
         if ((changedOrder.action === 'new' && changedOrder.isIncludeInWo) ||
              changedOrder.action === 'recalc') {
-          console.log('creating preps for order '+changedOrder.woItem.properties.order.number);
           // add / adjust all preps of dishes for this order
           that.workOrder.forEach(function (dish) {
             if (dish.properties.domain === 1) {
-              console.log('visiting dish '+dish.properties.productName);
               var dishCatalogItem = catalog.filter(function(cat) {
                 return cat.id === dish.properties.catalogId;
               })[0];
@@ -1524,14 +1509,10 @@ angular.module('myApp')
                     var tempCat = catalog.filter(function(cat) {
                       return cat.id === comp.id
                     })[0];
-                    console.log('looking at component '+tempCat.properties.productName);
-                    console.log(tempCat);
-                    console.log(comp);
                     var prep = that.workOrder.filter(function (woi) {
                       return woi.properties.catalogId === comp.id;
                     })[0];
                     if (prep) { // prep already in workOrder - adjust quantity
-                     console.log('revisiting prep '+prep.properties.productName);
                      if (!prep.properties.originalQuantity) {
                        prep.properties.originalQuantity = prep.properties.quantity;
                      }
@@ -1581,7 +1562,6 @@ angular.module('myApp')
                       var prepCatalogItem = catalog.filter(function (cat) {
                         return cat.id === comp.id;
                       })[0];
-                      console.log('creating prep '+prepCatalogItem.properties.productName);
                       prep = api.initWorkOrder();
                       prep.isNewItem = true;
                       prep.properties.woId = woId;
@@ -1624,11 +1604,9 @@ angular.module('myApp')
         }
         if (changedOrder.action === 'itemChange') {
           // handle preps of specific dishes in order
-          console.log('changing specific items for order '+changedOrder.woItem.properties.order.number);
           changedOrder.items.forEach(function(diffItem) {
                var dish = diffItem.matchDish;
                if (dish) {  // just make sure no catastrophy occured while creating dish
-                 console.log('doing '+diffItem.action+' for dish '+dish.properties.productName);
                  // if dish was newly created, matchDish points to a version without id (before save)
                  // we now have to find its saved version
                  if (!dish.id) {
@@ -1638,14 +1616,13 @@ angular.module('myApp')
                        woi.properties.personalAdjustment === diffItem.matchDish.properties.personalAdjustment;
                    })[0];
                    if (!dish) {
-                     alert('תקלה. לא נמצאה מנה תואמת להכנה. ראה קונסול.')
                      console.log('didnt find saved dish');
                      console.log(diffItem.matchDish);
                      console.log(that.workOrder);
+                     alert('תקלה. לא נמצאה מנה תואמת להכנה. ראה קונסול.')
                      return;
                    }
                  }
-                 console.log('looking at dish '+dish.properties.productName);
                  var dishCatalogItem = catalog.filter(function (cat) {
                    return cat.id === dish.properties.catalogId;
                  })[0];
@@ -1678,7 +1655,6 @@ angular.module('myApp')
                          }
                        });
                        if (prepBt) {
-                         console.log('found prep '+prep.properties.productName+' for dish');
                          var dishComponent = dishCatalogItem.properties.components.filter(function (comp) {
                            return comp.id === prep.properties.catalogId;
                          })[0];
@@ -1697,13 +1673,11 @@ angular.module('myApp')
                            if (dish.properties.status === 'del' &&
                                prep.properties.backTrace.length === 1) {
                              prep.properties.status = 'del';
-                             console.log('prep to be deleted');
                            } else if (dish.properties.status === 'del') {
                              prep.properties.quantity -= prepBt.quantity;
                              if (!prep.properties.status) {  // leave 'new' status unchanged
                                prep.properties.status = 'upd';
                              }
-                             console.log('dish deleted, prep quantity set to '+prep.properties.quantity);
                            } else {
                              // dish's quantity was adjusted
                              var oldQuant = prepBt.quantity;
@@ -1714,7 +1688,6 @@ angular.module('myApp')
                              if (!prep.properties.status) {  // leave 'new' status unchanged
                                prep.properties.status = 'upd';
                              }
-                             console.log('prep quantity set to '+prep.properties.quantity);
                            }
                          } else { // action === 'update'
                            var addedDishQuantity = diffItem.newItem.quantity - diffItem.oldItem.quantity;
@@ -1723,7 +1696,6 @@ angular.module('myApp')
                                dishCatalogItem.properties.productionQuantity;
                              prepBt.quantity += addedPrepQuantity;
                              prep.properties.quantity += addedPrepQuantity;
-                             console.log('prep quantity set to '+prep.properties.quantity);
                            }
                            if (!prep.properties.status) {  // leave 'new' status unchanged
                              prep.properties.status = 'upd';
@@ -1740,7 +1712,6 @@ angular.module('myApp')
                            return woi.properties.catalogId === dishComponent.id;
                          })[0];
                          if (prep) {  // prep already exists, just update quantity
-                           console.log('prep '+prep.properties.productName+' already exists');
                            if (!prep.properties.originalQuantity) {
                              prep.properties.originalQuantity = prep.properties.quantity;
                            }
@@ -1778,13 +1749,11 @@ angular.module('myApp')
                                select: 'delay'
                              });
                            }
-                           console.log('prep quantity set to '+prep.properties.quantity);
                            prepsToUpdate.push(prep);
                          } else {  // new prep
                            var prepCatalogItem = catalog.filter(function (cat) {
                              return cat.id === dishComponent.id;
                            })[0];
-                           console.log('creating prep '+prepCatalogItem.properties.productName);
                            prep = api.initWorkOrder();
                            prep.isNewItem = true;
                            prep.properties.woId = woId;
@@ -1816,8 +1785,6 @@ angular.module('myApp')
                              select: 'delay'
                            }];
                            prep.properties.status = 'new';
-                           console.log('new prep:');
-                           console.log(prep);
                            that.workOrder.push(prep);
                            prepsToCreate.push(prep);
                          }
