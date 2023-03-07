@@ -159,7 +159,7 @@
             ng-repeat="compDomain in catalogItemModel.compDomains track by compDomain.id">
           <h4>{{compDomain.label}}</h4>
           <span ng-hide="catalogItemModel.item.properties.domain === 1 && compDomain.id === 3">
-            <!-- disable adding shoppings directly under menuItems -->
+            <!-- disable adding shoppings directly under dishes -->
           <span>הוסף:</span>&nbsp;
            <select ng-model="compDomain.currentCategory"
                     ng-change="catalogItemModel.setCompCategory(compDomain)"

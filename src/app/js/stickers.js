@@ -30,7 +30,7 @@ angular.module('myApp')
       ]
     }
 
-    function splitMenuItemsByCategory  (orders) {
+    function splitDishesByCategory  (orders) {
       orders.forEach(function (order) {
         order.order.quotes[order.order.activeQuote].items.forEach(function (item) {
           var catInd;
@@ -193,7 +193,7 @@ angular.module('myApp')
 
     ordCategories = [];
 
-    splitMenuItemsByCategory(woOrders);
+    splitDishesByCategory(woOrders);
     ordCategories = ordCategories.filter(function(cat) {
       return cat.category.type < 3;  // only food items
     });

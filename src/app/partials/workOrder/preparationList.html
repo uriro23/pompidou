@@ -181,12 +181,12 @@
           <thead>
           <th style="width: 15%">לקוח</th>
           <th style="width: 10%">יום</th>
-          <th ng-repeat="menuItem in woItem.view.menuItems track by menuItem.id"
-              ng-hide="(workOrderModel.isShowTodayOnly[2] && menuItem.quantityForToday===0) ||
-                       (!workOrderModel.isShowDone[2] && menuItem.quantityDone===menuItem.quantity)">
-            <span>{{menuItem.productName}}</span>
-            <span ng-show="menuItem.isRemark">
-              <label>{{"("+menuItem.remarkNo+")"}}</label>
+          <th ng-repeat="dish in woItem.view.dishes track by dish.id"
+              ng-hide="(workOrderModel.isShowTodayOnly[2] && dish.quantityForToday===0) ||
+                       (!workOrderModel.isShowDone[2] && dish.quantityDone===dish.quantity)">
+            <span>{{dish.productName}}</span>
+            <span ng-show="dish.isRemark">
+              <label>{{"("+dish.remarkNo+")"}}</label>
             </span>
           </th>
           <th style="width: 10%">סה"כ</th>
@@ -209,17 +209,17 @@
               <span>{{order.customer}}</span>
              </td>
             <td>{{order.day}}</td>
-            <td ng-repeat="menuItem in order.menuItems track by menuItem.seq"
+            <td ng-repeat="dish in order.dishes track by dish.seq"
                 ng-hide="(workOrderModel.isShowTodayOnly[2] &&
-             woItem.view.menuItems[menuItem.seq].quantityForToday===0) ||
+             woItem.view.dishes[dish.seq].quantityForToday===0) ||
                        (!workOrderModel.isShowDone[2] &&
-             woItem.view.menuItems[menuItem.seq].quantityDone===woItem.view.menuItems[menuItem.seq].quantity)">
-               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0" class="cancel">
-                 {{menuItem.originalQuantity | number:2}}
+             woItem.view.dishes[dish.seq].quantityDone===woItem.view.dishes[dish.seq].quantity)">
+               <span ng-show="workOrderModel.isShowChanges && dish.originalQuantity>0" class="cancel">
+                 {{dish.originalQuantity | number:2}}
                </span>
-               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0">&nbsp;</span>
+               <span ng-show="workOrderModel.isShowChanges && dish.originalQuantity>0">&nbsp;</span>
                <span ng-hide="workOrderModel.isShowChanges && order.status === 'del'">
-                 {{menuItem.quantity | number:2}}
+                 {{dish.quantity | number:2}}
                </span>
             </td>
             <td>
@@ -250,21 +250,21 @@
           <tr>
           <td><label>סה"כ</label></td>
           <td></td>
-          <td ng-repeat="menuItem in woItem.view.menuItems track by menuItem.id"
-              ng-hide="(workOrderModel.isShowTodayOnly[2] && menuItem.quantityForToday===0) ||
-                       (!workOrderModel.isShowDone[2] && menuItem.quantityDone===menuItem.quantity)">
+          <td ng-repeat="dish in woItem.view.dishes track by dish.id"
+              ng-hide="(workOrderModel.isShowTodayOnly[2] && dish.quantityForToday===0) ||
+                       (!workOrderModel.isShowDone[2] && dish.quantityDone===dish.quantity)">
           <span ng-show="!workOrderModel.isShowTodayOnly[2] && workOrderModel.isShowDone[2]">
-             <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0" class="cancel">
-                 {{menuItem.originalQuantity | number:2}}
+             <span ng-show="workOrderModel.isShowChanges && dish.originalQuantity>0" class="cancel">
+                 {{dish.originalQuantity | number:2}}
                </span>
-               <span ng-show="workOrderModel.isShowChanges && menuItem.originalQuantity>0">&nbsp;</span>
-               <span>{{menuItem.quantity | number : 2}}</span>
+               <span ng-show="workOrderModel.isShowChanges && dish.originalQuantity>0">&nbsp;</span>
+               <span>{{dish.quantity | number : 2}}</span>
           </span>
             <span ng-show="!workOrderModel.isShowTodayOnly[2] && !workOrderModel.isShowDone[2]">
-            {{menuItem.quantity - menuItem.quantityDone | number : 2}}
+            {{dish.quantity - dish.quantityDone | number : 2}}
           </span>
             <span ng-show="workOrderModel.isShowTodayOnly[2]">
-              {{menuItem.quantityForToday | number : 2}}
+              {{dish.quantityForToday | number : 2}}
             </span>
           </td>
             <td ng-show="!workOrderModel.isShowTodayOnly[2] && workOrderModel.isShowDone[2]">
@@ -283,12 +283,12 @@
           </tr>
           </tbody>
         </table>
-        <div ng-repeat="menuItem in woItem.view.menuItems | filter:{isRemark:true} track by menuItem.id"
-             ng-show="(menuItem.quantityForToday>0) ||
-                      (menuItem.quantityDone>0 && workOrderModel.isShowDone[2]) ||
-                      (menuItem.quantityDone===0 && menuItem.quantityForToday===0)">
-          <label>{{"התאמה אישית מס'"+menuItem.remarkNo+":"}}</label>
-          <span>{{menuItem.remarkText}}</span>
+        <div ng-repeat="dish in woItem.view.dishes | filter:{isRemark:true} track by dish.id"
+             ng-show="(dish.quantityForToday>0) ||
+                      (dish.quantityDone>0 && workOrderModel.isShowDone[2]) ||
+                      (dish.quantityDone===0 && dish.quantityForToday===0)">
+          <label>{{"התאמה אישית מס'"+dish.remarkNo+":"}}</label>
+          <span>{{dish.remarkText}}</span>
         </div>
       </td>
     </tr>

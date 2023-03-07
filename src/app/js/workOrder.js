@@ -283,9 +283,9 @@ angular.module('myApp')
     };
 
     // create an array of menu items in which prep appears for detailed listing
-    this.createPrepMenuItemView = function(currentPrep) {
+    this.createPrepDishView = function(currentPrep) {
       var that = this;
-         currentPrep.view.menuItems = [];
+         currentPrep.view.dishes = [];
           var remarkCnt = 0;
           currentPrep.properties.backTrace.forEach(function (currentBackTrace) {
             var currentDish = {};
@@ -310,12 +310,12 @@ angular.module('myApp')
                 currentDish.remarkNo = ++remarkCnt;
                 currentDish.remarkText = originalDish.properties.personalAdjustment;
               }
-            currentPrep.view.menuItems.push(currentDish);
+            currentPrep.view.dishes.push(currentDish);
           });
     };
 
     // create an array of orders in which dishes containing this preparation appear.
-    // each entry contains an array of menuItems.
+    // each entry contains an array of dishes.
     this.createPrepOrderView = function (currentPrep) {
       var that = this;
       currentPrep.isAlert = false; // to indicate changes in orders marked for today
@@ -330,10 +330,10 @@ angular.module('myApp')
             console.log(prepBackTrace);
             return;
           }
-          var viewMenuItemIndex;
-          currentPrep.view.menuItems.forEach(function(mi,ind) {
+          var viewDishIndex;
+          currentPrep.view.dishes.forEach(function(mi,ind) {
             if (mi.id === originalDish.id) {
-              viewMenuItemIndex = ind;
+              viewDishIndex = ind;
             }
           });
           var dishCatalog = that.catalog.filter(function(cat) {
@@ -367,12 +367,12 @@ angular.module('myApp')
                 time: originalOrder.properties.order.eventTime,
                 totalOriginalQuantity: -1,
                 totalQuantity: 0,
-                menuItems: [],
+                dishes: [],
                 select: 'delay',
                 status: originalOrder.properties.status
               };
-              currentPrep.view.menuItems.forEach(function(mu,ind) {
-                orderObj.menuItems[ind] = {
+              currentPrep.view.dishes.forEach(function(mu,ind) {
+                orderObj.dishes[ind] = {
                   seq: ind,
                   originalQuantity: -1,
                   quantity: 0
@@ -385,12 +385,12 @@ angular.module('myApp')
            }
             // todo: set status of orders in prep
              var prepQuantity = miBackTrace.quantity;
-             currentOrder.menuItems[viewMenuItemIndex].quantity +=
+             currentOrder.dishes[viewDishIndex].quantity +=
                prepQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              currentOrder.totalQuantity +=
                prepQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              var prepOriginalQuantity = miBackTrace.originalQuantity;
-             currentOrder.menuItems[viewMenuItemIndex].originalQuantity +=
+             currentOrder.dishes[viewDishIndex].originalQuantity +=
                prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              currentOrder.totalOriginalQuantity +=
                prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
@@ -425,12 +425,12 @@ angular.module('myApp')
         return ord.totalQuantity > 0 || ord.totalOriginalQuantity > 0;
       });
       // update quantityForToday and quantityDone of dish array based on order's select values
-      currentPrep.view.menuItems.forEach(function(dish, ind) {
+      currentPrep.view.dishes.forEach(function(dish, ind) {
         currentPrep.view.orders.forEach(function(ord) {
           if (ord.select === 'today') {
-            dish.quantityForToday += ord.menuItems[ind].quantity;
+            dish.quantityForToday += ord.dishes[ind].quantity;
           } else if (ord.select === 'done') {
-            dish.quantityDone += ord.menuItems[ind].quantity;
+            dish.quantityDone += ord.dishes[ind].quantity;
           }
         });
       });
@@ -486,7 +486,7 @@ angular.module('myApp')
                     day: prepOrder.day,
                     time: prepOrder.time,
                     totalQuantity: 0,
-                    menuItems: [],
+                    dishes: [],
                     select: prepOrder.select
                   };
                   currentItem.view.orders.push(currentOrder);
@@ -532,7 +532,7 @@ angular.module('myApp')
                     day: that.dayName(originalOrder.properties.order.eventDate),
                     time: originalOrder.properties.order.eventTime,
                     totalQuantity: 0,
-                    menuItems: [],
+                    dishes: [],
                     select: 'unknown'
                   };
                   currentItem.view.orders.push(currentOrder);
@@ -596,7 +596,7 @@ angular.module('myApp')
     };
 
      // reset detailed view for today only, otherwise turn it on for mixed preps
-    // also check if there are remarks for today's menuItems
+    // also check if there are remarks for today's dishes
     this.setPrepsTodayOnly = function () {
       var that = this;
       if (this.isShowTodayOnly[2]) {
@@ -606,7 +606,7 @@ angular.module('myApp')
           if (woItem.properties.domain === 2) {
             woItem.isShowDetails = that.isShowDetails[that.domain];
             woItem.isRemarkForToday = false;
-            woItem.view.menuItems.forEach(function (mi) {
+            woItem.view.dishes.forEach(function (mi) {
               if (mi.isRemark && mi.quantityForToday>0) {
                 woItem.isRemarkForToday = true;
               }
@@ -632,7 +632,7 @@ angular.module('myApp')
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
             woItem.isAnyRemarkNotDone = false;
-            woItem.view.menuItems.forEach(function (mi) {
+            woItem.view.dishes.forEach(function (mi) {
               if (mi.isRemark && mi.quantityDone===0) {
                 woItem.isAnyRemarkNotDone = true;
               }
@@ -646,20 +646,20 @@ angular.module('myApp')
    this.computeSelectQuantities = function (woItem) {
       var quantToday = 0;
       var quantDone = 0;
-      woItem.view.menuItems.forEach(function (mi0) {
+      woItem.view.dishes.forEach(function (mi0) {
         mi0.quantityForToday = 0;
         mi0.quantityDone = 0;
       });
       woItem.view.orders.forEach(function (ord) {
         if (ord.select === 'today') {
           quantToday += ord.totalQuantity;
-          ord.menuItems.forEach(function(mi) {
-            woItem.view.menuItems[mi.seq].quantityForToday += mi.quantity;
+          ord.dishes.forEach(function(mi) {
+            woItem.view.dishes[mi.seq].quantityForToday += mi.quantity;
           });
         } else if (ord.select === 'done') {
           quantDone += ord.totalQuantity;
-          ord.menuItems.forEach(function(mi) {
-            woItem.view.menuItems[mi.seq].quantityDone += mi.quantity;
+          ord.dishes.forEach(function(mi) {
+            woItem.view.dishes[mi.seq].quantityDone += mi.quantity;
           });
         }
       });
@@ -2003,7 +2003,7 @@ angular.module('myApp')
         }
         if (wo.domain === 2) {
           woi.isAnyRemark = false;
-          woi.view.menuItems.forEach(function(mi) {
+          woi.view.dishes.forEach(function(mi) {
             if (mi.isRemark) {
               woi.isAnyRemark = true;
             }
@@ -2124,7 +2124,7 @@ angular.module('myApp')
     // create work order items for specified domain from lower domain itens
     this.createWorkOrderDomain = function (targetDomain) {
       var that = this;
-      if (targetDomain===1) { // clicking <compute menuItems> signifies that order selection is complete
+      if (targetDomain===1) { // clicking <compute dishes> signifies that order selection is complete
         this.woIndex.properties.domainStatus[0] = true;
         api.saveObj(this.woIndex);
       }
@@ -2371,7 +2371,7 @@ angular.module('myApp')
 
      this.createViewForPrep = function (woi) {
        woi.view = {};
-       this.createPrepMenuItemView(woi);
+       this.createPrepDishView(woi);
        this.createPrepOrderView(woi);
      };
 

@@ -159,20 +159,20 @@
             ng-change="adminModel.productTree()"
             ng-options="category.label for category in adminModel.categories"></select>
     <div>
-      <div ng-repeat="menuItem in adminModel.menuItems track by menuItem.id">
+      <div ng-repeat="dish in adminModel.dishes track by dish.id">
         <div style="font-weight: bold;height: 0.6cm ; vertical-align: middle">
         <div style="cursor: pointer;width: 60%; display: inline-block"
-             ng-click="adminModel.selectCatItem(menuItem.id)">
+             ng-click="adminModel.selectCatItem(dish.id)">
         <span>מנה:</span>
-        <span>{{menuItem.properties.productName.substr(0,85)}}</span>
+        <span>{{dish.properties.productName.substr(0,85)}}</span>
         </div>
         <div style="width: 30%; display: inline-block">
           <span>כמות ייצור</span>
-          <span>{{menuItem.properties.productionQuantity}}</span>
-          <span>{{menuItem.measurementUnit.label}}</span>
+          <span>{{dish.properties.productionQuantity}}</span>
+          <span>{{dish.measurementUnit.label}}</span>
         </div>
         </div>
-        <div ng-repeat="prep in menuItem.preparations track by prep.id" style="margin-right: 2%">
+        <div ng-repeat="prep in dish.preparations track by prep.id" style="margin-right: 2%">
           <div style="color: red;height: 0.6cm ; vertical-align: middle">
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(prep.id)">
@@ -229,7 +229,7 @@
             </div>
           </div>
         </div>
-        <div ng-repeat="material in menuItem.materials track by material.id" style="margin-right: 2%">
+        <div ng-repeat="material in dish.materials track by material.id" style="margin-right: 2%">
           <div style="height: 0.6cm ; vertical-align: middle">
           <div style="cursor: pointer;width: 40%; display: inline-block"
                ng-click="adminModel.selectCatItem(material.id)">
@@ -348,7 +348,7 @@
        </table>
      </div>
    </tab>
-   <tab heading="יח' מידה" select="adminModel.loadMenuItemsCatalog()">
+   <tab heading="יח' מידה" select="adminModel.loadDishesCatalog()">
      <div ng-hide="adminModel.isProcessing">
       <label>בחר קטגוריה</label>
        <select ng-model="adminModel.productNamesCategory"
@@ -436,8 +436,8 @@
            <tbody>
            <tr ng-repeat="item in adminModel.xferShoppingList track by item.ind"
                ng-class="item.isDone ? 'bg-success' : item.err ? 'bg-warning' : null">
-             <td>{{item.menuItemCategory.label}}</td>
-             <td>{{item.menuItem.properties.productName}}</td>
+             <td>{{item.dishCategory.label}}</td>
+             <td>{{item.dish.properties.productName}}</td>
              <td>{{item.shoppingName}}</td>
              <td>{{item.status}}</td>
              <td ng-show="item.err===0">{{item.suggestedPrep.properties.productName}}</td>

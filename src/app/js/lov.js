@@ -174,7 +174,7 @@ angular.module('myApp')
       },
       {
         id: 1,
-        name: 'menuItems',
+        name: 'dishes',
         label: 'מנות',
         single: 'מנה',
         forWorkItem: 'מנות'

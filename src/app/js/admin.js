@@ -390,7 +390,7 @@ angular.module('myApp')
       var that = this;
       api.queryCatalogByCategory(this.productTreeCategory.tId)
         .then(function(res) {
-          that.menuItems = res.filter(function(cat) {  // return only items with components
+          that.dishes = res.filter(function(cat) {  // return only items with components
             var comps = cat.properties.components.filter(function(comp) {
               return comp.id !== config.properties.unhandledItemComponent &&
                 comp.id !== config.properties.unhandledItemMaterial  &&
@@ -404,13 +404,13 @@ angular.module('myApp')
               return -1;
             }
           });
-          that.menuItems.forEach(function(menuItem) {
-            menuItem.preparations = [];
-            menuItem.materials = [];
-            menuItem.measurementUnit = measurementUnits.filter(function(mu) {
-              return mu.tId === menuItem.properties.measurementUnit;
+          that.dishes.forEach(function(dish) {
+            dish.preparations = [];
+            dish.materials = [];
+            dish.measurementUnit = measurementUnits.filter(function(mu) {
+              return mu.tId === dish.properties.measurementUnit;
             })[0];
-            menuItem.properties.components.filter(function(comp) {
+            dish.properties.components.filter(function(comp) {
               return comp.id !== config.properties.unhandledItemComponent &&
                 comp.id !== config.properties.unhandledItemMaterial  &&
                 comp.id !== config.properties.satietyIndexItem;
@@ -451,12 +451,12 @@ angular.module('myApp')
                     return -1;
                   }
                 })
-                menuItem.preparations.push(compCatalog);
+                dish.preparations.push(compCatalog);
               } else {
-                menuItem.materials.push(compCatalog);
+                dish.materials.push(compCatalog);
               }
             })
-            menuItem.preparations.sort(function(a,b) {
+            dish.preparations.sort(function(a,b) {
               if (a.category.order > b.category.order) {
                 return 1;
               } else if (a.category.order < b.category.order) {
@@ -467,7 +467,7 @@ angular.module('myApp')
                 return -1;
               }
             })
-            menuItem.materials.sort(function(a,b) {
+            dish.materials.sort(function(a,b) {
               if (a.category.order > b.category.order) {
                 return 1;
               } else if (a.category.order < b.category.order) {
@@ -484,7 +484,7 @@ angular.module('myApp')
 
 
 
-    this.loadMenuItemsCatalog = function() {
+    this.loadDishesCatalog = function() {
       var that = this;
       this.isProcessing = true;
       api.queryCategories(1)
@@ -665,7 +665,7 @@ angular.module('myApp')
         });
     };
 
-    // xfer shoppings in category אריזה from under menuItems to under prep who has אריזה actions
+    // xfer shoppings in category אריזה from under dishes to under prep who has אריזה actions
     this.loadXferShopping = function (item) {
       var that = this;
       this.xferShoppingList = [];
@@ -695,7 +695,7 @@ angular.module('myApp')
             })[0];
             catDomain.items.push(cat);
           });
-          var catMenuItems = that.xferCatalog.filter(function(xf) {
+          var catDishes = that.xferCatalog.filter(function(xf) {
             return xf.domain === 1;
           })[0];
           var catPreps = that.xferCatalog.filter(function(xf) {
@@ -708,7 +708,7 @@ angular.module('myApp')
             return xf.domain === 4;
           })[0];
           var ind = 0;
-          catMenuItems.items.forEach(function(mi) {
+          catDishes.items.forEach(function(mi) {
             if (!mi.properties.isDeleted) {
             mi.properties.components.forEach(function(mic) {
               if (mic.domain === 3 && mic.id !== 'Ui6ySqWZUd' && mic.id !== '3s9Lgtx4sQ') {
@@ -758,8 +758,8 @@ angular.module('myApp')
                   }
                   that.xferShoppingList.push({
                     ind: ++ind,
-                    menuItem: mi,
-                    menuItemCategory: categories.filter(function(cat) {
+                    dish: mi,
+                    dishCategory: categories.filter(function(cat) {
                       return cat.tId === mi.properties.category;
                     })[0],
                     component: mic,
@@ -774,7 +774,7 @@ angular.module('myApp')
                     var temp = mi.properties.components.filter(function(mc) {
                       return mc.domain === 2;
                     });
-                    if (temp.length === 1) { // if single prep under menuItem - use it
+                    if (temp.length === 1) { // if single prep under dish - use it
                       suggestedPrep = catPreps.items.filter(function(pr) {
                         return pr.id === temp[0].id;
                       })[0];
@@ -799,8 +799,8 @@ angular.module('myApp')
                     }
                       that.xferShoppingList.push({
                       ind: ++ind,
-                      menuItem: mi,
-                      menuItemCategory: categories.filter(function(cat) {
+                      dish: mi,
+                      dishCategory: categories.filter(function(cat) {
                         return cat.tId === mi.properties.category;
                       })[0],
                       component: mic,
@@ -818,13 +818,13 @@ angular.module('myApp')
             }
             });
           that.xferShoppingList.sort(function(a,b) {
-            if (a.menuItemCategory.order > b.menuItemCategory.order) {
+            if (a.dishCategory.order > b.dishCategory.order) {
               return 1;
-            } else if (a.menuItemCategory.order < b.menuItemCategory.order) {
+            } else if (a.dishCategory.order < b.dishCategory.order) {
               return -1;
-            } else if (a.menuItem.properties.productName > b.menuItem.properties.productName) {
+            } else if (a.dish.properties.productName > b.dish.properties.productName) {
               return 1;
-            } else if (a.menuItem.properties.productName < b.menuItem.properties.productName) {
+            } else if (a.dish.properties.productName < b.dish.properties.productName) {
               return -1;
             } else return a.shoppingName - b.shoppingName;
               });
@@ -834,7 +834,7 @@ angular.module('myApp')
     this.doXfer = function (item) {
       var that = this;
       var ind;
-      var temp = item.menuItem.properties.components.filter(function(cp,i){
+      var temp = item.dish.properties.components.filter(function(cp,i){
         if (cp.id === item.component.id) {
           ind = i;
           return true;
@@ -843,9 +843,9 @@ angular.module('myApp')
         }
       });
       if (ind) {
-        item.menuItem.properties.components.splice(ind,1); // delete component from menuItem
+        item.dish.properties.components.splice(ind,1); // delete component from dish
         item.suggestedPrep.properties.components.push(item.component); // insert it in prep
-        api.saveObj(item.menuItem) // save menuItem & prep
+        api.saveObj(item.dish) // save dish & prep
           .then(function() {
             api.saveObj(item.suggestedPrep)
               .then(function() {
