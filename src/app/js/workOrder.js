@@ -390,8 +390,14 @@ angular.module('myApp')
              currentOrder.totalQuantity +=
                prepQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
              var prepOriginalQuantity = miBackTrace.originalQuantity;
+             if (currentOrder.dishes[viewDishIndex].originalQuantity < 0) {
+               currentOrder.dishes[viewDishIndex].originalQuantity = 0;
+             }
              currentOrder.dishes[viewDishIndex].originalQuantity +=
                prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
+             if (currentOrder.totalOriginalQuantity < 0) {
+               currentOrder.totalOriginalQuantity = 0;
+             }
              currentOrder.totalOriginalQuantity +=
                prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
            });
