@@ -200,9 +200,9 @@
                        (!workOrderModel.isShowDone[2] && order.select==='done') ||
                         (!workOrderModel.isShowChanges && order.status==='del')"
           ng-class="workOrderModel.isShowChanges ? (
-              (order.select==='today' && order.totalOriginalQuantity>0) ||
-              (order.select==='done' && order.totalQuantity > order.totalOriginalQuantity)? 'alert' :
+              order.isAlert ? 'alert' :
               order.status === 'new' ? 'new' :
+              order.status === 'upd' ? 'changed' :
               order.status === 'del' ? 'cancel' : null
              ) : null">
             <td>

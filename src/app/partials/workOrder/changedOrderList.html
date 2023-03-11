@@ -137,5 +137,12 @@
   <h5 ng-show="workOrderModel.results.length===0 && workOrderModel.isCompareActive">
 --- אין הבדלים ---
   </h5>
+    <div>
+      <span>העתק לפקודת עבודה</span>
+      <select ng-model="workOrderModel.targetWoIndex" ng-change="workOrderModel.copyWorkOrder()"
+              ng-options="woIndex.properties.label for woIndex in workOrderModel.baseWoIndexes">                 <option value=""></option>
+        <option value=""></option>
+      </select>
+    </div>
   </div>
 

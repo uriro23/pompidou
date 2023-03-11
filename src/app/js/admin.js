@@ -1879,7 +1879,6 @@ angular.module('myApp')
           console.log(backTraces);
         });
     };
-      */
 
     function setPersonalAdjustment (item) {
       return !item.isDescChanged || item.isCosmeticChange ? '' :
@@ -1919,6 +1918,7 @@ angular.module('myApp')
             });
         });
     };
+      */
 
     // end conversions
 

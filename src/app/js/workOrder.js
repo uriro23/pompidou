@@ -32,30 +32,48 @@ angular.module('myApp')
     this.setDomain = function(domain) {
       this.domain = domain;
         if (!this.woIndex.properties.domainStatus[domain]) {
-          var prevDomain = domain === 4 ? 2 : domain - 1;
-          if (domain === 1 || this.woIndex.properties.domainStatus[prevDomain]) {
-            this.createWorkOrderDomain(domain);
+          if (domain === 1) { // in case of dishes, create preps too, so updateWorkOrder will work properly
+            this.createWorkOrderDomain(1)
+              .then(function() {
+                that.createWorkOrderDomain(2)
+                  .then(function () {
+                    that.createView();
+                    that.splitWorkOrder();
+                    that.isIncludeStock[domain] = true;
+                    that.isActiveTab[2] = false; // return active tab to be dishes
+                    that.isActiveTab[1] = true;
+                  });
+              })
+          } else {
+            var prevDomain = domain === 4 ? 2 : domain - 1;
+            if (this.woIndex.properties.domainStatus[prevDomain]) {
+              this.createWorkOrderDomain(domain)
+                .then(function () {
+                  that.createView();
+                  that.splitWorkOrder();
+                  that.isIncludeStock[domain] = true;
+                  if (domain === 4) { // force default show today only for actions
+                    that.isShowTodayOnly[4] = true;
+                  }
+                });
+            }
           }
-        }
-        if (domain === 4) { // force default show today only for actions
-          this.isShowTodayOnly[4] = true;
         }
   };
 
     this.setShowAll = function(domain) {
-      var that = this;
       this.hierarchicalWorkOrder[domain].categories.forEach(function(cat) {
         cat.isShow = that.hierarchicalWorkOrder[domain].isShowAll;
       });
     };
 
     this.destroyWorkOrderDomains = function (domain) {
-      var that = this;
       var woItemsToDelete = this.workOrder.filter(function (wo) {
         // for products domain, don't delete actions
         return domain===3 ? (wo.properties.domain === domain) : (wo.properties.domain >= domain);
       });
       this.isProcessing = true;
+      this.processMsg = 'מוחק רשומות ישנות';
       return api.deleteObjects(woItemsToDelete)
         .then(function () {
           that.isProcessing = false;
@@ -66,7 +84,6 @@ angular.module('myApp')
     };
 
     this.createDishesDomain = function () {
-      var that = this;
       this.workOrder.forEach(function(woItem) {
         if (woItem.properties.domain === 0) {
           that.createDishes(woItem, undefined, undefined);
@@ -75,7 +92,6 @@ angular.module('myApp')
     };
 
     this.createDishes = function (order, dishesToCreate, dishesToUpdate) {
-      var that = this;
       var items = order.properties.order.quotes[order.properties.order.activeQuote].items;
       items.forEach(function(item) {
         if (item.category.type < 3) {
@@ -87,9 +103,7 @@ angular.module('myApp')
 
     this.createDish = function (order, item, dishesToCreate, dishesToUpdate) {
       var workItem;
-      var orderInd;
       var workItemInd;
-      var that = this;
       // change measurement unit to prod mu and adjust quantity
       var catItem = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
@@ -177,7 +191,6 @@ angular.module('myApp')
   this.createComponentsDomain = function (targetDomain) {
       var workItemInd;
       var workItem;
-      var that = this;
       this.workOrder.forEach(function(inWorkOrder) {
         var inWorkItem = inWorkOrder.properties;
         if (inWorkItem.domain > 0) {  // skip orders
@@ -284,7 +297,6 @@ angular.module('myApp')
 
     // create an array of menu items in which prep appears for detailed listing
     this.createPrepDishView = function(currentPrep) {
-      var that = this;
          currentPrep.view.dishes = [];
           var remarkCnt = 0;
           currentPrep.properties.backTrace.forEach(function (currentBackTrace) {
@@ -317,7 +329,6 @@ angular.module('myApp')
     // create an array of orders in which dishes containing this preparation appear.
     // each entry contains an array of dishes.
     this.createPrepOrderView = function (currentPrep) {
-      var that = this;
       currentPrep.isAlert = false; // to indicate changes in orders marked for today
        currentPrep.view.orders = [];
         currentPrep.properties.backTrace.forEach(function (prepBackTrace) {
@@ -369,7 +380,8 @@ angular.module('myApp')
                 totalQuantity: 0,
                 dishes: [],
                 select: 'delay',
-                status: originalOrder.properties.status
+                status: (originalOrder.properties.status==='new' || originalOrder.properties.status==='del') ?
+                  originalOrder.properties.status : undefined
               };
               currentPrep.view.dishes.forEach(function(mu,ind) {
                 orderObj.dishes[ind] = {
@@ -383,7 +395,8 @@ angular.module('myApp')
             } else {
               currentOrder = temp[0];
            }
-            // todo: set status of orders in prep
+            // todo: how to mark a 'new' order that is caused by a new dish in an existing order
+             // todo: (the dish's backtrace is 'upd' because the order was updated, not created)
              var prepQuantity = miBackTrace.quantity;
              currentOrder.dishes[viewDishIndex].quantity +=
                prepQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
@@ -400,6 +413,9 @@ angular.module('myApp')
              }
              currentOrder.totalOriginalQuantity +=
                prepOriginalQuantity * dishComponent.quantity / dishCatalog.properties.productionQuantity;
+             if (currentOrder.totalOriginalQuantity>0 && !currentOrder.status) {
+               currentOrder.status = 'upd';
+             }
            });
         });
         // update view select value based on prep DB item
@@ -410,12 +426,14 @@ angular.module('myApp')
         if (matchingOrder) {
           ord.select = matchingOrder.select;
           if (ord.select === 'today') {
-            if (ord.totalOriginalQuantity) {
+            if (ord.totalOriginalQuantity > 0) {
               currentPrep.isAlert = true;
+              ord.isAlert = true;
             }
           } else if (ord.select === 'done') {
             if (ord.totalQuantity > ord.totalOriginalQuantity) {
               currentPrep.isAlert = true;
+              ord.isAlert = true;
             }
           }
         } else {
@@ -430,6 +448,27 @@ angular.module('myApp')
       currentPrep.view.orders = currentPrep.view.orders.filter(function(ord) {
         return ord.totalQuantity > 0 || ord.totalOriginalQuantity > 0;
       });
+
+      // set alert if all existing orders are marked 'today' or 'done' and there are new orders
+      var c1 = 0;
+      var c2 = 0;
+      currentPrep.view.orders.forEach(function(ord) {
+        if (ord.select==='today' || ord.select==='done') {
+          c1++;
+        }
+        if (ord.status==='new') {
+          c2++;
+        }
+      });
+      if (c1>0 && c2>0 && c1+c2===currentPrep.view.orders.length) {
+        currentPrep.isAlert = true;
+        currentPrep.view.orders.forEach(function(ord) {
+          if (ord.status==='new') {
+            ord.isAlert = true;
+          }
+        });
+      }
+
       // update quantityForToday and quantityDone of dish array based on order's select values
       currentPrep.view.dishes.forEach(function(dish, ind) {
         currentPrep.view.orders.forEach(function(ord) {
@@ -457,7 +496,6 @@ angular.module('myApp')
 
     // find item's breakdown to individual orders, based on the prep order view it comes from
     this.createproductsAndActionsOrderView = function(currentItem,targetDomain) {
-    var that = this;
       if (currentItem.properties.domain === targetDomain) {
         var itemCatalogItem = catalog.filter(function (cat) {
           return cat.id === currentItem.properties.catalogId;
@@ -569,7 +607,6 @@ angular.module('myApp')
 
     // decide if item will be shown
     this.isShowItem = function (woItem) {
-      var that = this;
       var isItemToday = woItem.properties.select==='today';
       if (woItem.properties.select==='mix') {
         woItem.view.orders.forEach(function(ord) {
@@ -594,7 +631,6 @@ angular.module('myApp')
 
     // show category only if any of its items will be shown
     this.isShowCategory = function(cat) {
-      var that = this;
       var temp = cat.list.concat(cat.serviceList).filter(function(woItem) {
         return that.isShowItem(woItem);
       });
@@ -604,7 +640,6 @@ angular.module('myApp')
      // reset detailed view for today only, otherwise turn it on for mixed preps
     // also check if there are remarks for today's dishes
     this.setPrepsTodayOnly = function () {
-      var that = this;
       if (this.isShowTodayOnly[2]) {
         this.isOrderFilter = false;  // turn off order selection table
         this.isShowDone[2] = false;
@@ -631,7 +666,6 @@ angular.module('myApp')
     };
 
     this.setPrepsDone = function () {
-      var that = this;
       if (this.isShowDone[2]) {
 
       } else {
@@ -675,7 +709,6 @@ angular.module('myApp')
 
      // propogate selection for event to all its occurances in preps
     this.setOrderSelect = function(order) {
-      var that = this;
       api.saveObj(order);
       this.workOrder.forEach(function (woi) {
         var wo = woi.properties;
@@ -755,7 +788,6 @@ angular.module('myApp')
     };
 
      this.setOrderServiceToday = function (woItem) {
-      var that = this;
       api.saveObj(woItem);
       this.workOrder.forEach(function (woi) {
         if (woi.properties.domain === 2) {
@@ -773,8 +805,8 @@ angular.module('myApp')
     };
 
      this.createOrderView = function () {
-      var that = this;
       this.orderView = [];
+      this.processMsg = 'טוען אירועים עתידיים';
       api.queryFutureOrders()
         .then(function (futureOrders) {
           futureOrders.forEach(function(order) {
@@ -807,6 +839,7 @@ angular.module('myApp')
           that.orderView = that.orderView.filter(function (ov) {
             return !ov.isToBeTemporarilyDeleted;
           });
+          that.processMsg = 'שומר אירועים';
           api.saveObjects(ordersToSave)
             .then(function (ov) {
                 ov.forEach(function(o) {
@@ -835,8 +868,8 @@ angular.module('myApp')
     };
 
     this.queryOrders = function () {
-      var that = this;
       this.isProcessing = true;
+      this.processMsg = 'טוען אירועים בטווח התאריכים';
       api.queryOrdersByRange('eventDate',this.fromDate,this.toDate)
         .then(function(ords) {
           var orders = ords.filter(function(ord) {
@@ -852,6 +885,7 @@ angular.module('myApp')
             that.createViewForOrder(viewItem);
             that.orderView.push(viewItem);
           });
+          that.processMsg = 'שומר אירועים בפקודה';
           api.saveObjects(that.orderView)
             .then(function(woOrders) {
                woOrders.forEach(function(wo) {
@@ -885,7 +919,6 @@ angular.module('myApp')
     };
 
     this.setOrderInWorkOrder = function (ind) {
-      var that = this;
       var indToDelete;
       if (this.orderView[ind].isInWorkOrder) {
         api.saveObj(this.orderView[ind])
@@ -920,7 +953,6 @@ angular.module('myApp')
     };
 
     this.createNewWorkOrder = function () {
-      var that = this;
       var ackDelModal = $modal.open({
         templateUrl: 'app/partials/workOrder/ackDelete.html',
         controller: 'AckDelWorkOrderCtrl as ackDelWorkOrderModel',
@@ -972,7 +1004,6 @@ angular.module('myApp')
     // so we have to do the updates gradually (breath first).
     // Also, we can't delete items from workOrder array, before finishing all updates
     this.updateWorkOrder = function () {
-      var that = this;
       if (!((this.woIndex.properties.domainStatus[0] &&
             this.woIndex.properties.domainStatus[1] &&
             this.woIndex.properties.domainStatus[2]) ||
@@ -1026,11 +1057,10 @@ angular.module('myApp')
     // c. delete originalQuantity attribute of items and backtraces
     // d. delete status attribute of marked items
     this.clearPreviousUpdates = function() {
-      var that = this;
       console.log('clearing marks of previous update');
       var itemsToUpdate = [];
       var itemsToDelete = [];
-      that.workOrder.forEach(function(woi) {
+      this.workOrder.forEach(function(woi) {
       var wo = woi.properties;
         if (wo.status === 'new' || wo.status === 'upd') {
           if (wo.domain > 0) {
@@ -1079,9 +1109,11 @@ angular.module('myApp')
           }
         }
       });
+      this.processMsg = 'מנקה שינויים קודמים';
       return api.saveObjects(itemsToUpdate)
         .then(function() {
           console.log(itemsToUpdate.length+' items updated');
+          that.processMsg = 'מוחק שינויים קודמים';
           return api.deleteObjects(itemsToDelete)
             .then(function() {
               console.log(itemsToDelete.length+' items deleted');
@@ -1090,8 +1122,6 @@ angular.module('myApp')
     };
 
     this.updateOrders = function () {
-      var that = this;
-      //  phase 1: update orders
       var ordersToCreate = [];
       var ordersToUpdate = [];
       var ordersToDelete = [];
@@ -1116,6 +1146,7 @@ angular.module('myApp')
           ordersToUpdate.push(changedOrder.woItem);
         }
       });
+      this.processMsg = 'יוצר אירועים';
       return api.saveObjects(ordersToCreate)
         .then(function (orders) {
           orders.forEach(function (order) {
@@ -1129,10 +1160,12 @@ angular.module('myApp')
           });
           console.log(orders.length + ' orders created');
           console.log(orders);
+          that.processMsg = 'מעדכן אירועים';
           return api.saveObjects(ordersToUpdate)
             .then(function () {
               console.log(ordersToUpdate.length + ' orders updated');
               console.log(ordersToUpdate);
+              that.processMsg = 'מוחק אירועים';
               return api.deleteObjects(ordersToDelete)
                 .then(function () {
                   console.log(ordersToDelete.length + ' orders deleted');
@@ -1162,16 +1195,15 @@ angular.module('myApp')
     };
 
     this.updateDishes = function() {
-      var that = this;
       var dishesToCreate = [];
       var dishesToUpdate = [];
       var dishesToDelete = [];
-      that.workOrder.forEach(function(woi) {
+      this.workOrder.forEach(function(woi) {
         if (woi.properties.domain === 1) {
           woi.deletedBackTrace = [];
         }
       });
-       that.changedOrders.forEach(function(changedOrder) {
+      this.changedOrders.forEach(function(changedOrder) {
         if (changedOrder.action === 'past') {
           // delete/adjust all dishes for this order without marking changes
           that.workOrder.forEach(function (dish) {
@@ -1322,6 +1354,7 @@ angular.module('myApp')
           });
         }
       });
+       this.processMsg = 'יוצר מנות';
        return api.saveObjects(dishesToCreate)
          .then(function(dishes) {
            that.workOrder = that.workOrder.filter(function(woi) { //exclude newly created dishes
@@ -1332,10 +1365,12 @@ angular.module('myApp')
            });
            console.log(dishes.length+' dishes created');
            console.log(dishes);
+           that.processMsg = 'מעדכן מנות';
            return api.saveObjects(dishesToUpdate)
              .then(function() {
                console.log(dishesToUpdate.length+' dishes updated');
                console.log(dishesToUpdate);
+               that.processMsg = 'מוחק מנות';
                return api.deleteObjects(dishesToDelete)
                  .then(function() {
                    console.log(dishesToDelete.length+' dishes deleted');
@@ -1346,11 +1381,10 @@ angular.module('myApp')
     };
 
     this.updatePreps = function() {
-      var that = this;
       var prepsToCreate = [];
       var prepsToUpdate = [];
       var prepsToDelete = [];
-      that.changedOrders.forEach(function(changedOrder) {
+      this.changedOrders.forEach(function(changedOrder) {
         if (changedOrder.action === 'past') {
           // delete/adjust all preps of dishes for this order
           that.workOrder.forEach(function (dish) {
@@ -1802,6 +1836,7 @@ angular.module('myApp')
          });
         }
       });
+      this.processMsg = 'יוצר הכנות';
       return api.saveObjects(prepsToCreate)
         .then(function(preps) {
           that.workOrder = that.workOrder.filter(function(woi) { //exclude newly created preps
@@ -1812,10 +1847,12 @@ angular.module('myApp')
           });
           console.log(preps.length+' preps created');
           console.log(preps);
+          that.processMsg = 'מעדכן הכנות';
           return api.saveObjects(prepsToUpdate)
             .then(function() {
               console.log(prepsToUpdate.length+' preps updated');
               console.log(prepsToUpdate);
+              that.processMsg = 'מוחק הכנות';
               return api.deleteObjects(prepsToDelete)
                 .then(function() {
                   console.log(prepsToDelete.length+' preps deleted');
@@ -1827,7 +1864,6 @@ angular.module('myApp')
 
  // find any items whose backtrace points to non existing items
     this.checkConsistency = function() {
-      var that = this;
       console.log('starting consistency check');
       var bug = 0;
       this.workOrder.forEach(function(woi) {
@@ -1858,8 +1894,9 @@ angular.module('myApp')
     // compares current wo to base wo to see if updates are done correctly
     // base wo should be created from scratch with same orders as current wo
     this.compareWorkOrder = function() {
-      var that = this;
       var baseWoId = this.baseWoIndex.properties.woId;
+      this.isProcessing = true;
+      this.processMsg = 'טוען פקודת עבודה להשוואה';
       api.queryWorkOrder(baseWoId)
         .then(function(baseWo) {
           that.baseWorkOrder = baseWo;
@@ -1887,6 +1924,7 @@ angular.module('myApp')
             function(bWoi,woi) {
               return that.comparePreps(bWoi, woi);
             });
+          that.isProcessing = false;
         });
     };
 
@@ -1973,12 +2011,77 @@ angular.module('myApp')
       return res;
     };
 
+    this.copyWorkOrder = function () {
+      var targetWoId = this.targetWoIndex.properties.woId;
+      this.isProcessing = true;
+      this.processMsg = 'מעתיק פקודת עבודה';
+      api.queryWorkOrder(targetWoId)
+        .then(function(oldTarget) {
+          console.log('target wo retrieved');
+          api.deleteObjects(oldTarget)
+            .then(function() {
+              console.log('target wo deleted');
+              var newTarget = [];
+              that.workOrder.forEach(function(woi) {
+                var t = api.initWorkOrder();
+                t.properties = angular.copy(woi.properties);
+                t.properties.woId = targetWoId;
+                t.oldId = woi.id;
+                newTarget.push(t);
+              });
+              api.saveObjects(newTarget)
+                .then(function(newTarget2) {
+                  console.log('target wo created from source');
+                  var ids = newTarget2.map(function(woi) {
+                    return {
+                      old: woi.oldId,
+                      new: woi.id
+                    }
+                  });
+                  newTarget2.forEach(function(woi) {
+                    if (woi.properties.domain > 0) {
+                      woi.properties.backTrace.forEach(function(bt) {
+                        var id2 = ids.filter(function(id3){
+                          return id3.old === bt.id;
+                        })[0];
+                        bt.id = id2.new;
+                      })
+                    }
+                  });
+                  newTarget2.forEach(function(woi) {
+                    if (woi.properties.domain === 2) {
+                      woi.properties.orders.forEach(function(ord) {
+                        var id2 = ids.filter(function(id3){
+                          return id3.old === ord.id;
+                        })[0];
+                        ord.id = id2.new;
+                      })
+                    }
+                  });
+                  api.saveObjects(newTarget2)
+                    .then(function() {
+                      console.log('target backtraces and orders fixed');
+                      var copyIndex = woIndexes.filter(function(ind) {
+                        return ind.properties.woId === targetWoId;
+                      })[0];
+                      copyIndex.properties.domainStatus = that.woIndex.properties.domainStatus;
+                      api.saveObj(copyIndex)
+                        .then(function() {
+                          that.isProcessing = false;
+                          alert('פקודת העבודה הועתקה')
+                        });
+                    });
+                });
+            });
+        });
+    };
+
     this.saveWorkOrder = function (domain) {
-      var that = this;
       var woItemsToSave = this.workOrder.filter(function (woi) {
         return woi.properties.domain === domain;
       });
       this.isProcessing = true;
+      this.processMsg = 'שומר '+lov.domains[domain].label;
        return api.saveObjects(woItemsToSave)
         .then(function (domainItems) {
           that.isProcessing = false;
@@ -1993,7 +2096,6 @@ angular.module('myApp')
 
     // split wo by domains and categories
     this.splitWorkOrder = function () {
-      var that = this;
       this.hierarchicalWorkOrder = [];
       for (var d = 1; d < 5; d++) {
         this.hierarchicalWorkOrder[d] = {
@@ -2097,7 +2199,6 @@ angular.module('myApp')
     };
 
     this.setGlobalDetail = function() {
-      var that = this;
       this.workOrder.forEach(function(woi) {
         if (woi.properties.domain === that.domain) {
           if (woi.properties.domain === 2) {
@@ -2115,7 +2216,6 @@ angular.module('myApp')
     };
 
     this.setCategoryDetail = function(category) {
-      var that = this;
       category.list.forEach(function(woi) {
         if (woi.properties.domain === 2) {
           if (that.isShowTodayOnly[2] || woi.properties.select !== 'mix') {
@@ -2129,13 +2229,12 @@ angular.module('myApp')
 
     // create work order items for specified domain from lower domain itens
     this.createWorkOrderDomain = function (targetDomain) {
-      var that = this;
       if (targetDomain===1) { // clicking <compute dishes> signifies that order selection is complete
         this.woIndex.properties.domainStatus[0] = true;
-        api.saveObj(this.woIndex);
+        // api.saveObj(this.woIndex); not needed here, will be saved later anyway
       }
       // destroy existing work order items of target and higher domains
-      this.destroyWorkOrderDomains(targetDomain)
+      return this.destroyWorkOrderDomains(targetDomain)
         .then(function () {
         that.workOrder = that.workOrder.filter(function (wo) {
           // for products domain, include actions
@@ -2148,7 +2247,7 @@ angular.module('myApp')
         } else {
           that.createComponentsDomain(targetDomain);
         }
-        that.saveWorkOrder(targetDomain)
+        return that.saveWorkOrder(targetDomain)
           .then(function () {
             that.isActiveTab.forEach(function(tab) {
               tab = false;
@@ -2160,9 +2259,9 @@ angular.module('myApp')
                 that.woIndex.properties.domainStatus[dd] = false;
               }
             }
-            api.saveObj(that.woIndex);
-            that.splitWorkOrder();
-            that.isIncludeStock[targetDomain] = true;
+            api.saveObj(that.woIndex)
+              .then(function () {
+              });
           });
       });
     };
@@ -2180,7 +2279,6 @@ angular.module('myApp')
     };
 
       this.delItem = function (dom, cat, item) {
-      var that = this;
       api.deleteObj(this.hierarchicalWorkOrder[dom].categories[cat].list[item])
         .then(function (obj) {
         that.workOrder = that.workOrder.filter(function (wo) {
@@ -2226,6 +2324,7 @@ angular.module('myApp')
        that.changedOrders = [];
        var reason, action;
        var diffItems = [];
+       this.processMsg = 'בודק אם יש שינויים באירועים';
        return api.queryFutureOrders()
          .then(function(futureOrders) {
            that.woOrders.forEach(function (woOrder) {
@@ -2387,7 +2486,6 @@ angular.module('myApp')
      }
 
      this.createView = function () {
-       var that = this;
        for (var domain=0;domain<5;domain++) {
          if (that.woIndex.properties.domainStatus[domain]) {
            that.workOrder.forEach(function (woi) {
@@ -2422,10 +2520,10 @@ angular.module('myApp')
      };
 
     this.switchWorkOrders = function () {
-      var that = this;
       woId = this.woIndex.properties.woId;
       this.setupBaseWoIndexes();
        this.isProcessing = true;
+       this.processMsg = 'טוען פקודת עבודה';
        api.queryWorkOrder(woId)
         .then(function(wo) {
           that.workOrder = wo;
@@ -2449,7 +2547,6 @@ angular.module('myApp')
     };
 
     this.compareItems = function (newItems, oldItems) {
-      var that = this;
       var reason, action;
       var diffList = [];
       newItems.forEach(function(newItem) {
@@ -2509,9 +2606,11 @@ angular.module('myApp')
     // main block
 
     var that = this;
+    this.isProcessing = true;
+    this.processMsg = 'טוען פקודת עבודה';
     this.isOrderColors = config.isOrderColors;
     this.isOrderNumbers = config.isOrderNumbers;
-   this.catalog = catalog;
+    this.catalog = catalog;
     this.domains = lov.domains;
     this.woIndexes = woIndexes;
     this.woIndex = this.woIndexes.filter(function(index) {
@@ -2531,5 +2630,6 @@ angular.module('myApp')
     this.horizonDate = orderService.horizonDate();
     this.isCompareActive = false;
     this.baseWoIndex = undefined;
+    this.targetWoIndex = undefined;
     this.switchWorkOrders();
   });
