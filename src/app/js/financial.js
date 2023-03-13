@@ -9,11 +9,11 @@ angular.module('myApp')
     this.readOnly = $scope.orderModel.readOnly;
 
 
-    this.updatePrices = function () {
+    this.updateFromCatalog = function () {
       var that = this;
-      var updatePricesModal = $modal.open({
-        templateUrl: 'app/partials/order/updatePrices.html',
-        controller: 'UpdatePricesCtrl as updatePricesModel',
+      var updateFromCatalogModal = $modal.open({
+        templateUrl: 'app/partials/order/updateFromCatalog.html',
+        controller: 'UpdateFromCatalogCtrl as updateFromCatalogModel',
         resolve: {
           order: function () {
             return that.order;
@@ -28,7 +28,7 @@ angular.module('myApp')
         size: 'lg'
       });
 
-      updatePricesModal.result.then(function (isChanged) {
+      updateFromCatalogModal.result.then(function (isChanged) {
         if (isChanged) {
           orderService.calcTotal(that.order.view.quote,that.order);
           orderService.quoteChanged(that.order);

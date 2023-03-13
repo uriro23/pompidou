@@ -1,0 +1,83 @@
+<div class="modal-header">
+  <h3 class="modal-title">עדכון פריטים מהקטלוג</h3>
+</div>
+<div class="modal-body">
+  <table class="table table-hover">
+    <thead>
+    <th>
+      מנה
+    </th>
+    <th>
+       ישן
+    </th>
+    <th>
+       חדש
+    </th>
+    <th>
+      עדכן
+    </th>
+    </thead>
+    <tbody>
+    <tr ng-show="updateFromCatalogModel.priceChangedItems.length>0">
+      <td style="font-size: large">שינויי מחירים</td>
+      <td></td>
+      <td>הכל?</td>
+      <td>
+        <input type="checkbox"
+               ng-model="updateFromCatalogModel.isPriceChangeAll"
+               ng-change="updateFromCatalogModel.setPriceChangeAll()">
+      </td>
+    </tr>
+    <tr ng-repeat="item in updateFromCatalogModel.priceChangedItems track by item.index">
+      <td>{{item.productName}}</td>
+      <td>{{item.price | currency}}</td>
+      <td>{{item.newPrice | currency}}</td>
+      <td>
+        <input type="checkbox" ng-model="item.isChangePrice">
+      </td>
+    </tr>
+    <tr></tr>
+    <tr ng-show="updateFromCatalogModel.nameChangedItems.length>0">
+      <td style="font-size: large">שינויי שם מוצר</td>
+      <td></td>
+      <td>הכל?</td>
+      <td>
+        <input type="checkbox"
+               ng-model="updateFromCatalogModel.isNameChangeAll"
+               ng-change="updateFromCatalogModel.setNameChangeAll()">
+      </td>
+    </tr>
+    <tr ng-repeat="item in updateFromCatalogModel.nameChangedItems track by item.index">
+      <td>{{item.productName}}</td>
+      <td></td>
+      <td>{{item.newName}}</td>
+      <td>
+        <input type="checkbox" ng-model="item.isChangeName">
+      </td>
+    </tr>
+    <tr></tr>
+    <tr ng-show="updateFromCatalogModel.descChangedItems.length>0">
+      <td style="font-size: large">שינויי תאור מוצר</td>
+      <td></td>
+      <td>הכל?</td>
+      <td>
+        <input type="checkbox"
+               ng-model="updateFromCatalogModel.isDescChangeAll"
+               ng-change="updateFromCatalogModel.setDescChangeAll()">
+      </td>
+    </tr>
+    <tr ng-repeat="item in updateFromCatalogModel.descChangedItems track by item.index">
+      <td>{{item.productName}}</td>
+      <td>{{item.productDescription}}</td>
+      <td>{{item.newDesc}}</td>
+      <td>
+        <input type="checkbox" ng-model="item.isChangeDesc">
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="updateFromCatalogModel.done()">בצע</button>
+  <button class="btn btn-warning" ng-click="updateFromCatalogModel.cancel()">ביטול</button>
+</div>

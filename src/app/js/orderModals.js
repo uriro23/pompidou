@@ -30,16 +30,16 @@ angular.module('myApp')
     }
   })
 
-  .controller('UpdatePricesCtrl', function ($modalInstance, order, catalog) {
+  .controller('UpdateFromCatalogCtrl', function ($modalInstance, order, catalog) {
     var that = this;
-    this.changedItems = order.view.quote.items.filter(function (item) {
+    this.priceChangedItems = order.view.quote.items.filter(function (item) {
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
       return (item.catalogPrice !== catEntry.properties.price ||
         item.catalogQuantity !== catEntry.properties.priceQuantity);
     });
-    this.changedItems.forEach(function (item) {
+    this.priceChangedItems.forEach(function (item) {
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
@@ -51,17 +51,49 @@ angular.module('myApp')
       }
     });
 
-    this.setChangeAll = function() {
+    this.nameChangedItems = order.view.quote.items.filter(function (item) {
+      var catEntry = catalog.filter(function (cat) {
+        return cat.id === item.catalogId;
+      })[0];
+      return (item.productName !== catEntry.properties.productName);
+    });
+    this.nameChangedItems.forEach(function (item) {
+      var catEntry = catalog.filter(function (cat) {
+        return cat.id === item.catalogId;
+      })[0];
+      item.newName = catEntry.properties.productName;
+    });
+
+    this.setNameChangeAll = function() {
       var that = this;
-      this.changedItems.forEach(function(item) {
-        item.isChangePrice = that.isChangeAll;
+      this.nameChangedItems.forEach(function(item) {
+        item.isChangeName = that.isNameChangeAll;
+      });
+    };
+
+    this.descChangedItems = order.view.quote.items.filter(function (item) {
+      var catEntry = catalog.filter(function (cat) {
+        return cat.id === item.catalogId;
+      })[0];
+      return (!item.isDescChanged && item.productDescription !== catEntry.properties.productDescription);
+    });
+    this.descChangedItems.forEach(function (item) {
+      var catEntry = catalog.filter(function (cat) {
+        return cat.id === item.catalogId;
+      })[0];
+      item.newDesc = catEntry.properties.productDescription;
+    });
+
+    this.setDescChangeAll = function() {
+      var that = this;
+      this.descChangedItems.forEach(function(item) {
+        item.isChangeDesc = that.isDescChangeAll;
       });
     };
 
     this.done = function () {
       var isChanged = false;
-      for (var i = 0; i < this.changedItems.length; i++) {
-        var item = this.changedItems[i];
+      this.priceChangedItems.forEach(function (item) {
         if (item.isChangePrice) {
           var catEntry = catalog.filter(function (cat) {
             return cat.id === item.catalogId;
@@ -80,7 +112,30 @@ angular.module('myApp')
           item.isChanged = true;
           isChanged = true;
         }
-      }
+      });
+
+      this.nameChangedItems.forEach(function (item) {
+        if (item.isChangeName) {
+          var catEntry = catalog.filter(function (cat) {
+            return cat.id === item.catalogId;
+          })[0];
+          item.productName = item.newName;
+          item.isChanged = true;
+          isChanged = true;
+        }
+      });
+
+      this.descChangedItems.forEach(function (item) {
+        if (item.isChangeDesc) {
+          var catEntry = catalog.filter(function (cat) {
+            return cat.id === item.catalogId;
+          })[0];
+          item.productDescription = item.newDesc;
+          item.isChanged = true;
+          isChanged = true;
+        }
+      });
+
       $modalInstance.close(isChanged);
     };
 
