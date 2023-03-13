@@ -39,8 +39,7 @@ angular.module('myApp')
       return (item.catalogPrice !== catEntry.properties.price ||
         item.catalogQuantity !== catEntry.properties.priceQuantity);
     });
-    for (var i = 0; i < this.changedItems.length; i++) {
-      var item = this.changedItems[i];
+    this.changedItems.forEach(function (item) {
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
@@ -50,7 +49,7 @@ angular.module('myApp')
       } else {
         item.newPrice = priceInclVat;
       }
-    }
+    });
 
     this.setChangeAll = function() {
       var that = this;

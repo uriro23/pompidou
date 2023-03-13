@@ -420,7 +420,13 @@ angular.module('myApp')
               if (!isSameOrder) {
                 sourceItem.catalogPrice = sourceCatalogItem.price;
                 sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
-                if (that.isAdjustQuantity && sourceItem.category.type < 3) {  // food category
+                if (that.isAdjustQuantity && // adjust quantity for food, disposables, rental (except delivery) and drinks
+                  sourceCatalogItem.id !== that.config.rentalTransportationItem &&
+                    (sourceItem.category.type < 3 ||
+                      (sourceItem.category.type === 5 &&
+                        (sourceItem.specialType === 1 ||
+                          sourceItem.specialType === 2 ||
+                          sourceItem.specialType === 5)))) {
                   sourceItem.quantity = sourceItem.quantity / sourceNoOfParticipants * targetOrder.noOfParticipants;
                   var r = sourceItem.measurementUnit.rounding;
                   if (!r) {
@@ -430,6 +436,11 @@ angular.module('myApp')
                   // if source item's price has been changed manually, we can't really adjust its price, so set error
                   sourceItem.errors.price = sourceItem.isForcedPrice;
                   }
+                if (sourceItem.productName !== sourceCatalogItem.productName) {
+                  alert('שם הפריט '+sourceItem.productName+
+                        ' בתבנית, השתנה בקטלוג ל '+sourceCatalogItem.productName+
+                        '. בדוק אם זהו הפריט הנכון.');
+                }
               }
               var targetItem = targetItems.filter(function (itm) {    // check if product exists in order
                 return (itm.catalogId === sourceItem.catalogId) &&
