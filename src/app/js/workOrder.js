@@ -990,6 +990,21 @@ angular.module('myApp')
       });
     };
 
+    function unique (woItems) {
+      var uniqueItems = [];
+      woItems.forEach(function(woi) {
+        if (uniqueItems.filter(function(woi2) {
+          return woi2.id === woi.id;
+        }).length === 0) {
+          uniqueItems.push(woi);
+        } else {
+          console.log('dup update/delete:');
+          console.log(woi);
+        }
+      });
+      return uniqueItems;
+    }
+
 
     this.ignoreWorkOrderChanges = function () {
       that.isWoChanged = false;
@@ -1146,6 +1161,8 @@ angular.module('myApp')
           ordersToUpdate.push(changedOrder.woItem);
         }
       });
+      ordersToUpdate = unique(ordersToUpdate);
+      ordersToDelete = unique(ordersToDelete);
       this.processMsg = 'יוצר אירועים';
       return api.saveObjects(ordersToCreate)
         .then(function (orders) {
@@ -1354,7 +1371,9 @@ angular.module('myApp')
           });
         }
       });
-       this.processMsg = 'יוצר מנות';
+      dishesToUpdate = unique(dishesToUpdate);
+      dishesToDelete = unique(dishesToDelete);
+      this.processMsg = 'יוצר מנות';
        return api.saveObjects(dishesToCreate)
          .then(function(dishes) {
            that.workOrder = that.workOrder.filter(function(woi) { //exclude newly created dishes
@@ -1366,7 +1385,7 @@ angular.module('myApp')
            console.log(dishes.length+' dishes created');
            console.log(dishes);
            that.processMsg = 'מעדכן מנות';
-           return api.saveObjects(dishesToUpdate)
+            return api.saveObjects(dishesToUpdate)
              .then(function() {
                console.log(dishesToUpdate.length+' dishes updated');
                console.log(dishesToUpdate);
@@ -1836,6 +1855,8 @@ angular.module('myApp')
          });
         }
       });
+      prepsToUpdate = unique(prepsToUpdate);
+      prepsToDelete = unique(prepsToDelete);
       this.processMsg = 'יוצר הכנות';
       return api.saveObjects(prepsToCreate)
         .then(function(preps) {
@@ -2351,7 +2372,8 @@ angular.module('myApp')
                      woOrder.properties.order = ord.properties;
                      woOrder.properties.order.id = ord.id;
                      reason = 'בוטל';
-                     action = 'delete';
+                     // action = 'delete'; todo: temporary
+                     action = 'past';
                    } else {
                      var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
                      var timeDiff = (ord.properties.eventTime && woOrder.properties.order.eventTime) ?
