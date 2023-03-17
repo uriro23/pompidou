@@ -566,6 +566,84 @@
      </div>
      </div>
    </tab>
+   <tab heading="העתקה">
+     <div>
+       <button class="btn btn-warning"
+               ng-click="adminModel.copyTasks()" ng-show="environment==='prod'">העתק הגדרת משימות לייצור</button>
+     </div>
+     <p></p>
+     <div>
+       <button class="btn btn-warning"
+               ng-click="adminModel.loadDB()" ng-show="environment==='prod'">טען נתונים מסביבת היצור</button>
+     </div>
+     <p></p>
+     <table style="width: 30%" ng-show="environment==='test'">
+       <tr>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.deleteCatalog()" >
+             מחק קטלוג
+           </button>
+         </td>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.loadCatalog()" >
+             טען קטלוג
+           </button>
+         </td>
+      </tr>
+       <tr>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.deleteOrders()" >
+             מחק אירועים
+           </button>
+         </td>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.loadOrders()" >
+             טען אירועים
+           </button>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.deleteCustomers()" >
+             מחק לקוחות
+           </button>
+         </td>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.loadCustomers3()" >
+             טען לקוחות
+           </button>
+         </td>
+       <tr>
+         <td></td>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.loadConfig()" >
+             טען קונפיגורציה
+           </button>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.fixOrders()" >
+             תקן אירועים
+           </button>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.fixCatalog()" >
+             תקן קטלוג
+           </button>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <button class="btn btn-default" ng-click="adminModel.fixConfig()" >
+             תקן קונפיגורציה
+           </button>
+         </td>
+       </tr>
+     </table>
+  </tab>
    <tab heading="סביבה" active="adminModel.isEnvTabActive">
     <div>
       <span>סביבה נוכחית היא </span>
@@ -574,11 +652,6 @@
     <div>
       <button class="btn btn-default" ng-click="adminModel.switchEnv()">שנה</button>
     </div>
-     <p></p>
-     <div>
-       <button class="btn btn-warning"
-               ng-click="adminModel.copyTasks()" ng-hide="environment==='test'">העתק הגדרת משימות לייצור</button>
-     </div>
-  </tab>
+    </tab>
 </tabset>
 </div>

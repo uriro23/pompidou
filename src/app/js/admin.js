@@ -169,6 +169,343 @@ angular.module('myApp')
       $state.go('login');
     };
 
+    this.loadDB = function () {
+      if (api.getEnvironment()==='test') {
+        alert ('switch to prod first');
+        return;
+      }
+      $rootScope.dbData = {
+        signiture : 'asdfg'
+      };
+      api.queryCatalog()
+        .then(function(catalog) {
+          $rootScope.dbData.catalog = catalog.map(function (cat) {
+            cat.properties.prodId = cat.id;
+            return cat.properties;
+          });
+          console.log($rootScope.dbData.catalog.length+' catalog entries loaded');
+          api.queryTemplateOrders()
+            .then(function (templates) {
+              console.log(templates.length+' templates loaded');
+              var templates2 = templates.map(function (temp) {
+                temp.properties.prodId = temp.id;
+                return temp.properties;
+              });
+              var from = new Date(2023,0,1,0,0,0,0);
+              var to = new Date(2023,11,31,23,59,59,999);
+              api.queryOrdersByRange('createdAt',from,to)
+                .then(function (orders) {
+                  console.log(orders.length+' orders created in 2023 loaded');
+                  var orders2 = orders.filter(function(ord) {
+                    return !ord.template;
+                  }).map(function (ord2) {
+                    ord2.properties.prodId = ord2.id;
+                    return ord2.properties;
+                  });
+                  $rootScope.dbData.orders = templates2.concat(orders2);
+                  // find customers and contacts in orders
+                  var orderCustomers = [];
+                  $rootScope.dbData.orders.forEach(function (ord) {
+                    if (ord.customer) {
+                      if (orderCustomers.filter(function (cust) {
+                        return cust === ord.customer;
+                      }).length === 0) {
+                        orderCustomers.push(ord.customer);
+                      }
+                    }
+                    if (ord.contact) {
+                      if (orderCustomers.filter(function (cust) {
+                        return cust === ord.contact;
+                      }).length === 0) {
+                        orderCustomers.push(ord.contact);
+                      }
+                    }
+                  });
+                  api.queryCustomersByIds(orderCustomers)
+                    .then(function(customers) {
+                      console.log(customers.length+' cusomers loaded');
+                      $rootScope.dbData.customers = customers.map(function(cust) {
+                        cust.properties.prodId = cust.id;
+                        return cust.properties;
+                      });
+                      api.queryConfig()
+                        .then(function(conf) {
+                          console.log('config loaded');
+                          $rootScope.dbData.config = conf.map(function(conf2) {
+                            return conf2.properties;
+                          });
+                        });
+                    });
+                });
+            });
+        });
+    };
+
+
+    this.deleteCatalog = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to delete catalog? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      api.queryCatalog(undefined,[])
+        .then(function(catalog) {
+          api.deleteObjects(catalog)
+            .then(function() {
+              alert('catalog deleted from test');
+            });
+        });
+    };
+
+    this.deleteOrders = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to delete all orders? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      api.queryAllOrders([])
+        .then(function(orders) {
+          api.deleteObjects(orders)
+            .then(function() {
+              alert('all orders deleted from test');
+            });
+        });
+    };
+
+    this.deleteCustomers = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to delete customers? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      api.queryCustomers(undefined,[])
+        .then(function(customers) {
+          api.deleteObjects(customers)
+            .then(function() {
+              alert('all customers deleted from test');
+            });
+        });
+    };
+
+    function saveSlices (items) {
+       if (items.length <= 100) {
+        console.log('saving '+items.length+' items');
+        return api.saveObjects(items)
+      } else {
+        console.log('saving 100 items');
+        return api.saveObjects(items.slice(0,100))
+          .then(function() {
+            items.splice(0,100);
+            saveSlices(items);
+          });
+      }
+    }
+
+    this.loadOrders = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to load orders? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      var items = [];
+      $rootScope.dbData.orders.forEach(function(inp) {
+        var item = api.initOrder();
+        item.properties = inp;
+        items.push(item);
+      });
+      console.log('saving '+items.length+' items');
+      api.saveObjects(items)
+        .then(function() {
+          alert('orders loaded from prod');
+        });
+    };
+
+
+    this.loadCustomers3 = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to load customers? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      var items = [];
+      $rootScope.dbData.customers.forEach(function(inp) {
+        var item = api.initCustomer();
+        item.properties = inp;
+        items.push(item);
+      });
+      console.log('saving '+items.length+' items');
+      api.saveObjects(items)
+        .then(function() {
+          alert('customers loaded from prod');
+        });
+    };
+
+    this.loadCatalog = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to load catalog? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      var items = [];
+      $rootScope.dbData.catalog.forEach(function(inp) {
+        var item = api.initCatalog();
+        item.properties = inp;
+        items.push(item);
+      });
+      console.log('saving '+items.length+' items');
+      saveSlices(items);
+    };
+
+    this.loadConfig = function() {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to load config? if not close this page');
+      if ($rootScope.dbData.signiture !== 'asdfg') {
+        alert('prod data not loaded');
+        return;
+      }
+      var items = [];
+      $rootScope.dbData.config.forEach(function(inp) {
+        var item = api.initConfig();
+        item.properties = inp;
+        items.push(item);
+      });
+      console.log('saving '+items.length+' items');
+      api.saveObjects(items)
+        .then(function() {
+          alert('config loaded from prod');
+        });
+    };
+
+    function newId(oldId,items,attrName,record) {
+      if (oldId) {
+        var match = items.filter(function (item) {
+          return item.properties.prodId === oldId;
+        })[0];
+        if (!match) {
+          console.log('couldnt fix id of' + attrName + ' ' + oldId);
+          console.log(record);
+          return "badbadbad";
+        } else {
+          return match.id;
+        }
+      } else {
+        return undefined;
+      }
+
+    };
+
+    this.fixOrders = function () {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to fix ids in orders? if not close this page');
+      api.queryAllOrders(['customer','contact','quotes','prodId'])
+        .then(function (orders) {
+          api.queryCatalog(1, ['domain', 'productName', 'prodId'])
+            .then(function (catalog) {
+              api.queryCustomers(undefined,['prodId'])
+                .then(function (customers2) {
+                  var customers = customers2.filter(function (cust) {
+                    return cust.properties.prodId;
+                  });
+                  orders.forEach(function (ord) {
+                    ord.properties.customer = newId(ord.properties.customer, customers, 'customer', ord);
+                    ord.properties.contact = newId(ord.properties.contact, customers, 'contact', ord);
+                    ord.properties.quotes.forEach(function (quote) {
+                      quote.items.forEach(function (item) {
+                        item.catalogId = newId(item.catalogId,catalog,'catalogId',ord);
+                      });
+                    });
+                  });
+                  api.saveObjects(orders)
+                    .then(function () {
+                      alert(orders.length+' orders fixed');
+                    });
+                });
+            });
+        });
+    };
+
+    this.fixCatalog = function () {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to fix ids in catalog? if not close this page');
+      api.queryCatalog(undefined, ['domain', 'productName','components','prodId'])
+        .then(function (catalog) {
+          catalog.forEach(function (catItem) {
+            if (catItem.properties.components) {
+              catItem.properties.components.forEach(function (comp) {
+                comp.id = newId(comp.id,catalog,'components',catItem);
+              })
+            }
+          });
+          saveSlices(catalog);
+        });
+    };
+
+    this.fixConfig = function () {
+      if (api.getEnvironment()==='prod') {
+        alert ('switch to test first');
+        return;
+      }
+      alert('want to fix ids in config? if not close this page');
+      api.queryCatalog(undefined,['domain', 'productName', 'prodId'])
+        .then(function (catalog) {
+          config.properties.unhandledItemComponent =
+            newId(config.properties.unhandledItemComponent,catalog,'unhandledItemComponent',config.properties);
+          config.properties.unhandledItemMaterial =
+            newId(config.properties.unhandledItemMaterial,catalog,'unhandledItemMaterial',config.properties);
+          config.properties.satietyIndexItem =
+            newId(config.properties.satietyIndexItem,catalog,'satietyIndexItem',config.properties);
+          config.properties.boxItem =
+            newId(config.properties.boxItem,catalog,'boxItem',config.properties);
+          config.properties.outOfFridgeItem =
+            newId(config.properties.outOfFridgeItem,catalog,'outOfFridgeItem',config.properties);
+          config.properties.snacksTraysItem =
+            newId(config.properties.snacksTraysItem,catalog,'snacksTraysItem',config.properties);
+          config.properties.dessertsTraysItem =
+            newId(config.properties.dessertsTraysItem,catalog,'dessertsTraysItem',config.properties);
+          config.properties.sandwichesTraysItem =
+            newId(config.properties.sandwichesTraysItem,catalog,'sandwichesTraysItem',config.properties);
+          config.properties.rentalTransportationItem =
+            newId(config.properties.rentalTransportationItem,catalog,'rentalTransportationItem',config.properties);
+          config.properties.unhandledPrepComponent =
+            newId(config.properties.unhandledPrepComponent,catalog,'unhandledPrepComponent',config.properties);
+          api.saveObj(config);
+          console.log('config fixed');
+        });
+     };
+
     // copy taskTypes and taskDetails from test to prod
     // you have to start the app from test (localhost:) and change environment to prod
     this.copyTasks = function() {
@@ -227,7 +564,7 @@ angular.module('myApp')
             });
         });
 
-  };
+    };
 
 // workOrder tab
     this.loadWoIndexes = function() {
@@ -711,7 +1048,9 @@ angular.module('myApp')
           catDishes.items.forEach(function(mi) {
             if (!mi.properties.isDeleted) {
             mi.properties.components.forEach(function(mic) {
-              if (mic.domain === 3 && mic.id !== 'Ui6ySqWZUd' && mic.id !== '3s9Lgtx4sQ') {
+              if (mic.domain === 3 &&
+                  mic.id !== config.properties.unhandledItemMaterial &&
+                  mic.id !== config.properties.satietyIndexItem) {
                 // exclude unhandled item & satiety index
                 var shop = catShoppings.items.filter(function(cat) {
                   return cat.id === mic.id;

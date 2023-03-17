@@ -316,13 +316,19 @@ angular.module('myApp')
       customerQuery.equalTo('objectId', id);
     }
     if (fields) {
-      catalogQuery.select(fields);
+      customerQuery.select(fields);
     }
     customerQuery.ascending("firstName");
     return query(customerQuery);
   };
 
-  // WorkOrder
+  this.queryCustomersByIds = function (ids) { // returns customers with id matching member of param array
+    var customerQuery = new Parse.Query(Customer);
+    customerQuery.containedIn('objectId', ids);
+    return query(customerQuery);
+  };
+
+    // WorkOrder
   // ---------
 
   var WorkOrder = Parse.Object.extend("WorkOrder");
@@ -618,6 +624,12 @@ angular.module('myApp')
   // ------
 
   var Config = Parse.Object.extend("Config");
+
+  this.initConfig = function () {
+    var t = new Config();
+    t.properties = angular.copy(t.attributes);
+    return t;
+  };
 
   this.queryConfig = function () {
     var configQuery = new Parse.Query(Config);
