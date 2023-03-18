@@ -298,6 +298,24 @@
                   track by cat.category.tId"
        ng-show="workOrderModel.isShowCategory(cat)">
     <label ng-show="cat.isShow" style="font-size: x-large">{{cat.category.label}}</label>
+    <div ng-show="workOrderModel.domain === 4 && cat.isShow && cat.preServiceList.length > 0"
+         style="column-count: 2; width:90%">
+      <div ng-repeat="woItem in cat.preServiceList track by woItem.id" style="font-size: large"
+           ng-show="workOrderModel.isShowItem(woItem)">
+        <span style="position: relative;right:0%"
+              ng-show="!workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
+                        workOrderModel.isShowDone[workOrderModel.domain]">
+          {{woItem.properties.quantity | number:2}}</span>
+        <span style="position: relative;right:0%"
+              ng-show="!workOrderModel.isShowTodayOnly[workOrderModel.domain] &&
+                        !workOrderModel.isShowDone[workOrderModel.domain]">
+        {{woItem.properties.quantity - woItem.properties.quantityDone | number:2}}</span>
+        <span style="position: relative;right:0%" ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+          {{woItem.properties.quantityForToday | number:2}}</span>
+        <span style="position: relative;right:4%">{{woItem.properties.measurementUnit.label}}</span>
+        <span style="position: relative;right:15%">{{woItem.properties.productName}}</span>
+      </div>
+    </div>
     <div ng-show="workOrderModel.domain === 4 && cat.isShow && cat.serviceList.length > 0"
          style="column-count: 2; width:90%">
       <div ng-repeat="woItem in cat.serviceList track by woItem.id" style="font-size: large"
