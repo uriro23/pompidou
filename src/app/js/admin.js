@@ -2257,8 +2257,58 @@ angular.module('myApp')
             });
         });
     };
-      */
-
+    this.addPopmidouBox = function() {
+      var itemsToSave = [];
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          catalog.forEach(function (cat) {
+            var box = cat.properties.components.filter(function (comp) {
+              return comp.id === config.properties.boxItem;
+            })[0];
+            if (box) {
+              cat.properties.components.push({
+                id: api.getEnvironment() === 'test' ? 'fqzuYPmQLe' : 'IQPEcD7gru',
+                domain: 3,
+                quantity: box.quantity
+              });
+              itemsToSave.push(cat);
+            }
+          });
+          console.log(itemsToSave.length+' catalog items changed');
+          api.saveObjects(itemsToSave)
+            .then(function () {
+              console.log('done');
+            })
+        });
+    };
+    // remove one occurance of boxItem from components
+    this.fixPopmidouBox = function() {
+      var itemsToSave = [];
+      api.queryCatalog(1)
+        .then(function(catalog) {
+          catalog.forEach(function (cat) {
+            var ind;
+            var box = cat.properties.components.filter(function (comp, i) {
+              if (comp.id === config.properties.boxItem) {
+                ind = i;
+                return true;
+              } else {
+                return false;
+              }
+            })[0];
+            if (box) {
+              cat.properties.components.splice(ind,1);
+               itemsToSave.push(cat);
+            }
+          });
+          console.log(itemsToSave.length+' catalog items changed');
+          api.saveObjects(itemsToSave)
+            .then(function () {
+              console.log('done');
+            })
+        });
+    }
+        */
     // end conversions
 
   });
