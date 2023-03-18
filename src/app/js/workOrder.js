@@ -631,7 +631,7 @@ angular.module('myApp')
 
     // show category only if any of its items will be shown
     this.isShowCategory = function(cat) {
-      var temp = cat.list.concat(cat.serviceList).filter(function(woItem) {
+      var temp = cat.list.concat(cat.serviceList,cat.preServiceList).filter(function(woItem) {
         return that.isShowItem(woItem);
       });
       return temp.length;
@@ -2151,7 +2151,8 @@ angular.module('myApp')
               category: wo.category,
               isShow: true,
               list: [],
-              serviceList: [] // only for actions
+              serviceList: [], // only for actions
+              preServiceList: [] // only for actions
             });
             catInd = 0;
           }
@@ -2161,8 +2162,15 @@ angular.module('myApp')
                 return serv2.id === serv.id;
               })[0].properties.category.type === 11;
             });
+            var preService = wo.backTrace.filter(function (serv) { // is this action based on at least 1 prep
+              return that.workOrder.filter(function(serv2) {
+                return serv2.id === serv.id;
+              })[0].properties.category.type === 12;
+            });
             if (service.length) {
               that.hierarchicalWorkOrder[4].categories[catInd].serviceList.push(woi);
+            } else if (preService.length) {
+              that.hierarchicalWorkOrder[4].categories[catInd].preServiceList.push(woi);
             } else {
               that.hierarchicalWorkOrder[4].categories[catInd].list.push(woi);
             }
@@ -2195,6 +2203,13 @@ angular.module('myApp')
       });
       this.hierarchicalWorkOrder[4].categories.forEach(function(cat) {
         cat.serviceList.sort(function (a, b) {
+          if (a.properties.productName > b.properties.productName) {
+            return 1;
+          } else if (a.properties.productName < b.properties.productName){
+            return -1;
+          }
+        });
+        cat.preServiceList.sort(function (a, b) {
           if (a.properties.productName > b.properties.productName) {
             return 1;
           } else if (a.properties.productName < b.properties.productName){
@@ -2246,6 +2261,14 @@ angular.module('myApp')
           woi.isShowDetails = category.isShowDetails;
         }
       });
+      if (this.domain === 4 ) {
+        category.serviceList.forEach(function (woi) {
+            woi.isShowDetails = category.isShowDetails;
+        });
+        category.preServiceList.forEach(function (woi) {
+            woi.isShowDetails = category.isShowDetails;
+        });
+      }
     };
 
     // create work order items for specified domain from lower domain itens

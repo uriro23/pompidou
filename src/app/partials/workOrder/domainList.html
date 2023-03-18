@@ -50,6 +50,87 @@
   <label>{{cat.category.label}}</label>
   <span>&nbsp;&nbsp;פירוט</span>
   <input type="checkbox" ng-model="cat.isShowDetails" ng-change="workOrderModel.setCategoryDetail(cat)">
+  <table ng-show="workOrderModel.domain === 4 && cat.isShow && cat.preServiceList.length > 0"
+         class="table table-hover" style="width:90%; border: dotted blue">
+    <thead>
+    <th colspan="3">הכנות לסרוויס</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="woItem in cat.preServiceList track by woItem.id"
+        ng-class="woItem.properties.isInStock?'inStock':'null'"
+        ng-show="workOrderModel.isShowItem(woItem)">
+      <td style="width: 30%">{{woItem.properties.productName}}</td>
+      <td style="width: 5%"
+          ng-show="!workOrderModel.isShowTodayOnly[workOrderModel.domain] && workOrderModel.isShowDone[workOrderModel.domain]">
+        {{woItem.properties.quantity | number:2}}
+      </td>
+      <td style="width: 5%"
+          ng-show="!workOrderModel.isShowTodayOnly[workOrderModel.domain] && !workOrderModel.isShowDone[workOrderModel.domain]">
+        {{woItem.properties.quantity - woItem.properties.quantityDone | number:2}}
+      </td>
+      <td style="width: 5%" ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+        {{woItem.properties.quantityForToday | number:2}}
+      </td>
+      <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
+      <td style="width: 7%">
+        <button ng-click="workOrderModel.backInfo(woItem)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]"
+                class="btn btn-default btn-sm">
+          פרטים
+        </button>
+      </td>
+      <td style="width: 7%">
+        <button ng-click="workOrderModel.delItem(workOrderModel.domain,$parent.$index,$index)"
+                ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]"
+                class="btn btn-default btn-sm">
+          מחק
+        </button>
+      </td>
+      <td style="width: 7%">
+        <span>פירוט</span>
+        <input type="checkbox" ng-model="woItem.isShowDetails">
+      </td>
+      <td style="width: 32%" ng-show="woItem.isShowDetails">
+        <table class="table">
+          <thead>
+          <th>לקוח</th>
+          <th>יום</th>
+          <th>כמות</th>
+          <th>מתי</th>
+          </thead>
+          <tbody>
+          <tr ng-repeat="order in woItem.view.orders track by $index"
+              ng-hide="(workOrderModel.isShowTodayOnly[workOrderModel.domain] && order.select!=='today') ||
+                       (!workOrderModel.isShowDone[workOrderModel.domain] && order.select==='done')">
+            <td>{{order.customer}}</td>
+            <td>{{order.day}}</td>
+            <td>{{order.totalQuantity | number:2}}</td>
+            <td>
+              {{order.select==="delay"?"עוד לא":
+              order.select==="today"?"להיום":
+                order.select==="done"?"בוצע":
+                  order.select==="unknown"?"לא ידוע":
+                    "שגיאה"
+              }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+      <td style="width: 32%" ng-show="!woItem.isShowDetails && !workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+        {{woItem.properties.select==="delay"?"עוד לא":
+        woItem.properties.select==="today"?"להיום":
+          woItem.properties.select==="done"?"בוצע":
+            woItem.properties.select==="unknown"?"לא ידוע":
+              woItem.properties.select==="mix"?"ראה פירוט":
+                "שגיאה"
+        }}
+      </td>
+      <td style="width: 32%" ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+      </td>
+    </tr>
+    </tbody>
+  </table>
   <table ng-show="workOrderModel.domain === 4 && cat.isShow && cat.serviceList.length > 0"
          class="table table-hover" style="width:90%; border: dashed blue">
     <thead>
