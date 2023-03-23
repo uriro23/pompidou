@@ -1050,8 +1050,9 @@ angular.module('myApp')
             mi.properties.components.forEach(function(mic) {
               if (mic.domain === 3 &&
                   mic.id !== config.properties.unhandledItemMaterial &&
+                  mic.id !== config.properties.boxItem &&
                   mic.id !== config.properties.satietyIndexItem) {
-                // exclude unhandled item & satiety index
+                // exclude unhandled item, boxItem & satiety index
                 var shop = catShoppings.items.filter(function(cat) {
                   return cat.id === mic.id;
                 })[0];

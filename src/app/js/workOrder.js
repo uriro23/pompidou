@@ -494,115 +494,161 @@ angular.module('myApp')
       });
     };
 
+    // for actions, create array of preps for breakdown by prep and order, for snacks and desserts
+    this.createActionsPrepsView = function (currentItem) {
+      currentItem.view.preps = [];
+      currentItem.properties.backTrace.forEach(function(itemBackTrace) {
+        if (itemBackTrace.domain === 2) {
+          var originalPrep = that.workOrder.filter(function (prep) {
+            return prep.id === itemBackTrace.id;
+          })[0];
+          var prepCatalogItem = that.catalog.filter(function (cat) {
+            return cat.id === originalPrep.properties.catalogId;
+          })[0];
+          currentItem.view.preps.push({
+            id: originalPrep.id,
+            name: prepCatalogItem.properties.externalName,
+            quantity: originalPrep.properties.quantity,
+            quantityForToday: originalPrep.properties.quantityForToday,
+            quantityDone: originalPrep.properties.quantityDone
+          });
+        }
+      });
+    };
+
     // find item's breakdown to individual orders, based on the prep order view it comes from
-    this.createproductsAndActionsOrderView = function(currentItem,targetDomain) {
-      if (currentItem.properties.domain === targetDomain) {
-        var itemCatalogItem = catalog.filter(function (cat) {
-          return cat.id === currentItem.properties.catalogId;
-        })[0];
-        currentItem.view.orders = [];
-        currentItem.properties.backTrace.forEach(function(itemBackTrace) {
-          if (itemBackTrace.domain === 2) {
-            var originalPrep = that.workOrder.filter(function (prep) {
-              return prep.id === itemBackTrace.id;
-            })[0];
-            var prepCatalogItem = that.catalog.filter(function (cat) {
-              return cat.id === originalPrep.properties.catalogId;
-            })[0];
-            var component = prepCatalogItem.properties.components.filter(function (comp) {
-              return comp.id === itemCatalogItem.id;
-            })[0];
-            if (!component) {
-              alert('המצרך '+itemCatalogItem.properties.productName+
-                ' הוסר ממרכיביה של ההכנה '+prepCatalogItem.properties.productName+
-                '. בצע חישוב מחדש של מצרכים');
-            } else {
-              originalPrep.view.orders.forEach(function (prepOrder) {
-                var temp = currentItem.view.orders.filter(function (itemOrder) {
-                  return itemOrder.id === prepOrder.id && itemOrder.select === prepOrder.select;
-                });
-                var currentOrder;
-                if (temp.length === 0) { // order doesn't exists in item
-                  currentOrder = {
-                    id: prepOrder.id,
-                    customer: prepOrder.customer,
-                    date: prepOrder.date,
-                    day: prepOrder.day,
-                    time: prepOrder.time,
-                    totalQuantity: 0,
-                    dishes: [],
-                    select: prepOrder.select
-                  };
-                  currentItem.view.orders.push(currentOrder);
-                } else {
-                  currentOrder = temp[0];
-                }
-                currentOrder.totalQuantity +=
-                  prepOrder.totalQuantity * component.quantity / prepCatalogItem.properties.productionQuantity;
+    this.createProductsAndActionsOrderView = function(currentItem) {
+      var itemCatalogItem = catalog.filter(function (cat) {
+        return cat.id === currentItem.properties.catalogId;
+      })[0];
+      currentItem.view.orders = [];
+      currentItem.properties.backTrace.forEach(function(itemBackTrace) {
+        if (itemBackTrace.domain === 2) {
+          var originalPrep = that.workOrder.filter(function (prep) {
+            return prep.id === itemBackTrace.id;
+          })[0];
+          var prepCatalogItem = that.catalog.filter(function (cat) {
+            return cat.id === originalPrep.properties.catalogId;
+          })[0];
+          var component = prepCatalogItem.properties.components.filter(function (comp) {
+            return comp.id === itemCatalogItem.id;
+          })[0];
+          if (!component) {
+            alert('המצרך / המטלה '+itemCatalogItem.properties.productName+
+              ' הוסר ממרכיביה של ההכנה '+prepCatalogItem.properties.productName+
+              '. בצע חישוב מחדש של מצרכים / מטלות');
+          } else {
+            originalPrep.view.orders.forEach(function (prepOrder) {
+              var temp = currentItem.view.orders.filter(function (itemOrder) {
+                return itemOrder.id === prepOrder.id && itemOrder.select === prepOrder.select;
               });
-            }
-          } else if (itemBackTrace.domain === 1) { // product item directly under dish
-            var originalDish = that.workOrder.filter(function (mi) {
-              return mi.id === itemBackTrace.id;
-            })[0];
-            if (!originalDish) {
-              console.log('cant find originalDish of product backTrace ' + currentItem.properties.productName);
-              console.log(currentItem);
-              console.log(itemBackTrace);
-            }
-            var miCatalogItem = that.catalog.filter(function (cat) {
-              return cat.id === originalDish.properties.catalogId;
-            })[0];
-            component = miCatalogItem.properties.components.filter(function (comp) {
-              return comp.id === itemCatalogItem.id;
-            })[0];
-            if (!component) {
-              alert('המצרך '+itemCatalogItem.properties.productName+
-                          ' הוסר ממרכיביה של המנה '+miCatalogItem.properties.productName+
-                          '. בצע חישוב מחדש של מצרכים');
-            } else {
-              originalDish.properties.backTrace.forEach(function (bt) {
-                var temp = currentItem.view.orders.filter(function (itemOrder) {
-                  return itemOrder.id === bt.id && itemOrder.select === 'unknown';
-                });
-                var originalOrder = that.workOrder.filter(function (ord) {
-                  return ord.id === bt.id;
-                })[0];
-                if (temp.length === 0) {
-                  var currentOrder = {
-                    id: originalOrder.id,
-                    customer: originalOrder.view.customer.firstName,
-                    date: originalOrder.properties.order.eventDate,
-                    day: that.dayName(originalOrder.properties.order.eventDate),
-                    time: originalOrder.properties.order.eventTime,
-                    totalQuantity: 0,
-                    dishes: [],
-                    select: 'unknown'
-                  };
-                  currentItem.view.orders.push(currentOrder);
-                } else {
-                  currentOrder = temp[0];
+              var currentOrder;
+              if (temp.length === 0) { // order doesn't exists in item
+                currentOrder = {
+                  id: prepOrder.id,
+                  customer: prepOrder.customer,
+                  date: prepOrder.date,
+                  day: prepOrder.day,
+                  time: prepOrder.time,
+                  totalQuantity: 0,
+                  preps: [],
+                  select: prepOrder.select
+                };
+                if (currentItem.properties.domain === 4) {
+                  currentItem.view.preps.forEach(function (prep, ind) {
+                    currentOrder.preps[ind] = {
+                      seq: ind,
+                      quantity: 0,
+                      quantityForToday: 0,
+                      quantityDone: 0
+                    };
+                  });
                 }
-                currentOrder.totalQuantity +=
-                  bt.quantity * component.quantity / miCatalogItem.properties.productionQuantity;
-              });
-            }
+                currentItem.view.orders.push(currentOrder);
+              } else {
+                currentOrder = temp[0];
+              }
+              currentOrder.totalQuantity +=
+                prepOrder.totalQuantity * component.quantity /
+                    prepCatalogItem.properties.productionQuantity;
+              var viewPrepIndex;
+              if (currentItem.properties.domain === 4) {
+                currentItem.view.preps.forEach(function (prep, ind) {
+                  if (prep.id === originalPrep.id) {
+                    viewPrepIndex = ind;
+                  }
+                });
+                currentOrder.preps[viewPrepIndex].quantity = prepOrder.totalQuantity;
+                if (currentOrder.select === 'today') {
+                  currentOrder.preps[viewPrepIndex].quantityForToday = prepOrder.totalQuantity;
+                }
+                if (currentOrder.select === 'done') {
+                  currentOrder.preps[viewPrepIndex].quantityDone = prepOrder.totalQuantity;
+                }
+              }
+            });
           }
-        });
-        currentItem.view.orders.sort(function(a,b) {
-          var diff = a.date - b.date;
+        } else if (itemBackTrace.domain === 1) { // product item directly under dish
+          var originalDish = that.workOrder.filter(function (mi) {
+            return mi.id === itemBackTrace.id;
+          })[0];
+          if (!originalDish) {
+            console.log('cant find originalDish of product backTrace ' + currentItem.properties.productName);
+            console.log(currentItem);
+            console.log(itemBackTrace);
+          }
+          var miCatalogItem = that.catalog.filter(function (cat) {
+            return cat.id === originalDish.properties.catalogId;
+          })[0];
+          component = miCatalogItem.properties.components.filter(function (comp) {
+            return comp.id === itemCatalogItem.id;
+          })[0];
+          if (!component) {
+            alert('המצרך / המטלה '+itemCatalogItem.properties.productName+
+                        ' הוסר ממרכיביה של המנה '+miCatalogItem.properties.productName+
+                        '. בצע חישוב מחדש של מצרכים / מטלות');
+          } else {
+            originalDish.properties.backTrace.forEach(function (bt) {
+              var temp = currentItem.view.orders.filter(function (itemOrder) {
+                return itemOrder.id === bt.id && itemOrder.select === 'unknown';
+              });
+              var originalOrder = that.workOrder.filter(function (ord) {
+                return ord.id === bt.id;
+              })[0];
+              if (temp.length === 0) {
+                var currentOrder = {
+                  id: originalOrder.id,
+                  customer: originalOrder.view.customer.firstName,
+                  date: originalOrder.properties.order.eventDate,
+                  day: that.dayName(originalOrder.properties.order.eventDate),
+                  time: originalOrder.properties.order.eventTime,
+                  totalQuantity: 0,
+                  preps: [],
+                  select: 'unknown'
+                };
+                currentItem.view.orders.push(currentOrder);
+              } else {
+                currentOrder = temp[0];
+              }
+              currentOrder.totalQuantity +=
+                bt.quantity * component.quantity / miCatalogItem.properties.productionQuantity;
+            });
+          }
+        }
+      });
+      currentItem.view.orders.sort(function(a,b) {
+        var diff = a.date - b.date;
+        if (diff) {
+          return diff;
+        }
+        if (a.time && b.time) {
+          diff = a.time - b.time;
           if (diff) {
             return diff;
           }
-          if (a.time && b.time) {
-            diff = a.time - b.time;
-            if (diff) {
-              return diff;
-            }
-          }
-          return a.id - b.id;
-        });
-      }
+        }
+        return a.id - b.id;
+      });
     };
 
     // decide if item will be shown
@@ -795,6 +841,9 @@ angular.module('myApp')
             if (ord.id === woItem.id) {
               if (woi.properties.category.type === 11) {
                 ord.select = woItem.properties.isServiceToday ? 'today' : 'delay';
+              }
+              if (woi.properties.category.type === 12) {
+                ord.select = woItem.properties.isPreServiceToday ? 'today' : 'delay';
               }
             }
           });
@@ -2527,7 +2576,10 @@ angular.module('myApp')
 
      this.createViewForActionOrProduct = function (woi,targetDomain) {
        woi.view = {};
-       this.createproductsAndActionsOrderView(woi,targetDomain);
+       if (targetDomain === 4) {
+         this.createActionsPrepsView(woi);
+       }
+       this.createProductsAndActionsOrderView(woi);
      }
 
      this.createView = function () {

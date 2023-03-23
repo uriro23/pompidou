@@ -256,12 +256,15 @@
         </td>
       </tr>
       <tr ng-class="catalogItemModel.item.errors.externalName?'bg-danger':null"
-          ng-show="catalogItemModel.currentDomain.id===1">
-        <td><label>שם קצר ללקוח</label></td>
+          ng-show="catalogItemModel.currentDomain.id<3">
+        <td ng-show="catalogItemModel.currentDomain.id===1"><label>שם קצר ללקוח</label></td>
+        <td ng-show="catalogItemModel.currentDomain.id===2"><label>שם תוצר ההכנה</label></td>
         <td>
           <input  type="text" size = 40 ng-model="catalogItemModel.item.properties.externalName"
                   ng-change="catalogItemModel.setExternalName()">
-          <button class="btn btn-default" ng-hide="catalogItemModel.item.properties.externalName"
+          <button class="btn btn-default"
+                  ng-hide="catalogItemModel.item.properties.externalName ||
+                           catalogItemModel.currentDomain.id===2"
                   ng-click="catalogItemModel.copyProductName()">העתק משם פנימי</button>
         </td>
       </tr>

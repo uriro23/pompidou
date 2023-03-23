@@ -78,6 +78,7 @@
         <th>    סטטוס  </th>
         <th>זיהוי</th>
         <th class="verticalLine">סרוויס</th>
+        <th class="verticalLine">הכנה לסרוויס</th>
         <th class="verticalLine" style="width: 6px"></th>
       </tr>
       </thead>
@@ -99,11 +100,15 @@
           {{woItem.view.orderStatus.name}}
         </td>
         <td>{{woItem.view.color.tId}}</td>
-          <td class="verticalLine">
+        <td class="verticalLine">
           <input type="checkbox" ng-model="woItem.properties.isServiceToday"
                  ng-change="workOrderModel.setOrderServiceToday(woItem)">
-         </td>
-           <td class="verticalLine"></td>
+        </td>
+        <td class="verticalLine">
+          <input type="checkbox" ng-model="woItem.properties.isPreServiceToday"
+                 ng-change="workOrderModel.setOrderServiceToday(woItem)">
+        </td>
+        <td class="verticalLine"></td>
       </tr>
       </tbody>
     </table>

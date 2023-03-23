@@ -150,6 +150,10 @@ a:link, a:visited  {
   border-right: 4px solid green;
 }
 
+.verticalSeparator {
+  border-right: 1px solid;
+}
+
 .column {
   float: right;
   width: 50%;
