@@ -154,6 +154,10 @@ a:link, a:visited  {
   border-right: 1px solid;
 }
 
+.service-table {
+  border: dashed blue;
+}
+
 .column {
   float: right;
   width: 50%;

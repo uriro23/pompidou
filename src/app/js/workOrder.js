@@ -52,14 +52,14 @@ angular.module('myApp')
                   that.createView();
                   that.splitWorkOrder();
                   that.isIncludeStock[domain] = true;
-                  if (domain === 4) { // force default show today only for actions
-                    that.isShowTodayOnly[4] = true;
-                  }
                 });
             }
           }
         }
-  };
+      if (domain === 4) { // force default show today only for actions
+        that.isShowTodayOnly[4] = true;
+      }
+    };
 
     this.setShowAll = function(domain) {
       this.hierarchicalWorkOrder[domain].categories.forEach(function(cat) {
@@ -677,9 +677,16 @@ angular.module('myApp')
 
     // show category only if any of its items will be shown
     this.isShowCategory = function(cat) {
-      var temp = cat.list.concat(cat.serviceList,cat.preServiceList).filter(function(woItem) {
-        return that.isShowItem(woItem);
-      });
+      var temp;
+      if (cat.category.domain === 4) {
+        temp = cat.lists[0].list.concat(cat.lists[1].list, cat.lists[2].list).filter(function (woItem) {
+          return that.isShowItem(woItem);
+        });
+      } else {
+        temp = cat.list.filter(function (woItem) {
+          return that.isShowItem(woItem);
+        });
+      }
       return temp.length;
     };
 
@@ -2169,6 +2176,7 @@ angular.module('myApp')
       this.hierarchicalWorkOrder = [];
       for (var d = 1; d < 5; d++) {
         this.hierarchicalWorkOrder[d] = {
+          domainId: d,
           categories: [],
           isShowAll: true
         };
@@ -2198,14 +2206,32 @@ angular.module('myApp')
           if (!temp.length) {  // if category appears for 1st time, create it's object
             that.hierarchicalWorkOrder[wo.domain].categories.splice(0, 0, {
               category: wo.category,
-              isShow: true,
-              list: [],
-              serviceList: [], // only for actions
-              preServiceList: [] // only for actions
-            });
+              isShow: true
+             });
             catInd = 0;
+            if (wo.domain === 4) {
+            that.hierarchicalWorkOrder[wo.domain].categories[0].lists = [
+              {
+                id: 0,
+                label: 'הכנה לסרוויס',
+                list: []
+              },
+              {
+                id: 1,
+                label: 'סרוויס',
+                list: []
+              },
+              {
+                id: 2,
+                label: 'הכנות רגילות',
+                list: []
+              }
+            ];
+            } else {
+              that.hierarchicalWorkOrder[wo.domain].categories[0].list = [];
+            }
           }
-          if (wo.domain === 4 && that.woIndex.properties.domainStatus[4]) {
+          if (wo.domain === 4) {
             var service = wo.backTrace.filter(function (serv) { // is this action based on at least 1 prep
               return that.workOrder.filter(function(serv2) {
                 return serv2.id === serv.id;
@@ -2216,12 +2242,12 @@ angular.module('myApp')
                 return serv2.id === serv.id;
               })[0].properties.category.type === 12;
             });
-            if (service.length) {
-              that.hierarchicalWorkOrder[4].categories[catInd].serviceList.push(woi);
-            } else if (preService.length) {
-              that.hierarchicalWorkOrder[4].categories[catInd].preServiceList.push(woi);
+            if (preService.length) {
+              that.hierarchicalWorkOrder[4].categories[catInd].lists[0].list.push(woi);
+            } else if (service.length) {
+              that.hierarchicalWorkOrder[4].categories[catInd].lists[1].list.push(woi);
             } else {
-              that.hierarchicalWorkOrder[4].categories[catInd].list.push(woi);
+              that.hierarchicalWorkOrder[4].categories[catInd].lists[2].list.push(woi);
             }
           } else {
             that.hierarchicalWorkOrder[wo.domain].categories[catInd].list.push(woi);
@@ -2234,40 +2260,44 @@ angular.module('myApp')
         domain.categories.sort(function (a, b) {
           return a.category.order - b.category.order;
         });
-        domain.categories.forEach(function(cat) {
-          cat.list.sort(function (a, b) {
-            if (a.properties.productName > b.properties.productName) {
-              return 1;
-            } else if (a.properties.productName < b.properties.productName){
-              return -1;
-            } else if (a.properties.personalAdjustment > b.properties.personalAdjustment) {
-              return 1;
-            }else if (a.properties.personalAdjustment < b.properties.personalAdjustment) {
-              return -1;
-            } else {
-              return 0;
-            }
+        if (domain.domainId === 4) {
+          domain.categories.forEach(function (cat) {
+            cat.lists.forEach(function (lis) {
+              lis.list.sort(function (a, b) {
+                if (a.properties.productName > b.properties.productName) {
+                  return 1;
+                } else if (a.properties.productName < b.properties.productName) {
+                  return -1;
+                } else if (a.properties.personalAdjustment > b.properties.personalAdjustment) {
+                  return 1;
+                } else if (a.properties.personalAdjustment < b.properties.personalAdjustment) {
+                  return -1;
+                } else {
+                  return 0;
+                }
+              });
+            });
           });
-        });
-      });
-      this.hierarchicalWorkOrder[4].categories.forEach(function(cat) {
-        cat.serviceList.sort(function (a, b) {
-          if (a.properties.productName > b.properties.productName) {
-            return 1;
-          } else if (a.properties.productName < b.properties.productName){
-            return -1;
-          }
-        });
-        cat.preServiceList.sort(function (a, b) {
-          if (a.properties.productName > b.properties.productName) {
-            return 1;
-          } else if (a.properties.productName < b.properties.productName){
-            return -1;
-          }
-        });
+        } else {
+          domain.categories.forEach(function (cat) {
+            cat.list.sort(function (a, b) {
+              if (a.properties.productName > b.properties.productName) {
+                return 1;
+              } else if (a.properties.productName < b.properties.productName) {
+                return -1;
+              } else if (a.properties.personalAdjustment > b.properties.personalAdjustment) {
+                return 1;
+              } else if (a.properties.personalAdjustment < b.properties.personalAdjustment) {
+                return -1;
+              } else {
+                return 0;
+              }
+            });
+          });
+        }
       });
 
-      // for order items domain only, add list of changed product descriptions per category
+      // for dishes domain only, add list of changed product descriptions per category
       this.hierarchicalWorkOrder[1].categories.forEach(function(cat) {
         cat.changedDescriptions = [];
         var descCnt = 0;
@@ -2301,21 +2331,21 @@ angular.module('myApp')
     };
 
     this.setCategoryDetail = function(category) {
-      category.list.forEach(function(woi) {
-        if (woi.properties.domain === 2) {
-          if (that.isShowTodayOnly[2] || woi.properties.select !== 'mix') {
+      if (this.domain === 4) {
+        category.lists.forEach(function (lis) {
+          lis.list.forEach(function (woi) {
+            woi.isShowDetails = category.isShowDetails;
+          })
+        })
+      } else {
+        category.list.forEach(function (woi) {
+          if (woi.properties.domain === 2) {
+            if (that.isShowTodayOnly[2] || woi.properties.select !== 'mix') {
+              woi.isShowDetails = category.isShowDetails;
+            }
+          } else {
             woi.isShowDetails = category.isShowDetails;
           }
-        } else {
-          woi.isShowDetails = category.isShowDetails;
-        }
-      });
-      if (this.domain === 4 ) {
-        category.serviceList.forEach(function (woi) {
-            woi.isShowDetails = category.isShowDetails;
-        });
-        category.preServiceList.forEach(function (woi) {
-            woi.isShowDetails = category.isShowDetails;
         });
       }
     };
@@ -2372,19 +2402,21 @@ angular.module('myApp')
     };
 
       this.delItem = function (dom, cat, item) {
-      api.deleteObj(this.hierarchicalWorkOrder[dom].categories[cat].list[item])
-        .then(function (obj) {
-        that.workOrder = that.workOrder.filter(function (wo) {
-          return wo.id !== obj.id;
-        });
-        that.hierarchicalWorkOrder[dom].categories[cat].list.splice(item, 1);
-        if (dom < 3) {
-          for (var dd = dom + 1; dd < 5; dd++) {                     // set all further domains as invalid
-            that.woIndex.properties.domainStatus[dd] = false;
-          }
+        if (dom < 4) {  // not working for actions domain
+          api.deleteObj(this.hierarchicalWorkOrder[dom].categories[cat].list[item])
+            .then(function (obj) {
+              that.workOrder = that.workOrder.filter(function (wo) {
+                return wo.id !== obj.id;
+              });
+              that.hierarchicalWorkOrder[dom].categories[cat].list.splice(item, 1);
+              if (dom < 3) {
+                for (var dd = dom + 1; dd < 5; dd++) {                     // set all further domains as invalid
+                  that.woIndex.properties.domainStatus[dd] = false;
+                }
+              }
+              api.saveObj(that.woIndex);
+            });
         }
-        api.saveObj(that.woIndex);
-      });
     };
 
    this.backInfo = function (woItem) {
