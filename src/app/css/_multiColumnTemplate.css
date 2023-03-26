@@ -57,9 +57,21 @@ tfoot {
   line-height: 2em;
 }
 
+.soft {
+  border: none;
+  background: #ffffff;
+  line-height: 2em;
+}
+
 .ttltxt {
   font-size: 1.22em;
   color: #fff;
+  font-weight: 400;
+}
+
+.blackTxt {
+  font-size: 1.22em;
+  color: black;
   font-weight: 400;
 }
 

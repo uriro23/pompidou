@@ -189,6 +189,9 @@ angular.module('myApp')
         view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === that.order.properties.orderStatus);
         })[0];
+        view.eventTimeRange = this.eventTimeRanges.filter(function (obj) {
+          return (obj.id === that.order.properties.eventTimeRange);
+        })[0];
         view.referralSource = referralSources.filter(function (obj) {
           return (obj.tId === that.order.properties.referralSource);
         })[0];
@@ -271,6 +274,9 @@ angular.module('myApp')
         view.orderStatus = this.orderStatuses.filter(function (obj) {
           return (obj.id === 0);
         })[0];    // create as lead
+        view.eventTimeRange = this.eventTimeRanges.filter(function (obj) {
+          return (obj.id === 1);
+        })[0];    // create as default half an hour
       }
       var allTasks = angular.copy(taskTypes);
       var allDetails = angular.copy(taskDetails);
@@ -405,6 +411,7 @@ angular.module('myApp')
     this.readOnly = {is:false}; // declared as object so it will be shared by ref among controllers
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
+    this.eventTimeRanges = lov.eventTimeRanges;
     this.descChangeActions = lov.descChangeActions;
     this.categories = categories;
     this.measurementUnits = measurementUnits;

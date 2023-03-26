@@ -17,6 +17,8 @@ angular.module('myApp')
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רשימת אריזה';
 
+    var that = this;
+
     var CATEGORY_SNACKS = 1;
     var CATEGORY_SANDWICHES = 35;
     var CATEGORY_DESSERTS = 8;
@@ -27,7 +29,22 @@ angular.module('myApp')
     this.currentOrder = order.properties;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
 
-
+    // edit eventTimeRange
+    var et = this.currentOrder.eventTime;
+    if (et) {
+      this.eventTimeStr = et.getHours() + ':' + (et.getMinutes() ? et.getMinutes() : '00');
+      if (this.currentOrder.eventTimeRange) {
+        var rangeObj = lov.eventTimeRanges.filter(function (r) {
+          return r.id === that.currentOrder.eventTimeRange;
+        })[0];
+        var beginTime = angular.copy(et);
+        beginTime.setMinutes(et.getMinutes() - rangeObj.value);
+        this.eventTimeStr = et.getHours() + ':' +
+          (et.getMinutes() ? et.getMinutes() : '00') + ' - ' +
+          beginTime.getHours() + ':' +
+          (beginTime.getMinutes() ? beginTime.getMinutes() : '00');
+      }
+    }
 
     // fetch customer
     var that = this;
@@ -202,7 +219,6 @@ angular.module('myApp')
       }
 
        category.items.forEach(function(item) {
-         console.log('examining '+item.productName+ ', category '+category.tId);
         var catItem = that.catalog.filter(function (cat) {
           return cat.id === item.catalogId;
         })[0].properties;
@@ -223,8 +239,6 @@ angular.module('myApp')
           if (item.isTotalItem) { // skip the item used to accumulate category total packages
          } else if (category.totalItem > -1 && item.packageMeasurementUnit.tId === MU_TRAYS) { // accumulate this item
             category.items[category.totalItem].packageQuantity += (item.quantity / item.packageFactor);
-             console.log('adding '+item.productName+' to category '+category.tId+' giving '+
-                            category.items[category.totalItem].packageQuantity);
              if (category.tId === CATEGORY_SNACKS && item.packageFactor !== DEFAULT_SNACKS_FACTOR) {
                category.items[category.totalItem].isExceptionalSnacks = true;
              }

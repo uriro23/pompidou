@@ -8,6 +8,7 @@ angular.module('myApp')
     this.order = $scope.orderModel.order;
     this.readOnly = $scope.orderModel.readOnly;
     this.orderStatuses = $scope.orderModel.orderStatuses;
+    this.eventTimeRanges = $scope.orderModel.eventTimeRanges;
     this.showSummary = $scope.orderModel.showSummary;
 
 
@@ -164,6 +165,11 @@ angular.module('myApp')
         thisOrder.exitTime = angular.copy(thisOrder.eventTime);
         thisOrder.exitTime.setHours(thisOrder.eventTime.getHours() - 1); // default - one hour before eventTime
       }
+      orderService.orderChanged(this.order,'header');
+    };
+
+    this.setEventTimeRange = function() {
+      var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
     };
 

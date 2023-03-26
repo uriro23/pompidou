@@ -17,6 +17,8 @@ angular.module('myApp')
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רשימת סרוויס';
 
+    var that = this;
+
     var CATEGORY_SNACKS = 1;
     var CATEGORY_SANDWICHES = 35;
     var CATEGORY_DESSERTS = 8;
@@ -25,7 +27,22 @@ angular.module('myApp')
     this.currentOrder = order.properties;
     this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
 
-
+    // edit eventTimeRange
+    var et = this.currentOrder.eventTime;
+    if (et) {
+      this.eventTimeStr = et.getHours() + ':' + (et.getMinutes() ? et.getMinutes() : '00');
+      if (this.currentOrder.eventTimeRange) {
+        var rangeObj = lov.eventTimeRanges.filter(function (r) {
+          return r.id === that.currentOrder.eventTimeRange;
+        })[0];
+        var beginTime = angular.copy(et);
+        beginTime.setMinutes(et.getMinutes() - rangeObj.value);
+        this.eventTimeStr = et.getHours() + ':' +
+          (et.getMinutes() ? et.getMinutes() : '00') + ' - ' +
+          beginTime.getHours() + ':' +
+          (beginTime.getMinutes() ? beginTime.getMinutes() : '00');
+      }
+    }
 
     // fetch customer
     var that = this;

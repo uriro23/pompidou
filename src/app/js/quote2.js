@@ -170,7 +170,7 @@ angular.module('myApp')
           return cat.type === 5; // externalServices
         })[0];
        this.externalServicesItems = that.currentQuote.items.filter(function (item) {
-         return (item.category.type === 5 && item.specialType > 2);  // other externalServices
+         return (item.category.type === 5 && item.specialType > 2 && item.specialType !== 5);  // other externalServices
        });
        this.disposableItems = that.currentQuote.items.filter(function (item) {
          return (item.category.type === 5 && item.specialType === 1);  // disposables
@@ -178,17 +178,28 @@ angular.module('myApp')
        this.equipRentalItems = that.currentQuote.items.filter(function (item) {
          return (item.category.type === 5 && item.specialType === 2);  // equip rentals
        });
-       this.isAnyExternalServices = this.externalServicesItems.length + this.disposableItems.length + this.equipRentalItems.length
-       this.isTableExternalServices = this.disposableItems.length + this.equipRentalItems.length;
+       this.liquidsItems = that.currentQuote.items.filter(function (item) {
+         return (item.category.type === 5 && item.specialType === 5);  // liquids
+       });
+       this.isAnyExternalServices = this.externalServicesItems.length +
+                                    this.disposableItems.length +
+                                    this.equipRentalItems.length +
+                                    this.liquidsItems.length
+       this.isTableExternalServices = this.disposableItems.length +
+                                      this.equipRentalItems.length +
+                                      this.liquidsItems.length;
        this.disposablePrice = this.disposableItems.reduce(function(prev,currentItem) { //sum category item prices
          return prev + (currentItem.isFreeItem?0:currentItem.price);
        },0);
-         this.equipRentalPrice = this.equipRentalItems.reduce(function(prev,currentItem) { //sum category item prices
-           return prev + (currentItem.isFreeItem?0:currentItem.price);
-         },0);
+       this.equipRentalPrice = this.equipRentalItems.reduce(function(prev,currentItem) { //sum category item prices
+         return prev + (currentItem.isFreeItem?0:currentItem.price);
+       },0);
+       this.liquidsPrice = this.liquidsItems.reduce(function(prev,currentItem) { //sum category item prices
+         return prev + (currentItem.isFreeItem?0:currentItem.price);
+       },0);
        this.categoryPrice = this.externalServicesItems.reduce(function(prev,currentItem) { //sum category item prices
           return prev + (currentItem.isFreeItem?0:currentItem.price);
-        },0) + this.disposablePrice + this.equipRentalPrice;
+        },0) + this.disposablePrice + this.equipRentalPrice+ this.liquidsPrice;
       };
 
       // set indication for bonus items

@@ -139,6 +139,14 @@
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.setEventTime()">
     </td>
+    <td  ng-hide="orderModel.order.properties.template || !orderModel.order.properties.eventTime"
+         style="width: 13%">
+      <label>טווח:</label>&nbsp
+      <select ng-model="headerModel.order.view.eventTimeRange"
+              ng-change="headerModel.setEventTimeRange()"
+              ng-options="eventTimeRange.label for eventTimeRange in headerModel.eventTimeRanges">
+      </select>
+    </td>
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
          style="width: 12%">
       <label>יציאה:</label>&nbsp
@@ -147,7 +155,7 @@
                                ng-change="headerModel.setExitTime()"
                                ng-class="headerModel.order.view.errors.exitTime?'bg-danger':null">
     </td>
-    <td style="width: 46%" ng-show="orderModel.order.properties.isDateUnknown">
+    <td style="width: 59%" ng-show="orderModel.order.properties.isDateUnknown">
       <label>תאריך לא ידוע:</label>
       <input type="checkbox" ng-model="headerModel.order.properties.isDateUnknown"
              ng-disabled="headerModel.readOnly.is"

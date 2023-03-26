@@ -77,7 +77,19 @@ angular.module('myApp')
       }
       var et = that.order.properties.eventTime;
       if (et) {
-        bid.properties.eventTimeStr = et.getHours() + ':' + et.getMinutes();
+        bid.properties.eventTimeStr = et.getHours() + ':' + (et.getMinutes() ? et.getMinutes() : '00');
+        var range = bid.properties.order.eventTimeRange;
+        if (range) {
+          var rangeObj = lov.eventTimeRanges.filter(function (r) {
+            return r.id === range;
+          })[0];
+          var beginTime = angular.copy(et);
+          beginTime.setMinutes(et.getMinutes() - rangeObj.value);
+          bid.properties.eventTimeStr = et.getHours() + ':' +
+                                        (et.getMinutes() ? et.getMinutes() : '00') + ' - ' +
+                                         beginTime.getHours() + ':' +
+                                        (beginTime.getMinutes() ? beginTime.getMinutes() : '00');
+        }
       }
       return bid;
     }

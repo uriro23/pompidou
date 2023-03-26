@@ -135,66 +135,73 @@
       </tbody>
     </table>
     <table width="100%">
-      <tfoot>
+      <tfoot class="soft">
       <tr ng-hide="quote2Model.currentQuote.isFixedPrice">
-        <td align="left" width="80%" class="ttltxt">
+        <td align="left" width="80%" ><strong>
           <span ng-show="quote2Model.transportationItems.length">
             סה"כ אוכל ומשלוח
           </span>
           <span ng-hide="quote2Model.transportationItems.length">
             סה"כ אוכל
           </span>
-        </td>
-        <td align="right" width="20%" class="ttltxt">{{quote2Model.currentQuote.subTotal | currency}}</td>
+        </strong></td>
+        <td align="right" width="20%" class="blackTxt"><strong>
+          {{quote2Model.currentQuote.subTotal | currency}}</strong></td>
       </tr>
     </tfoot>
     </table>
     <table width="100%">
-      <tfoot>
+      <tfoot class="soft">
       <tr ng-show="quote2Model.currentQuote.discount && !quote2Model.currentQuote.isFixedPrice">
-        <td align="left" width="80%" class="ttltxt">
+        <td align="left" width="80%" class="blackTxt"><strong>
           <span>
 הנחה מיוחדת
           </span>
-        </td>
-        <td align="right" width="20%" class="ttltxt">{{quote2Model.currentQuote.discount | currency}}</td>
+        </strong></td>
+        <td align="right" width="20%" class="blackTxt"><strong>
+          {{quote2Model.currentQuote.discount | currency}}
+        </strong></td>
       </tr>
       </tfoot>
     </table>
     <table width="100%">
-      <tfoot>
+      <tfoot class="soft">
       <tr ng-show="quote2Model.currentQuote.couponDiscount && !quote2Model.currentQuote.isFixedPrice">
-        <td align="left" width="80%" class="ttltxt">
+        <td align="left" width="80%" class="blackTxt"><strong>
           <span>
 הנחת קופון
           </span>
-        </td>
-        <td align="right" width="20%" class="ttltxt">{{quote2Model.currentQuote.couponDiscount | currency}}</td>
+        </strong></td>
+        <td align="right" width="20%" class="blackTxt"><strong>
+          {{quote2Model.currentQuote.couponDiscount | currency}}
+        </strong></td>
       </tr>
       </tfoot>
     </table>
     <table width="100%">
-      <tfoot>
+      <tfoot class="soft">
       <tr ng-show="(quote2Model.currentQuote.discount + quote2Model.currentQuote.couponDiscount) && !quote2Model.currentQuote.isFixedPrice">
-        <td align="left" width="80%" class="ttltxt">
+        <td align="left" width="80%" class="blackTxt"><strong>
           <span>
 לאחר הנחה
           </span>
-        </td>
-        <td align="right" width="20%" class="ttltxt">
-          {{quote2Model.currentQuote.subTotal + quote2Model.currentQuote.discount + quote2Model.currentQuote.couponDiscount | currency}}</td>
+        </strong></td>
+        <td align="right" width="20%" class="blackTxt"><strong>
+          {{quote2Model.currentQuote.subTotal + quote2Model.currentQuote.discount + quote2Model.currentQuote.couponDiscount | currency}}
+        </strong></td>
       </tr>
       </tfoot>
     </table>
     <table width="100%">
-      <tfoot>
+      <tfoot class="soft">
       <tr ng-hide="quote2Model.currentQuote.isFixedPrice">
-        <td align="left" width="80%" class="ttltxt">
+        <td align="left" width="80%" class="blackTxt"><strong>
           <span>(מחיר לסועד
           </span>
-        </td>
-        <td align="right" width="20%" class="ttltxt">
-          {{quote2Model.currentQuote.perPerson | currency}})</td>
+        </strong></td>
+        <td align="right" width="20%" class="blackTxt"><strong>
+          {{quote2Model.currentQuote.perPerson | currency}})
+        </strong></td>
       </tr>
       </tfoot>
     </table>
@@ -315,6 +322,11 @@
         <td align="right" width="20%">{{item.price | currency}}</td>
       </tr>
       -->
+      <tr ng-show="quote2Model.liquidsItems.length">
+        <td align="right" width="60%">שתיה (פירוט בנספח)</td>
+        <td width="20%"></td>
+        <td width="20%">{{quote2Model.liquidsPrice | currency}}</td>
+      </tr>
       <tr ng-show="!quote2Model.currentQuote.isFixedPrice">
         <td align="left" colspan="2"><strong><p></p>
           <span>מחיר</span>
@@ -423,6 +435,33 @@
         <tr>
           <td colspan="3" align="left"><strong>סה"כ ציוד:</strong></td>
           <td align="right"><strong>{{quote2Model.equipRentalPrice | currency}}</strong></td>
+        </tr>
+        </tbody>
+      </table>
+      <p style="height:0.2cm"></p>
+    </div>
+    <div class="table-1"  ng-show="quote2Model.liquidsItems.length">
+      <div class="title-row"><span class="column_title">נספח: פירוט שתיה</span></div>
+
+      <table width="100%">
+        <thead>
+        <tr>
+          <th align="right" width="40%">פריט</th>
+          <th align="right" width="20%">כמות</th>
+          <th align="right" width="20%">מחיר ליחידה</th>
+          <th align="right" width="20%">סך הכל</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in quote2Model.liquidsItems track by item.index">
+          <td align="right">{{item.productDescription}}</td>
+          <td align="right">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
+          <td align="right">{{item.price / item.quantity | currency}}</td>
+          <td align="right">{{item.price | currency}}</td>
+        </tr>
+        <tr>
+          <td colspan="3" align="left"><strong>סה"כ שתיה:</strong></td>
+          <td align="right"><strong>{{quote2Model.liquidsPrice | currency}}</strong></td>
         </tr>
         </tbody>
       </table>

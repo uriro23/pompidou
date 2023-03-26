@@ -253,6 +253,39 @@ angular.module('myApp')
       }
     ],
 
+    eventTimeRanges: [
+      {
+        id: 0,
+        label: 'בדיוק',
+        value: 0
+      },
+      {
+        id: 1,
+        label: 'חצי שעה',
+        value: 30
+      },
+      {
+        id: 2,
+        label: 'שעה',
+        value: 60
+      },
+      {
+        id: 3,
+        label: 'שעה וחצי',
+        value: 90
+      },
+      {
+        id: 4,
+        label: 'שעתיים',
+        value: 120
+      },
+      {
+        id: 5,
+        label: '3 שעות',
+        value: 180
+      }
+    ],
+
     categoryTypes: [
       {
         id: 1,

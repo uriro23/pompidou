@@ -256,6 +256,9 @@ angular.module('myApp')
       if (view.cancelReason) {
         thisOrder.cancelReason = view.cancelReason.tId;
       }
+      if (view.eventTimeRange) {
+        thisOrder.eventTimeRange = view.eventTimeRange.id;
+      }
       thisOrder.tasks = [];
       thisOrder.taskDetails = [];
       view.columns.forEach(function(column) {
