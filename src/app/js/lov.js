@@ -372,12 +372,12 @@ angular.module('myApp')
       {
         id: 4,
         label: 'הצעת מחיר קיימת',
-        isRealDocumentType: true,
+        isRealDocumentType: false,
         order:2
       },
       {
         id: 5,
-        label: 'הצעת מחיר חדשה',
+        label: 'הצעת מחיר',
         isRealDocumentType: true,
         order:4
       }
