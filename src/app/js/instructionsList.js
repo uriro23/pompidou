@@ -2,7 +2,8 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('InstructionsListCtrl', function (api, $state, $rootScope, order, moment, catalog, customers, config) {
+  .controller('InstructionsListCtrl', function (api, $state, $rootScope, $timeout,
+                                                order, moment, catalog, customers, config) {
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'הוראות';
 
@@ -116,4 +117,9 @@ angular.module('myApp')
         return 0;
       }
     });
- });
+
+    $timeout(function() {
+      window.print();
+    },1000);
+
+  });

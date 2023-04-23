@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('myApp')
 
-  .controller('StickersCtrl', function (api, $state, $rootScope,
+  .controller('StickersCtrl', function (api, $state, $rootScope, $timeout,
                                                  catalog, categories, config,
                                                  workOrder, order, customer, color) {
     $rootScope.menuStatus = 'hide';
@@ -224,10 +224,14 @@ angular.module('myApp')
     };
     this.renderStickers();
 
+    $timeout(function() {
+      window.print();
+    },1000);
+
   })
 
 
-  .controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope,
+  .controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope, $timeout,
                                           catalog, config, categories, measurementUnits,
                                           workOrder) {
     $rootScope.menuStatus = 'hide';
@@ -268,6 +272,9 @@ angular.module('myApp')
       order.desserts = editItems(order,CATEGORY_DESSERTS);
     });
 
+    $timeout(function() {
+      window.print();
+    });
 
   });
 

@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('ServiceListCtrl', function (api, $state, $filter, $rootScope,
+  .controller('ServiceListCtrl', function (api, $state, $filter, $rootScope, $timeout,
                                         order, catalog, lov, config,
                                         measurementUnits, categories, pRoles, colors) {
 
@@ -305,5 +305,9 @@ angular.module('myApp')
     this.splitSeparates = this.separates.sort(function(a,b) {
       return (b.items.length - a.items.length);
     });
+
+    $timeout(function() {
+      window.print();
+    },1000);
 
   });

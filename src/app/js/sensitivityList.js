@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('SensitivityListCtrl', function (api, $state, $rootScope, order, moment,
+  .controller('SensitivityListCtrl', function (api, $state, $rootScope, $timeout, order, moment,
                                                sensitivities, catalog, customers, colors) {
     $rootScope.menuStatus = 'hide';
     $rootScope.title = 'רגישויות';
@@ -60,7 +60,8 @@ angular.module('myApp')
       });
     });
 
-
-
+    $timeout(function() {
+      window.print();
+    },1000);
 
   });

@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('myApp')
-  .controller('PackingListCtrl', function (api, $state, $filter, $rootScope,
+  .controller('PackingListCtrl', function (api, $state, $filter, $rootScope, $timeout,
                                         order, catalog, lov, config,
                                         measurementUnits, categories, pRoles, colors) {
 
@@ -308,5 +308,9 @@ angular.module('myApp')
       })[0];
       this.exitList = thisItem.properties.exitList;
     };
+
+    $timeout(function() {
+      window.print();
+    },1000);
 
   });
