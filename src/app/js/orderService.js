@@ -706,4 +706,17 @@ angular.module('myApp')
       }
     };
 
+    // recalc range labels to represent begin time for each range
+    this.setRangeLabels = function (eventTime, eventTimeRanges) {
+      if (eventTime) {
+        eventTimeRanges.forEach(function (range) {
+          var beginTime = angular.copy(eventTime);
+          beginTime.setMinutes(eventTime.getMinutes() - range.value);
+          range.label = beginTime.getHours() + ':' + (beginTime.getMinutes() ? beginTime.getMinutes() : '00');
+        });
+      }
+
+
+    };
+
   });

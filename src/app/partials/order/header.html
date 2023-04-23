@@ -124,7 +124,7 @@
 <table style="width: 99%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
-         style="width: 22%">
+         style="width: 20%">
       <label>תאריך:</label>&nbsp;<input type='date' ng-model="headerModel.order.properties.eventDate"
                                  ng-change="headerModel.setEventDate()" required
                                  ng-class="headerModel.order.view.errors.eventDate?'bg-danger':null">
@@ -133,15 +133,15 @@
               ng-hide="orderModel.order.view.orderStatus.id > 1 && orderModel.order.view.orderStatus.id < 6">X</button>
     </td>
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
-         style="width: 12%">
-    <label>מסירה:</label>&nbsp
+         style="width: 14%">
+    <label>מסירה עד:</label>&nbsp
       <input type="time" ng-model="headerModel.order.properties.eventTime"
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.setEventTime()">
     </td>
     <td  ng-hide="orderModel.order.properties.template || !orderModel.order.properties.eventTime"
          style="width: 13%">
-      <label>טווח:</label>&nbsp
+      <label>מ-</label>&nbsp
       <select ng-model="headerModel.order.view.eventTimeRange"
               ng-change="headerModel.setEventTime()"
               ng-options="eventTimeRange.label for eventTimeRange in headerModel.eventTimeRanges">

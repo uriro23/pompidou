@@ -159,6 +159,7 @@ angular.module('myApp')
 
     this.setEventTime = function () {
       var thisOrder = this.order.properties;
+      orderService.setRangeLabels (thisOrder.eventTime, this.eventTimeRanges);
       if (!this.order.view.eventTimeRange) { // set range to default
         this.order.view.eventTimeRange = this.eventTimeRanges.filter(function(range) {
           return range.id === 1;
@@ -167,11 +168,15 @@ angular.module('myApp')
       if (thisOrder.isExitTimeExplicit) {
         this.order.view.errors.exitTime = true; // let user reconsider exit time
       } else {
-        thisOrder.exitTime = angular.copy(thisOrder.eventTime);
-        thisOrder.exitTime.setMinutes(
-          thisOrder.exitTime.getMinutes() - this.order.view.eventTimeRange.value / 2
-        ); // set to middle of range
-        thisOrder.exitTime.setHours(thisOrder.exitTime.getHours() - 1); // default - one hour before eventTime
+        if (thisOrder.eventTime) {
+          thisOrder.exitTime = angular.copy(thisOrder.eventTime);
+          thisOrder.exitTime.setMinutes(
+            thisOrder.exitTime.getMinutes() - this.order.view.eventTimeRange.value / 2
+          ); // set to middle of range
+          thisOrder.exitTime.setHours(thisOrder.exitTime.getHours() - 1); // default - one hour before eventTime
+        } else {
+          thisOrder.exitTime = undefined;
+        }
       }
       orderService.orderChanged(this.order,'header');
     };

@@ -330,7 +330,10 @@ angular.module('myApp')
           });
         });
       });
-      };
+
+      orderService.setRangeLabels (this.order.properties.eventTime, this.eventTimeRanges);
+
+    };
 
     this.selectQuote = function (mt) {
       var ind;
@@ -411,7 +414,7 @@ angular.module('myApp')
     this.readOnly = {is:false}; // declared as object so it will be shared by ref among controllers
     this.bidTextTypes = bidTextTypes;
     this.orderStatuses = lov.orderStatuses;
-    this.eventTimeRanges = lov.eventTimeRanges;
+    this.eventTimeRanges = angular.copy(lov.eventTimeRanges); // because timeRange labels are dynamic
     this.descChangeActions = lov.descChangeActions;
     this.categories = categories;
     this.measurementUnits = measurementUnits;
