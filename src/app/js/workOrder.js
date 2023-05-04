@@ -372,7 +372,7 @@ angular.module('myApp')
               })[0];
               var orderObj = {
                 id: originalOrder.id,
-                customer: originalOrder.view.customer.firstName,
+                customer: originalOrder.view ? originalOrder.view.customer.firstName : '',
                 date: originalOrder.properties.order.eventDate,
                 day: that.dayName(originalOrder.properties.order.eventDate),
                 time: originalOrder.properties.order.eventTime,
@@ -2585,7 +2585,7 @@ angular.module('myApp')
            id: that.woOrders[i].id,
            originalQuantity: -1,
            quantity: 0,
-           orderStatus: that.woOrders[i].view.orderStatus,
+           orderStatus: that.woOrders[i].view ? that.woOrders[i].view.orderStatus : undefined,
            status: that.woOrders[i].properties.status
          };
        }
