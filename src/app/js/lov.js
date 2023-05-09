@@ -207,6 +207,7 @@ angular.module('myApp')
         name: 'פניה',
         isSelectLead : true,
         isSelectDefault: true,
+        isSelectNoCall: true,
         isSelectNoDate: true
       },
       {
@@ -214,6 +215,7 @@ angular.module('myApp')
         name: 'הצעה',
         isSelectLead : false,
         isSelectDefault: true,
+        isSelectNoCall: true,
         isSelectNoDate: true
       },
       {
@@ -221,6 +223,7 @@ angular.module('myApp')
         name: 'בדיון',
         isSelectLead : false,
         isSelectDefault: true,
+        isSelectNoCall: true,
         isSelectNoDate: false
       },
       {
@@ -228,6 +231,7 @@ angular.module('myApp')
         name: 'סוכם',
         isSelectLead : false,
         isSelectDefault: true,
+        isSelectNoCall: false,
         isSelectNoDate: false
       },
        {
@@ -235,6 +239,7 @@ angular.module('myApp')
          name: 'מקדמה',
          isSelectLead : false,
          isSelectDefault: true,
+         isSelectNoCall: false,
          isSelectNoDate: false
        },
        {
@@ -242,6 +247,7 @@ angular.module('myApp')
          name: 'שולם',
          isSelectLead : false,
          isSelectDefault: true,
+         isSelectNoCall: false,
          isSelectNoDate: false
        },
       {
@@ -249,6 +255,7 @@ angular.module('myApp')
         name: 'בוטל',
         isSelectLead : true,
         isSelectDefault: true,
+        isSelectNoCall: true,
         isSelectNoDate: true
       }
     ],

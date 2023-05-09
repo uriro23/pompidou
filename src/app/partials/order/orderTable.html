@@ -91,19 +91,52 @@
    <td ng-show="order.view.orderStatus.id > 0 && order.view.orderStatus.id < 6">
       {{order.properties.header.title}}
     </td>
+    <!-- case 1: updateable, all required fields present, coordination call performed -->
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='sales') &&
                  order.view.orderStatus.id > 0 &&
                  order.view.orderStatus.id < 6 &&
                  !order.properties.isDateUnknown &&
+                 order.properties.taskData.isCoordinationCall &&
                  !orderTableModel.user.isSalesPerson">
       <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
               ng-change="orderListModel.setStatus(order)"
               ng-options=
-  "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
+                "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
       ></select>
     </td>
+    <!-- case 2: updateable, all required fields present, status not final, coordination call not performed -->
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='sales') &&
+                 order.view.orderStatus.id > 0 &&
+                 order.view.orderStatus.id < 3 &&
+                 !order.properties.isDateUnknown &&
+                 !order.properties.taskData.isCoordinationCall &&
+                 !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options=
+                "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectNoCall:true}"
+      ></select>
+    </td>
+    <!-- case 3: updateable, all required fields present, status final, coordination call not performed -->
+    <td class="hidden-xs"
+        ng-show="(orderTableModel.queryType==='future' ||
+                 orderTableModel.queryType==='sales') &&
+                 order.view.orderStatus.id > 2 &&
+                 order.view.orderStatus.id < 6 &&
+                 !order.properties.isDateUnknown &&
+                 !order.properties.taskData.isCoordinationCall &&
+                 !orderTableModel.user.isSalesPerson">
+      <select ng-model="order.view.orderStatus"  ng-style="orderTableModel.isOrderColors ? order.view.color.style : null"
+              ng-change="orderListModel.setStatus(order)"
+              ng-options=
+                "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectDefault:true}"
+      ></select>
+    </td>
+    <!-- case 4: updateable, date missing -->
     <td class="hidden-xs"
         ng-show="orderTableModel.queryType==='sales' &&
                  order.view.orderStatus.id > 0 &&
@@ -116,6 +149,7 @@
  "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectNoDate:true}"
       ></select>
     </td>
+    <!-- case 5: updateable, lead status -->
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='sales') &&
@@ -127,6 +161,7 @@
    "orderStatus.name for orderStatus in orderListModel.orderStatuses | filter:{isSelectLead:true}"
       ></select>
     </td>
+    <!-- case 6: non updateable, canceled -->
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='sales') &&
@@ -134,17 +169,20 @@
                  !orderTableModel.user.isSalesPerson">
       {{order.view.orderStatus.name}}
     </td>
+    <!-- case 7: non updateable, user is salesPerson -->
     <td class="hidden-xs"
         ng-show="(orderTableModel.queryType==='future' ||
                  orderTableModel.queryType==='sales') &&
                  orderTableModel.user.isSalesPerson">
       {{order.view.orderStatus.name}}
     </td>
+    <!-- case 8: non updateable, narrow screen -->
     <td class="hidden-sm hidden-md hidden-lg hidden-xl"
         ng-show="orderTableModel.queryType==='future'||
                  orderTableModel.queryType==='sales'">
       {{order.view.orderStatus.name}}
     </td>
+    <!-- case 9: non updateable, non executive queries -->
     <td ng-hide="orderTableModel.queryType==='future'||
                   orderTableModel.queryType==='sales'">
       {{order.view.orderStatus.name}}

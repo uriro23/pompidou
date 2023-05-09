@@ -3,7 +3,9 @@
     <tr>
       <td style="vertical-align: top; width: 25%;"
           ng-repeat="column in tasksModel.order.view.columns">
-        <div ng-repeat="phase in column.phases">
+        <div ng-repeat="phase in column.phases"
+             ng-hide="phase.isDisableAtFirst &&
+                (tasksModel.order.view.orderStatus.id === 0 || tasksModel.order.properties.isDateUnknown)">
         <h4 ng-class="phase.isDone?'taskDone':null">{{phase.description}}</h4>
         <table ng-disabled="tasksModel.readOnly.is">
           <tr ng-repeat="task in phase.tasks" ng-show="task.isShow">

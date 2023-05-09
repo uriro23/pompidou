@@ -430,6 +430,15 @@ angular.module('myApp')
         t.isShowLocation = false;
       }
 
+      if (t.isCoordinationCall) { // check for exceptions and upgrade orderStatus to 3
+        if (order.properties.orderStatus < 3) {
+            order.view.orderStatus = lov.orderStatuses.filter(function (os) {
+              return os.id === 3;
+            })[0];
+            order.view.changes.header = true;
+        }
+      }
+
       var columns = order.view.columns;
       columns.forEach(function(column) {
         column.phases.forEach(function(phase) {
@@ -592,6 +601,7 @@ angular.module('myApp')
       }
     };
 
+    // called from saveOrder and orderList to handle status changes
     this.setStatus = function(order) {
       if (order.view.orderStatus.id !== order.properties.orderStatus) {
         var txt = ((typeof(order.properties.orderStatus) === 'undefined')

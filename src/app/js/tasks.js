@@ -30,8 +30,10 @@ angular.module('myApp')
     };
 
     this.taskChecked = function(task) {
-      orderService.checkTasks(this.order);
-      this.orderChanged('tasks');
+      if (task.attributeName) {
+        this.order.properties.taskData[task.attributeName] = task.isDone;
+      }
+      this.orderChanged('tasks'); // includes a call to checkTasks
     };
 
     this.detailTextChanged = function(detail) {
@@ -42,8 +44,7 @@ angular.module('myApp')
       if (detail.changedAttribute) {
         this.order.properties.taskData[detail.changedAttribute] = true;
       }
-      orderService.checkTasks(this.order);
-      this.orderChanged('tasks');
+      this.orderChanged('tasks'); // includes a call to checkTasks
     };
 
     this.detailBooleanSet = function(detail) {
@@ -51,22 +52,19 @@ angular.module('myApp')
         this.order.properties.taskData[detail.attributeName] = detail.boolean;
       }
       detail.isDone = detail.boolean;
-      orderService.checkTasks(this.order);
-      this.orderChanged('tasks');
+      this.orderChanged('tasks'); // includes a call to checkTasks
     };
 
     this.setReferralSource = function(detail) {
       this.order.properties.referralSource = this.order.view.referralSource.tId;
       detail.isDone = true;
-      orderService.checkTasks(this.order);
-      this.orderChanged('tasks');
+      this.orderChanged('tasks'); // includes a call to checkTasks
     };
 
   this.setCancelReason = function(detail) {
       this.order.properties.cancelReason = this.order.view.cancelReason.tId;
       detail.isDone = true;
-      orderService.checkTasks(this.order);
-      this.orderChanged('tasks');
+      this.orderChanged('tasks'); // includes a call to checkTasks
     };
 
   this.saveCustomerAttribute = function(detail) {
@@ -79,8 +77,7 @@ angular.module('myApp')
            if (detail.changedAttribute) {
              that.order.properties.taskData[detail.changedAttribute] = false;
            }
-           orderService.checkTasks(that.order);
-           that.orderChanged('tasks');
+           that.orderChanged('tasks'); // includes a call to checkTasks
          })
        });
   };

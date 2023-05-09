@@ -55,8 +55,6 @@ angular.module('myApp')
 
       selectCustomer.result.then(function (cust) {
         if (custType === 1) {
-          console.log('cust');
-          console.log(cust);
           that.order.view.customer = cust;
           that.order.properties.customer = cust.id;
           that.order.properties.taskData.address = cust.address;
@@ -122,6 +120,11 @@ angular.module('myApp')
       }
       if (orderStatus.id > 0 && orderStatus.id < 6) {
         this.order.view.errors.customer = !this.order.properties.customer;
+      }
+      if (orderStatus.id > 2 && orderStatus.id !== 6) {
+        if (!this.order.properties.taskData.isCoordinationCall) {
+          alert('שים לב! לא סומן ביצוע שיחת תאום');
+        }
       }
       this.order.view.errors.noOfParticipants = checkParticipants (this.order);
        this.setReadOnly();
