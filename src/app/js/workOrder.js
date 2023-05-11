@@ -2458,15 +2458,17 @@ angular.module('myApp')
                  return futureOrder.properties.number === woOrder.properties.order.number;
                })[0];
                if (!ord) { // order occured in the past
-                 that.isWoChanged = true;
-                 that.isWoMajorChange = true;
-                 that.changedOrders.push({
-                   id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
-                   reason: 'עבר',
-                   action: 'past',
-                   woItem: woOrder,
-                   items: diffItems
-                 });
+                 if (that.woIndex.properties.isDefault) { // don't alert past orders for non default wos
+                   that.isWoChanged = true;
+                   that.isWoMajorChange = true;
+                   that.changedOrders.push({
+                     id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
+                     reason: 'עבר',
+                     action: 'past',
+                     woItem: woOrder,
+                     items: diffItems
+                   });
+                 }
                } else {
                  ord.isInWo = true;
                  if (ord.updatedAt > that.woIndex.updatedAt) { // order updated
@@ -2481,7 +2483,7 @@ angular.module('myApp')
                    } else {
                      var dateDiff = ord.properties.eventDate - woOrder.properties.order.eventDate;
                      var timeDiff = (ord.properties.eventTime && woOrder.properties.order.eventTime) ?
-                       ord.properties.eventTime - woOrder.properties.order.eventTime : 0;
+                         ord.properties.eventTime - woOrder.properties.order.eventTime : 0;
                      if ((dateDiff !== 0 || timeDiff !== 0) && ord.properties.eventDate > that.horizonDate) {
                        that.isWoMajorChange = true;
                        woOrder.properties.order = ord.properties;
@@ -2489,7 +2491,7 @@ angular.module('myApp')
                        reason = 'נדחה';
                        action = 'delete';
                      } else if (ord.properties.quotes[ord.properties.activeQuote].menuType.tId !==
-                       woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
+                         woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].menuType.tId) {
                        that.isWoMajorChange = true;
                        woOrder.properties.order = ord.properties;
                        woOrder.properties.order.id = ord.id;
@@ -2497,8 +2499,8 @@ angular.module('myApp')
                        action = 'recalc';
                      } else {
                        diffItems = that.compareItems(
-                         ord.properties.quotes[ord.properties.activeQuote].items,
-                         woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].items
+                           ord.properties.quotes[ord.properties.activeQuote].items,
+                           woOrder.properties.order.quotes[woOrder.properties.order.activeQuote].items
                        );
                        if (diffItems.length) {
                          that.isWoMajorChange = true;
@@ -2507,7 +2509,7 @@ angular.module('myApp')
                          reason = 'שינוי מנות';
                          action = 'itemChange';
                        } else if ((dateDiff !== 0 || timeDiff !== 0)
-                         && ord.properties.eventDate <= that.horizonDate) {
+                           && ord.properties.eventDate <= that.horizonDate) {
                          that.isWoMajorChange = true;
                          woOrder.properties.order = ord.properties;
                          woOrder.properties.order.id = ord.id;
@@ -2533,32 +2535,34 @@ angular.module('myApp')
                }
              }
            });
-           var newOrders = futureOrders.filter(function (ord) {
-             return !ord.isInWo &&
-               ord.properties.eventDate <= that.horizonDate &&
-               ord.properties.orderStatus > 1 &&
-               ord.properties.orderStatus < 6;
-           });
-           newOrders.forEach(function (newOrd) {
-             that.isWoChanged = true;
-             that.isWoMajorChange = true;
-             var orderWoItem = api.initWorkOrder();
-             // create the object for now, but we don't store it until user decides to include it in WO
-             orderWoItem.properties.woId = woId;
-             orderWoItem.properties.domain = 0;
-             orderWoItem.properties.order = newOrd.properties;
-             orderWoItem.properties.order.id = newOrd.id;
-             orderWoItem.properties.select = 'delay';
-             that.createViewForOrder(orderWoItem);
-             that.changedOrders.push({
-               id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
-               reason: 'אירוע חדש',
-               action: 'new',
-               woItem: orderWoItem,
-               isIncludeInWo: true,
-               items: diffItems
+           if (that.woIndex.properties.isDefault) { // don't alert new orders for non default wos
+             var newOrders = futureOrders.filter(function (ord) {
+               return !ord.isInWo &&
+                   ord.properties.eventDate <= that.horizonDate &&
+                   ord.properties.orderStatus > 1 &&
+                   ord.properties.orderStatus < 6;
              });
-           });
+             newOrders.forEach(function (newOrd) {
+               that.isWoChanged = true;
+               that.isWoMajorChange = true;
+               var orderWoItem = api.initWorkOrder();
+               // create the object for now, but we don't store it until user decides to include it in WO
+               orderWoItem.properties.woId = woId;
+               orderWoItem.properties.domain = 0;
+               orderWoItem.properties.order = newOrd.properties;
+               orderWoItem.properties.order.id = newOrd.id;
+               orderWoItem.properties.select = 'delay';
+               that.createViewForOrder(orderWoItem);
+               that.changedOrders.push({
+                 id: Math.round(Math.random() * 1000000),  // just for ng-repeat uniqueness
+                 reason: 'אירוע חדש',
+                 action: 'new',
+                 woItem: orderWoItem,
+                 isIncludeInWo: true,
+                 items: diffItems
+               });
+             });
+            }
          });
      };
 
