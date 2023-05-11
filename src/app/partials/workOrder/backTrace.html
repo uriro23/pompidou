@@ -21,18 +21,28 @@
       <span>{{item.quantity | number:2}}</span>
       <span>{{workOrderBackTraceModel.backTrace[item.father].properties.measurementUnit.label}}</span>
       <span>{{workOrderBackTraceModel.backTrace[item.father].properties.productName}}</span>
-      <span ng-show="item.domain.id > 0">
+      <span ng-show="workOrderBackTraceModel.backTrace[item.father].properties.personalAdjustment">
+          עם התאמה אישית
+      </span>
+        <span ng-show="item.domain.id > 0">
         <span>בשביל להכין</span>
         <span ng-show="!item.isExpand && item.domain.id === 2">
-          <span>{{workOrderBackTraceModel.backTrace[item.seq+1].properties.quantity | number:2}}</span>
-          <span>{{workOrderBackTraceModel.backTrace[item.seq+1].properties.measurementUnit.label}}</span>
-          <span>{{workOrderBackTraceModel.backTrace[item.seq+1].properties.productName}}</span>
+         <span ng-repeat="descendant in
+            workOrderBackTraceModel.findDescendants(item,workOrderBackTraceModel.backTrace)
+            track by descendant.seq">
+             <span ng-show="descendant.sibling > 0">ועוד</span>
+              <span>{{descendant.properties.quantity | number:2}}</span>
+              <span>{{descendant.properties.measurementUnit.label}}</span>
+              <span>{{descendant.properties.productName}}</span>
+             <span ng-show="descendant.properties.personalAdjustment">עם התאמה אישית</span>
+         </span>
          </span>
       <span ng-hide="!item.isExpand && item.domain.id === 2">
         <span>{{item.properties.quantity | number:2}}</span>
         <span>{{item.properties.measurementUnit.label}}</span>
         <span>{{item.properties.productName}}</span>
-      </span>
+        <span ng-show="item.properties.personalAdjustment">עם התאמה אישית</span>
+    </span>
       </span>
       <span ng-show="item.domain.id === 0">
         <span>לאירוע של</span>

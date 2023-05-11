@@ -49,7 +49,8 @@ angular.module('myApp')
     }
   }
 
-  function findDescendants (root, backTrace) {
+  this.findDescendants = function  (root, backTrace) {
+      var that = this;
       var descendants = [];
       var cnt = 0;
       backTrace.forEach(function(bt) {
@@ -60,7 +61,7 @@ angular.module('myApp')
       });
       if (cnt) {
         descendants.forEach(function(descendant) {
-          descendants = descendants.concat(findDescendants(descendant,backTrace));
+          descendants = descendants.concat(that.findDescendants(descendant,backTrace));
         });
       }
       return descendants;
@@ -75,7 +76,7 @@ angular.module('myApp')
           }
         });
         } else {
-       var descendants = findDescendants(that.backTrace[ind], that.backTrace);
+       var descendants = this.findDescendants(that.backTrace[ind], that.backTrace);
        descendants.forEach(function(bt) {
           bt.isExpand = false;
           bt.isShow = false;
