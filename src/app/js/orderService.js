@@ -12,7 +12,7 @@ angular.module('myApp')
       var transportation = 0;
       var priceIncrease = 0;
       var extraServices = 0;
-      var waitersFee = 0;
+      var mediatedServices = 0;
       var boxCount = 0;
       var satiety = 0;
       var isHeavyweight = false;
@@ -26,10 +26,9 @@ angular.module('myApp')
                 subTotalForStat += thisItem.price;
               }
               extraServices += thisItem.price;
-              if (thisItem.specialType === 3) {  // accumulate waiters fee which is deducted from invoice
-                waitersFee += thisItem.price;
-              }
-            } else  {
+           } else if (thisItem.category.type === 6) { // don't include mediated services in total
+              mediatedServices += thisItem.price;
+            } else {
               subTotal += thisItem.price;
               subTotalForStat += thisItem.price;
             }
@@ -58,7 +57,7 @@ angular.module('myApp')
       quote.transportation = Math.round(transportation);
       quote.priceIncrease = Math.round(priceIncrease);
       quote.extraServices = Math.round(extraServices);
-      quote.waitersFee = Math.round(waitersFee);
+      quote.mediatedServices = Math.round(mediatedServices);
       quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
       quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.properties.noOfParticipants);
       quote.boxEstimate = boxCount;
@@ -89,7 +88,6 @@ angular.module('myApp')
           quote.vat = Math.round(quote.totalBeforeVat * order.properties.vatRate);
           quote.total = quote.totalBeforeVat + quote.vat;
           quote.transportationInclVat = quote.transportation * (1 + order.properties.vatRate); // just to display on order list
-          quote.waitersFee = quote.waitersFee * (1 + order.properties.vatRate);
         } else {
           quote.vat = 0;
           quote.total = quote.totalBeforeVat;
@@ -97,14 +95,7 @@ angular.module('myApp')
           quote.transportationInclVat = quote.transportation;
         }
       }
-
       quote.balance = quote.total - quote.advance;
-
-      // the following are for displaying vat in invoice even if non business event
-      // waiters fee is not included in invoice
-       quote.totalBeforeVatForInvoice = (quote.total - quote.waitersFee) / (1 + order.properties.vatRate);
-
-
       this.checkTasks(order);
     };
 
@@ -573,7 +564,7 @@ angular.module('myApp')
           'menuType': currentQuote.menuType,
           'total': currentQuote.total,
           'totalForStat': currentQuote.totalForStat,
-          'totalBeforeVatForInvoice': currentQuote.totalBeforeVatForInvoice,
+          'totalBeforeVat': currentQuote.totalBeforeVat,
           'balance': currentQuote.balance,
           'transportationInclVat': currentQuote.transportationInclVat,
           'discountRate': currentQuote.discountRate,

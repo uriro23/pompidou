@@ -313,6 +313,10 @@ angular.module('myApp')
       {
         id: 5,
         name: 'extralServices'
+      },
+      {
+        id: 6,
+        name: 'midiatedServices'
       }
     ],
 

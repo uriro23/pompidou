@@ -44,13 +44,14 @@ angular.module('myApp')
     };
 
     this.setBusinessEvent = function () {
+      var that = this;
       var thisOrder = this.order.properties;
 
       thisOrder.quotes.forEach(function(quote) {
         quote.items.forEach(function(item) {
           item.price = thisOrder.isBusinessEvent ? item.priceBeforeVat : item.priceInclVat;
         });
-        orderService.calcTotal(quote,this.order);
+        orderService.calcTotal(quote,that.order);
       });
       orderService.orderChanged(this.order,'isBusinessEvent');
     };

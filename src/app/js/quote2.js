@@ -202,7 +202,16 @@ angular.module('myApp')
         },0) + this.disposablePrice + this.equipRentalPrice+ this.liquidsPrice;
       };
 
-      // set indication for bonus items
+      this.setupMidiatedServicesItems= function () {
+        this.category = categories.filter(function (cat) {
+          return cat.type === 6; // midiatedServices
+        })[0];
+        this.midiatedServicesItems = that.currentQuote.items.filter(function (item) {
+          return item.category.type === 6;
+        });
+      };
+
+        // set indication for bonus items
       this.isBonusItems = this.currentQuote.items.filter(function(item) {
         return item.isFreeItem;
       }).length > 0;

@@ -94,7 +94,7 @@ angular.module('myApp')
       return bid;
     }
 
-    this.findWarnings = function (quote) {
+    this.findWarnings = function (quote, order) {
       var warnings = [];
       var seq = 0;
       // warning I: missing transportation item
@@ -148,6 +148,30 @@ angular.module('myApp')
           text: 'חסר פריט הובלת השכרת ציוד'
         })
       }
+
+      // warning IV, V: for business event, use waiters included in total, else use excluded waiters
+      quote.items.forEach(function(item) {
+        if (item.category.type === 5 && item.specialType === 3) { // included waiters
+          if (!order.properties.isBusinessEvent) {
+            warnings.push({
+              id: quote.menuType.tId * 1000 + seq++,
+              type: 4,
+              menuType: quote.menuType,
+              text: 'מלצרים כלולים בס"ה באירוע שאינו עיסקי'
+            })
+          }
+        }
+        if (item.category.type === 6) { // excluded waiters
+          if (order.properties.isBusinessEvent) {
+            warnings.push({
+              id: quote.menuType.tId * 1000 + seq++,
+              type: 5,
+              menuType: quote.menuType,
+              text: 'מלצרים שאינם כלולים בס"ה באירוע עיסקי'
+            })
+          }
+        }
+      });
       return warnings;
     }
 
@@ -160,12 +184,12 @@ angular.module('myApp')
       var bids = [];
       var warnings = [];
       if (docType === 0 || docType === 2 || this.isOnlyActiveQuote) { // if creating backup or order doc, pick active quote only
-        warnings = warnings.concat(this.findWarnings(this.order.view.quote));
+        warnings = warnings.concat(this.findWarnings(this.order.view.quote, this.order));
         bids.push(createBidForQuote(this.order.view.quote, docType, this.bidDesc));
       } else {
         this.order.properties.quotes.forEach(function (quote) {
           if (quote.items.length) { // skip empty quotes
-            warnings = warnings.concat(that.findWarnings(quote));
+            warnings = warnings.concat(that.findWarnings(quote, that.order));
             bids.push(createBidForQuote(quote, docType, that.bidDesc));
           }
         });

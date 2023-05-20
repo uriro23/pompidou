@@ -128,6 +128,10 @@
 הפריט סומן במבוטל. ניתן לצפות בפריטים מבוטלים ולבטל את ביטולם ע"י סימון מבוטלים בחלון הקטלוג הראשי
         </td>
       </tr>
+      <tr>
+        <td><label>זיהוי פריט</label></td>
+        <td>{{catalogItemModel.item.id}}</td>
+      </tr>
     </table>
   </tab>
   <tab heading="רגישויות" ng-show="catalogItemModel.currentDomain.id===1">
@@ -439,7 +443,8 @@
                   ng-change="catalogItemModel.setChanged(true)">
         </td>
       </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1 && catalogItemModel.item.view.category.type===5">
+      <tr ng-show="catalogItemModel.currentDomain.id===1 &&
+            (catalogItemModel.item.view.category.type===5 || catalogItemModel.item.view.category.type===6)">
         <td><label>סוג שירות נלווה</label></td>
         <td>
           <select ng-model="catalogItemModel.item.view.specialType"

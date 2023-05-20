@@ -360,7 +360,32 @@
         </tfoot>
       </table>
     </div>
-    </div>
+
+      {{quote2Model.setupMidiatedServicesItems()}}
+
+      <div class="table-1">
+        <table width="100%" ng-show="quote2Model.midiatedServicesItems.length">
+          <thead>
+          <tr>
+            <th colspan="3" align="right"> <h3><span style="color: #ed2891;">{{quote2Model.category.label}}</span></h3>
+              <strong>{{quote2Model.category.description}}</strong></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="item in quote2Model.midiatedServicesItems track by item.index">
+            <td align="right" width="60%">
+              <span class="bold" ng-show="item.isFreeItem">בונוס: </span>
+              <span ng-class="item.isFreeItem?'bold':null">{{item.productDescription}}</span>
+              <span class="bold" ng-show="item.isFreeItem">(ללא חיוב)</span>
+            </td>
+            <td align="right" width="20%">{{item.quantity}}&nbsp;{{item.measurementUnit.label}}</td>
+            <!--<td align="right" width="20%">{{item.isFreeItem?'':(item.price / item.quantity | currency)}}</td> -->
+            <td ng-hide="item.isFreeItem" align="right" width="20%">{{item.price | currency}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
 </section>
 </div>
 <!--  -->
