@@ -176,3 +176,9 @@ a:link, a:visited  {
 .equip-list-frame {
   margin: 5%
 }
+
+.woPrint {
+  margin-top: 1cm;
+  margin-right: 1cm;
+}
+

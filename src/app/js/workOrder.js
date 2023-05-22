@@ -22,7 +22,6 @@ angular.module('myApp')
     this.isShowDone = [];
     this.isIncludeStock = [];
     this.isShowDetails = [];
-    this.isPrint = [];
 
     this.dayName = function(dat) {
       var dayNames = ['א','ב','ג','ד','ה','ו','ש'];
@@ -2736,7 +2735,28 @@ angular.module('myApp')
       return diffList;
     };
 
-    // main block
+    this.setPrint = function() {
+      var that = this;
+      this.isPrint = true;
+      // firstCategoryIndex ponts to first category in domain which is shown
+      // used to avoid skipping first page while printing
+      this.firstCategoryIndex = this.hierarchicalWorkOrder[this.domain].categories.length;
+      for (var i=0;i<this.hierarchicalWorkOrder[this.domain].categories.length;i++) {
+        if (this.isShowCategory(this.hierarchicalWorkOrder[this.domain].categories[i])) {
+          this.firstCategoryIndex = i;
+          break;
+        }
+      }
+      var menuStatus = $rootScope.menuStatus;
+      $rootScope.menuStatus = 'hide';
+      $timeout(function() {
+        window.print();
+        that.isPrint = false;
+        $rootScope.menuStatus = menuStatus;
+      }, 100);
+    };
+
+      // main block
 
     var that = this;
     this.isProcessing = true;
@@ -2761,6 +2781,7 @@ angular.module('myApp')
     this.fromDate.setMonth(this.fromDate.getMonth()-1);
     this.toDate.setDate(this.toDate.getDate()-1);
     this.horizonDate = orderService.horizonDate();
+    this.today = new Date(dater.today());
     this.isCompareActive = false;
     this.baseWoIndex = undefined;
     this.targetWoIndex = undefined;

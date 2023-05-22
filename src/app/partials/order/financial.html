@@ -143,10 +143,10 @@
                ng-change="financialModel.setNoQuantities()">
     </td>
   </tr>
-  <tr ng-show="financialModel.order.view.quote.mediatedServices">
+  <tr ng-show="financialModel.order.view.quote.operationalServices">
     <td> <label>שירותי מלצרים</label></td>
     <td></td>
-    <td>{{financialModel.order.view.quote.mediatedServices | currency}}</td>
+    <td>{{financialModel.order.view.quote.operationalServices | currency}}</td>
   </tr>
   </tbody>
 </table>

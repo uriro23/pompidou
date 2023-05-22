@@ -1,3 +1,4 @@
+<div ng-hide="workOrderModel.isPrint">
 <table style="width: 90%">
   <tr>
     <td style="width: 45%;font-size: x-large">
@@ -28,6 +29,12 @@
              ng-change="workOrderModel.setShowChanges()">
     </td>
     <td ng-hide="workOrderModel.domain === 1 || workOrderModel.domain === 2"></td>
+    <td>
+      <button class="btn btn-default"
+              ng-show="workOrderModel.domain > 0"
+              ng-click="workOrderModel.setPrint()">הדפסה</button>
+    </td>
+    <td ng-hide="workOrderModel.domain > 0"></td>
   </tr>
 </table>
 <h4 ng-show="workOrderModel.isProcessing">
@@ -84,3 +91,18 @@
                 src="'app/partials/workOrder/queryOrders.html'"></ng-include>
   </tab>
   </tabset>
+</div>
+<div ng-show="workOrderModel.isPrint">
+  <ng-include ng-show="workOrderModel.domain===1"
+              src="'app/partials/workOrder/dishList.html'">
+  </ng-include>
+  <ng-include ng-show="workOrderModel.domain===2"
+              src="'app/partials/workOrder/preparationList.html'">
+  </ng-include>
+  <ng-include ng-show="workOrderModel.domain===3"
+              src="'app/partials/workOrder/shoppingList.html'">
+  </ng-include>
+  <ng-include ng-show="workOrderModel.domain===4"
+              src="'app/partials/workOrder/actionList.html'">
+  </ng-include>
+</div>

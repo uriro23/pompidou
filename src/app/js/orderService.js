@@ -12,7 +12,7 @@ angular.module('myApp')
       var transportation = 0;
       var priceIncrease = 0;
       var extraServices = 0;
-      var mediatedServices = 0;
+      var operationalServices = 0;
       var boxCount = 0;
       var satiety = 0;
       var isHeavyweight = false;
@@ -26,8 +26,8 @@ angular.module('myApp')
                 subTotalForStat += thisItem.price;
               }
               extraServices += thisItem.price;
-           } else if (thisItem.category.type === 6) { // don't include mediated services in total
-              mediatedServices += thisItem.price;
+           } else if (thisItem.category.type === 6) { // don't include operational services in total
+              operationalServices += thisItem.price;
             } else {
               subTotal += thisItem.price;
               subTotalForStat += thisItem.price;
@@ -57,7 +57,7 @@ angular.module('myApp')
       quote.transportation = Math.round(transportation);
       quote.priceIncrease = Math.round(priceIncrease);
       quote.extraServices = Math.round(extraServices);
-      quote.mediatedServices = Math.round(mediatedServices);
+      quote.operationalServices = Math.round(operationalServices);
       quote.discount = Math.round(-(subTotal * quote.discountRate / 100));
       quote.perPerson = Math.round((quote.subTotal + quote.discount) / order.properties.noOfParticipants);
       quote.boxEstimate = boxCount;

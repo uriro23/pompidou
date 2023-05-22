@@ -1,54 +1,58 @@
-<table style="width:90%">
+<div ng-class="workOrderModel.isPrint ? 'woPrint' : null">
+<table style="width:90%"  ng-hide="workOrderModel.isPrint">
   <tr>
-    <td style="width:5%" ng-hide="workOrderModel.isPrint[workOrderModel.domain]">
+    <td style="width:8%">
       <span>&nbsp;הצג</span>
       <input type="checkbox"
              ng-model="workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].isShowAll"
              ng-change="workOrderModel.setShowAll(workOrderModel.domain)">
     </td>
-    <td style="width:10%;font-size: large" ng-hide="workOrderModel.isPrint[workOrderModel.domain]">
+    <td style="width:12%;font-size: large">
       {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
       <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
       <span ng-hide="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
         --- לא מעודכן ---
       </span>
     </td>
-    <td style="width:10%;font-size: large" ng-show="workOrderModel.isPrint[workOrderModel.domain]">
-      {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
-      <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
-    </td>
-    <td style="width: 15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>הצג פירוט</span>
       <input type="checkbox" ng-model="workOrderModel.isShowDetails[workOrderModel.domain]"
              ng-change="workOrderModel.setGlobalDetail()">
     </td>
-    <td style="width: 15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>כולל מלאי</span>
       <input type="checkbox" ng-model="workOrderModel.isIncludeStock[workOrderModel.domain]">
     </td>
-    <td ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]" style="width: 15%">
+    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>כולל הכנות שבוצעו</span>
       <input type="checkbox" ng-model="workOrderModel.isShowDone[workOrderModel.domain]"
              ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowTodayOnly[workOrderModel.domain]">
     </td>
-    <td style="width: 15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>הצג רק להיום</span>
       <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
     </td>
-    <td style="width:15%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
-      <span>להדפסה</span>
-      <input type="checkbox" ng-model="workOrderModel.isPrint[workOrderModel.domain]">
-    </td>
   </tr>
 </table>
-<div ng-show="!workOrderModel.isPrint[workOrderModel.domain] &&
-              workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+<div ng-show="workOrderModel.isPrint">
+  <h1>
+    <span>רשימת</span>
+    {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
+    <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
+    <span>{{workOrderModel.today | date:'dd/MM/yy'}}</span>
+  </h1>
+ </div>
+<div ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].categories
                       track by cat.category.tId"
      ng-show="workOrderModel.isShowCategory(cat)">
-  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
+  <div ng-show="workOrderModel.isPrint && $index>workOrderModel.firstCategoryIndex">
+  <p style="page-break-after: always;">&nbsp;</p>
+  <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%" ng-hide="workOrderModel.isPrint">
   <label>{{cat.category.label}}</label>
-  <span ng-hide="cat.category.type===21">
+  <span ng-hide="cat.category.type===21 || workOrderModel.isPrint">
     <span>&nbsp;&nbsp;פירוט</span>
     <input type="checkbox" ng-model="cat.isShowDetails" ng-change="workOrderModel.setCategoryDetail(cat)">
    </span>
@@ -76,21 +80,23 @@
         {{woItem.properties.quantityForToday | number:2}}
       </td>
       <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
-      <td style="width: 7%">
+      <td style="width: 7%" ng-hide="workOrderModel.isPrint">
         <button ng-click="workOrderModel.backInfo(woItem)"
                 ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]"
                 class="btn btn-default btn-sm">
           פרטים
         </button>
       </td>
-      <td style="width: 7%">
+      <td style="width: 7%" ng-show="workOrderModel.isPrint"></td>
+      <td style="width: 7%" ng-hide="workOrderModel.isPrint">
         <button ng-click="workOrderModel.delItem(workOrderModel.domain,$parent.$index,$index)"
                 ng-disabled= "!workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]"
                 class="btn btn-default btn-sm">
           מחק
         </button>
       </td>
-      <td style="width: 7%" ng-hide="cat.category.type===21">
+      <td style="width: 7%" ng-show="workOrderModel.isPrint"></td>
+      <td style="width: 7%" ng-hide="cat.category.type===21 || workOrderModel.isPrint">
         <span>פירוט</span>
         <input type="checkbox" ng-model="woItem.isShowDetails">
       </td>
@@ -179,10 +185,12 @@
     </tr>
     </tbody>
   </table>
-  </div>
+ </div>
+ </div>
 </div>
+<!--
 <div style="margin-right: 2%;margin-bottom: 2cm;margin-top: 1cm"
- ng-show="workOrderModel.isPrint[workOrderModel.domain] &&
+ ng-show="workOrderModel.isPrint &&
           workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
   <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].categories
                   track by cat.category.tId"
@@ -208,3 +216,4 @@
     <p></p>
   </div>
 </div>
+-->
