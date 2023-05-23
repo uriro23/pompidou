@@ -61,7 +61,7 @@
          style="width:90%"
          ng-repeat="lis in cat.lists track by lis.label">
     <thead>
-    <th colspan="3">{{lis.label}}</th>
+    <th colspan="3" ng-show="workOrderModel.isShowSubCategory(cat,$index)">{{lis.label}}</th>
     </thead>
     <tbody>
     <tr ng-repeat="woItem in lis.list track by woItem.id"

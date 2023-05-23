@@ -1,5 +1,6 @@
-  <table class="table" style="width: 100%">
-    <tr>
+<div ng-class="workOrderModel.isPrint ? 'woPrint' : null">
+  <table style="width:100%"  ng-hide="workOrderModel.isPrint">
+  <tr>
       <td ng-hide="workOrderModel.woIndex.properties.domainStatus[2]">
       <span>
         --- לא מעודכן ---
@@ -44,7 +45,7 @@
     <td style="width: 12%"></td>
     </tr>
   </table>
-  <div ng-hide="workOrderModel.isShowChanges">
+  <div ng-hide="workOrderModel.isShowChanges || workOrderModel.isPrint">
   <table class="table" style="width: 100%">
     <tr ng-show="workOrderModel.woIndex.properties.domainStatus[2] && !workOrderModel.isShowTodayOnly[2]">
       <td style="width: 30%"></td>
@@ -115,13 +116,26 @@
   </div>
   <hr>
   </div>
-
+  <div ng-show="workOrderModel.isPrint">
+    <h1>
+      <span>רשימת</span>
+      {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
+      <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
+      <span>{{workOrderModel.today | date:'dd/MM/yy'}}</span>
+    </h1>
+  </div>
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[2].categories track by cat.category.tId"
      ng-show="workOrderModel.isShowCategory(cat)">
-  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
+  <div ng-show="workOrderModel.isPrint && $index>workOrderModel.firstCategoryIndex">
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%" ng-hide="workOrderModel.isPrint">
   <label>{{cat.category.label}}</label>
-  <span>&nbsp;&nbsp;פירוט</span>
+  <span ng-hide="workOrderModel.isPrint">
+ <span>&nbsp;&nbsp;פירוט</span>
   <input type="checkbox" ng-model="cat.isShowDetails" ng-change="workOrderModel.setCategoryDetail(cat)">
+  </span>
   <table ng-show="cat.isShow" class="table" style="width:100%">
     <tbody>
     <tr ng-repeat="woItem in cat.list  track by woItem.id"
@@ -149,11 +163,12 @@
         {{woItem.properties.quantityForToday | number:2}}
       </td>
         <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
-      <td style="widt:10%">
+      <td style="widt:10%" ng-hide="workOrderModel.isPrint">
         <span>פירוט</span>
         <input type="checkbox" ng-model="woItem.isShowDetails"
                ng-disabled="!workOrderModel.isShowTodayOnly[2] && woItem.properties.select==='mix'">
       </td>
+      <td style="widt:10%" ng-show="workOrderModel.isPrint"></td>
       <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
         <span>עוד לא</span>
         <input type="radio" ng-model="woItem.properties.select" value="delay"
@@ -299,4 +314,5 @@
     </tr>
     </tbody>
   </table>
+</div>
 </div>

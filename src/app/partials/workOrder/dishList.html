@@ -1,4 +1,5 @@
-<table style="width:70%">
+<div ng-class="workOrderModel.isPrint ? 'woPrint' : null">
+  <table style="width:90%"  ng-hide="workOrderModel.isPrint">
   <tr>
     <td style="width:10%">
       <span>&nbsp;הצג</span>
@@ -36,11 +37,23 @@
     </td>
   </tr>
 </table>
+  <div ng-show="workOrderModel.isPrint">
+    <h1>
+      <span>רשימת</span>
+      {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
+      <span>{{workOrderModel.today | date:'dd/MM/yy'}}</span>
+    </h1>
+  </div>
 <div ng-show="workOrderModel.woOrders.length>15">
   יותר מ 15 אירועים בפקודה - לא מוצג פירוט אירועים
 </div>
-<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories track by cat.category.tId">
-  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%">
+<div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories track by cat.category.tId"
+     ng-show="workOrderModel.isShowCategory(cat)">
+  <div ng-show="workOrderModel.isPrint && $index>workOrderModel.firstCategoryIndex">
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+  </div>
+  <input type="checkbox" ng-model="cat.isShow" style="margin-right: 1%" ng-hide="workOrderModel.isPrint">
   <label>{{cat.category.label}}</label>
   <table ng-show="cat.isShow" class="table" style="width:90%">
     <thead>
@@ -108,4 +121,5 @@
       <label>{{changed.desc}}</label>
   </div>
   <p ng-show="cat.isShow && cat.changedDescriptions.length"></p>
+</div>
 </div>

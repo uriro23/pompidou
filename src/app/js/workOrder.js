@@ -676,6 +676,9 @@ angular.module('myApp')
 
     // show category only if any of its items will be shown
     this.isShowCategory = function(cat) {
+      if (!cat.isShow && this.isPrint) {
+        return false;
+      }
       var temp;
       if (cat.category.domain === 4) {
         temp = cat.lists[0].list.concat(cat.lists[1].list, cat.lists[2].list).filter(function (woItem) {
@@ -688,6 +691,15 @@ angular.module('myApp')
       }
       return temp.length;
     };
+
+    // for actions domain, check if a specific sub category is shown
+    this.isShowSubCategory = function(cat,ind) {
+      var temp = cat.lists[ind].list.filter(function(woItem) {
+        return that.isShowItem(woItem);
+      });
+      return temp.length;
+
+    }
 
      // reset detailed view for today only, otherwise turn it on for mixed preps
     // also check if there are remarks for today's dishes
