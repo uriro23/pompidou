@@ -898,39 +898,62 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-    .state ('packingList', {
-      url: '/packingList/:id',
-      templateUrl: 'app/partials/packingList.html',
-      controller: 'PackingListCtrl as packingListModel',
-      resolve: {
-        order: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrder ($stateParams.id).then (function (orders) {
-            return orders[0];
-          });
-        }],
-        catalog: ['api', function(api) {
-          return api.queryCatalog(). then (function(catalog) {
-            return catalog;
-          });
-        }],
-        config: ['configPromise', function (configPromise) {
-          return configPromise;
-        }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-          return measurementUnitsPromise;
-        }],
-        pRoles: ['pRolesPromise', function (pRolesPromise) {
-          return pRolesPromise;
-        }],
-        categories: ['categoriesPromise', function (categoriesPromise) {
-          return categoriesPromise;
-        }],
-        colors: ['colorsPromise', function (colorsPromise) {
-          return colorsPromise;
-        }]
-      }
-    })
-    .state ('menu', {
+      .state ('packingList', {
+        url: '/packingList/:id',
+        templateUrl: 'app/partials/packingList.html',
+        controller: 'PackingListCtrl as packingListModel',
+        resolve: {
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(). then (function(catalog) {
+              return catalog;
+            });
+          }],
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }],
+          measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+            return measurementUnitsPromise;
+          }],
+          pRoles: ['pRolesPromise', function (pRolesPromise) {
+            return pRolesPromise;
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          colors: ['colorsPromise', function (colorsPromise) {
+            return colorsPromise;
+          }]
+        }
+      })
+      .state ('samplingForm', {
+        url: '/samplingForm/:id',
+        templateUrl: 'app/partials/samplingForm.html',
+        controller: 'SamplingFormCtrl as samplingFormModel',
+        resolve: {
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(1,['isSensitiveDish','stickerLabel']). then (function(catalog) {
+              return catalog;
+            });
+          }],
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }],
+          colors: ['colorsPromise', function (colorsPromise) {
+            return colorsPromise;
+          }]
+        }
+      })
+      .state ('menu', {
       url: '/menu/:id',
       templateUrl: 'app/partials/menu.html',
       controller: 'MenuCtrl as menuModel',

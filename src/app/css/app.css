@@ -182,3 +182,11 @@ a:link, a:visited  {
   margin-right: 1cm;
 }
 
+.form-line {
+    height: 1.5cm;
+}
+
+.form-box {
+    text-align: center;
+    border: 1px solid;
+}
