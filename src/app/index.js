@@ -930,6 +930,38 @@ config(function($stateProvider, $urlRouterProvider) {
           }]
         }
       })
+      .state ('packingListOld', {
+        url: '/packingListOld/:id',
+        templateUrl: 'app/partials/packingListOld.html',
+        controller: 'PackingListOldCtrl as packingListModel',
+        resolve: {
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(). then (function(catalog) {
+              return catalog;
+            });
+          }],
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }],
+          measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+            return measurementUnitsPromise;
+          }],
+          pRoles: ['pRolesPromise', function (pRolesPromise) {
+            return pRolesPromise;
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          colors: ['colorsPromise', function (colorsPromise) {
+            return colorsPromise;
+          }]
+        }
+      })
       .state ('samplingForm', {
         url: '/samplingForm/:id',
         templateUrl: 'app/partials/samplingForm.html',
