@@ -394,6 +394,25 @@ angular.module('myApp')
       }
     ],
 
+    printTypes: [
+      {
+        id: 0,
+        label: 'ללקוח'
+      },
+      {
+        id: 1,
+        label: 'מדבקות'
+      },
+      {
+        id: 2,
+        label: 'למטבח'
+      },
+      {
+        id: 3,
+        label: 'טפסים'
+      }
+    ],
+
     descChangeActions: [
       {
         id: 0,

@@ -976,14 +976,25 @@ config(function($stateProvider, $urlRouterProvider) {
             return api.queryCatalog(1,['isSensitiveDish','stickerLabel']). then (function(catalog) {
               return catalog;
             });
-          }],
-          config: ['configPromise', function (configPromise) {
-            return configPromise;
-          }],
-          colors: ['colorsPromise', function (colorsPromise) {
-            return colorsPromise;
           }]
         }
+      })
+      .state ('finalCheckForm', {
+        url: '/finalCheckForm/:id',
+        templateUrl: 'app/partials/finalCheckForm.html',
+        controller: 'FinalCheckFormCtrl as finalCheckFormModel',
+        resolve: {
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(1,['stickerLabel']). then (function(catalog) {
+              return catalog;
+            });
+          }]
+         }
       })
       .state ('menu', {
       url: '/menu/:id',

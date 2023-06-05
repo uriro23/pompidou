@@ -28,6 +28,8 @@ angular.module('myApp')
       return a.order - b.order;
     });
     this.bidDesc = '';
+    this.printTypes = lov.printTypes;
+    this.printType = this.printTypes[0];
 
     var that = this;
     this.isBidsLoading = true;

@@ -1,0 +1,50 @@
+<div id="exitListContainer">
+    <h4 style="width: 100%">
+        <span style="text-align: right">השף בקופסה</span>
+        <span>  --  </span>
+        <span style="text-align: left">054-7514061</span>
+    </h4>
+    <h2>
+        טופס בקרת בחינה סופית לאירוע
+        {{finalCheckFormModel.currentOrder.number}} -
+        {{finalCheckFormModel.currentOrder.eventDate | date: 'dd/MM/yy'}}
+    </h2>
+    <p style="height: 0.5cm"></p>
+    <table style="width: 100%">
+        <thead>
+        <tr class="form-line">
+            <th class="form-box" style="width: 11%">שעת אריזה</th>
+            <th class="form-box" style="width: 11%">שם המנה</th>
+            <th class="form-box" style="width: 11%">מס' הזמנה</th>
+            <th class="form-box" style="width: 11%">שעת תפוגה</th>
+            <th class="form-box" style="width: 9%">צבע ומרקם</th>
+            <th class="form-box" style="width: 9%">משקל סופי</th>
+            <th class="form-box" style="width: 9%">התאמת אריזה</th>
+            <th class="form-box" style="width: 17%">הערות</th>
+            <th class="form-box" style="width: 12%">שם וחתימה</th>
+         </tr>
+        </thead>
+        <tbody>
+        <tr class="form-line" ng-repeat="dish in finalCheckFormModel.dishes track by $index">
+            <td class="form-box">{{finalCheckFormModel.order.packingTime | date: 'HH:mm'}}</td>
+            <td class="form-box">{{dish.stickerLabel}}</td>
+            <td class="form-box">{{finalCheckFormModel.order.properties.number}}</td>
+            <td class="form-box">{{finalCheckFormModel.order.expiryTime | date: 'HH:mm dd/MM'}}</td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+        </tr>
+        </tbody>
+        <tr style="height: 0.5cm"></tr>
+        <tr>
+            <td colspan="3"><label>שם</label></td>
+            <td><label>חתימה</label></td>
+        </tr>
+        <tr>
+            <td colspan="3">________________</td>
+            <td>________________</td>
+        </tr>
+    </table>
+</div>
