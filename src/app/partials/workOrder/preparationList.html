@@ -40,9 +40,12 @@
                ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowChanges"
                ng-change="workOrderModel.setPrepsTodayOnly()">
       </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 23%">
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 20%">
       </td>
-    <td style="width: 12%"></td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
+          <span>ניהול</span>
+          <input type="checkbox" ng-model="workOrderModel.isAdmin">
+      </td>
     </tr>
   </table>
   <div ng-hide="workOrderModel.isShowChanges || workOrderModel.isPrint">
@@ -173,14 +176,16 @@
         <span>עוד לא</span>
         <input type="radio" ng-model="woItem.properties.select" value="delay"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
-               ng-disabled="woItem.properties.select==='mix'">
+               ng-disabled="woItem.properties.select==='mix' ||
+                            (!workOrderModel.isAdmin && woItem.properties.select!=='delay')">
       </td>
       <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]" style="width: 10%"></td>
       <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
         <span>להיום</span>
         <input type="radio" ng-model="woItem.properties.select" value="today"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
-               ng-disabled="woItem.properties.select==='mix'">
+               ng-disabled="woItem.properties.select==='mix' ||
+               (!workOrderModel.isAdmin && woItem.properties.select==='done')">
       </td>
       <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]" style="width: 10%"></td>
       <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
@@ -254,11 +259,13 @@
             <td ng-hide="workOrderModel.isShowTodayOnly[2]">
               <input type="radio"
                      ng-model="order.select" value="delay"
+                     ng-disabled="!workOrderModel.isAdmin && order.select !== 'delay'"
                      ng-change="workOrderModel.setPrepOrderSelect(woItem,order)">
             </td>
             <td ng-hide="workOrderModel.isShowTodayOnly[2]">
               <input type="radio"
                      ng-model="order.select" value="today"
+                     ng-disabled="!workOrderModel.isAdmin && order.select === 'done'"
                      ng-change="workOrderModel.setPrepOrderSelect(woItem,order)">
             </td>
            <td ng-hide="workOrderModel.isShowTodayOnly[2]">
