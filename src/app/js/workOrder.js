@@ -424,6 +424,7 @@ angular.module('myApp')
         })[0];
         if (matchingOrder) {
           ord.select = matchingOrder.select;
+          ord.isDone = matchingOrder.isDone;
           if (ord.select === 'today') {
             if (ord.totalOriginalQuantity > 0) {
               currentPrep.isAlert = true;
@@ -652,26 +653,30 @@ angular.module('myApp')
 
     // decide if item will be shown
     this.isShowItem = function (woItem) {
-      var isItemToday = woItem.properties.select==='today';
-      if (woItem.properties.select==='mix') {
-        woItem.view.orders.forEach(function(ord) {
-          if (ord.select === 'today') {
-            isItemToday = true;
-          }
-        });
+      if (!woItem.view) {
+        return false;  // premature call by view logic - skip
+      } else {
+        var isItemToday = woItem.properties.select === 'today';
+        if (woItem.properties.select === 'mix') {
+          woItem.view.orders.forEach(function (ord) {
+            if (ord.select === 'today') {
+              isItemToday = true;
+            }
+          });
+        }
+        var isItemDone = woItem.properties.select === 'done';
+        if (woItem.properties.select === 'mix') {
+          woItem.view.orders.forEach(function (ord) {
+            if (ord.select !== 'done') {
+              isItemDone = false;
+            }
+          });
+        }
+        var isShowByStock = this.isIncludeStock[woItem.properties.domain] ? true : !woItem.properties.isInStock;
+        var isShowByToday = this.isShowTodayOnly[this.domain] ? isItemToday : true;
+        var isShowByDone = this.isShowDone[this.domain] ? true : !isItemDone;
+        return isShowByStock && isShowByToday && isShowByDone;
       }
-      var isItemDone = woItem.properties.select==='done';
-      if (woItem.properties.select==='mix') {
-        woItem.view.orders.forEach(function(ord) {
-          if (ord.select !== 'done') {
-            isItemDone = false;
-          }
-        });
-      }
-      var isShowByStock = this.isIncludeStock[woItem.properties.domain] ? true : !woItem.properties.isInStock;
-      var isShowByToday = this.isShowTodayOnly[this.domain] ? isItemToday : true;
-      var isShowByDone = this.isShowDone[this.domain] ? true : !isItemDone;
-      return isShowByStock && isShowByToday && isShowByDone;
     };
 
     // show category only if any of its items will be shown
@@ -710,6 +715,9 @@ angular.module('myApp')
         this.workOrder.forEach(function(woItem) {
           if (woItem.properties.domain === 2) {
             woItem.isShowDetails = that.isShowDetails[that.domain];
+            if (woItem.properties.isPartialDone) {
+              woItem.isShowDetails = true;
+            }
             woItem.isRemarkForToday = false;
             woItem.view.dishes.forEach(function (mi) {
               if (mi.isRemark && mi.quantityForToday>0) {
@@ -834,7 +842,7 @@ angular.module('myApp')
         }
         this.computeSelectQuantities(prep);
         // copy select value from view to properties, to save it
-         var propOrder = prep.properties.orders.filter(function(ord) {
+        var propOrder = prep.properties.orders.filter(function(ord) {
           return ord.id === order.id;
         })[0];
         if (propOrder) {
@@ -843,11 +851,59 @@ angular.module('myApp')
           })[0].select;
         }
         api.saveObj(prep)
-          .then(function () {
-            that.woIndex.properties.domainStatus[3] = false;
-            that.woIndex.properties.domainStatus[4] = false;
-            api.saveObj(that.woIndex);
-          })
+            .then(function () {
+              that.woIndex.properties.domainStatus[3] = false;
+              that.woIndex.properties.domainStatus[4] = false;
+              api.saveObj(that.woIndex);
+            })
+      }
+    };
+
+    // if isDone values of all orders in prep are identical, set isDone value of prep accordingly
+    // else set prep's isPartialDone property which forces detailed view
+     this.setPrepOrderDone = function (prep, order) {
+      if (prep.properties.domain === 2) {  // should always be
+        var s = 'none';
+        var done;
+        prep.view.orders.forEach(function(ord) {
+          if (s === 'none') {
+            done = ord.isDone;
+            s = 'same';
+          } else if (done !== ord.isDone) {
+            s = 'partial';
+          }
+        });
+        if (s === 'same') {
+          prep.properties.isDone = done;
+          prep.properties.isPartialDone = false;
+        } else if (s === 'partial') {
+          prep.properties.isDone = false;
+          prep.properties.isPartialDone = true;
+          prep.isShowDetails = true;
+        }
+        // copy isDone value from view to properties, to save it
+        var propOrder = prep.properties.orders.filter(function(ord) {
+          return ord.id === order.id;
+        })[0];
+        if (propOrder) {
+          propOrder.isDone = prep.view.orders.filter(function (ord) {
+            return ord.id === order.id;
+          })[0].isDone;
+        }
+        api.saveObj(prep);
+      }
+    };
+
+    // propogate isDone to all orders in prep item and save item
+    this.setPrepDone = function (woItem) {
+      if (woItem.properties.domain === 2) {  // should always be
+        woItem.view.orders.forEach(function(ord) {
+          ord.isDone = woItem.properties.isDone;
+        });
+        woItem.properties.orders.forEach(function(ord) {
+          ord.isDone = woItem.properties.isDone;
+        });
+        api.saveObj(woItem);
       }
     };
 
@@ -1176,7 +1232,7 @@ angular.module('myApp')
               return exist.id === ord.id;
             }).length > 0;
           });
-          // adjust prep's select value according to remaining orders
+          // force isShowDetails if remaining orders are mixed
           var s = 'none';
           prep.properties.orders.forEach(function (ord) {
             if (s === 'none') {
@@ -1187,6 +1243,20 @@ angular.module('myApp')
           });
           prep.properties.select = s;
           if (s === 'mix') {
+            prep.isShowDetails = true;
+          }
+          // force isShowDetails if remaining orders are partially done
+          s = 'none';
+          var done;
+          prep.properties.orders.forEach(function(ord) {
+            if (s === 'none') {
+              done = ord.isDone;
+              s = 'same';
+            } else if (done !== ord.isDone) {
+              s = 'partial';
+            }
+          });
+          if (s === 'partial') {
             prep.isShowDetails = true;
           }
         }
@@ -1537,6 +1607,20 @@ angular.module('myApp')
                         });
                         prep.properties.select = s;
                         if (s === 'mix') {
+                          prep.isShowDetails = true;
+                        }
+                        // force isShowDetails if remaining orders are partially done
+                        s = 'none';
+                        var done;
+                        prep.properties.orders.forEach(function(ord) {
+                          if (s === 'none') {
+                            done = ord.isDone;
+                            s = 'same';
+                          } else if (done !== ord.isDone) {
+                            s = 'partial';
+                          }
+                        });
+                        if (s === 'partial') {
                           prep.isShowDetails = true;
                         }
                         prepsToUpdate.push(prep);
@@ -2195,7 +2279,7 @@ angular.module('myApp')
       this.workOrder.forEach(function(woi) {
         var wo = woi.properties;
         woi.isShow = !wo.isInStock;
-        if (wo.domain === 2 && wo.select === 'mix') {
+        if (wo.domain === 2 && (wo.select === 'mix' || wo.isPartialDone)) {
           woi.isShowDetails = true;
         }
         if (wo.domain === 2) {

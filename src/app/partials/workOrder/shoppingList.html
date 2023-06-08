@@ -24,7 +24,7 @@
       <input type="checkbox" ng-model="workOrderModel.isIncludeStock[workOrderModel.domain]">
     </td>
     <td  style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
-      <span>כולל הכנות שבוצעו</span>
+      <span>כולל הכנות שהושלמו</span>
       <input type="checkbox" ng-model="workOrderModel.isShowDone[workOrderModel.domain]"
              ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowTodayOnly[workOrderModel.domain]">
     </td>
@@ -113,7 +113,7 @@
             <td>
               {{order.select==="delay"?"עוד לא":
               order.select==="today"?"להיום":
-                order.select==="done"?"בוצע":
+                order.select==="done"?"הושלם":
                   order.select==="unknown"?"לא ידוע":
                     "שגיאה"
               }}
@@ -125,7 +125,7 @@
       <td style="width: 32%" ng-show="!woItem.isShowDetails && !workOrderModel.isShowTodayOnly[workOrderModel.domain]">
         {{woItem.properties.select==="delay"?"עוד לא":
         woItem.properties.select==="today"?"להיום":
-          woItem.properties.select==="done"?"בוצע":
+          woItem.properties.select==="done"?"הושלם":
             woItem.properties.select==="unknown"?"לא ידוע":
               woItem.properties.select==="mix"?"ראה פירוט":
                 "שגיאה"

@@ -28,7 +28,7 @@
                ng-disabled="workOrderModel.isProcessing">
       </td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 15%">
-        <span>כולל הכנות שבוצעו</span>
+        <span>כולל הכנות שהושלמו</span>
         <input type="checkbox" ng-model="workOrderModel.isShowDone[2]"
                ng-disabled="workOrderModel.isProcessing ||
                workOrderModel.isShowTodayOnly[2] || workOrderModel.isShowChanges"
@@ -166,12 +166,13 @@
         {{woItem.properties.quantityForToday | number:2}}
       </td>
         <td style="width: 7%">{{woItem.properties.measurementUnit.label}}</td>
-      <td style="widt:10%" ng-hide="workOrderModel.isPrint">
+      <td style="width:10%" ng-hide="workOrderModel.isPrint">
         <span>פירוט</span>
         <input type="checkbox" ng-model="woItem.isShowDetails"
-               ng-disabled="!workOrderModel.isShowTodayOnly[2] && woItem.properties.select==='mix'">
+               ng-disabled="(!workOrderModel.isShowTodayOnly[2] && woItem.properties.select==='mix') ||
+                            (workOrderModel.isShowTodayOnly[2] && woItem.properties.isPartialDone)">
       </td>
-      <td style="widt:10%" ng-show="workOrderModel.isPrint"></td>
+      <td style="width:10%" ng-show="workOrderModel.isPrint"></td>
       <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
         <span>עוד לא</span>
         <input type="radio" ng-model="woItem.properties.select" value="delay"
@@ -179,8 +180,16 @@
                ng-disabled="woItem.properties.select==='mix' ||
                             (!workOrderModel.isAdmin && woItem.properties.select!=='delay')">
       </td>
-      <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]" style="width: 10%"></td>
-      <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
+        <td ng-show="!workOrderModel.isPrint && !woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]"
+            style="width: 10%">
+            <span>בוצע?</span>
+            <input type="checkbox" ng-model="woItem.properties.isDone"
+                   ng-change="workOrderModel.setPrepDone(woItem)">
+        </td>
+        <td ng-show="!workOrderModel.isPrint && !woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]"
+            style="width: 10%">
+        </td>
+        <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
         <span>להיום</span>
         <input type="radio" ng-model="woItem.properties.select" value="today"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
@@ -189,7 +198,7 @@
       </td>
       <td ng-show="!woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]" style="width: 10%"></td>
       <td ng-hide="woItem.isShowDetails || workOrderModel.isShowTodayOnly[2]" style="width: 10%">
-        <span>בוצע</span>
+        <span>הושלם</span>
         <input type="radio" ng-model="woItem.properties.select" value="done"
                ng-change="workOrderModel.setPrepSelect(woItem, true)"
                ng-disabled="woItem.properties.select==='mix'">
@@ -217,7 +226,8 @@
           <th style="width: 10%">סה"כ</th>
           <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly[2]">עוד לא</th>
           <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly[2]">להיום</th>
-          <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly[2]">בוצע</th>
+          <th style="width: 10%" ng-hide="workOrderModel.isShowTodayOnly[2]">הושלם</th>
+          <th style="width: 10%" ng-show="workOrderModel.isShowTodayOnly[2]">בוצע?</th>
           </thead>
           <tbody>
           <tr ng-repeat="order in woItem.view.orders track by order.id"
@@ -272,6 +282,10 @@
              <input type="radio"
                     ng-model="order.select" value="done"
                     ng-change="workOrderModel.setPrepOrderSelect(woItem,order)">
+            </td>
+            <td ng-show="workOrderModel.isShowTodayOnly[2]">
+                <input type="checkbox" ng-model="order.isDone"
+                       ng-change="workOrderModel.setPrepOrderDone(woItem,order)">
             </td>
           </tr>
           <tr>
