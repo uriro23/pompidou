@@ -417,7 +417,8 @@ angular.module('myApp')
              }
            });
         });
-        // update view select value based on prep DB item
+        currentPrep.isDone = currentPrep.properties.isDone; // because view in bound to currentPrep.isDone
+        // update view select and isDone values based on prep DB item
       currentPrep.view.orders.forEach(function(ord) {
         var matchingOrder = currentPrep.properties.orders.filter(function(mOrd) {
           return mOrd.id === ord.id;
@@ -897,14 +898,70 @@ angular.module('myApp')
     // propogate isDone to all orders in prep item and save item
     this.setPrepDone = function (woItem) {
       if (woItem.properties.domain === 2) {  // should always be
-        woItem.view.orders.forEach(function(ord) {
-          ord.isDone = woItem.properties.isDone;
-        });
-        woItem.properties.orders.forEach(function(ord) {
-          ord.isDone = woItem.properties.isDone;
-        });
-        api.saveObj(woItem);
+        if (woItem.properties.select === 'today') { // if select==='mix' don't set isDone for whole prep
+          woItem.properties.isDone = woItem.isDone;
+        }
+          woItem.view.orders.forEach(function (ord) {
+            if (ord.select === 'today') {
+              ord.isDone = woItem.isDone;
+            }
+          });
+          woItem.properties.orders.forEach(function (ord) {
+            if (ord.select === 'today') {
+              ord.isDone = woItem.isDone;
+            }
+          });
+       api.saveObj(woItem);
       }
+    };
+
+    this.prepEndDay = function () {
+      var that = this;
+      var prepEndDayOptions = $modal.open({
+        templateUrl: 'app/partials/workOrder/endDayOptions.html',
+        controller: 'EndDayOptionsCtrl as endDayOptionsModel',
+        resolve: {},
+        size: 'sm'
+      });
+      prepEndDayOptions.result.then(function(option) {
+        var prepsToUpdate = [];
+          that.workOrder.forEach(function(prep) {
+            if (prep.properties.domain === 2) {
+              var isUpdate = false;
+              if (prep.properties.select === 'today') {
+                if (option === 'all' || prep.properties.isDone) {
+                  prep.properties.select = 'done';
+                  prep.properties.isDone = false;
+                  isUpdate = true;
+                }
+              }
+              prep.view.orders.forEach(function(ord) {
+                if (ord.select === 'today') {
+                  if (option === 'all' || ord.isDone) {
+                    ord.select = 'done';
+                    ord.isDone = false;
+                    isUpdate = true;
+                  }
+                }
+              });
+              prep.properties.orders.forEach(function(ord) {
+                if (ord.select === 'today') {
+                  if (option === 'all' || ord.isDone) {
+                    ord.select = 'done';
+                    ord.isDone = false;
+                    isUpdate = true;
+                  }
+                }
+              });
+              if (isUpdate) {
+                prepsToUpdate.push(prep);
+              }
+            }
+          });
+          if (prepsToUpdate.length) {
+            api.saveObjects(prepsToUpdate);
+          }
+      },  function() {});
     };
 
      this.setOrderServiceToday = function (woItem) {

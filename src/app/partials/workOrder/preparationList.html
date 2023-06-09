@@ -40,8 +40,12 @@
                ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowChanges"
                ng-change="workOrderModel.setPrepsTodayOnly()">
       </td>
-      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 20%">
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 3%">
+          <button class="btn btn-default" ng-click="workOrderModel.prepEndDay()">
+              סוף יום
+          </button>
       </td>
+      <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 17%"></td>
       <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 10%">
           <span>ניהול</span>
           <input type="checkbox" ng-model="workOrderModel.isAdmin">
@@ -183,9 +187,10 @@
         <td ng-show="!workOrderModel.isPrint && !woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]"
             style="width: 10%">
             <span>בוצע?</span>
-            <input type="checkbox" ng-model="woItem.properties.isDone"
+            <input type="checkbox" ng-model="woItem.isDone"
                    ng-change="workOrderModel.setPrepDone(woItem)">
         </td>
+        <!-- ng-model of the above is a temp because if select==='mix' the isDone property is not changed -->
         <td ng-show="!workOrderModel.isPrint && !woItem.isShowDetails && workOrderModel.isShowTodayOnly[2]"
             style="width: 10%">
         </td>
