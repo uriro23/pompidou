@@ -1197,6 +1197,53 @@ angular.module('myApp')
       }
     };
 
+    this.loadShoppingsForSuppliers = function () {
+      var that = this;
+      api.queryCatalog(3,['productName','category','supplier'])
+          .then(function(shoppings) {
+            that.shoppingsForSuppliers = shoppings;
+            api.queryCategories(3)
+                .then(function(shoppingCategories) {
+                  that.shoppingCategories = shoppingCategories.map (function(cat) {
+                    return cat.properties;
+                  });
+                });
+          });
+    };
+
+    this.filterShoppingCategory = function () {
+      var that = this;
+      this.shoppingItemsForSuppliers = this.shoppingsForSuppliers.filter(function(item) {
+        return item.properties.category === that.shoppingCategory.tId && !item.properties.isDeleted;
+      });
+      this.shoppingItemsForSuppliers.forEach(function (item) {
+        if (!item.properties.supplier && that.shoppingCategory.defaultSupplier) {
+          item.properties.supplier = that.shoppingCategory.defaultSupplier;
+          item.isChanged = true;
+          that.isAnySupplierchanged = true;
+        }
+      });
+    };
+
+    this.setSupplier = function (item) {
+      item.isChanged = true;
+      this.isAnySupplierchanged = true;
+    };
+
+    this.saveShoppingItems = function (item) {
+      var that = this;
+      var itemsToUpdate = this.shoppingItemsForSuppliers.filter(function (item) {
+        return item.isChanged === true;
+      });
+      api.saveObjects(itemsToUpdate)
+          .then(function() {
+          });
+      that.shoppingItemsForSuppliers.forEach(function (item) {
+        item.isChanged = false;
+      });
+      that.isAnySupplierchanged = false;
+    };
+
     // customers tab
     this.loadCustomers = function() {
       var that = this;

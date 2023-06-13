@@ -32,6 +32,11 @@
       <span>הצג רק להיום</span>
       <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
     </td>
+    <td style="width: 12%">
+      <a ng-href="#/logForm/{{workOrderModel.woIndex.properties.woId}}" target="_blank">
+        יומן עבודה
+      </a>
+    </td>
   </tr>
 </table>
   <div ng-show="workOrderModel.isPrint">

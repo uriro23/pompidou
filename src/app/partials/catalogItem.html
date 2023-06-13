@@ -292,6 +292,12 @@
         <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isInMenu"
                    ng-change="catalogItemModel.setChanged(true)"></td>
       </tr>
+      <tr ng-show="catalogItemModel.currentDomain.id===3" >
+        <td><label>ספק</label></td>
+        <td><input type="text" size="15"
+                   ng-model="catalogItemModel.item.properties.supplier"
+                   ng-change="catalogItemModel.setChanged(true)"></td>
+      </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>האם דורש קירור?</label></td>
         <td><input type="checkbox" ng-model="catalogItemModel.item.properties.isFridge"

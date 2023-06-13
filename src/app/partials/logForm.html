@@ -1,0 +1,46 @@
+<div id="exitListContainer">
+    <h4 style="width: 100%">
+        <span style="text-align: right">השף בקופסה</span>
+        <span>  --  </span>
+        <span style="text-align: left">054-7514061</span>
+    </h4>
+    <h2>
+        טופס יומן עבודה לתאריך
+        {{logFormModel.today | date: 'dd/MM/yy'}}
+    </h2>
+    <p style="height: 0.5cm"></p>
+    <table style="width: 100%">
+        <thead>
+        <tr class="form-line">
+            <th class="form-box" style="width: 16%">קטגוריה</th>
+            <th class="form-box" style="width: 16%">שם חו"ג</th>
+            <th class="form-box" style="width: 16%">מקור חו"ג</th>
+            <th class="form-box" style="width: 20%">מיועד למוצר</th>
+            <th class="form-box" style="width: 16%">כמות ייצור</th>
+            <th class="form-box" style="width: 16%">כמות שהושמדה</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="form-line" ng-repeat="log in logFormModel.logs track by $index">
+            <td class="form-box">{{log.category}}</td>
+            <td class="form-box">{{log.productName}}</td>
+            <td class="form-box">{{log.supplier}}</td>
+            <td class="form-box">{{log.dishes}}</td>
+            <td class="form-box">
+                <span>{{log.quantity | number:2}}</span>
+                <span>{{log.measurementUnit.label}}</span>
+            </td>
+            <td class="form-box"></td>
+        </tr>
+        </tbody>
+        <tr style="height: 0.5cm"></tr>
+        <tr>
+            <td colspan="5"><label>שם</label></td>
+            <td><label>חתימה</label></td>
+        </tr>
+        <tr>
+            <td colspan="5">________________</td>
+            <td>________________</td>
+        </tr>
+    </table>
+</div>

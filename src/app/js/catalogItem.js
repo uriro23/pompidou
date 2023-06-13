@@ -788,6 +788,10 @@ angular.module('myApp')
 
    model.item.isCopyToShortDesc = model.item.properties.productDescription===model.item.properties.shortDescription;
    model.setupItemView();
+   if (!model.item.properties.supplier) {
+     console.log(model.item.view.category)
+     model.item.properties.supplier = model.item.view.category.defaultSupplier;
+   }
    model.setChanged(false);
    model.loadComponentItems();
    model.filterAvailableSensitivities();

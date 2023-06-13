@@ -994,7 +994,24 @@ config(function($stateProvider, $urlRouterProvider) {
               return catalog;
             });
           }]
-         }
+        }
+      })
+      .state ('logForm', {
+        url: '/logForm/:woId',
+        templateUrl: 'app/partials/logForm.html',
+        controller: 'LogFormCtrl as logFormModel',
+        resolve: {
+          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryWorkOrder (Number($stateParams.woId)).then (function (workOrder) {
+              return workOrder;
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(undefined,['supplier','stickerLabel']). then (function(catalog) {
+              return catalog;
+            });
+          }]
+        }
       })
       .state ('menu', {
       url: '/menu/:id',

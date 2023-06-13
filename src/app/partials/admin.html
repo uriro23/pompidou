@@ -462,6 +462,41 @@
            </tbody>
          </table>
        </tab>
+       <tab heading="ספקים" select="adminModel.loadShoppingsForSuppliers()">
+         <div ng-hide="adminModel.isProcessing">
+           <label>בחר קטגוריה</label>
+           <select ng-model="adminModel.shoppingCategory"
+                   ng-change="adminModel.filterShoppingCategory()"
+                   ng-options="category.label for category in adminModel.shoppingCategories"></select>
+           <button class="btn btn-warning"
+                   ng-click="adminModel.saveShoppingItems()"
+                   ng-show="adminModel.isAnySupplierchanged">עדכן</button>
+           <table class="table table-hover" style="width: 30%">
+             <thead>
+             <th>שם</th>
+             <th>ספק</th>
+             </thead>
+             <tbody>
+             <tr ng-repeat="shoppingItem in adminModel.shoppingItemsForSuppliers track by shoppingItem.id"
+                 ng-class="shoppingItem.errors ? 'bg-danger' :
+                       shoppingItem.isChanged ? 'bg-success' :
+                       shoppingItem.properties.isDeleted ? 'active cancel' : bg-active">
+               <td ng-hide="adminModel.isDisableLink">
+                 <a  ng-href="#/editCatalogItem/{{productNameItem.id}}">
+                   {{shoppingItem.properties.productName}}
+                 </a>
+               </td>
+               <td ng-show="adminModel.isDisableLink">{{shoppingItem.properties.productName}}</td>
+               <td>
+                 <input type="text" size="10"
+                        ng-model="shoppingItem.properties.supplier"
+                        ng-change="adminModel.setSupplier(shoppingItem)">
+               </td>
+             </tr>
+             </tbody>
+           </table>
+         </div>
+       </tab>
      </tabset>
    </tab>
    <tab heading="לקוחות" select="adminModel.loadCustomers2()">
