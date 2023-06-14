@@ -430,6 +430,7 @@ angular.module('myApp')
     this.isProd = config.isProd;
     this.activityDate = new Date();
     this.quoteViewType = 'items';
+    var isHeaderChanged = false;
 
     if ($state.current.name === 'editOrder') {
       this.order = currentOrder;
@@ -466,18 +467,23 @@ angular.module('myApp')
     } else if ($state.current.name === 'dupOrder') {
       $rootScope.title = 'אירוע חדש';
       this.order = api.initOrder();
-      this.order.properties = currentOrder.properties;
+      this.order.properties = angular.copy(currentOrder.properties);
       this.order.properties.createdBy = this.user.attributes.username;
+      this.order.properties.orderStatus = 0;  // set to proposal
       this.order.properties.isDateUnknown = true;
       this.order.properties.eventDate = new Date(2199,11,31,0,0,0,0);
       this.order.properties.eventTime = undefined;
       this.order.properties.exitTime = undefined;
+      this.order.properties.bidDate = undefined;
+      this.order.properties.closingDate = undefined;
       this.order.properties.activities = [];
       this.order.properties.taskData = {};
       if (this.order.properties.quotes) {
         this.showSummary.is = new Boolean(this.order.properties.quotes.length);
       }
-
+      var activity = 'האירוע נוצר בשכפול אירוע '+currentOrder.properties.number+
+          ' מתאריך '+new Intl.DateTimeFormat('en-US').format(currentOrder.properties.eventDate);
+      this.order.properties.activities.splice(0,0,{date: new Date(), text: activity});
       // initialize employee bonuses array
       this.order.properties.empBonuses = angular.copy(pRoles);
       this.order.properties.empBonuses.forEach(function(role) {
@@ -500,6 +506,7 @@ angular.module('myApp')
       if (!this.order.view.quote.advance) {
         this.order.view.quote.advance = 0;   // to avoid NaN results on balance for old orders
       }
+      isHeaderChanged = true;
     } else {  // new order or new order by customer
       $rootScope.title = 'אירוע חדש';
       this.showSummary.is = false;
@@ -562,6 +569,10 @@ angular.module('myApp')
     orderService.checkTasks(this.order);
 
     this.order.view.isChanged = false;
+    if (isHeaderChanged) {
+      orderService.orderChanged(this.order,'header');
+      isHeaderChanged = false;
+    }
     window.onbeforeunload = function () {
     };
     window.onblur = function () {
