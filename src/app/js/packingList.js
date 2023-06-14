@@ -253,14 +253,9 @@ angular.module('myApp')
         } else {
           item.displayName = (Math.round(item.prodQuantity*100)/100).toString() + ' ' + item.prodMeasurementUnit.label + ' ' + item.productName;
         }
-        // add "main part" to name, if exitList is non empty
-        if (catItem.exitList.length) {
-          item.displayName += ' (החלק העיקרי)'
-        }
 
          // skip accumulated items and items w/o package MU
-        if ((category.totalItem > -1 && item.packageMeasurementUnit.tId === MU_TRAYS && !item.isTotalItem) ||
-          item.packageMeasurementUnit.tId === 0) {
+        if (category.totalItem > -1 && item.packageMeasurementUnit.tId === MU_TRAYS && !item.isTotalItem) {
           item.isSkip = true;
         } else {
           ind++;

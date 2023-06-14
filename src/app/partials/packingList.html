@@ -180,24 +180,30 @@
   <table class="tableStart" border="1" style="width: 90%">
     <thead>
     <tr style="height: 10mm">
-    <th style="width: 70%">
+    <th colspan="2">
       רשימת אריזה -
       {{packingListModel.customer.firstName+' '+packingListModel.customer.lastName}}
       {{packingListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
       <img ng-show="packingListModel.isOrderColors" src="app/img/bigColors/{{packingListModel.color.stickerColor}}.jpg"/>
       <span ng-show="packingListModel.isOrderNumbers">[{{packingListModel.color.tId}}]</span>
     </th>
-    <th style="width: 30%"></th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="line in packingListModel.vec track by line.ind">
       <!-- col 1 -->
-      <td ng-show="line.level===0">
+      <td style="width: 50%" ng-show="line.level===0">
         <label>{{line.data.label}}</label></td>
-      <td ng-show="line.level===1">
+      <td style="width: 50%" ng-show="line.level===1">
+          <span ng-show="line.data.packageMeasurementUnit.tId">
         &nbsp;&#128440;
         {{line.data.displayName}}
+          </span>
+          <span ng-hide="line.data.packageMeasurementUnit.tId">
+              &nbsp; (
+              {{line.data.displayName}}
+              , כולל:)
+          </span>
         <div ng-show="line.data.isMajorChange">
           &nbsp;&nbsp;&nbsp;<label>התאמה אישית:</label>&nbsp;
           {{(line.data.isKitchenRemark && line.data.kitchenRemark) ?
@@ -207,24 +213,24 @@
           <br><span style="font-weight: bold"> &nbsp;&nbsp; יש לבדוק את מספר המגשים בפועל</span>
         </span>
     </td>
-      <td ng-show="line.level===2">
-        &nbsp;&#128440;
+      <td style="width: 50%" ng-show="line.level===2">
+        &nbsp;&nbsp;&nbsp;&nbsp;&#128410;
         <span>{{line.data.item}}</span>
-        <span>ל</span>
         <span ng-show="line.data.isShowParentQuantity">
+          <span>ל</span>
           <span>{{line.data.parentQuantity}}</span>
           <span>{{line.data.parentMeasurementUnit.label}}</span>
+          <span style="text-decoration: underline">{{line.data.parentName}}</span>
         </span>
-        <span style="text-decoration: underline">{{line.data.parentName}}</span>
       </td>
       <!-- col 2 -->
-      <td ng-show="line.level===0"></td>
-      <td ng-show="line.level===1">
+      <td style="width: 50%" ng-show="line.level===0"></td>
+      <td style="width: 50%" ng-show="line.level===1">
         <span ng-hide="line.data.packageMeasurementUnit.tId===0">
           {{line.data.packageQuantity}}&nbsp;{{line.data.packageMeasurementUnit.label}}
         </span>
       </td>
-       <td ng-show="line.level===2">
+       <td style="width: 50%" ng-show="line.level===2">
         <span ng-hide="line.data.measurementUnit.tId === 0">
           {{line.data.quantity}} {{line.data.measurementUnit.label}}
         </span>
