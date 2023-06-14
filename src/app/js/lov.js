@@ -413,6 +413,27 @@ angular.module('myApp')
       }
     ],
 
+    workOrderDisplayModes : [
+      {
+        id: 1,
+        label: 'עוד לא והיום',
+        isShowTodayOnly: false,
+        isShowDone: false
+      },
+      {
+        id: 2,
+        label: 'רק היום',
+        isShowTodayOnly: true,
+        isShowDone: false
+      },
+      {
+        id: 3,
+        label: 'הכל',
+        isShowTodayOnly: false,
+        isShowDone: true
+      }
+    ],
+
     descChangeActions: [
       {
         id: 0,

@@ -14,6 +14,14 @@
         --- לא מעודכן ---
       </span>
     </td>
+    <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 34%">
+      <span>מה להציג?</span>
+      <select ng-model="workOrderModel.displayMode"
+              ng-options="displayMode.label for displayMode in workOrderModel.displayModes"
+              ng-change="workOrderModel.setDisplayMode()"
+              ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowChanges">
+      </select>
+    </td>
     <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>הצג פירוט</span>
       <input type="checkbox" ng-model="workOrderModel.isShowDetails[workOrderModel.domain]"
@@ -22,15 +30,6 @@
     <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>כולל מלאי</span>
       <input type="checkbox" ng-model="workOrderModel.isIncludeStock[workOrderModel.domain]">
-    </td>
-    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
-      <span>כולל הכנות שהושלמו</span>
-      <input type="checkbox" ng-model="workOrderModel.isShowDone[workOrderModel.domain]"
-             ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowTodayOnly[workOrderModel.domain]">
-    </td>
-    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
-      <span>הצג רק להיום</span>
-      <input type="checkbox" ng-model="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
     </td>
   </tr>
 </table>

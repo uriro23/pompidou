@@ -55,9 +55,11 @@ angular.module('myApp')
             }
           }
         }
-      if (domain === 4) { // force default show today only for actions
-        that.isShowTodayOnly[4] = true;
-      }
+        var displayMode = domain===4 ? 2 : 1; // for action domain force todayOnly display
+        this.displayMode = this.displayModes.filter(function (dm) {
+          return dm.id === displayMode;
+        })[0];
+        this.setDisplayMode();
     };
 
     this.setShowAll = function(domain) {
@@ -755,6 +757,15 @@ angular.module('myApp')
       }
     };
 
+    this.setDisplayMode = function () {
+      this.isShowTodayOnly[this.domain] = this.displayMode.isShowTodayOnly;
+      this.isShowDone[this.domain] = this.displayMode.isShowDone;
+      if (this.domain === 2) {
+        this.setPrepsTodayOnly();
+        this.setPrepsDone();
+      }
+    };
+
     // sum quantity of all orders marked for today or done and of each dish they include
    this.computeSelectQuantities = function (woItem) {
       var quantToday = 0;
@@ -1238,12 +1249,11 @@ angular.module('myApp')
 
     // for preps, if showing changes, all preps must be visible
     this.setShowChanges = function () {
-      if (this.isShowChanges) {
-        this.isShowTodayOnly[2] = false;
-        this.isShowDone[2] = true;
-      } else {
-        this.isShowDone[2] = false; // back to default
-      }
+      var displayMode = this.isShowChanges ? 3 : this.domain===4 ? 2 : 1;
+      this.displayMode = this.displayModes.filter(function (dm) {
+        return dm.id === displayMode;
+      })[0];
+      this.setDisplayMode();
     };
 
     // erases all marks of previous updateWorkOrder:
@@ -2918,6 +2928,7 @@ angular.module('myApp')
     this.isOrderNumbers = config.isOrderNumbers;
     this.catalog = catalog;
     this.domains = lov.domains;
+    this.displayModes = lov.workOrderDisplayModes;
     this.woIndexes = woIndexes;
     this.woIndex = this.woIndexes.filter(function(index) {
       return index.properties.isDefault;

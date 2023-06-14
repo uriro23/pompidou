@@ -35,6 +35,11 @@
         </a>
       </button>
     </td>
+    <td style="width: 10%">
+      <span>הצג שינויים:</span>
+      <input type="checkbox" ng-model="workOrderModel.isShowChanges"
+             ng-change="workOrderModel.setShowChanges()">
+    </td>
   </tr>
 </table>
   <div ng-show="workOrderModel.isPrint">

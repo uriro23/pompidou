@@ -23,12 +23,6 @@
           ng-disabled="workOrderModel.isProcessing"
           ng-options="woIndex.properties.label for woIndex in workOrderModel.woIndexes"></select>
     </td>
-    <td ng-show="workOrderModel.domain === 1 || workOrderModel.domain === 2">
-      <span>הצג שינויים:</span>
-      <input type="checkbox" ng-model="workOrderModel.isShowChanges"
-             ng-change="workOrderModel.setShowChanges()">
-    </td>
-    <td ng-hide="workOrderModel.domain === 1 || workOrderModel.domain === 2"></td>
     <td>
       <button class="btn btn-default"
               ng-show="workOrderModel.domain > 0"
