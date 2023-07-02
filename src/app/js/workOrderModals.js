@@ -108,10 +108,6 @@ angular.module('myApp')
 
 .controller('EndDayOptionsCtrl', function ($modalInstance) {
 
-  this.setAll = function() {
-    $modalInstance.close('all');
-  }
-
   this.setDone = function() {
     $modalInstance.close('done');
   }

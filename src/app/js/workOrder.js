@@ -940,7 +940,7 @@ angular.module('myApp')
             if (prep.properties.domain === 2) {
               var isUpdate = false;
               if (prep.properties.select === 'today') {
-                if (option === 'all' || prep.properties.isDone) {
+                if (prep.properties.isDone) {
                   prep.properties.select = 'done';
                   prep.properties.isDone = false;
                   isUpdate = true;
@@ -948,7 +948,7 @@ angular.module('myApp')
               }
               prep.view.orders.forEach(function(ord) {
                 if (ord.select === 'today') {
-                  if (option === 'all' || ord.isDone) {
+                  if (ord.isDone) {
                     ord.select = 'done';
                     ord.isDone = false;
                     isUpdate = true;
@@ -957,7 +957,7 @@ angular.module('myApp')
               });
               prep.properties.orders.forEach(function(ord) {
                 if (ord.select === 'today') {
-                  if (option === 'all' || ord.isDone) {
+                  if (ord.isDone) {
                     ord.select = 'done';
                     ord.isDone = false;
                     isUpdate = true;
