@@ -1,0 +1,25 @@
+<div ng-repeat="page in dishStickersModel.stickerPage track by page.seq"
+     style="height:29.7cm; margin-right: 1cm;  margin-bottom: 0; margin-top: 0" > <!-- was margin-top 0.7 cm -->
+    <table>
+        <thead>
+        <th style="height:0.7cm">{{page.seq}}</th>
+        </thead>
+        <tr ng-repeat="line in page.lines track by line.seq" style="height:2.55cm">
+            <td ng-repeat="sticker in line.stickers track by sticker.seq" style="width:7cm">
+                <div>
+                    <label>{{sticker.label}}</label>
+                </div>
+                <div>
+                    <span>{{sticker.customer.firstName}}</span>
+                    <span>{{dishStickersModel.dayName(sticker.eventDate)}}</span>
+                    <img ng-show="dishStickersModel.isOrderColors" ng-src="app/img/bigColors/{{sticker.color.stickerColor}}.jpg"/>
+                    <span ng-show="dishStickersModel.isOrderNumbers">[{{sticker.color.tId}}]</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div>
+        <p style="page-break-after: always;">&nbsp;</p>
+        <p style="page-break-before: always;">&nbsp;</p>
+    </div>
+</div>

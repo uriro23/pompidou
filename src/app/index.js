@@ -392,92 +392,172 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-
     .state('woStickers', {
-      url: '/woStickers/:woId',
-      templateUrl: 'app/partials/stickers.html',
-      controller: 'StickersCtrl as stickersModel',
-      resolve: {
-        catalog: ['api', function (api) {
-          return api.queryCatalog(1).then(function (obj) {
-            return obj;
-          });
-        }],
-        categories: ['categoriesPromise', function (categoriesPromise) {
-          return categoriesPromise;
-        }],
-        config: ['api', function (api) {
-          return api.queryConfig().then(function (res) {
-            return res[0].properties;
-          });
-        }],
-        workOrder: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
-            return workItems.map(function (wi) {
-              var att = wi.properties;
-              att.id = wi.id;
-              return att;
+        url: '/woStickers/:woId',
+        templateUrl: 'app/partials/stickers.html',
+        controller: 'StickersCtrl as stickersModel',
+        resolve: {
+          catalog: ['api', function (api) {
+            return api.queryCatalog(1).then(function (obj) {
+              return obj;
             });
-          });
-        }],
-        order: [function() {
-          return null;
-        }],
-        customer: [function() {
-          return null;
-        }],
-        color: [function() {
-          return null;
-        }]
-      }
-    })
-
-    .state('orderStickers', {
-      url: '/orderStickers/:id/:custId/:colorId',
-      templateUrl: 'app/partials/stickers.html',
-      controller: 'StickersCtrl as stickersModel',
-      resolve: {
-        catalog: ['api', function (api) {
-          return api.queryCatalog(1).then(function (obj) {
-            return obj;
-          });
-        }],
-        categories: ['categoriesPromise', function (categoriesPromise) {
-          return categoriesPromise;
-        }],
-        config: ['api', function (api) {
-          return api.queryConfig().then(function (res) {
-            return res[0].properties;
-          });
-        }],
-        workOrder: [function () {
-          return null;
-        }],
-        order: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrder ($stateParams.id).then (function (orders) {
-            return orders[0];
-          });
-        }],
-        customer: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryCustomers($stateParams.custId).then (function (customers) {
-            return customers[0].properties;
-          });
-        }],
-        color: ['$stateParams', 'api', function ($stateParams, api) {
-          if ($stateParams.colorId) {
-            return api.queryColors().then(function (colors) {
-              return colors.filter(function (col) {
-                return col.properties.tId.toString() === $stateParams.colorId;
-              })[0].properties;
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          config: ['api', function (api) {
+            return api.queryConfig().then(function (res) {
+              return res[0].properties;
             });
-          } else {
-            return {};
-          }
-        }]
-      }
-    })
+          }],
+          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
+              return workItems.map(function (wi) {
+                var att = wi.properties;
+                att.id = wi.id;
+                return att;
+              });
+            });
+          }],
+          order: [function() {
+            return null;
+          }],
+          customer: [function() {
+            return null;
+          }],
+          color: [function() {
+            return null;
+          }]
+        }
+      })
+      .state('woDishStickers', {
+        url: '/woDishStickers/:woId',
+        templateUrl: 'app/partials/dishStickers.html',
+        controller: 'DishStickersCtrl as dishStickersModel',
+        resolve: {
+          catalog: ['api', function (api) {
+            return api.queryCatalog(1).then(function (obj) {
+              return obj;
+            });
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          config: ['api', function (api) {
+            return api.queryConfig().then(function (res) {
+              return res[0].properties;
+            });
+          }],
+          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
+              return workItems.map(function (wi) {
+                var att = wi.properties;
+                att.id = wi.id;
+                return att;
+              });
+            });
+          }],
+          order: [function() {
+            return null;
+          }],
+          customer: [function() {
+            return null;
+          }],
+          color: [function() {
+            return null;
+          }]
+        }
+      })
+      .state('orderStickers', {
+        url: '/orderStickers/:id/:custId/:colorId',
+        templateUrl: 'app/partials/stickers.html',
+        controller: 'StickersCtrl as stickersModel',
+        resolve: {
+          catalog: ['api', function (api) {
+            return api.queryCatalog(1).then(function (obj) {
+              return obj;
+            });
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          config: ['api', function (api) {
+            return api.queryConfig().then(function (res) {
+              return res[0].properties;
+            });
+          }],
+          workOrder: [function () {
+            return null;
+          }],
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          customer: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryCustomers($stateParams.custId).then (function (customers) {
+              return customers[0].properties;
+            });
+          }],
+          color: ['$stateParams', 'api', function ($stateParams, api) {
+            if ($stateParams.colorId) {
+              return api.queryColors().then(function (colors) {
+                return colors.filter(function (col) {
+                  return col.properties.tId.toString() === $stateParams.colorId;
+                })[0].properties;
+              });
+            } else {
+              return {};
+            }
+          }]
+        }
+      })
+      .state('orderDishStickers', {
+        url: '/orderDishStickers/:id/:custId/:colorId',
+        templateUrl: 'app/partials/dishStickers.html',
+        controller: 'DishStickersCtrl as dishStickersModel',
+        resolve: {
+          catalog: ['api', function (api) {
+            return api.queryCatalog(1).then(function (obj) {
+              return obj;
+            });
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          config: ['api', function (api) {
+            return api.queryConfig().then(function (res) {
+              return res[0].properties;
+            });
+          }],
+          workOrder: [function () {
+            return null;
+          }],
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          customer: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryCustomers($stateParams.custId).then (function (customers) {
+              return customers[0].properties;
+            });
+          }],
+          color: ['$stateParams', 'api', function ($stateParams, api) {
+            if ($stateParams.colorId) {
+              return api.queryColors().then(function (colors) {
+                return colors.filter(function (col) {
+                  return col.properties.tId.toString() === $stateParams.colorId;
+                })[0].properties;
+              });
+            } else {
+              return {};
+            }
+          }]
+        }
+      })
 
-    .state('catalogList', {
+      .state('catalogList', {
       url: '/catalogList/:domain/:category',
       templateUrl: 'app/partials/catalogList.html',
       controller: 'Catalog2Ctrl as catalogListModel',
