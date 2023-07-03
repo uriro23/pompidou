@@ -13,18 +13,29 @@
         --- לא מעודכן ---
       </span>
     </td>
-    <td style="width: 15%">
+    <td style="width: 20%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
               ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
         <a href="#/woStickers/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
            ng-disabled="workOrderModel.isProcessing"
            ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
-          מדבקות
+          מדבקות ישנות
         </a>
       </button>
     </td>
-    <td style="width: 15%">
+    <td style="width: 20%">
+      <button class="btn btn-default"
+              ng-disabled="workOrderModel.isProcessing"
+              ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
+        <a href="#/woDishStickers/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
+           ng-disabled="workOrderModel.isProcessing"
+           ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
+          מדבקות חדשות
+        </a>
+      </button>
+    </td>
+    <td style="width: 20%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
               ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
