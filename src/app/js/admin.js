@@ -4,7 +4,7 @@
 angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
-                                     measurementUnits, categories,sensitivities,
+                                     measurementUnits, categories, allCategories, sensitivities,
                                      discountCauses, role, employees, pRoles,
                                      phases, taskTypes, taskDetails) {
 
@@ -2356,7 +2356,6 @@ angular.module('myApp')
             })
         });
     }
-        */
 
     this.updateSensitivities = function () {
       api.queryCatalog(1,['sensitivities'])
@@ -2376,6 +2375,53 @@ angular.module('myApp')
                 });
           });
     };
+     */
+    function trimPackageWords (name) {
+      var packageWords = [
+        'ואריזת',
+        'אריזת',
+        '- לארוז',
+        '-לארוז',
+        'לארוז',
+        '- אריזה',
+        '-אריזה',
+        'אריזה'
+      ];
+      for (var i=0;i<packageWords.length;i++) {
+        var newName = name.replace(packageWords[i],'');
+        if (newName !== name) {
+          return newName;
+        }
+      }
+      return name;
+    }
+
+    this.packagingNames = function() {
+      api.queryCatalog(4,['productName','externalName','domain','category','isDeleted'])
+          .then(function(actions) {
+            var cnt = 0;
+            console.log(actions.length+' actions read');
+            var filteredActions = actions.filter(function (act) {
+              var category = allCategories.filter(function (cat) {
+                return cat.tId === act.properties.category;
+              })[0];
+              return (category.type === 21 || category.type === 22) && !act.properties.isDeleted;
+            });
+            filteredActions.forEach(function(filt) {
+              filt.properties.externalName = trimPackageWords(filt.properties.productName);
+              if (filt.properties.externalName !== filt.properties.productName) {
+                cnt++;
+              }
+            });
+            console.log(filteredActions.length+' actions filtered');
+            console.log(cnt+' actions changed');
+            api.saveObjects(filteredActions)
+                .then(function () {
+                  console.log('done');
+                });
+          });
+    };
+
     // end conversions
 
   });

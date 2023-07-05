@@ -28,7 +28,10 @@
       <thead>
       <th style="width:7%">קטגוריה</th>
         <th style="width:20%">שם פנימי</th>
-        <th ng-show="catalogListModel.currentDomain.id===1" style="width:35%">תיאור להצעת מחיר</th>
+      <th ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4"
+          style="width: 20%">שם תוצר</th>
+      <th ng-show="catalogListModel.currentDomain.id===3" style="width:20%">ספק</th>
+      <th ng-show="catalogListModel.currentDomain.id===1" style="width:35%">תיאור להצעת מחיר</th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:1%">הצעת</th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:5%">מחיר</th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:0.2%"></th>
@@ -48,10 +51,16 @@
         <td style="cursor: pointer" ng-click="catalogListModel.editItem(catalogItem.id)">
           {{catalogItem.properties.productName}}
         </td>
-        <td ng-show="catalogListModel.currentDomain.id===1">
-          {{catalogItem.properties.productDescription}}
-        </td>
-        <td ng-show="catalogListModel.currentDomain.id===1">
+          <td ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4">
+              {{catalogItem.properties.externalName}}
+          </td>
+          <td ng-show="catalogListModel.currentDomain.id===3">
+              {{catalogItem.properties.supplier}}
+          </td>
+          <td ng-show="catalogListModel.currentDomain.id===1">
+              {{catalogItem.properties.productDescription}}
+          </td>
+          <td ng-show="catalogListModel.currentDomain.id===1">
           {{catalogItem.properties.priceQuantity | number:2}}
         </td>
         <td ng-hide="catalogListModel.currentDomain.id===2">

@@ -54,6 +54,26 @@ angular.module('myApp')
 
    // Main Tab
 
+    function trimPackageWords (name) {
+      var packageWords = [
+          'ואריזת',
+          'אריזת',
+          '- לארוז',
+          '-לארוז',
+          'לארוז',
+          '- אריזה',
+          '-אריזה',
+          'אריזה'
+      ];
+      for (var i=0;i<packageWords.length;i++) {
+        var newName = name.replace(packageWords[i],'');
+        if (newName !== name) {
+          return newName;
+        }
+      }
+      return name;
+    }
+
     model.setProductName = function () {
       model.item.errors.productName =
         !model.item.properties.productName || model.item.properties.productName.length === 0;
@@ -61,6 +81,11 @@ angular.module('myApp')
         if (isNameInUse(model.item.properties.productName,model.item.id)) {
           model.item.errors.productName = 'dup';
         }
+      }
+      if (!model.item.properties.isExternalNameExplicit &&
+          model.item.properties.domain === 4 &&
+          (model.item.view.category.type === 21 || model.item.view.category.type === 22)) {
+        model.item.properties.externalName = trimPackageWords(model.item.properties.productName);
       }
       model.setChanged(true);
     };

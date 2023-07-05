@@ -717,6 +717,9 @@ config(function($stateProvider, $urlRouterProvider) {
       categories: ['categoriesPromise', function (categoriesPromise) {
         return categoriesPromise;
       }],
+      allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
+        return allCategoriesPromise;
+      }],
       menuTypes: ['menuTypesPromise', function (menuTypesPromise) {
         return menuTypesPromise;
       }],
