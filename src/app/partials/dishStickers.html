@@ -4,10 +4,39 @@
         <thead>
         <th style="height:0.7cm">{{page.seq}}</th>
         </thead>
-        <tr ng-repeat="line in page.lines track by line.seq" style="height:2.55cm">
-            <td ng-repeat="sticker in line.stickers track by sticker.seq" style="width:7cm">
+        <tr ng-repeat="line in page.lines track by line.seq" style="height:7cm">
+            <td ng-repeat="sticker in line.stickers track by sticker.seq" style="width:10.5cm">
+                <div style="font-weight: bold">
+                    <span>השף בקופסא</span>
+                    <span>טל' 054-7514061</span>
+                </div>
                 <div>
                     <label>{{sticker.label}}</label>
+                </div>
+                <div>
+                    <span>זמן ייצור:</span>
+                    <span>{{sticker.eventDate | date: 'dd/MM/yy'}}</span>
+                    <span>{{sticker.productionTime | date: 'HH:mm'}}</span>
+                </div>
+                <div ng-show="sticker.isAnyContains">
+                    <span>מכיל</span>
+                    <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
+                          ng-show="allergy.isContains">
+                        {{allergy.allergyName}},
+                    </span>
+                </div>
+                <div ng-show="sticker.isAnyMayContain">
+                    <span>עלול להכיל</span>
+                    <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
+                          ng-hide="allergy.isContains">
+                        {{allergy.allergyName}},
+                    </span>
+                </div>
+                <div ng-show="sticker.instructions.length>0">
+                    <div style="text-decoration: underline">הוראות:</div>
+                    <div ng-repeat="instruction in sticker.instructions track by $index">
+                        {{instruction}}
+                    </div>
                 </div>
                 <div>
                     <span>{{sticker.customer.firstName}}</span>

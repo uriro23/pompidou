@@ -5,7 +5,7 @@ angular.module('myApp')
 
     .controller('StickersCtrl', function (api, $state, $rootScope, $timeout,
                                           catalog, categories, config,
-                                          workOrder, order, customer, color) {
+                                          workOrder, order, customers, customer, color) {
       $rootScope.menuStatus = 'hide';
       $rootScope.title = 'מדבקות';
 
@@ -59,9 +59,9 @@ angular.module('myApp')
             var catalogEntry = catalog.filter(function (ca) {
               return ca.id === item.catalogId;
             })[0];
-            var globalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
+            var isGlobalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
                 ordCategories[catInd].category.tId === CATEGORY_DESSERTS;
-            if (globalCategory) {                       // for snacks and desserts produce category stickers
+            if (isGlobalCategory) {                       // for snacks and desserts produce category stickers
               var boxComponent = catalogEntry.properties.components.filter(function(comp) { // instead of item stickers
                 return comp.id === config.boxItem;
               });
@@ -75,7 +75,7 @@ angular.module('myApp')
             var stickerItem = {
               number: order.order.number,
               label: catalogEntry.properties.stickerLabel,
-              quantity: globalCategory ?                    // for global categories, count only exitList sub items
+              quantity: isGlobalCategory ?                    // for global categories, count only exitList sub items
                   catalogEntry.properties.exitList.length :
                   Math.ceil(
                       item.quantity /
@@ -190,6 +190,13 @@ angular.module('myApp')
       var woOrders = workOrder.filter(function(wo) { // create array of all orders in wo
         return wo.domain===0;
       });
+      if ($state.current.name === 'woStickers') {
+        woOrders.forEach(function (wo) {
+          wo.customer = customers.filter(function (cust) {
+            return cust.id === wo.order.customer;
+          })[0].properties;
+        })
+      }
 
       ordCategories = [];
 
@@ -231,66 +238,24 @@ angular.module('myApp')
     })
 
 
-    .controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope, $timeout,
-                                                   catalog, config, categories, measurementUnits,
-                                                   workOrder) {
-      $rootScope.menuStatus = 'hide';
-      $rootScope.title = 'חטיפים וקינוחים';
-
-      var CATEGORY_SNACKS = 1;
-      var CATEGORY_DESSERTS = 8;
-
-      this.isOrderColors = config.isOrderColors;
-      this.isOrderNumbers = config.isOrderNumbers;
-
-      function editItems (order, category) {
-        return order.order.quotes[order.order.activeQuote].items.filter(function(item) {
-          return item.category.tId === category;
-        }).map(function(item) {
-          return {
-            id: item.index,   // for ng-repeat track by
-            productName: item.productName,
-            productDescription: (item.isKitchenRemark && item.kitchenRemark) ?
-                item.kitchenRemark :  item.productDescription,
-            isDescChanged: item.isDescChanged & (!item.isCosmeticChange),
-            quantity: item.quantity,
-            measurementUnitLabel: item.measurementUnit.label
-          }
-        })
-      }
-
-      this.woOrders = workOrder.filter(function(wo) { // create array of all orders in wo
-        return wo.domain===0;
-      }).sort(function(a,b) {
-        if (a.order.eventDate < b.order.eventDate) {
-          return 1
-        } else return -1
-      });
-
-      this.woOrders.forEach(function(order) {
-        order.snacks = editItems(order,CATEGORY_SNACKS);
-        order.desserts = editItems(order,CATEGORY_DESSERTS);
-      });
-
-      $timeout(function() {
-        window.print();
-      });
-
-    })
-
 .controller('DishStickersCtrl', function (api, $state, $rootScope, $timeout,
-                                      catalog, categories, config,
-                                      workOrder, order, customer, color) {
+                                      catalog, categories, config, sensitivities,
+                                      workOrder, order, customers, customer, color) {
   $rootScope.menuStatus = 'hide';
-  $rootScope.title = 'מדבקות';
+  $rootScope.title = 'מדבקות למנות';
 
   var CATEGORY_SNACKS = 1;
   var CATEGORY_DESSERTS = 8;
+  var CATEGORY_DESSERTS2 = 49;
 
   var ordCategories;
 
   this.isOrderColors = config.isOrderColors;
   this.isOrderNumbers = config.isOrderNumbers;
+
+  var outOfFridgeItem = catalog.filter(function(cat) {
+    return cat.id === config.outOfFridgeItem;
+  })[0];
 
   // for stickers request from order we create a fictitious workorder with just that order
   if ($state.current.name === 'orderDishStickers') {
@@ -305,8 +270,19 @@ angular.module('myApp')
     ]
   }
 
+  var allergies = sensitivities.filter(function (sen) {
+    return sen.isAllergy;
+  }).map(function (sen) {
+    sen.isContains = sen.isPositive;
+    return sen;
+  });
+
   function splitDishesByCategory  (orders) {
     orders.forEach(function (order) {
+      if (order.order.exitTime) {
+        order.productionTime = angular.copy(order.order.exitTime);
+        order.productionTime.setHours(order.productionTime.getHours() - 2);
+      }
       order.order.quotes[order.order.activeQuote].items.forEach(function (item) {
         var catInd;
         var tmp = ordCategories.filter(function (cat, i) {
@@ -323,20 +299,23 @@ angular.module('myApp')
               return {
                 number: ord.order.number,
                 eventDate: ord.order.eventDate,
+                productionTime: ord.productionTime,
                 customer: ord.customer,
                 color: ord.color,
-                quantity: 0
+                quantity: 0,
+                allergies: angular.copy(allergies),
+                instructions: []
               }
-            })
+            }),
           });
           catInd = 0;
         }
         var catalogEntry = catalog.filter(function (ca) {
           return ca.id === item.catalogId;
         })[0];
-        var globalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
+        var isGlobalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
             ordCategories[catInd].category.tId === CATEGORY_DESSERTS;
-        if (globalCategory) {                       // for snacks and desserts produce category stickers
+        if (isGlobalCategory) {                       // for snacks and desserts produce category stickers
           var boxComponent = catalogEntry.properties.components.filter(function(comp) { // instead of item stickers
             return comp.id === config.boxItem;
           });
@@ -345,12 +324,39 @@ angular.module('myApp')
               return ord.number === order.order.number;
             })[0];
             thisOrd.quantity += item.quantity / catalogEntry.properties.productionQuantity * boxComponent[0].quantity;
+            catalogEntry.properties.sensitivities.forEach(function(sen) {
+              var allergy = thisOrd.allergies.filter(function(all) {
+                return all.tId === sen.tId;
+              })[0];
+              if (allergy) { // for negative allergies (like nuts) is they appear once, mark contains
+                if (!allergy.isPositive) {
+                  allergy.isContains = true;
+                   }
+              }
+            });
+            thisOrd.allergies.forEach(function(all) {
+              if (all.isPositive && !all.isContains) {
+                var allergy = catalogEntry.properties.sensitivities.filter(function (sen) {
+                  return sen.tId === all.tId;
+                })[0];
+                if (!allergy) { // for negative allergies (like gluten) if they don't appear once, mark contains
+                  allergy.isContains = true;
+                }
+              }
+            })
+            if (ordCategories[catInd].category.tId === CATEGORY_DESSERTS ||
+                ordCategories[catInd].category.tId === CATEGORY_DESSERTS2) {
+              if (thisOrd.instructions.length === 0) {
+                thisOrd.instructions.push(outOfFridgeItem.properties.externalName);
+                thisOrd.instructions.push('יש להוציא מהמקרר סמוך להגשה');
+              }
+            }
           }
         }
         var stickerItem = {
           number: order.order.number,
           label: catalogEntry.properties.stickerLabel,
-          quantity: globalCategory ?                    // for global categories, count only exitList sub items
+          quantity: isGlobalCategory ?                    // for global categories, count only exitList sub items
               catalogEntry.properties.exitList.length :
               Math.ceil(
                   item.quantity /
@@ -358,10 +364,61 @@ angular.module('myApp')
                   catalogEntry.properties.stickerQuantity
               ) + catalogEntry.properties.exitList.length,
           eventDate: order.order.eventDate,
+          productionTime: order.productionTime,
           customer: order.customer,
-          color: order.color
+          color: order.color,
+          allergies: angular.copy(allergies),
+          instructions: []
         };
+
+        // calc item allergies
+        catalogEntry.properties.sensitivities.forEach(function (sen) {
+          var allergy = stickerItem.allergies.filter(function (sen2) {
+            return sen2.tId === sen.tId;
+          })[0];
+          if (allergy) {
+            allergy.isContains = !allergy.isContains;
+          }
+        });
+        stickerItem.isAnyContains = stickerItem.allergies.filter(function (sen) {
+          return sen.isContains;
+        }).length > 0;
+        stickerItem.isAnyMayContain = stickerItem.allergies.filter(function (sen) {
+          return !sen.isContains;
+        }).length > 0;
+
+        // calc item instructions
+        if (item.category.tId === CATEGORY_DESSERTS || item.category.tId === CATEGORY_DESSERTS2) {
+          stickerItem.instructions.push(outOfFridgeItem.properties.externalName);
+          stickerItem.instructions.push('יש להוציא מהמקרר סמוך להגשה');
+        }
+        if (catalogEntry.properties.isFridge) {
+          stickerItem.instructions.push(outOfFridgeItem.properties.externalName);
+        }
+        if (catalogEntry.properties.isHeating) {
+          stickerItem.instructions.push('60 דקות לפני ההגשה ' +
+                                        outOfFridgeItem.properties.generalInstructions);
+        }
+        if (catalogEntry.properties.generalInstructions) {
+          stickerItem.instructions.push(catalogEntry.properties.generalInstructions);
+        }
+        if (catalogEntry.properties.instructions) {
+          stickerItem.instructions.push(catalogEntry.properties.instructionsMinutes +
+                                        ' דקות לפני ההגשה ' + catalogEntry.properties.instructions);
+        }
+
+
         ordCategories[catInd].items.push(stickerItem);
+      });
+    });
+    ordCategories.forEach(function (cat) {
+      cat.orders.forEach(function (ord) {
+        ord.isAnyContains =  ord.allergies.filter(function (all) {
+          return all.isContains;
+        }).length > 0;
+        ord.isAnyMayContain =  ord.allergies.filter(function (all) {
+          return !all.isContains;
+        }).length > 0;
       });
     });
   }
@@ -435,9 +492,14 @@ angular.module('myApp')
         that.renderStickerGroup({
           label: cat.category.label,
           eventDate: ord.eventDate,
+          productionTime: ord.productionTime,
           customer: ord.customer,
           color: ord.color,
           quantity: ord.quantity,
+          allergies: ord.allergies,
+          isAnyContains: ord.isAnyContains,
+          isAnyMayContain: ord.isAnyMayContain,
+          instructions: ord.instructions,
           seq: seq
         });
       });
@@ -445,9 +507,14 @@ angular.module('myApp')
         that.renderStickerGroup({
           label: item.label,
           eventDate: item.eventDate,
+          productionTime: item.productionTime,
           customer: item.customer,
           color: item.color,
           quantity: item.quantity,
+          allergies: item.allergies,
+          isAnyContains: item.isAnyContains,
+          isAnyMayContain: item.isAnyMayContain,
+          instructions: item.instructions,
           seq: seq
         });
       });
@@ -465,6 +532,13 @@ angular.module('myApp')
   var woOrders = workOrder.filter(function(wo) { // create array of all orders in wo
     return wo.domain===0;
   });
+  if ($state.current.name === 'woDishStickers') {
+    woOrders.forEach(function (wo) {
+      wo.customer = customers.filter(function (cust) {
+        return cust.id === wo.order.customer;
+      })[0].properties;
+    })
+  }
 
   ordCategories = [];
 
@@ -472,7 +546,7 @@ angular.module('myApp')
   ordCategories = ordCategories.filter(function(cat) {
     return cat.category.type < 3;  // only food items
   });
-  ordCategories.forEach(function(cat) {    // filter snacks and desserts who don't have exit list sub items
+  ordCategories.forEach(function(cat) {    // filter snacks and desserts which don't have exit list sub items
     if (cat.category.tId === CATEGORY_SNACKS || cat.category.tId === CATEGORY_DESSERTS) {
       cat.items = cat.items.filter(function(item){
         return item.quantity > 0;
@@ -484,7 +558,7 @@ angular.module('myApp')
   });
   sortStickers();
 
-  var STICKER_HEIGHT = 11;
+  var STICKER_HEIGHT = 4;
   var STICKER_WIDTH = 3;
   this.stickerPage = [];
   var stickerP = 0;
@@ -505,8 +579,7 @@ angular.module('myApp')
 
 })
 
-
-    .controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope, $timeout,
+.controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope, $timeout,
                                                    catalog, config, categories, measurementUnits,
                                                    workOrder) {
       $rootScope.menuStatus = 'hide';
@@ -552,4 +625,7 @@ angular.module('myApp')
       });
 
     });
+
+
+
 

@@ -422,6 +422,12 @@ config(function($stateProvider, $urlRouterProvider) {
           order: [function() {
             return null;
           }],
+          customers: ['api', function (api) {
+            return api.queryCustomers(undefined,['firstName'])
+                .then(function (objs) {
+                  return objs;
+                });
+          }],
           customer: [function() {
             return null;
           }],
@@ -448,6 +454,9 @@ config(function($stateProvider, $urlRouterProvider) {
               return res[0].properties;
             });
           }],
+          sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+            return sensitivitiesPromise;
+          }],
           workOrder: ['$stateParams', 'api', function ($stateParams, api) {
             return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
               return workItems.map(function (wi) {
@@ -459,6 +468,12 @@ config(function($stateProvider, $urlRouterProvider) {
           }],
           order: [function() {
             return null;
+          }],
+          customers: ['api', function (api) {
+            return api.queryCustomers(undefined,['firstName'])
+                .then(function (objs) {
+                  return objs;
+                });
           }],
           customer: [function() {
             return null;
@@ -493,6 +508,9 @@ config(function($stateProvider, $urlRouterProvider) {
             return api.queryOrder ($stateParams.id).then (function (orders) {
               return orders[0];
             });
+          }],
+          customers: [function () {
+            return null;
           }],
           customer: ['$stateParams', 'api', function ($stateParams, api) {
             return api.queryCustomers($stateParams.custId).then (function (customers) {
@@ -530,6 +548,9 @@ config(function($stateProvider, $urlRouterProvider) {
               return res[0].properties;
             });
           }],
+          sensitivities: ['sensitivitiesPromise', function (sensitivitiesPromise) {
+            return sensitivitiesPromise;
+          }],
           workOrder: [function () {
             return null;
           }],
@@ -537,6 +558,9 @@ config(function($stateProvider, $urlRouterProvider) {
             return api.queryOrder ($stateParams.id).then (function (orders) {
               return orders[0];
             });
+          }],
+          customers: [function () {
+            return null;
           }],
           customer: ['$stateParams', 'api', function ($stateParams, api) {
             return api.queryCustomers($stateParams.custId).then (function (customers) {

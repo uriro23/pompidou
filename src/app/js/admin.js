@@ -2357,6 +2357,25 @@ angular.module('myApp')
         });
     }
         */
+
+    this.updateSensitivities = function () {
+      api.queryCatalog(1,['sensitivities'])
+          .then(function(dishes) {
+            console.log(dishes.length+' dishes read');
+            dishes.forEach(function(dish) {
+              dish.properties.sensitivities.forEach(function(sen, ind) {
+                var sensitivity = sensitivities.filter(function (sen2) {
+                  return sen2.tId === sen.tId;
+                })[0];
+                dish.properties.sensitivities[ind] = sensitivity;
+              });
+            });
+            api.saveObjects(dishes)
+                .then(function () {
+                  console.log('done');
+                });
+          });
+    };
     // end conversions
 
   });
