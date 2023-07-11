@@ -483,6 +483,44 @@ config(function($stateProvider, $urlRouterProvider) {
           }]
         }
       })
+      .state('woPackageStickers', {
+        url: '/woPackageStickers/:woId/:displayMode',
+        templateUrl: 'app/partials/packageStickers.html',
+        controller: 'PackageStickersCtrl as packageStickersModel',
+        resolve: {
+          catalog: ['api', function (api) {
+            return api.queryCatalog(4).then(function (obj) {
+              return obj;
+            });
+          }],
+          allCategories: ['allCategoriesPromise', function (allCategoriesPromise) {
+            return allCategoriesPromise;
+          }],
+          config: ['api', function (api) {
+            return api.queryConfig().then(function (res) {
+              return res[0].properties;
+            });
+          }],
+          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
+              return workItems.map(function (wi) {
+                var att = wi.properties;
+                att.id = wi.id;
+                return att;
+              });
+            });
+          }],
+          customers: ['api', function (api) {
+            return api.queryCustomers(undefined,['firstName'])
+                .then(function (objs) {
+                  return objs;
+                });
+          }],
+          displayMode: ['$stateParams', function($stateParams) {
+            return Number($stateParams.displayMode);
+          }]
+        }
+      })
       .state('orderStickers', {
         url: '/orderStickers/:id/:custId/:colorId',
         templateUrl: 'app/partials/stickers.html',

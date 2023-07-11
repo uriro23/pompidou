@@ -623,7 +623,79 @@ angular.module('myApp')
       $timeout(function() {
         window.print();
       });
+    })
 
+    .controller('PackageStickersCtrl', function (api, lov, $state, $rootScope, $timeout,
+                                                   catalog, config, allCategories,
+                                                   workOrder, customers, displayMode) {
+      $rootScope.menuStatus = 'hide';
+      $rootScope.title = 'מדבקות אריזה';
+
+       function dayName (dat) {
+        var dayNames = ['א','ב','ג','ד','ה','ו','ש'];
+        return dayNames[dat.getDay()]+"'";
+      }
+
+
+      this.displayMode = lov.workOrderDisplayModes.filter(function (dm) {
+        return dm.id === displayMode;
+       })[0];
+
+
+      var that = this;
+
+      var orders = workOrder.filter(function (wo) {
+        return wo.domain === 0;
+      });
+      orders.forEach(function (ord) {
+        ord.firstName = customers.filter(function (cust) {
+          return cust.id === ord.order.customer;
+        })[0].properties.firstName;
+        ord.day = dayName(ord.order.eventDate);
+      });
+
+      this.stickers = [];
+      workOrder.forEach(function (wo) {
+        if (wo.domain === 4 && (wo.category.type === 21 || wo.category.type === 22) ) {
+          var catalogEntry = catalog.filter(function (cat) {
+            return cat.id === wo.catalogId;
+          })[0];
+          wo.backTrace.forEach(function (bt) {
+            var prep = workOrder.filter(function (wo2) {
+              return wo2.id === bt.id;
+            })[0];
+            prep.orders.forEach(function (ord) {
+              var isShow = false;
+              if (that.displayMode.isShowTodayOnly) {
+                if (ord.select === 'today') {
+                  isShow = true;
+                }
+              } else if (that.displayMode.isShowDone) {
+                isShow = true;
+              } else {
+                if (ord.select === 'delay' || ord.select === 'today') {
+                  isShow = true;
+                }
+              }
+              if (isShow) {
+                var order = orders.filter(function (ord2) {
+                  return ord2.id === ord.id;
+                })[0];
+                var sticker = {
+                  label: catalogEntry.properties.externalName,
+                  firstName: order.firstName,
+                  day: order.day
+                };
+                that.stickers.push(sticker);
+              }
+            });
+          })
+         }
+      })
+
+      $timeout(function() {
+        window.print();
+      });
     });
 
 

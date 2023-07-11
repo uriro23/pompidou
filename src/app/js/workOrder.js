@@ -2375,7 +2375,7 @@ angular.module('myApp')
             that.hierarchicalWorkOrder[wo.domain].categories[0].lists = [
               {
                 id: 0,
-                label: 'הכנה לסרוויס',
+                label: 'לפני סרוויס',
                 list: []
               },
               {
@@ -2385,7 +2385,7 @@ angular.module('myApp')
               },
               {
                 id: 2,
-                label: 'הכנות רגילות',
+                label: 'הכנות',
                 list: []
               }
             ];
@@ -2919,7 +2919,7 @@ angular.module('myApp')
       }, 100);
     };
 
-      // main block
+    // main block
 
     var that = this;
     this.isProcessing = true;
