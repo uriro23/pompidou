@@ -444,6 +444,7 @@ angular.module('myApp')
     });
   }
 
+  /*
   this.renderSticker = function(sticker) {
     sticker.seq = stickerJ;  // for ng-repeat uniqueneness
     this.stickerPage[stickerP].lines[stickerI].stickers[stickerJ] = angular.copy(sticker);
@@ -451,6 +452,14 @@ angular.module('myApp')
     if(stickerJ === STICKER_WIDTH) {
       this.renderNewLine();
     }
+  };
+
+   */
+
+  this.renderSticker = function(sticker) {
+    sticker.seq = stickerJ;  // for ng-repeat uniqueneness
+    this.stickerList[stickerJ] = angular.copy(sticker);
+    stickerJ++;
   };
 
   this.renderStickerGroup = function(stickerGroup) {
@@ -561,6 +570,7 @@ angular.module('myApp')
   var STICKER_HEIGHT = 4;
   var STICKER_WIDTH = 3;
   this.stickerPage = [];
+  this.stickerList = [];
   var stickerP = 0;
   var stickerI = 0;
   var stickerJ = 0;

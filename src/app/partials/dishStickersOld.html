@@ -1,45 +1,54 @@
-<div class="dish-sticker" ng-repeat="sticker in dishStickersModel.stickerList track by sticker.seq">
-                <div style="font-size: 8pt; font-weight: bold">
+<div ng-repeat="page in dishStickersModel.stickerPage track by page.seq"
+     style="height:29.7cm; margin-right: 1cm;  margin-bottom: 0; margin-top: 0" > <!-- was margin-top 0.7 cm -->
+    <table>
+        <thead>
+        <th style="height:0.7cm">{{page.seq}}</th>
+        </thead>
+        <tr ng-repeat="line in page.lines track by line.seq" style="height:7cm">
+            <td ng-repeat="sticker in line.stickers track by sticker.seq" style="width:10.5cm">
+                <div style="font-weight: bold">
                     <span>השף בקופסא</span>
                     <span>טל' 054-7514061</span>
                 </div>
-    <p></p>
-                <div style="font-size: 20pt; font-weight: bold">
-                    {{sticker.label}}
+                <div>
+                    <label>{{sticker.label}}</label>
                 </div>
-    <p></p>
-    <div style="font-size: 6pt">
+                <div>
                     <span>זמן ייצור:</span>
                     <span>{{sticker.eventDate | date: 'dd/MM/yy'}}</span>
                     <span>{{sticker.productionTime | date: 'HH:mm'}}</span>
                 </div>
-    <p></p>
-    <div style="font-size: 8pt" ng-show="sticker.isAnyContains">
+                <div ng-show="sticker.isAnyContains">
                     <span>מכיל</span>
                     <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
                           ng-show="allergy.isContains">
                         {{allergy.allergyName}},
                     </span>
                 </div>
-                <div style="font-size: 8pt" ng-show="sticker.isAnyMayContain">
+                <div ng-show="sticker.isAnyMayContain">
                     <span>עלול להכיל</span>
                     <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
                           ng-hide="allergy.isContains">
                         {{allergy.allergyName}},
                     </span>
                 </div>
-    <p></p>
-    <div style="font-size: 8pt" ng-show="sticker.instructions.length>0">
+                <div ng-show="sticker.instructions.length>0">
                     <div style="text-decoration: underline">הוראות:</div>
                     <div ng-repeat="instruction in sticker.instructions track by $index">
                         {{instruction}}
                     </div>
                 </div>
-    <p></p>
-    <div style="font-size: 12pt">
+                <div>
                     <span>{{sticker.customer.firstName}}</span>
                     <span>{{dishStickersModel.dayName(sticker.eventDate)}}</span>
+                    <img ng-show="dishStickersModel.isOrderColors" ng-src="app/img/bigColors/{{sticker.color.stickerColor}}.jpg"/>
+                    <span ng-show="dishStickersModel.isOrderNumbers">[{{sticker.color.tId}}]</span>
                 </div>
-    <p style="page-break-after: always;">&nbsp;</p>
-    <p style="page-break-before: always;">&nbsp;</p>
+            </td>
+        </tr>
+    </table>
+    <div>
+        <p style="page-break-after: always;">&nbsp;</p>
+        <p style="page-break-before: always;">&nbsp;</p>
+    </div>
 </div>

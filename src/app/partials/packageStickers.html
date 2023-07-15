@@ -1,8 +1,12 @@
-<div style="height: 2cm;margin: 1cm;width: 4cm;padding: 0.2cm; border-style: dashed"
+<div class="package-sticker"
      ng-repeat="sticker in packageStickersModel.stickers track by $index">
     <div>{{sticker.label}}</div>
     <div>
         <span>{{sticker.firstName}}</span>
         <span>{{sticker.day}}</span>
+    </div>
+    <div>
+        <p style="page-break-after: always;">&nbsp;</p>
+        <p style="page-break-before: always;">&nbsp;</p>
     </div>
 </div>
