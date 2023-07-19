@@ -11,6 +11,7 @@ angular.module('myApp')
     this.readOnly = $scope.orderModel.readOnly;
     this.bidTextTypes = $scope.orderModel.bidTextTypes;
     this.orderStatuses = $scope.orderModel.orderStatuses; // needed for setupOrderView
+    this.eventTimeRanges = $scope.orderModel.eventTimeRanges; // needed for setupOrderView
     this.user = $scope.orderModel.user;
     this.isProd = $scope.orderModel.isProd;
     this.descChangeActions = $scope.orderModel.descChangeActions;

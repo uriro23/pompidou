@@ -297,6 +297,7 @@ angular.module('myApp')
             items: [],
             orders: orders.map(function(ord) {    // array to place quantity of category level stickers per order
               return {
+                type: 0, // category sticker
                 number: ord.order.number,
                 eventDate: ord.order.eventDate,
                 productionTime: ord.productionTime,
@@ -354,15 +355,13 @@ angular.module('myApp')
           }
         }
         var stickerItem = {
+          type: 1, // item sticker
           number: order.order.number,
           label: catalogEntry.properties.stickerLabel,
-          quantity: isGlobalCategory ?                    // for global categories, count only exitList sub items
-              catalogEntry.properties.exitList.length :
+          quantity: isGlobalCategory ?   0 :  // for global categories, count only exitList sub items
               Math.ceil(
-                  item.quantity /
-                  catalogEntry.properties.priceQuantity *
-                  catalogEntry.properties.stickerQuantity
-              ) + catalogEntry.properties.exitList.length,
+      item.quantity / catalogEntry.properties.priceQuantity * catalogEntry.properties.stickerQuantity
+              ),
           eventDate: order.order.eventDate,
           productionTime: order.productionTime,
           customer: order.customer,
@@ -409,6 +408,22 @@ angular.module('myApp')
 
 
         ordCategories[catInd].items.push(stickerItem);
+
+        // now add exitList stickers
+        catalogEntry.properties.exitList.forEach(function (exitListItem) {
+          var exitListSticker = {
+            type: 2, // exit list sticker
+            number: order.order.number,
+            label: catalogEntry.properties.stickerLabel,
+            subLabel: exitListItem.item,
+            quantity: 1,
+            eventDate: order.order.eventDate,
+            productionTime: order.productionTime,
+            customer: order.customer,
+            color: order.color
+          };
+          ordCategories[catInd].items.push(exitListSticker);
+        });
       });
     });
     ordCategories.forEach(function (cat) {
@@ -428,14 +443,21 @@ angular.module('myApp')
       return  a.category.order - b.category.order;
     });
     ordCategories.forEach(function(cat) {
+      cat.orders.sort(function(a,b) {
+        return a.number - b.number;
+      });
       cat.items.sort(function(a,b) {
         if (a.label < b.label) {
           return -1;
         } else if (a.label > b.label) {
           return 1;
-        } else if (a.eventDate < b.eventDate) {
+        } else if (a.number < b.number) {
           return -1;
-        } else if (a.eventDate > b.eventDate) {
+        } else if (a.number > b.number) {
+          return 1;
+        } else  if (a.type < b.type) { // all main item stickers before exitList stickers
+          return -1;
+        } else if (a.type > b.type) {
           return 1;
         } else {
           return 0;
@@ -444,52 +466,14 @@ angular.module('myApp')
     });
   }
 
-  /*
   this.renderSticker = function(sticker) {
-    sticker.seq = stickerJ;  // for ng-repeat uniqueneness
-    this.stickerPage[stickerP].lines[stickerI].stickers[stickerJ] = angular.copy(sticker);
-    stickerJ++;
-    if(stickerJ === STICKER_WIDTH) {
-      this.renderNewLine();
-    }
-  };
-
-   */
-
-  this.renderSticker = function(sticker) {
-    sticker.seq = stickerJ;  // for ng-repeat uniqueneness
-    this.stickerList[stickerJ] = angular.copy(sticker);
-    stickerJ++;
+    sticker.seq = seq++;  // for ng-repeat uniqueneness
+    this.stickerList.push(angular.copy(sticker));
   };
 
   this.renderStickerGroup = function(stickerGroup) {
     for (var i = stickerGroup.quantity; i > 0; i--) {
       this.renderSticker (stickerGroup);
-    }
-  };
-
-  this.renderNewPage = function() {
-    stickerP++;
-    this.stickerPage[stickerP] = {
-      seq: stickerP+1,
-      lines: [{
-        seq: stickerI,
-        stickers: []
-      }]
-    };
-    stickerI = 0;
-  };
-
-  this.renderNewLine = function() {
-    stickerI++;
-    stickerJ = 0;
-    if (stickerI < STICKER_HEIGHT) {    // if last line on page, don't initialize it
-      this.stickerPage[stickerP].lines[stickerI] = {
-        seq: stickerI,
-        stickers: []
-      };
-    } else  {  // last line on page
-      this.renderNewPage();
     }
   };
 
@@ -499,6 +483,7 @@ angular.module('myApp')
     ordCategories.forEach(function(cat) {
       cat.orders.forEach(function(ord) {
         that.renderStickerGroup({
+          type: 0,
           label: cat.category.label,
           eventDate: ord.eventDate,
           productionTime: ord.productionTime,
@@ -514,7 +499,9 @@ angular.module('myApp')
       });
       cat.items.forEach(function(item) {
         that.renderStickerGroup({
+          type: item.type,
           label: item.label,
+          subLabel: item.subLabel,
           eventDate: item.eventDate,
           productionTime: item.productionTime,
           customer: item.customer,
@@ -527,9 +514,6 @@ angular.module('myApp')
           seq: seq
         });
       });
-      if(stickerJ > 0) {
-        that.renderNewLine();
-      }
     });
   };
 
@@ -567,20 +551,8 @@ angular.module('myApp')
   });
   sortStickers();
 
-  var STICKER_HEIGHT = 4;
-  var STICKER_WIDTH = 3;
-  this.stickerPage = [];
   this.stickerList = [];
-  var stickerP = 0;
-  var stickerI = 0;
-  var stickerJ = 0;
-  this.stickerPage[0] = {
-    seq: 1,
-    lines: [{
-      seq: stickerI,
-      stickers: []
-    }]
-  };
+  var seq = 0;
   this.renderStickers();
 
   $timeout(function() {

@@ -1,45 +1,58 @@
 <div class="dish-sticker" ng-repeat="sticker in dishStickersModel.stickerList track by sticker.seq">
-                <div style="font-size: 8pt; font-weight: bold">
-                    <span>השף בקופסא</span>
-                    <span>טל' 054-7514061</span>
-                </div>
+    <div style="font-size: 8pt; font-weight: bold">
+        <span>השף בקופסא</span>
+        <span>טל' 054-7514061</span>
+    </div>
     <p></p>
-                <div style="font-size: 20pt; font-weight: bold">
-                    {{sticker.label}}
-                </div>
-    <p></p>
-    <div style="font-size: 6pt">
-                    <span>זמן ייצור:</span>
-                    <span>{{sticker.eventDate | date: 'dd/MM/yy'}}</span>
-                    <span>{{sticker.productionTime | date: 'HH:mm'}}</span>
-                </div>
-    <p></p>
-    <div style="font-size: 8pt" ng-show="sticker.isAnyContains">
-                    <span>מכיל</span>
-                    <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
-                          ng-show="allergy.isContains">
-                        {{allergy.allergyName}},
-                    </span>
-                </div>
-                <div style="font-size: 8pt" ng-show="sticker.isAnyMayContain">
-                    <span>עלול להכיל</span>
-                    <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
-                          ng-hide="allergy.isContains">
-                        {{allergy.allergyName}},
-                    </span>
-                </div>
-    <p></p>
-    <div style="font-size: 8pt" ng-show="sticker.instructions.length>0">
-                    <div style="text-decoration: underline">הוראות:</div>
-                    <div ng-repeat="instruction in sticker.instructions track by $index">
-                        {{instruction}}
-                    </div>
-                </div>
+    <div ng-show="sticker.type < 2">
+        <div style="font-size: 20pt; font-weight: bold">
+            {{sticker.label}}
+        </div>
+        <p></p>
+        <div style="font-size: 6pt">
+            <span>זמן ייצור:</span>
+            <span>{{sticker.eventDate | date: 'dd/MM/yy'}}</span>
+            <span>{{sticker.productionTime | date: 'HH:mm'}}</span>
+        </div>
+        <p></p>
+        <div style="font-size: 8pt" ng-show="sticker.isAnyContains">
+            <span>מכיל</span>
+            <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
+                  ng-show="allergy.isContains">
+                {{allergy.allergyName}},
+            </span>
+        </div>
+        <div style="font-size: 8pt" ng-show="sticker.isAnyMayContain">
+            <span>עלול להכיל</span>
+            <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
+                  ng-hide="allergy.isContains">
+                {{allergy.allergyName}},
+            </span>
+        </div>
+        <p></p>
+        <div style="font-size: 8pt" ng-show="sticker.instructions.length>0">
+            <div style="text-decoration: underline">הוראות:</div>
+            <div ng-repeat="instruction in sticker.instructions track by $index">
+                {{instruction}}
+            </div>
+        </div>
+    </div>
+   <div ng-show="sticker.type === 2">
+    <div style="font-size: 16pt; font-weight: bold">
+            <span>{{sticker.subLabel}}</span>
+            <span>עבור</span>
+        </div>
+        <p></p>
+        <div style="font-size: 20pt; font-weight: bold">
+            {{sticker.label}}
+        </div>
+        <p></p>
+    </div>
     <p></p>
     <div style="font-size: 12pt">
-                    <span>{{sticker.customer.firstName}}</span>
-                    <span>{{dishStickersModel.dayName(sticker.eventDate)}}</span>
-                </div>
+        <span>{{sticker.customer.firstName}}</span>
+        <span>{{dishStickersModel.dayName(sticker.eventDate)}}</span>
+    </div>
     <p style="page-break-after: always;">&nbsp;</p>
     <p style="page-break-before: always;">&nbsp;</p>
 </div>
