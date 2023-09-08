@@ -561,6 +561,7 @@ angular.module('myApp')
 
 })
 
+
 .controller('SnacksAndDessertsCtrl', function (api, $state, $rootScope, $timeout,
                                                    catalog, config, categories, measurementUnits,
                                                    workOrder) {
@@ -678,7 +679,26 @@ angular.module('myApp')
       $timeout(function() {
         window.print();
       });
+    })
+
+    .controller('InprocessStickersCtrl', function($rootScope, $timeout, type, quantity) {
+      $rootScope.menuStatus = 'hide';
+      $rootScope.title = 'מדבקות בתהליך';
+
+      this.type = type;
+
+      this.stickers = [];
+      for (var i=0;i<quantity;i++) {
+        this.stickers.push({
+          seq: i
+        });
+      }
+
+      $timeout(function() {
+        window.print();
+      });
     });
+
 
 
 

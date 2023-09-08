@@ -619,6 +619,20 @@ config(function($stateProvider, $urlRouterProvider) {
         }
       })
 
+      .state('inprocessStickers', {
+        url: '/inprocessStickers/:type/:quantity',
+        templateUrl: 'app/partials/inprocessStickers.html',
+        controller: 'InprocessStickersCtrl as inprocessStickersModel',
+        resolve: {
+          type: ['$stateParams',function($stateParams) {
+            return Number($stateParams.type);
+          }],
+          quantity: ['$stateParams',function($stateParams) {
+            return Number($stateParams.quantity);
+          }]
+        }
+      })
+
       .state('catalogList', {
       url: '/catalogList/:domain/:category',
       templateUrl: 'app/partials/catalogList.html',

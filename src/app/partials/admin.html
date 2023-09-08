@@ -37,8 +37,8 @@
   <button class="btn btn-default" ng-click="adminModel.personalAdjustment()">התאמה אישית</button>
   <button class="btn btn-default" ng-click="adminModel.addPopmidouBox()">קופסת פומפידו</button>
   <button class="btn btn-default" ng-click="adminModel.updateSensitivities()">רגישויות</button>
-  -->
   <button class="btn btn-default" ng-click="adminModel.packagingNames()">אריזות</button>
+  -->
 </div>
  <tabset>
   <tab heading='מע"מ'>
@@ -682,6 +682,30 @@
        </tr>
      </table>
   </tab>
+   <tab heading="מדבקות">
+     <h4>הדפסת מדבקות לתהליך עבודה</h4>
+     <p></p>
+     <div>
+       <select ng-model="adminModel.stickerType"
+               ng-options="sticker.label for sticker in adminModel.stickerTypes">
+       </select>
+     </div>
+     <p></p>
+     <div>
+       <input type="number" min="1" max="999"
+              ng-model="adminModel.stickerQuantity"
+              ng-change="adminModel.renderStickers()"
+              placeholder="כמות">
+     </div>
+     <p></p>
+    <div>
+      <a ng-href="#/inprocessStickers/{{adminModel.stickerType.id}}/{{adminModel.stickerQuantity}}"
+         target="_blank"
+         ng-hide="!adminModel.stickerType || !adminModel.stickerQuantity">
+        הדפס
+      </a>
+     </div>
+   </tab>
    <tab heading="סביבה" active="adminModel.isEnvTabActive">
     <div>
       <span>סביבה נוכחית היא </span>

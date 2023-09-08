@@ -434,6 +434,21 @@ angular.module('myApp')
       }
     ],
 
+    stickerTypes: [
+      {
+        id: 0,
+        label: 'מוצר בתהליך'
+      },
+      {
+        id: 1,
+        label: 'מוצר בהקפאה'
+      },
+      {
+        id: 2,
+        label: 'חומר גלם'
+      },
+    ],
+
     descChangeActions: [
       {
         id: 0,

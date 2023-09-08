@@ -25,6 +25,7 @@ angular.module('myApp')
   this.categories = categories;
   this.sensitivities = sensitivities;
   this.measurementUnits = measurementUnits;
+  this.stickerTypes = lov.stickerTypes;
 
 
     // vat
@@ -2375,7 +2376,6 @@ angular.module('myApp')
                 });
           });
     };
-     */
     function trimPackageWords (name) {
       var packageWords = [
         'ואריזת',
@@ -2421,6 +2421,7 @@ angular.module('myApp')
                 });
           });
     };
+     */
 
     // end conversions
 

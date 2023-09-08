@@ -1,0 +1,34 @@
+
+<div class="inprocess-sticker"
+     ng-repeat="sticker in inprocessStickersModel.stickers track by sticker.seq">
+    <div ng-show="inprocessStickersModel.type === 0">
+        <div style="font-size: 16pt">מוצר בתהליך</div>
+        <p style="height: 0.5cm"></p>
+        <div class="inprocess-detail">שם המוצר: ___________________</div>
+        <div class="inprocess-detail">תאריך יצור: ___________________</div>
+        <div class="inprocess-detail">שעת יצור: ____________________</div>
+    </div>
+    <div ng-show="inprocessStickersModel.type === 1">
+        <div style="font-size: 16pt">מוצר להקפאה</div>
+        <p style="height: 0.5cm"></p>
+        <div class="inprocess-detail">שם המוצר: ___________________</div>
+        <div class="inprocess-detail">תאריך יצור: ___________________</div>
+        <div class="inprocess-detail">שעת יצור: ____________________</div>
+        <div class="inprocess-detail">תאריך הקפאה: ________________</div>
+        <div class="inprocess-detail">תאריך הפשרה: ________________</div>
+        <div class="inprocess-detail">שעת הפשרה: _________________</div>
+    </div>
+    <div ng-show="inprocessStickersModel.type === 2">
+        <div style="font-size: 16pt">חומר גלם</div>
+        <p style="height: 0.5cm"></p>
+        <div class="inprocess-detail">שם המוצר: ___________________</div>
+        <div class="inprocess-detail">שם היצרן: ___________________</div>
+        <div class="inprocess-detail">תוקף מקורי: __________________</div>
+        <div class="inprocess-detail">תאריך פתיחה: ________________</div>
+        <div class="inprocess-detail">תוקף חדש: ___________________</div>
+    </div>
+    <div ng-show="$index < inprocessStickersModel.stickers.length-1">
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+    </div>
+</div>

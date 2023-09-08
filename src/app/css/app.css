@@ -207,3 +207,17 @@ a:link, a:visited  {
     width: 6.2cm;
     text-align: right;
 }
+
+.inprocess-sticker {
+    margin-right: 0.5cm;
+    margin-top: 0.5cm;
+    padding: 0;
+    width: 6.2cm;
+    text-align: right;
+    font-size: 12pt;
+}
+
+.inprocess-detail {
+    font-size: 10pt;
+    height: 1.3cm;
+}
