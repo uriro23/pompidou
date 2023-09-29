@@ -1300,12 +1300,12 @@ angular.module('myApp')
                     if (order.properties.eventDate > customer.view.lastEventDate) {
                       customer.view.lastEventDate = order.properties.eventDate;
                     }
-                    if (order.properties.eventDate < new Date(2021,8,21) && // put today's date her
+                    if (order.properties.eventDate < new Date(2023,9,25) && // put today's date her
                         order.properties.orderStatus > 1 &&
                         order.properties.orderStatus < 6) {
                       customer.view.pastSuccesses++;
                     }
-                    if (order.properties.eventDate > new Date(2021,8,21) &&  // put today's date here
+                    if (order.properties.eventDate > new Date(2023,9,25) &&  // put today's date here
                         order.properties.orderStatus < 6) {
                       customer.view.futureOrders++;
                     }

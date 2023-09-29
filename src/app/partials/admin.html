@@ -595,10 +595,10 @@
      -->
      <div ng-show="adminModel.isCustomersExport">
        <div>
-         <span>phone,firstName</span>
+         <span>email,firstName</span>
        </div>
        <div ng-repeat="customer in adminModel.customers track by customer.id">
-         <span>{{customer.properties.mobilePhone}}</span>
+         <span>{{customer.properties.email}}</span>
          <span>,</span>
          <span>{{customer.properties.firstName}}</span>
      </div>
