@@ -681,11 +681,15 @@ angular.module('myApp')
       });
     })
 
-    .controller('InprocessStickersCtrl', function($rootScope, $timeout, type, quantity) {
+    .controller('InprocessStickersCtrl', function($rootScope, $timeout, api, type, quantity, isContent) {
       $rootScope.menuStatus = 'hide';
       $rootScope.title = 'מדבקות בתהליך';
 
+      console.log('isContent: '+isContent);
+
+      var that = this;
       this.type = type;
+      this.isContent = isContent;
 
       this.stickers = [];
       for (var i=0;i<quantity;i++) {
@@ -694,9 +698,22 @@ angular.module('myApp')
         });
       }
 
-      $timeout(function() {
-        window.print();
-      });
+      if (isContent) {
+        api.queryStickerParams()
+            .then (function(s) {
+              var stickerParams = s[0];
+              that.productName = stickerParams.properties.productName;
+              that.productionDate = stickerParams.properties.productionDate;
+              that.freezeDate = stickerParams.properties.freezeDate;
+              $timeout(function() {
+                window.print();
+              });
+            });
+      } else {
+        $timeout(function () {
+          window.print();
+        });
+      }
     });
 
 

@@ -620,6 +620,23 @@ angular.module('myApp')
       return query(pRolesQuery);
     };
 
+
+    //  StickerParams
+    //  -------------
+
+    var StickerParams = Parse.Object.extend("StickerParams");
+
+    this.initStickerParams = function () {
+      var t = new StickerParams();
+      t.properties = angular.copy(t.attributes);
+      return t;
+    };
+
+    this.queryStickerParams = function () {
+      var stickerParamsQuery = new Parse.Query(StickerParams);
+      return query(stickerParamsQuery);
+    };
+
     // config
   // ------
 

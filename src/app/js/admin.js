@@ -158,6 +158,37 @@ angular.module('myApp')
         });
     };
 
+    // stickers tab
+
+    this.setStickerData = function() {
+      var that = this;
+      if (this.stickerType.isFreeze) {
+        api.queryStickerParams()
+            .then(function (p) {
+              that.stickerParams = p[0];
+              var d = new Date();
+              d.setSeconds(0,0);
+              that.stickerParams.properties.stickerType = that.stickerType.id;
+              that.stickerParams.properties.productName = undefined;
+              that.stickerParams.properties.productionDate = angular.copy(d);
+              that.stickerParams.properties.freezeDate = angular.copy(d);
+              that.isStickeParamsSaved = false;
+            });
+      }
+    };
+
+    this.stickerDataChanged = function () {
+      this.isStickeParamsSaved = false;
+    };
+
+    this.saveFreezeStickerParams = function () {
+      var that = this;
+      api.saveObj(this.stickerParams)
+          .then(function() {
+            that.isStickeParamsSaved = true;
+          })
+    };
+
     // env tab
 
     this.switchEnv = function () {

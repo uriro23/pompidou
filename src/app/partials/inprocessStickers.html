@@ -11,10 +11,31 @@
     <div ng-show="inprocessStickersModel.type === 1">
         <div style="font-size: 16pt">מוצר להקפאה</div>
         <p style="height: 0.5cm"></p>
-        <div class="inprocess-detail">שם המוצר: ___________________</div>
-        <div class="inprocess-detail">תאריך יצור: ___________________</div>
-        <div class="inprocess-detail">שעת יצור: ____________________</div>
-        <div class="inprocess-detail">תאריך הקפאה: ________________</div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם המוצר: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שם המוצר:</span>
+            <span>{{inprocessStickersModel.productName}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תאריך יצור: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>תאריך יצור:</span>
+            <span>{{inprocessStickersModel.productionDate | date: 'dd/MM/yyyy'}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שעת יצור: ____________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שעת יצור:</span>
+            <span>{{inprocessStickersModel.productionDate | date: 'HH:mm'}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תאריך הקפאה: ________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>תאריך הקפאה:</span>
+            <span>{{inprocessStickersModel.freezeDate | date: 'dd/MM/yyyy'}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שעת הקפאה: ________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שעת הקפאה:</span>
+            <span>{{inprocessStickersModel.freezeDate | date: 'HH:mm'}}</span>
+        </div>
         <div class="inprocess-detail">תאריך הפשרה: ________________</div>
         <div class="inprocess-detail">שעת הפשרה: _________________</div>
     </div>

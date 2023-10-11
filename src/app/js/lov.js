@@ -437,15 +437,18 @@ angular.module('myApp')
     stickerTypes: [
       {
         id: 0,
-        label: 'מוצר בתהליך'
+        label: 'מוצר בתהליך',
+        isFreeze: false
       },
       {
         id: 1,
-        label: 'מוצר בהקפאה'
+        label: 'מוצר בהקפאה',
+        isFreeze: true
       },
       {
         id: 2,
-        label: 'חומר גלם'
+        label: 'חומר גלם',
+        isFreeze: false
       },
     ],
 

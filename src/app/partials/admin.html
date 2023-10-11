@@ -687,9 +687,58 @@
      <p></p>
      <div>
        <select ng-model="adminModel.stickerType"
-               ng-options="sticker.label for sticker in adminModel.stickerTypes">
+               ng-options="sticker.label for sticker in adminModel.stickerTypes"
+               ng-change="adminModel.setStickerData()">
        </select>
      </div>
+     <p></p>
+     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.isFreeze">
+       <tr>
+         <td style="width: 40%">
+           ריק?
+         </td>
+         <td style="width: 60%">
+           <input type="checkbox" ng-model="adminModel.isStickerEmpty">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td colspan="2">
+       <input type="text"
+              ng-model="adminModel.stickerParams.properties.productName"
+              ng-change="adminModel.stickerDataChanged()"
+              size="49" placeholder="שם מוצר">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+        <td>
+         תאריך ושעת ייצור
+        </td>
+         <td>
+           <input type="datetime-local"
+                  ng-model="adminModel.stickerParams.properties.productionDate"
+                  ng-change="adminModel.stickerDataChanged()">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td>
+         תאריך ושעת הקפאה
+         </td>
+         <td>
+       <input type="datetime-local"
+              ng-model="adminModel.stickerParams.properties.freezeDate"
+              ng-change="adminModel.stickerDataChanged()">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td>
+           <button class="btn btn-default btn-small"
+                   ng-click="adminModel.saveFreezeStickerParams()"
+                   ng-disabled="adminModel.isStickeParamsSaved">
+             שמור
+           </button>
+         </td>
+       </tr>
+     </table>
      <p></p>
      <div>
        <input type="number" min="1" max="999"
@@ -699,11 +748,16 @@
      </div>
      <p></p>
     <div>
-      <a ng-href="#/inprocessStickers/{{adminModel.stickerType.id}}/{{adminModel.stickerQuantity}}"
-         target="_blank"
-         ng-hide="!adminModel.stickerType || !adminModel.stickerQuantity">
+      <button class="btn btn-default"
+              ng-hide="!adminModel.stickerType || !adminModel.stickerQuantity ||
+                  (adminModel.stickerType.isFreeze && !adminModel.isStickerEmpty && !adminModel.isStickeParamsSaved)"
+        >
+      <a ng-href=
+ "#/inprocessStickers/{{adminModel.stickerType.id}}/{{adminModel.stickerQuantity}}/{{adminModel.stickerType.isFreeze ? adminModel.isStickerEmpty ? 0 : 1 : 0}}"
+         target="_blank">
         הדפס
       </a>
+      </button>
      </div>
    </tab>
    <tab heading="סביבה" active="adminModel.isEnvTabActive">

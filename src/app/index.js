@@ -620,7 +620,7 @@ config(function($stateProvider, $urlRouterProvider) {
       })
 
       .state('inprocessStickers', {
-        url: '/inprocessStickers/:type/:quantity',
+        url: '/inprocessStickers/:type/:quantity/:isContent',
         templateUrl: 'app/partials/inprocessStickers.html',
         controller: 'InprocessStickersCtrl as inprocessStickersModel',
         resolve: {
@@ -629,6 +629,9 @@ config(function($stateProvider, $urlRouterProvider) {
           }],
           quantity: ['$stateParams',function($stateParams) {
             return Number($stateParams.quantity);
+          }],
+          isContent: ['$stateParams',function($stateParams) {
+            return Number($stateParams.isContent);
           }]
         }
       })
