@@ -392,50 +392,6 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-    .state('woStickers', {
-        url: '/woStickers/:woId',
-        templateUrl: 'app/partials/stickers.html',
-        controller: 'StickersCtrl as stickersModel',
-        resolve: {
-          catalog: ['api', function (api) {
-            return api.queryCatalog(1).then(function (obj) {
-              return obj;
-            });
-          }],
-          categories: ['categoriesPromise', function (categoriesPromise) {
-            return categoriesPromise;
-          }],
-          config: ['api', function (api) {
-            return api.queryConfig().then(function (res) {
-              return res[0].properties;
-            });
-          }],
-          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
-            return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
-              return workItems.map(function (wi) {
-                var att = wi.properties;
-                att.id = wi.id;
-                return att;
-              });
-            });
-          }],
-          order: [function() {
-            return null;
-          }],
-          customers: ['api', function (api) {
-            return api.queryCustomers(undefined,['firstName'])
-                .then(function (objs) {
-                  return objs;
-                });
-          }],
-          customer: [function() {
-            return null;
-          }],
-          color: [function() {
-            return null;
-          }]
-        }
-      })
       .state('woDishStickers', {
         url: '/woDishStickers/:woId',
         templateUrl: 'app/partials/dishStickers.html',
@@ -518,53 +474,6 @@ config(function($stateProvider, $urlRouterProvider) {
           }],
           displayMode: ['$stateParams', function($stateParams) {
             return Number($stateParams.displayMode);
-          }]
-        }
-      })
-      .state('orderStickers', {
-        url: '/orderStickers/:id/:custId/:colorId',
-        templateUrl: 'app/partials/stickers.html',
-        controller: 'StickersCtrl as stickersModel',
-        resolve: {
-          catalog: ['api', function (api) {
-            return api.queryCatalog(1).then(function (obj) {
-              return obj;
-            });
-          }],
-          categories: ['categoriesPromise', function (categoriesPromise) {
-            return categoriesPromise;
-          }],
-          config: ['api', function (api) {
-            return api.queryConfig().then(function (res) {
-              return res[0].properties;
-            });
-          }],
-          workOrder: [function () {
-            return null;
-          }],
-          order: ['$stateParams', 'api', function ($stateParams, api) {
-            return api.queryOrder ($stateParams.id).then (function (orders) {
-              return orders[0];
-            });
-          }],
-          customers: [function () {
-            return null;
-          }],
-          customer: ['$stateParams', 'api', function ($stateParams, api) {
-            return api.queryCustomers($stateParams.custId).then (function (customers) {
-              return customers[0].properties;
-            });
-          }],
-          color: ['$stateParams', 'api', function ($stateParams, api) {
-            if ($stateParams.colorId) {
-              return api.queryColors().then(function (colors) {
-                return colors.filter(function (col) {
-                  return col.properties.tId.toString() === $stateParams.colorId;
-                })[0].properties;
-              });
-            } else {
-              return {};
-            }
           }]
         }
       })
