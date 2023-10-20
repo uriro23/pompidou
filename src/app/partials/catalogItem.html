@@ -332,7 +332,25 @@
                    ng-change="catalogItemModel.setInstructions()"></td>
         <td>דקות לפני ההגשה</td>
       </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1">
+       <tr ng-show="catalogItemModel.currentDomain.id===1"
+           ng-class="catalogItemModel.item.errors.stickerData?'bg-danger':null">
+         <td><label>שם למדבקה</label></td>
+         <td>
+           <input  type="text" size = 10 ng-model="catalogItemModel.item.properties.stickerLabel"
+                   ng-change="catalogItemModel.setStickerData()">
+         </td>
+         <td><label>מס' מדבקות</label></td>
+         <td>
+           <input  type="number" min="0" max="99" ng-model="catalogItemModel.item.properties.stickerQuantity"
+                   ng-change="catalogItemModel.setStickerData()">
+         </td>
+         <td><label>מנה רגישה?</label></td>
+         <td>
+           <input  type="checkbox" ng-model="catalogItemModel.item.properties.isSensitiveDish"
+                   ng-change="catalogItemModel.setChanged(true)">
+         </td>
+       </tr>
+       <tr ng-show="catalogItemModel.currentDomain.id===1">
         <td><label>יח' מידה ללקוח</label></td>
         <td>
           <select ng-model="catalogItemModel.item.view.measurementUnit"
@@ -438,23 +456,6 @@
         <td></td>
         <td>למשל "קישים"</td>
       </tr>
-    <tr ng-show="catalogItemModel.currentDomain.id===1">
-        <td><label>שם למדבקה</label></td>
-        <td>
-          <input  type="text" size = 10 ng-model="catalogItemModel.item.properties.stickerLabel"
-                  ng-change="catalogItemModel.setChanged(true)">
-        </td>
-      <td><label>מס' מדבקות</label></td>
-      <td>
-        <input  type="number" min="0" max="99" ng-model="catalogItemModel.item.properties.stickerQuantity"
-                ng-change="catalogItemModel.setChanged(true)">
-      </td>
-      <td><label>מנה רגישה?</label></td>
-      <td>
-        <input  type="checkbox" ng-model="catalogItemModel.item.properties.isSensitiveDish"
-                ng-change="catalogItemModel.setChanged(true)">
-      </td>
-    </tr>
       <tr ng-show="catalogItemModel.currentDomain.id===1 &&
             (catalogItemModel.item.view.category.type===5 || catalogItemModel.item.view.category.type===6)">
         <td><label>סוג שירות נלווה</label></td>

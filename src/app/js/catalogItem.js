@@ -7,6 +7,9 @@ angular.module('myApp')
                                            allCategories, productNames,measurementUnits,
                                            sensitivities, config) {
 
+    var CATEGORY_SNACKS = 1;
+    var CATEGORY_DESSERTS = 8;
+
     var model = this;
     $rootScope.menuStatus = 'show';
     var user = api.getCurrentUser();
@@ -113,6 +116,25 @@ angular.module('myApp')
     model.setShortDescription = function () {
       model.item.isCopyToShortDesc =
         model.item.properties.productDescription === model.item.properties.shortDescription;
+      model.setChanged(true);
+    };
+
+    model.checkStickerData = function () {
+      model.item.errors.stickerData = false;
+      if (typeof model.item.properties.stickerQuantity !== 'number' || !model.item.properties.stickerLabel) {
+        if (model.item.view.category.type < 3 &&
+            model.item.properties.stickerQuantity > 0 &&
+            (!(model.item.properties.category === CATEGORY_SNACKS ||
+                    model.item.properties.category === CATEGORY_DESSERTS) ||
+                model.item.properties.exitList.length > 0)) {
+          model.item.errors.stickerData = true;
+          return;
+      }
+    };
+  };
+
+    model.setStickerData = function () {
+      model.checkStickerData();
       model.setChanged(true);
     };
 
@@ -272,11 +294,13 @@ angular.module('myApp')
           item:true   // empty text is error
         }
       });
+      model.checkStickerData();
       model.setChanged(true);
     };
 
     model.delExitListItem = function (ind) {
       model.item.properties.exitList.splice(ind, 1);
+      model.checkStickerData();
       model.setChanged(true);
     };
 
@@ -817,6 +841,7 @@ angular.module('myApp')
      console.log(model.item.view.category)
      model.item.properties.supplier = model.item.view.category.defaultSupplier;
    }
+   model.checkStickerData();
    model.setChanged(false);
    model.loadComponentItems();
    model.filterAvailableSensitivities();
