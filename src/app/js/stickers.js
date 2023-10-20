@@ -685,8 +685,6 @@ angular.module('myApp')
       $rootScope.menuStatus = 'hide';
       $rootScope.title = 'מדבקות בתהליך';
 
-      console.log('isContent: '+isContent);
-
       var that = this;
       this.type = type;
       this.isContent = isContent;
@@ -705,6 +703,8 @@ angular.module('myApp')
               that.productName = stickerParams.properties.productName;
               that.productionDate = stickerParams.properties.productionDate;
               that.freezeDate = stickerParams.properties.freezeDate;
+              that.customerName = stickerParams.properties.customerName;
+              that.eventDate = stickerParams.properties.eventDate;
               $timeout(function() {
                 window.print();
               });

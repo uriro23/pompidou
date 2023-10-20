@@ -438,18 +438,27 @@ angular.module('myApp')
       {
         id: 0,
         label: 'מוצר בתהליך',
-        isFreeze: false
+        isFreeze: false,
+        isDishSticker: false
       },
       {
         id: 1,
         label: 'מוצר בהקפאה',
-        isFreeze: true
+        isFreeze: true,
+        isDishSticker: false
       },
       {
         id: 2,
         label: 'חומר גלם',
-        isFreeze: false
+        isFreeze: false,
+        isDishSticker: false
       },
+      {
+        id: 3,
+        label: 'מנה',
+        isFreeze: false,
+        isDishSticker: true
+      }
     ],
 
     descChangeActions: [

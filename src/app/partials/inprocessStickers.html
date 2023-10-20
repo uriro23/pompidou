@@ -48,6 +48,34 @@
         <div class="inprocess-detail">תאריך פתיחה: ________________</div>
         <div class="inprocess-detail">תוקף חדש: ___________________</div>
     </div>
+    <div ng-show="inprocessStickersModel.type === 3">
+        <div style="font-size: 16pt" ng-hide="inprocessStickersModel.isContent">מנה</div>
+        <div style="font-size: 16pt" ng-show="inprocessStickersModel.isContent">
+            <span>{{inprocessStickersModel.productName}}</span>
+        </div>
+        <p style="height: 0.5cm"></p>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם המנה: ___________________</div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תאריך יצור: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>תאריך יצור:</span>
+            <span>{{inprocessStickersModel.productionDate | date: 'dd/MM/yyyy'}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שעת יצור: __________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שעת יצור:</span>
+            <span>{{inprocessStickersModel.productionDate | date: 'HH:mm'}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם לקוח: ________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שם לקוח:</span>
+            <span>{{inprocessStickersModel.customerName}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תאריך אירוע: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>תאריך אירוע:</span>
+            <span>{{inprocessStickersModel.eventDate | date: 'dd/MM/yyyy'}}</span>
+        </div>
+    </div>
     <div ng-show="$index < inprocessStickersModel.stickers.length-1">
     <p style="page-break-after: always;">&nbsp;</p>
     <p style="page-break-before: always;">&nbsp;</p>

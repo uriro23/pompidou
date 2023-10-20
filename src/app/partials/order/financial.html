@@ -148,6 +148,13 @@
     <td></td>
     <td>{{financialModel.order.view.quote.operationalServices | currency}}</td>
   </tr>
+  <tr ng-class="financialModel.order.view.quote.changes.noParticipants?'bg-success':null">
+    <td><label>ללא מס' משתת'</label></td>
+    <td><input type="checkbox"
+               ng-model="financialModel.order.view.quote.isNoParticipants"
+               ng-change="financialModel.setNoParticipants()">
+    </td>
+  </tr>
   </tbody>
 </table>
 </div>

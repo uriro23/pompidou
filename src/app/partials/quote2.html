@@ -25,8 +25,10 @@
             <!--        {{quote2Model.bid.properties.order.eventTime | date: 'H:mm'}}  -->
               {{quote2Model.bid.properties.eventTimeStr}}
                   </span><br>
-          <strong> מספר המשתתפים:</strong>
-            <span>{{quote2Model.bid.properties.order.noOfParticipants}}</span><br>
+          <strong ng-hide="quote2Model.currentQuote.isNoParticipants"> מספר המשתתפים:</strong>
+            <span ng-hide="quote2Model.currentQuote.isNoParticipants">
+              {{quote2Model.bid.properties.order.noOfParticipants}}
+            </span><br>
       <strong ng-show="quote2Model.currentOrder.children">מתוכם ילדים:</strong>
                 <span ng-show="quote2Model.currentOrder.children">{{quote2Model.currentOrder.children}}</span>
 </p>
@@ -194,7 +196,7 @@
     </table>
     <table width="100%">
       <tfoot class="soft">
-      <tr ng-hide="quote2Model.currentQuote.isFixedPrice">
+      <tr ng-hide="quote2Model.currentQuote.isFixedPrice || quote2Model.currentQuote.isNoParticipants">
         <td align="left" width="80%" class="blackTxt"><strong>
           <span>(מחיר לסועד
           </span>
