@@ -4,9 +4,21 @@
     <div ng-show="inprocessStickersModel.type === 0">
         <div style="font-size: 16pt">מוצר בתהליך</div>
         <p style="height: 0.5cm"></p>
-        <div class="inprocess-detail">שם המוצר: ___________________</div>
-        <div class="inprocess-detail">תאריך יצור: ___________________</div>
-        <div class="inprocess-detail">שעת יצור: ____________________</div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם המוצר: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שם המוצר:</span>
+            <span>{{inprocessStickersModel.productName}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תאריך יצור: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>תאריך יצור:</span>
+            <span>{{inprocessStickersModel.productionDate | date: 'dd/MM/yyyy'}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שעת יצור: ____________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שעת יצור:</span>
+            <span>{{inprocessStickersModel.productionDate | date: 'HH:mm'}}</span>
+        </div>
     </div>
     <div ng-show="inprocessStickersModel.type === 1">
         <div style="font-size: 14pt">מוצר להקפאה</div>
@@ -42,13 +54,30 @@
     <div ng-show="inprocessStickersModel.type === 2">
         <div style="font-size: 16pt">חומר גלם</div>
         <p style="height: 0.5cm"></p>
-        <div class="inprocess-detail">שם המוצר: ___________________</div>
-        <div class="inprocess-detail">שם היצרן: ___________________</div>
-        <div class="inprocess-detail">תוקף מקורי: __________________</div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם המוצר: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שם המוצר:</span>
+            <span>{{inprocessStickersModel.productName}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם היצרן: ___________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>שם היצרן:</span>
+            <span>{{inprocessStickersModel.producer}}</span>
+        </div>
+        <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תוקף מקורי: __________________</div>
+        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+            <span>תוקף מקורי:</span>
+            <span>{{inprocessStickersModel.validUntil | date: 'dd/MM/yyyy'}}</span>
+        </div>
         <div class="inprocess-detail">תאריך פתיחה: ________________</div>
         <div class="inprocess-detail">תוקף חדש: ___________________</div>
     </div>
     <div ng-show="inprocessStickersModel.type === 3">
+        <div style="font-size: 10pt; font-weight: bold">
+            <span>השף בקופסא</span>
+            <span>טל' 054-7514061</span>
+        </div>
+        <p></p>
         <div style="font-size: 16pt" ng-hide="inprocessStickersModel.isContent">מנה</div>
         <div style="font-size: 16pt" ng-show="inprocessStickersModel.isContent">
             <span>{{inprocessStickersModel.productName}}</span>

@@ -692,7 +692,44 @@
        </select>
      </div>
      <p></p>
-     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.isFreeze">
+     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.id===0">
+       <tr>
+         <td style="width: 40%">
+           ריק?
+         </td>
+         <td style="width: 60%">
+           <input type="checkbox" ng-model="adminModel.isStickerEmpty">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td colspan="2">
+           <input type="text"
+                  ng-model="adminModel.stickerParams.properties.productName"
+                  ng-change="adminModel.stickerDataChanged()"
+                  size="49" placeholder="שם מוצר">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td>
+           תאריך ושעת ייצור
+         </td>
+         <td>
+           <input type="datetime-local"
+                  ng-model="adminModel.stickerParams.properties.productionDate"
+                  ng-change="adminModel.stickerDataChanged()">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td>
+           <button class="btn btn-default btn-small"
+                   ng-click="adminModel.saveStickerParams()"
+                   ng-disabled="adminModel.isStickeParamsSaved">
+             שמור
+           </button>
+         </td>
+       </tr>
+     </table>
+     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.id===1">
        <tr>
          <td style="width: 40%">
            ריק?
@@ -739,7 +776,52 @@
          </td>
        </tr>
      </table>
-     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.isDishSticker">
+     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.id===2">
+       <tr>
+         <td style="width: 40%">
+           ריק?
+         </td>
+         <td style="width: 60%">
+           <input type="checkbox" ng-model="adminModel.isStickerEmpty">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td colspan="2">
+           <input type="text"
+                  ng-model="adminModel.stickerParams.properties.productName"
+                  ng-change="adminModel.stickerDataChanged()"
+                  size="49" placeholder="שם מוצר">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td colspan="2">
+           <input type="text"
+                  ng-model="adminModel.stickerParams.properties.producer"
+                  ng-change="adminModel.stickerDataChanged()"
+                  size="49" placeholder="יצרן">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td>
+           תוקף מקורי
+         </td>
+         <td>
+           <input type="date"
+                  ng-model="adminModel.stickerParams.properties.validUntil"
+                  ng-change="adminModel.stickerDataChanged()">
+         </td>
+       </tr>
+       <tr ng-hide="adminModel.isStickerEmpty">
+         <td>
+           <button class="btn btn-default btn-small"
+                   ng-click="adminModel.saveStickerParams()"
+                   ng-disabled="adminModel.isStickeParamsSaved">
+             שמור
+           </button>
+         </td>
+       </tr>
+     </table>
+     <table style="width: 30%" class="table" ng-show="adminModel.stickerType.id===3">
        <tr>
          <td style="width: 40%">
            ריק?

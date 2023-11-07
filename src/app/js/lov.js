@@ -437,27 +437,19 @@ angular.module('myApp')
     stickerTypes: [
       {
         id: 0,
-        label: 'מוצר בתהליך',
-        isFreeze: false,
-        isDishSticker: false
+        label: 'מוצר בתהליך'
       },
       {
         id: 1,
-        label: 'מוצר בהקפאה',
-        isFreeze: true,
-        isDishSticker: false
+        label: 'מוצר בהקפאה'
       },
       {
         id: 2,
-        label: 'חומר גלם',
-        isFreeze: false,
-        isDishSticker: false
+        label: 'חומר גלם'
       },
       {
         id: 3,
-        label: 'מנה',
-        isFreeze: false,
-        isDishSticker: true
+        label: 'מנה'
       }
     ],
 

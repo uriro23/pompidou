@@ -41,6 +41,8 @@ angular.module('myApp')
     sen.isContains = sen.isPositive;
     return sen;
   });
+  console.log('allergies:');
+  console.log(allergies);
 
   function splitDishesByCategory  (orders) {
     orders.forEach(function (order) {
@@ -468,6 +470,8 @@ angular.module('myApp')
               that.productName = stickerParams.properties.productName;
               that.productionDate = stickerParams.properties.productionDate;
               that.freezeDate = stickerParams.properties.freezeDate;
+              that.producer = stickerParams.properties.producer;
+              that.validUntil = stickerParams.properties.validUntil;
               that.customerName = stickerParams.properties.customerName;
               that.eventDate = stickerParams.properties.eventDate;
               $timeout(function() {
