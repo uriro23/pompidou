@@ -293,9 +293,63 @@
                        ng-change="workOrderModel.setPrepOrderDone(woItem,order)">
             </td>
           </tr>
+          <tr ng-show="woItem.properties.manualQuantity || woItem.view.isInputManualQuantity">
+              <td>כמות נוספת</td>
+              <td>
+                  <button class="btn btn-default btn-small"
+                          ng-show="woItem.properties.manualQuantity &&
+                                   !woItem.view.isInputManualQuantity"
+                          ng-click="workOrderModel.updateManualQuantity(woItem)">
+                      עדכן
+                  </button>
+                  <button class="btn btn-success btn-small"
+                          ng-show="woItem.view.isInputManualQuantity"
+                          ng-click="workOrderModel.saveManualQuantity(woItem)">
+                      שמור
+                  </button>
+              </td>
+              <td ng-repeat="dish in woItem.view.dishes track by dish.id"
+                  ng-hide="(workOrderModel.isShowTodayOnly[2] && dish.quantityForToday===0) ||
+                       (!workOrderModel.isShowDone[2] && dish.quantityDone===dish.quantity)">
+              </td>
+              <td>
+                  <span ng-show="woItem.properties.manualQuantity && !woItem.view.isInputManualQuantity">
+                      {{woItem.properties.manualQuantity | number:2}}
+                  </span>
+                  <input type="number" min="0" max="9999"
+                         ng-model="workOrderModel.manualQuantity"
+                         ng-show="woItem.view.isInputManualQuantity">
+              </td>
+              <td ng-hide="workOrderModel.isShowTodayOnly[2]">
+                  <input type="radio"
+                         ng-model="workOrderModel.manualSelect" value="delay"
+                         ng-disabled="true">
+              </td>
+              <td ng-hide="workOrderModel.isShowTodayOnly[2]">
+                  <input type="radio"
+                         ng-model="workOrderModel.manualSelect" value="today"
+                         ng-disabled="true">
+              </td>
+              <td ng-hide="workOrderModel.isShowTodayOnly[2]">
+                  <input type="radio"
+                         ng-model="workOrderModel.manualSelect" value="done"
+                         ng-disabled="true">
+              </td>
+              <td ng-show="workOrderModel.isShowTodayOnly[2]">
+                  <input type="checkbox" ng-model="woItem.properties.isManualDone"
+                         ng-change="workOrderModel.setPrepManualDone(woItem)">
+              </td>
+          </tr>
           <tr>
+          <td>
+              <button class="btn btn-default btn-small"
+                      ng-click="workOrderModel.addManualQuantity(woItem)"
+                      ng-hide="woItem.properties.manualQuantity ||
+                               woItem.view.isInputManualQuantity">
+                  +
+              </button>
+          </td>
           <td><label>סה"כ</label></td>
-          <td></td>
           <td ng-repeat="dish in woItem.view.dishes track by dish.id"
               ng-hide="(workOrderModel.isShowTodayOnly[2] && dish.quantityForToday===0) ||
                        (!workOrderModel.isShowDone[2] && dish.quantityDone===dish.quantity)">

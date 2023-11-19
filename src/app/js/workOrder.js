@@ -165,8 +165,9 @@ angular.module('myApp')
         workItem.properties.catalogId = item.catalogId;
         workItem.properties.productName = item.productName;
         workItem.properties.personalAdjustment = item.personalAdjustment;
-         workItem.properties.quantity = item.quantity;
-         workItem.properties.originalQuantity = -1;
+        workItem.properties.quantity = item.quantity;
+        workItem.properties.originalQuantity = -1;
+        workItem.properties.manualQuantity = 0;
         workItem.properties.category = item.category;
         workItem.properties.domain = 1;
         workItem.properties.measurementUnit = item.measurementUnit;
@@ -258,6 +259,7 @@ angular.module('myApp')
                   })[0];
                  workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
+                 workItem.properties.manualQuantity = 0;
                   workItem.properties.quantityForToday =
                     targetDomain===2 || inWorkItem.domain === 1 ? 0 :
                       inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
@@ -666,6 +668,9 @@ angular.module('myApp')
               isItemToday = true;
             }
           });
+          if (woItem.properties.manualQuantity) {
+            isItemToday = true;
+          }
         }
         var isItemDone = woItem.properties.select === 'done';
         if (woItem.properties.select === 'mix') {
@@ -787,7 +792,7 @@ angular.module('myApp')
           });
         }
       });
-     woItem.properties.quantityForToday = quantToday;
+     woItem.properties.quantityForToday = quantToday + woItem.properties.manualQuantity;
      woItem.properties.quantityDone = quantDone;
     };
 
@@ -848,26 +853,33 @@ angular.module('myApp')
             s = 'mix';
           }
         });
+        if (prep.properties.manualQuantity) {
+          if (s !== 'today') {
+            s = 'mix';
+          }
+        }
         prep.properties.select = s;
         if (s === 'mix') {
           prep.isShowDetails = true;
         }
         this.computeSelectQuantities(prep);
         // copy select value from view to properties, to save it
-        var propOrder = prep.properties.orders.filter(function(ord) {
-          return ord.id === order.id;
-        })[0];
-        if (propOrder) {
-          propOrder.select = prep.view.orders.filter(function (ord) {
+        if (order) {
+          var propOrder = prep.properties.orders.filter(function (ord) {
             return ord.id === order.id;
-          })[0].select;
+          })[0];
+          if (propOrder) {
+            propOrder.select = prep.view.orders.filter(function (ord) {
+              return ord.id === order.id;
+            })[0].select;
+          }
         }
         api.saveObj(prep)
             .then(function () {
               that.woIndex.properties.domainStatus[3] = false;
               that.woIndex.properties.domainStatus[4] = false;
               api.saveObj(that.woIndex);
-            })
+            });
       }
     };
 
@@ -922,6 +934,9 @@ angular.module('myApp')
               ord.isDone = woItem.isDone;
             }
           });
+          if (woItem.properties.manualQuantity) {
+            woItem.properties.isManualDone = woItem.isDone;
+          }
        api.saveObj(woItem);
       }
     };
@@ -934,7 +949,7 @@ angular.module('myApp')
         resolve: {},
         size: 'sm'
       });
-      prepEndDayOptions.result.then(function(option) {
+      prepEndDayOptions.result.then(function() {
         var prepsToUpdate = [];
           that.workOrder.forEach(function(prep) {
             if (prep.properties.domain === 2) {
@@ -943,6 +958,8 @@ angular.module('myApp')
                 if (prep.properties.isDone) {
                   prep.properties.select = 'done';
                   prep.properties.isDone = false;
+                  prep.properties.quantity -= prep.properties.manualQuantity;
+                  prep.properties.manualQuantity = 0;
                   isUpdate = true;
                 }
               }
@@ -964,6 +981,13 @@ angular.module('myApp')
                   }
                 }
               });
+              if (prep.properties.isManualDone) {
+                prep.properties.quantity -= prep.properties.manualQuantity;
+                prep.properties.manualQuantity = 0;
+                prep.properties.isManualDone = false;
+                isUpdate = true;
+              }
+              that.setPrepOrderSelect(prep);
               if (isUpdate) {
                 prepsToUpdate.push(prep);
               }
@@ -1857,6 +1881,7 @@ angular.module('myApp')
                                      comp.quantity / dishCatalogItem.properties.productionQuantity;
                       prep.properties.quantityForToday = 0;
                       prep.properties.quantityDone = 0;
+                      prep.properties.manualQuantity = 0;
                       prep.properties.select = 'delay';
                       prep.properties.backTrace = [{
                         id: dish.id,
@@ -2049,6 +2074,7 @@ angular.module('myApp')
                              dishComponent.quantity / dishCatalogItem.properties.productionQuantity;
                            prep.properties.quantityForToday = 0;
                            prep.properties.quantityDone = 0;
+                           prep.properties.manualQuantity = 0;
                            prep.properties.select = 'delay';
                            prep.properties.backTrace = [{
                              id: dish.id,
@@ -2898,6 +2924,45 @@ angular.module('myApp')
       return diffList;
     };
 
+    this.addManualQuantity = function (woItem) {
+      woItem.view.isInputManualQuantity = true;
+      this.manualQuantity = 0;
+    };
+
+    this.updateManualQuantity = function (woItem) {
+      woItem.view.isInputManualQuantity = true;
+      this.manualQuantity = woItem.properties.manualQuantity;
+    };
+
+    this.saveManualQuantity = function (woItem) {
+      var that = this;
+      woItem.properties.quantity -= woItem.properties.manualQuantity;
+      woItem.properties.quantityForToday -= woItem.properties.manualQuantity;
+      woItem.properties.quantity += this.manualQuantity;
+      woItem.properties.quantityForToday += this.manualQuantity;
+      woItem.properties.manualQuantity = this.manualQuantity;
+      this.setPrepOrderSelect (woItem); // this also recomputes quantityForToday
+      if (!woItem.properties.status) {
+        woItem.properties.status = 'upd';
+      }
+      woItem.view.isInputManualQuantity = false;
+      api.saveObj(woItem)
+          .then(function() {
+            that.woIndex.properties.domainStatus[3] = false;
+            that.woIndex.properties.domainStatus[4] = false;
+            api.saveObj(that.woIndex);
+          })
+    };
+
+    this.setPrepManualDone = function (woItem) {
+      api.saveObj(woItem)
+          .then(function() {
+            that.woIndex.properties.domainStatus[3] = false;
+            that.woIndex.properties.domainStatus[4] = false;
+            api.saveObj(that.woIndex);
+          })
+    };
+
     this.setPrint = function() {
       var that = this;
       this.isPrint = true;
@@ -2949,5 +3014,6 @@ angular.module('myApp')
     this.isCompareActive = false;
     this.baseWoIndex = undefined;
     this.targetWoIndex = undefined;
+    this.manualSelect = 'today';
     this.switchWorkOrders();
   });
