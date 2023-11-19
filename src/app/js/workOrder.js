@@ -214,7 +214,9 @@ angular.module('myApp')
                   inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
                 if (targetDomain > 2 && inWorkItem.domain === 2) {
                   workItem.properties.quantityForToday +=
-                    inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                      inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;
+                  workItem.properties.manualQuantity +=
+                      inWorkItem.manualQuantity * component.quantity / inCatItem.productionQuantity;
                   workItem.properties.quantityDone +=
                     inWorkItem.quantityDone * component.quantity / inCatItem.productionQuantity;
                   if (inWorkItem.select !== workItem.properties.select) {
@@ -259,7 +261,7 @@ angular.module('myApp')
                   })[0];
                  workItem.properties.isInStock = outCatItem.isInStock;
                  workItem.properties.quantity = inWorkItem.quantity * component.quantity / inCatItem.productionQuantity;
-                 workItem.properties.manualQuantity = 0;
+                 workItem.properties.manualQuantity = inWorkItem.manualQuantity * component.quantity / inCatItem.productionQuantity;;
                   workItem.properties.quantityForToday =
                     targetDomain===2 || inWorkItem.domain === 1 ? 0 :
                       inWorkItem.quantityForToday * component.quantity / inCatItem.productionQuantity;

@@ -147,6 +147,14 @@
               }}
             </td>
           </tr>
+          <tr ng-show="woItem.properties.manualQuantity">
+            <td>כמות נוספת</td>
+            <td></td>
+            <td>{{woItem.properties.manualQuantity | number:2}}</td>
+            <td ng-hide="workOrderModel.isShowTodayOnly[workOrderModel.domain]">
+            להיום
+            </td>
+          </tr>
           <tr ng-show="cat.category.type===21">
             <td>סה"כ</td>
             <td></td>
