@@ -2965,6 +2965,78 @@ angular.module('myApp')
           })
     };
 
+    this.addManualPrep = function () {
+      this.isManualPrepSelection = true;
+    };
+
+    this.setManualCategory = function () {
+      var that = this;
+      this.manualPreps = catalog.filter(function(cat) {
+        if (cat.properties.category === that.manualCategory.tId) {
+          var temp = that.workOrder.filter(function (wo) {
+            return wo.properties.domain === 2 && wo.properties.catalogId === cat.id;
+          });
+          return !temp.length;
+        } else {
+          return false;
+        }
+      }).sort(function(a,b) {
+        if (a.properties.productName > b.properties.productName) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    };
+
+    this.setManualPrep = function () {
+      var that = this;
+      this.isManualPrepSelection = false;
+      this.isManualPrepInput = true;
+      this.manualQuantity = 0;
+      this.manualMeasurementUnit = measurementUnits.filter(function(mu) {
+        return mu.tId === that.manualPrep.properties.measurementUnit;
+      })[0];
+    };
+
+    this.saveManualPrep = function () {
+      var prep = api.initWorkOrder();
+      prep.properties.woId = woId;
+      prep.properties.catalogId = this.manualPrep.id;
+      prep.properties.productName = this.manualPrep.properties.productName;
+      prep.properties.category = this.manualCategory;
+      prep.properties.domain = 2;
+      prep.properties.measurementUnit = this.manualMeasurementUnit;
+      prep.properties.isInStock = this.manualPrep.properties.isInStock;
+      prep.properties.originalQuantity = -1;
+      prep.properties.quantity = this.manualQuantity;
+      prep.properties.quantityForToday = 0;
+      prep.properties.quantityDone = 0;
+      prep.properties.manualQuantity = this.manualQuantity;
+      prep.properties.select = 'today';
+      prep.properties.backTrace = [];
+      prep.properties.orders = [];
+      prep.properties.status = 'new';
+      prep.view = {
+        dishes: [],
+        orders: []
+      }
+      this.workOrder.push(prep);
+      this.splitWorkOrder();
+      this.isManualPrepInput = false;
+      api.saveObj(prep)
+          .then(function (saved) {
+            prep = saved;
+            that.woIndex.properties.domainStatus[3] = false;
+            that.woIndex.properties.domainStatus[4] = false;
+            api.saveObj(that.woIndex);
+          });
+    };
+
+    this.cancelManualPrep = function () {
+      this.isManualPrepInput = false;
+    };
+
     this.setPrint = function() {
       var that = this;
       this.isPrint = true;
@@ -3017,5 +3089,8 @@ angular.module('myApp')
     this.baseWoIndex = undefined;
     this.targetWoIndex = undefined;
     this.manualSelect = 'today';
+    this.prepCategories = allCategories.filter(function(cat) {
+      return cat.domain === 2;
+    });
     this.switchWorkOrders();
   });
