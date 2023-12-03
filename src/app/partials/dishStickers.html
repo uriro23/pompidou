@@ -4,6 +4,11 @@
         <span>טל' 054-7514061</span>
     </div>
     <p></p>
+    <div style="font-size: 12pt">
+        <span>אירוע: </span>
+        <span>{{sticker.customer.firstName}}</span>
+        <span>{{dishStickersModel.dayName(sticker.eventDate)}}</span>
+    </div>
     <div ng-show="sticker.type < 2">
         <div style="font-size: 20pt; font-weight: bold">
             {{sticker.label}}
@@ -53,10 +58,6 @@
     </div>
     <p></p>
     <p></p>
-    <div style="font-size: 12pt">
-        <span>{{sticker.customer.firstName}}</span>
-        <span>{{dishStickersModel.dayName(sticker.eventDate)}}</span>
-    </div>
     <p style="page-break-after: always;">&nbsp;</p>
     <p style="page-break-before: always;">&nbsp;</p>
 </div>
