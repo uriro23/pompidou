@@ -375,6 +375,13 @@ angular.module('myApp')
               var originalOrder = that.woOrders.filter(function(ord) {
                 return ord.id === miBackTrace.id;
               })[0];
+              if (!originalOrder) {
+                console.log('order of dish bactrace not found');
+                console.log('dish:');
+                console.log(originalDish);
+                console.log('bactrace:');
+                console.log(miBackTrace);
+              }
               var orderObj = {
                 id: originalOrder.id,
                 customer: originalOrder.view ? originalOrder.view.customer.firstName : '',

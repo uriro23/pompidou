@@ -3,7 +3,7 @@
         <span>השף בקופסא</span>
         <span>טל' 054-7514061</span>
     </div>
-    <p></p>
+    <p ng-hide="sticker.instructions.length"></p>
     <div style="font-size: 12pt">
         <span>אירוע: </span>
         <span>{{sticker.customer.firstName}}</span>
@@ -13,13 +13,13 @@
         <div style="font-size: 20pt; font-weight: bold">
             {{sticker.label}}
         </div>
-        <p></p>
+        <p ng-hide="sticker.instructions.length"></p>
         <div style="font-size: 10pt">
             <span>זמן ייצור:</span>
             <span>{{sticker.eventDate | date: 'dd/MM/yy'}}</span>
             <span>{{sticker.productionTime | date: 'HH:mm'}}</span>
         </div>
-        <p></p>
+        <p ng-hide="sticker.instructions.length"></p>
         <div style="font-size: 8pt">
             מידע על אלרגנים:
         </div>
@@ -37,7 +37,7 @@
                 {{allergy.allergyName}},
             </span>
         </div>
-        <p></p>
+        <p ng-hide="sticker.instructions.length"></p>
         <div style="font-size: 10pt" ng-show="sticker.instructions.length>0">
             <div style="text-decoration: underline">הוראות:</div>
             <div ng-repeat="instruction in sticker.instructions track by $index">
