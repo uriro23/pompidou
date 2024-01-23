@@ -256,7 +256,10 @@
         <td>
           <input  type="text" size = 40 ng-model="catalogItemModel.item.properties.productName"
                   ng-change="catalogItemModel.setProductName()">
-          <span ng-show="catalogItemModel.item.errors.productName==='dup'">&nbsp;שם פריט כפול</span>
+          <span ng-show="catalogItemModel.item.errors.productName==='dup'">
+            <span>קיים פריט בשם זהה בקטגוריה</span>
+            <span>{{catalogItemModel.dupCategory.label}}</span>
+          </span>
         </td>
       </tr>
       <tr ng-class="catalogItemModel.item.errors.externalName?'bg-danger':null"

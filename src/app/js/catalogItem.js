@@ -49,7 +49,7 @@ angular.module('myApp')
       var res = false;
       productNames.forEach(function(name) {
         if (name.name === productName && name.id !== id && !name.isDeleted) {
-          res = true;
+          res = name.category;
         }
       });
       return res;
@@ -81,8 +81,12 @@ angular.module('myApp')
       model.item.errors.productName =
         !model.item.properties.productName || model.item.properties.productName.length === 0;
       if (!model.item.errors.productName) {
-        if (isNameInUse(model.item.properties.productName,model.item.id)) {
+        var dupCategory = isNameInUse(model.item.properties.productName,model.item.id);
+        if (dupCategory) {
           model.item.errors.productName = 'dup';
+          model.dupCategory = allCategories.filter(function(cat) {
+            return cat.tId === dupCategory;
+          })[0];
         }
       }
       if (!model.item.properties.isExternalNameExplicit &&
@@ -636,8 +640,12 @@ angular.module('myApp')
          model.item.errors.productName = false;
        }
      } else {  // if it isn't deleted any more, productName must be unique in domain
-       if (isNameInUse(model.item.properties.productName,model.item.id)) {
+       var dupCategory = isNameInUse(model.item.properties.productName,model.item.id);
+       if (dupCategory) {
          model.item.errors.productName = 'dup';
+         model.dupCategory = allCategories.filter(function(cat) {
+           return cat.tId === dupCategory;
+         })[0];
        }
      }
    };

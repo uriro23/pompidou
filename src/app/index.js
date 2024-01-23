@@ -589,6 +589,7 @@ config(function($stateProvider, $urlRouterProvider) {
                 return {
                   id:   name.id,
                   name: name.properties.productName,
+                  category: name.properties.category,
                   isDeleted: name.properties.isDeleted
                 };
               });
@@ -642,6 +643,7 @@ config(function($stateProvider, $urlRouterProvider) {
                 return {
                   id:   name.id,
                   name: name.properties.productName,
+                  category: name.properties.category,
                   isDeleted: name.properties.isDeleted
                 };
               });
