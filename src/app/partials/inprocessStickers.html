@@ -95,12 +95,14 @@
             <span>{{inprocessStickersModel.productionDate | date: 'HH:mm'}}</span>
         </div>
         <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">שם לקוח: ________________</div>
-        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+        <div class="inprocess-detail"
+             ng-show="inprocessStickersModel.isContent && inprocessStickersModel.customerName">
             <span>שם לקוח:</span>
             <span>{{inprocessStickersModel.customerName}}</span>
         </div>
         <div class="inprocess-detail" ng-hide="inprocessStickersModel.isContent">תאריך אירוע: ___________________</div>
-        <div class="inprocess-detail" ng-show="inprocessStickersModel.isContent">
+        <div class="inprocess-detail"
+             ng-show="inprocessStickersModel.isContent && inprocessStickersModel.customerName">
             <span>תאריך אירוע:</span>
             <span>{{inprocessStickersModel.eventDate | date: 'dd/MM/yyyy'}}</span>
         </div>
