@@ -36,14 +36,18 @@ angular.module('myApp')
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
-      return (item.catalogPrice !== catEntry.properties.price ||
-        item.catalogQuantity !== catEntry.properties.priceQuantity);
+      return (item.catalogQuantity !== catEntry.properties.priceQuantity ||
+          (order.properties.isWholesaleEvent
+              ? item.catalogWholesalePrice !== catEntry.properties.wholesalePrice
+              : item.catalogPrice !== catEntry.properties.price));
     });
     this.priceChangedItems.forEach(function (item) {
       var catEntry = catalog.filter(function (cat) {
         return cat.id === item.catalogId;
       })[0];
-      var priceInclVat = item.quantity * catEntry.properties.price / catEntry.properties.priceQuantity;
+      var priceInclVat = item.quantity *
+          (order.properties.isWholesaleEvent ? catEntry.properties.wholesalePrice : catEntry.properties.price)
+          / catEntry.properties.priceQuantity;
       if (order.properties.isBusinessEvent) {
         item.newPrice = priceInclVat / (1 + order.properties.vatRate);
       } else {
@@ -100,6 +104,7 @@ angular.module('myApp')
           })[0];
           item.price = item.newPrice;
           item.catalogPrice = catEntry.properties.price;
+          item.catalogWholesalePrice = catEntry.properties.wholesalePrice;
           item.catalogQuantity = catEntry.properties.priceQuantity;
           if (order.properties.isBusinessEvent) {
             item.priceInclVat = item.price * (1 + order.properties.vatRate);

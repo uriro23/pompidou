@@ -430,17 +430,25 @@
         </td>
         <td>{{catalogItemModel.item.view.measurementUnit.label}}</td>
       </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id===1"
-          ng-class="catalogItemModel.item.errors.price?'bg-danger':null">
-        <td><label>מחיר הכמות</label></td>
-        <td>
-        <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.properties.price"
-               ng-change="catalogItemModel.setPrice()">
-
-        </td>
-        <td>ש"ח</td>
-      </tr>
-      <tr ng-show="catalogItemModel.currentDomain.id < 3"
+       <tr ng-show="catalogItemModel.currentDomain.id===1"
+           ng-class="catalogItemModel.item.errors.price?'bg-danger':null">
+         <td><label>מחיר רגיל</label></td>
+         <td>
+           <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.properties.price"
+                  ng-change="catalogItemModel.setPrice()">
+         </td>
+         <td>ש"ח</td>
+       </tr>
+       <tr ng-show="catalogItemModel.currentDomain.id===1"
+           ng-class="catalogItemModel.item.errors.wholesalePrice?'bg-danger':null">
+         <td><label>מחיר סיטונאי</label></td>
+         <td>
+           <input type="text" money min=0 size = 5 ng-model="catalogItemModel.item.properties.wholesalePrice"
+                  ng-change="catalogItemModel.setWholsalePrice()">
+         </td>
+         <td>ש"ח</td>
+       </tr>
+       <tr ng-show="catalogItemModel.currentDomain.id < 3"
           ng-class="catalogItemModel.item.errors.productionQuantity?'bg-danger':null">
         <td><label>כמות ייצור</label></td>
         <td>

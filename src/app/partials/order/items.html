@@ -175,10 +175,10 @@
           >קטלוג</button>
         </td>
         <td ng-show="item.isForcedPrice">
-          <button ng-click="itemsModel.setQuantity($index)"
+          <button ng-click="itemsModel.setDefaultPrice($index)"
                   ng-disabled="itemsModel.readOnly.is"
                   class="btn btn-warning btn-sm"
-          >מחיר ב"מ</button> <!-- setQuantity causes price recalc -->
+          >מחיר ב"מ</button>
         </td>
         <td>
           <button ng-click="itemsModel.deleteItem($index)"

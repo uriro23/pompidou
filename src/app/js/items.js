@@ -160,13 +160,9 @@ angular.module('myApp')
       thisItem.quantity = catalogEntry.priceQuantity; // as default quantity
       thisItem.productionQuantity = catalogEntry.productionQuantity;  // for box count computation
       thisItem.catalogPrice = catalogEntry.price; // for price computation
-      thisItem.priceInclVat = catalogEntry.price;  // prices in catalog include vat
-      thisItem.priceBeforeVat = catalogEntry.price / (1 + thisOrder.vatRate);
-      if (thisOrder.isBusinessEvent) {
-        thisItem.price = thisItem.priceBeforeVat;
-      } else {
-        thisItem.price = thisItem.priceInclVat;
-      }
+      thisItem.catalogWholesalePrice = catalogEntry.wholesalePrice; // for price computation
+      orderService.calcItemPrice(thisItem,this.order);
+
       var boxData = catalogEntry.components.filter(function (comp) {
         return comp.id === that.config.boxItem;
       });
@@ -257,19 +253,21 @@ angular.module('myApp')
     };
 
 
+    this.setDefaultPrice = function(ind) {
+      var thisOrder = this.order.properties;
+      var thisQuote = this.order.view.quote;
+      var thisItem = thisQuote.items[ind];
+
+      thisItem.isForcedPrice = false;this.setQuantity(ind); // cause price recalc
+    };
+
     this.setQuantity = function (ind) {
       var thisOrder = this.order.properties;
       var thisQuote = this.order.view.quote;
       var thisItem = thisQuote.items[ind];
 
       thisItem.errors.quantity = Number(thisItem.quantity) != thisItem.quantity || Number(thisItem.quantity) < 0;
-      thisItem.priceInclVat = thisItem.quantity * thisItem.catalogPrice / thisItem.catalogQuantity;
-      thisItem.priceBeforeVat = thisItem.priceInclVat / (1 + thisOrder.vatRate);
-      if (thisOrder.isBusinessEvent) {
-        thisItem.price = thisItem.priceBeforeVat;
-      } else {
-        thisItem.price = thisItem.priceInclVat;
-      }
+      orderService.calcItemPrice(thisItem,this.order);
       thisItem.boxCount = thisItem.quantity * thisItem.productionBoxCount / thisItem.productionQuantity;
       thisItem.satietyIndex = thisItem.quantity * thisItem.productionSatietyIndex / thisItem.productionQuantity;
       orderService.calcTotal(thisQuote,this.order);
@@ -419,6 +417,7 @@ angular.module('myApp')
               // fetch up to date price from catalog
               if (!isSameOrder) {
                 sourceItem.catalogPrice = sourceCatalogItem.price;
+                sourceItem.catalogWholesalePrice = sourceCatalogItem.wholesalePrice;
                 sourceItem.catalogQuantity = sourceCatalogItem.priceQuantity;
                 if (that.isAdjustQuantity && // adjust quantity for food, disposables, rental (except delivery) and drinks
                   sourceCatalogItem.id !== that.config.rentalTransportationItem &&
@@ -456,11 +455,7 @@ angular.module('myApp')
                 if (sourceItem.isForcedPrice) { // add forced source price to target.
                   targetItem.priceInclVat += sourceItem.priceInclVat;
                   targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
-                  if (targetOrder.isBusinessEvent) {
-                    targetItem.price = targetItem.priceBeforeVat;
-                  } else {
-                    targetItem.price = targetItem.priceInclVat;
-                  }
+                  targetItem.price = targetOrder.isBusinessEvent ? targetItem.priceBeforeVat : targetItem.priceInclVat;
                 }
               } else {
                 var maxIndex = targetItems.length === 0 ? 0 : Math.max.apply(null, targetItems.map(function (itm) {
@@ -471,15 +466,7 @@ angular.module('myApp')
                 targetItem.index = maxIndex;  // override original index
               }
               // now adjust price
-              if (!targetItem.isForcedPrice) {
-                targetItem.priceInclVat = targetItem.quantity * targetItem.catalogPrice / targetItem.catalogQuantity;
-                targetItem.priceBeforeVat = targetItem.priceInclVat / (1 + targetOrder.vatRate);
-                if (targetOrder.isBusinessEvent) {
-                  targetItem.price = targetItem.priceBeforeVat;
-                } else {
-                  targetItem.price = targetItem.priceInclVat;
-                }
-              }
+              orderService.calcItemPrice(targetItem, that.order);
               if (targetItem.errors.price) {
                 isPriceConflict = true;
               }

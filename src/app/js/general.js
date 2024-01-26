@@ -56,6 +56,52 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'isBusinessEvent');
     };
 
+    this.setWholesaleEvent = function () {
+      var that = this;
+      var thisOrder = this.order.properties;
+
+      if (thisOrder.isWholesaleEvent) {
+        // use this opportunity to copy wholesalePrice from catalog to all items of order
+        // first create array of all item catalog ids in order
+        var itemIds = [];
+        thisOrder.quotes.forEach(function (quote) {
+          quote.items.forEach(function (item) {
+            var temp = itemIds.filter(function (id) {
+              return id === item.catalogId;
+            });
+            if (!temp.length) {
+              itemIds.push(item.catalogId);
+            }
+          });
+        });
+
+        // now fetch relevant catalog items
+        api.queryCatalogByIds(itemIds)
+            .then(function (catalogItems) {
+              thisOrder.quotes.forEach(function (quote) {
+                quote.items.forEach(function (item) {
+                  var catalogItem = catalogItems.filter(function (cat) {
+                    return cat.id === item.catalogId;
+                  })[0];
+                  item.catalogWholesalePrice = catalogItem.properties.wholesalePrice;
+                  // now update prices to wholesale if given
+                  orderService.calcItemPrice(item,that.order);
+                });
+                orderService.calcTotal(quote, that.order);
+              });
+              orderService.orderChanged(that.order,'isWholesaleEvent');
+            });
+      } else {
+        thisOrder.quotes.forEach(function (quote) {
+          quote.items.forEach(function (item) {
+            orderService.calcItemPrice(item,that.order);
+          });
+          orderService.calcTotal(quote, that.order);
+        });
+        orderService.orderChanged(this.order,'isWholesaleEvent');
+      }
+    };
+
 
     this.resetColor = function() {
       api.unset(this.order,'color');

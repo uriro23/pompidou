@@ -4,6 +4,17 @@ angular.module('myApp')
 
   .service('orderService', function ($rootScope, $state, api, lov, dater, colorsPromise) {
 
+    this.calcItemPrice = function (item, order) {
+      if (!item.isForcedPrice) { // if price was set manually, leave it alone
+        item.priceInclVat =
+            (order.properties.isWholesaleEvent && item.catalogWholesalePrice
+                ? item.catalogWholesalePrice : item.catalogPrice)
+                            * item.quantity / item.catalogQuantity;
+        item.priceBeforeVat = item.priceInclVat / (1+ order.properties.vatRate);
+        item.price = order.properties.isBusinessEvent ? item.priceBeforeVat : item.priceInclVat;
+      }
+    };
+
 
     this.calcTotal = function (quote, order) {
       var subTotal = 0;

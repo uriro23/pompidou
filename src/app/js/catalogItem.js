@@ -190,9 +190,17 @@ angular.module('myApp')
 
     model.setPrice = function () {
       model.item.errors.price =
-        (model.currentDomain.id === 1 || Boolean(model.item.properties.price)) &&
-        ((model.item.properties.price != Number(model.item.properties.price) ||
-        Number(model.item.properties.price) <= 0));
+          (model.currentDomain.id === 1 || Boolean(model.item.properties.price)) &&
+          ((model.item.properties.price != Number(model.item.properties.price) ||
+              Number(model.item.properties.price) <= 0));
+      model.setChanged(true);
+    };
+
+    model.setWholsalePrice = function () {
+      model.item.errors.wholesalePrice =
+          (model.currentDomain.id === 1 || Boolean(model.item.properties.wholesalePrice)) &&
+          ((model.item.properties.wholesalePrice != Number(model.item.properties.wholesalePrice) ||
+              Number(model.item.properties.wholesalePrice) <= 0));
       model.setChanged(true);
     };
 
