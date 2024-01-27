@@ -136,6 +136,14 @@ angular.module('myApp')
       });
     };
 
+    this.checkParticipants = function (order) {
+      var thisOrder = order.properties;
+      return (((order.view.orderStatus.id > 0 && order.view.orderStatus.id < 6) || order.properties.template) &&
+              (!Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0)) ||
+          ((order.view.orderStatus.id === 0 || order.view.orderStatus.id === 6) && !order.properties.template &&
+              thisOrder.noOfParticipants < 0);
+    };
+
     this.orderChanged = function (order, field) {
       order.view.isChanged = true;
       if (field) {

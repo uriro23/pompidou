@@ -78,18 +78,11 @@ angular.module('myApp')
 
     };
 
-    function checkParticipants (order) {
-      var thisOrder = order.properties;
-      return (order.view.orderStatus.id > 0 && order.view.orderStatus.id < 6 &&
-        (!Boolean(thisOrder.noOfParticipants) || thisOrder.noOfParticipants <= 0)) ||
-        ((order.view.orderStatus.id === 0 || order.view.orderStatus.id === 6) &&
-          thisOrder.noOfParticipants < 0);
-    }
 
     this.setNoOfParticipants = function () {
       var that = this;
       orderService.orderChanged(this.order,'header');
-      this.order.view.errors.noOfParticipants = checkParticipants (this.order);
+      this.order.view.errors.noOfParticipants = orderService.checkParticipants (this.order);
       if (!this.order.view.errors.noOfParticipants) {
         orderService.upgradeOrderStatus(this.order);
         this.order.properties.quotes.forEach(function(quote) { // recalc all quotes to update price per person
@@ -126,7 +119,7 @@ angular.module('myApp')
           alert('שים לב! לא סומן ביצוע שיחת תאום');
         }
       }
-      this.order.view.errors.noOfParticipants = checkParticipants (this.order);
+      this.order.view.errors.noOfParticipants = orderService.checkParticipants (this.order);
        this.setReadOnly();
       orderService.orderChanged(this.order,'header');
     };

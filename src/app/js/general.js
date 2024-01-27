@@ -110,6 +110,7 @@ angular.module('myApp')
     };
 
     this.setTemplate = function() {
+      this.order.view.errors.noOfParticipants = orderService.checkParticipants(this.order);
       orderService.orderChanged(this.order,'template');
     };
 

@@ -8,6 +8,7 @@
              ng-disabled="generalModel.readOnly.is">
     </td>
   </tr>
+    <!-- not in use
  <tr ng-class="generalModel.order.view.changes.deliveryLocation?'bg-success':null">
     <td>מקום משלוח</td>
     <td>
@@ -17,12 +18,13 @@
           ></textarea>
     </td>
   </tr>
+  -->
   <tr ng-class="generalModel.order.view.changes.remarks?'bg-success':null">
     <td>הערות פנימיות</td>
     <td>
-      <textarea rows="4" cols="48" ng-model="generalModel.order.properties.remarks"
+      <textarea rows="2" cols="48" ng-model="generalModel.order.properties.remarks"
                 ng-change="generalModel.orderChanged('remarks')"
-                ng-disabled="generalModel.readOnly.is"
+                ng-disabled="generalModel.readOnly.is" placeholder="יופיעו ברשימות סרוויס ואריזה או תיאור התבנית"
           ></textarea>
     </td>
   </tr>
