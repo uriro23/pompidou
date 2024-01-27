@@ -36,11 +36,13 @@
         <select ng-model="documentsModel.printType"
                 ng-options="printType.label for printType in documentsModel.printTypes"
       </td>
+      <!-- not in use
       <td style="width: 10%" ng-show="documentsModel.printType.id === 0">
         <a ng-href="#/menu/{{documentsModel.order.id}}" target="_blank">
           תפריט מודפס
         </a>
       </td>
+      -->
       <td style="width: 10%" ng-show="documentsModel.printType.id === 0">
         <a ng-href="#/sensitivityList/{{documentsModel.order.id}}" target="_blank">
           רשימת רגישויות
