@@ -3,6 +3,9 @@
         <span>השף בקופסא</span>
         <span>טל' 054-7514061</span>
     </div>
+    <div ng-show="sticker.isSensitiveDishSticker" style="font-size: 10pt; font-weight: bold">
+        <span>דגימת מזון למנה</span>
+    </div>
     <p ng-hide="sticker.instructions.length"></p>
     <div style="font-size: 12pt">
         <span>אירוע: </span>
@@ -20,25 +23,25 @@
             <span>{{sticker.productionTime | date: 'HH:mm'}}</span>
         </div>
         <p ng-hide="sticker.instructions.length"></p>
-        <div style="font-size: 8pt">
+        <div ng-hide="sticker.isSensitiveDishSticker" style="font-size: 8pt">
             מידע על אלרגנים:
         </div>
-        <div style="font-size: 8pt" ng-show="sticker.isAnyContains">
+        <div style="font-size: 8pt" ng-show="sticker.isAnyContains && !sticker.isSensitiveDishSticker">
             <span>מכיל</span>
             <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
                   ng-show="allergy.isContains">
                 {{allergy.allergyName}},
             </span>
         </div>
-        <div style="font-size: 8pt" ng-show="sticker.isAnyMayContain">
+        <div style="font-size: 8pt" ng-show="sticker.isAnyMayContain && !sticker.isSensitiveDishSticker">
             <span>עלול להכיל</span>
             <span ng-repeat="allergy in sticker.allergies track by allergy.allergyName"
                   ng-hide="allergy.isContains">
                 {{allergy.allergyName}},
             </span>
         </div>
-        <p ng-hide="sticker.instructions.length"></p>
-        <div style="font-size: 10pt" ng-show="sticker.instructions.length>0">
+        <p ng-hide="sticker.instructions.length || sticker.isSensitiveDishSticker"></p>
+        <div style="font-size: 10pt" ng-show="sticker.instructions.length>0 && !sticker.isSensitiveDishSticker">
             <div style="text-decoration: underline">הוראות:</div>
             <div ng-repeat="instruction in sticker.instructions track by $index">
                 {{instruction}}

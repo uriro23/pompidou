@@ -56,13 +56,19 @@
       <td style="width: 10%" ng-show="documentsModel.printType.id === 0"></td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 0"></td>
       <td ng-show="documentsModel.printType.id === 1">
-        <a ng-href="#/orderDishStickers/{{documentsModel.order.id}}/{{documentsModel.order.properties.customer}}/{{documentsModel.order.properties.color}}"
+        <a ng-href="#/orderDishStickers/{{documentsModel.order.id}}/{{documentsModel.order.properties.customer}}/1"
            target="_blank"
-           ng-disabled="!documentsModel.order.properties.color">
-          מדבקות
+           ng-disabled="documentsModel.order.properties.orderStatus<2 || documentsModel.order.properties.orderStatus===6">
+          מדבקות ללקוח
         </a>
       </td>
-      <td style="width: 10%" ng-show="documentsModel.printType.id === 1"></td>
+      <td ng-show="documentsModel.printType.id === 1">
+        <a ng-href="#/orderDishStickers/{{documentsModel.order.id}}/{{documentsModel.order.properties.customer}}/2"
+           target="_blank"
+           ng-disabled="documentsModel.order.properties.orderStatus<2 || documentsModel.order.properties.orderStatus===6">
+          מדבקות לדגימות מזון
+        </a>
+      </td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 1"></td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 1"></td>
       <td ng-show="documentsModel.printType.id === 2">

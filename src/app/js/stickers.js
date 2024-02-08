@@ -5,9 +5,13 @@ angular.module('myApp')
 
 .controller('DishStickersCtrl', function (api, $state, $rootScope, $timeout,
                                       catalog, categories, config, sensitivities,
-                                      workOrder, order, customers, customer, color) {
+                                      workOrder, order, customers, customer, stickerType) {
   $rootScope.menuStatus = 'hide';
-  $rootScope.title = 'מדבקות למנות';
+  if (stickerType === 2) {
+    $rootScope.title = 'מדבקות לדגימות מזון';
+  } else {
+    $rootScope.title = 'מדבקות ללקוח';
+  }
 
   var CATEGORY_SNACKS = 1;
   var CATEGORY_DESSERTS = 8;
@@ -29,8 +33,7 @@ angular.module('myApp')
         id: 'foo',
         domain: 0,
         order: order.properties,
-        customer: customer,
-        color: color
+        customer: customer
       }
     ]
   }
@@ -41,8 +44,6 @@ angular.module('myApp')
     sen.isContains = sen.isPositive;
     return sen;
   });
-  console.log('allergies:');
-  console.log(allergies);
 
   function splitDishesByCategory  (orders) {
     orders.forEach(function (order) {
@@ -51,146 +52,148 @@ angular.module('myApp')
         order.productionTime.setHours(order.productionTime.getHours() - 2);
       }
       order.order.quotes[order.order.activeQuote].items.forEach(function (item) {
-        var catInd;
-        var tmp = ordCategories.filter(function (cat, i) {
-          if (cat.category.tId === item.category.tId) {
-            catInd = i;
-          }
-          return cat.category.tId === item.category.tId;
-        });
-        if (!tmp.length) {  // new category
-          ordCategories.splice(0, 0, {
-            category: item.category,
-            items: [],
-            orders: orders.map(function(ord) {    // array to place quantity of category level stickers per order
-              return {
-                type: 0, // category sticker
-                number: ord.order.number,
-                eventDate: ord.order.eventDate,
-                productionTime: ord.productionTime,
-                customer: ord.customer,
-                color: ord.color,
-                quantity: 0,
-                allergies: angular.copy(allergies),
-                instructions: []
-              }
-            }),
-          });
-          catInd = 0;
-        }
         var catalogEntry = catalog.filter(function (ca) {
           return ca.id === item.catalogId;
         })[0];
-        var isGlobalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
-            ordCategories[catInd].category.tId === CATEGORY_DESSERTS;
-        if (isGlobalCategory) {                       // for snacks and desserts produce category stickers
-          var boxComponent = catalogEntry.properties.components.filter(function(comp) { // instead of item stickers
-            return comp.id === config.boxItem;
+        if (stickerType === 1 || catalogEntry.properties.isSensitiveDish) { // for food samples use only sensitive dishes
+          var catInd;
+          var tmp = ordCategories.filter(function (cat, i) {
+            if (cat.category.tId === item.category.tId) {
+              catInd = i;
+            }
+            return cat.category.tId === item.category.tId;
           });
-          if (boxComponent.length > 0) {
-            var thisOrd = ordCategories[catInd].orders.filter(function(ord) {
-              return ord.number === order.order.number;
-            })[0];
-            thisOrd.quantity += item.quantity / catalogEntry.properties.productionQuantity * boxComponent[0].quantity;
-            catalogEntry.properties.sensitivities.forEach(function(sen) {
-              var allergy = thisOrd.allergies.filter(function(all) {
-                return all.tId === sen.tId;
-              })[0];
-              if (allergy) { // for negative allergies (like nuts) is they appear once, mark contains
-                if (!allergy.isPositive) {
-                  allergy.isContains = true;
-                   }
-              }
-            });
-            thisOrd.allergies.forEach(function(all) {
-              if (all.isPositive && !all.isContains) {
-                var allergy = catalogEntry.properties.sensitivities.filter(function (sen) {
-                  return sen.tId === all.tId;
-                })[0];
-                if (!allergy) { // for negative allergies (like gluten) if they don't appear once, mark contains
-                  allergy.isContains = true;
+          if (!tmp.length) {  // new category
+            ordCategories.splice(0, 0, {
+              category: item.category,
+              items: [],
+              orders: orders.map(function (ord) {    // array to place quantity of category level stickers per order
+                return {
+                  type: 0, // category sticker
+                  number: ord.order.number,
+                  eventDate: ord.order.eventDate,
+                  productionTime: ord.productionTime,
+                  customer: ord.customer,
+                  quantity: 0,
+                  allergies: angular.copy(allergies),
+                  instructions: [],
+                  isSensitiveDishSticker: false
                 }
-              }
-            })
-            if (ordCategories[catInd].category.tId === CATEGORY_DESSERTS ||
-                ordCategories[catInd].category.tId === CATEGORY_DESSERTS2) {
-              if (thisOrd.instructions.length === 0) {
-                thisOrd.instructions.push(outOfFridgeItem.properties.externalName);
-                thisOrd.instructions.push('יש להוציא מהמקרר סמוך להגשה');
+              }),
+            });
+            catInd = 0;
+          }
+          var isGlobalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
+              ordCategories[catInd].category.tId === CATEGORY_DESSERTS;
+          if (isGlobalCategory) {                       // for snacks and desserts produce category stickers
+            var boxComponent = catalogEntry.properties.components.filter(function (comp) { // instead of item stickers
+              return comp.id === config.boxItem;
+            });
+            if (boxComponent.length > 0) {
+              var thisOrd = ordCategories[catInd].orders.filter(function (ord) {
+                return ord.number === order.order.number;
+              })[0];
+              thisOrd.quantity += item.quantity / catalogEntry.properties.productionQuantity * boxComponent[0].quantity;
+              catalogEntry.properties.sensitivities.forEach(function (sen) {
+                var allergy = thisOrd.allergies.filter(function (all) {
+                  return all.tId === sen.tId;
+                })[0];
+                if (allergy) { // for negative allergies (like nuts) is they appear once, mark contains
+                  if (!allergy.isPositive) {
+                    allergy.isContains = true;
+                  }
+                }
+              });
+              thisOrd.allergies.forEach(function (all) {
+                if (all.isPositive && !all.isContains) {
+                  var allergy = catalogEntry.properties.sensitivities.filter(function (sen) {
+                    return sen.tId === all.tId;
+                  })[0];
+                  if (!allergy) { // for negative allergies (like gluten) if they don't appear once, mark contains
+                    allergy.isContains = true;
+                  }
+                }
+              })
+              if (ordCategories[catInd].category.tId === CATEGORY_DESSERTS ||
+                  ordCategories[catInd].category.tId === CATEGORY_DESSERTS2) {
+                if (thisOrd.instructions.length === 0) {
+                  thisOrd.instructions.push(outOfFridgeItem.properties.externalName);
+                  thisOrd.instructions.push('יש להוציא מהמקרר סמוך להגשה');
+                }
               }
             }
           }
-        }
-        var stickerItem = {
-          type: 1, // item sticker
-          number: order.order.number,
-          label: catalogEntry.properties.stickerLabel,
-          quantity: isGlobalCategory ?   0 :  // for global categories, count only exitList sub items
-              Math.ceil(
-      item.quantity / catalogEntry.properties.priceQuantity * catalogEntry.properties.stickerQuantity
-              ),
-          eventDate: order.order.eventDate,
-          productionTime: order.productionTime,
-          customer: order.customer,
-          color: order.color,
-          allergies: angular.copy(allergies),
-          instructions: []
-        };
-
-        // calc item allergies
-        catalogEntry.properties.sensitivities.forEach(function (sen) {
-          var allergy = stickerItem.allergies.filter(function (sen2) {
-            return sen2.tId === sen.tId;
-          })[0];
-          if (allergy) {
-            allergy.isContains = !allergy.isContains;
-          }
-        });
-        stickerItem.isAnyContains = stickerItem.allergies.filter(function (sen) {
-          return sen.isContains;
-        }).length > 0;
-        stickerItem.isAnyMayContain = stickerItem.allergies.filter(function (sen) {
-          return !sen.isContains;
-        }).length > 0;
-
-        // calc item instructions
-        if (item.category.tId === CATEGORY_DESSERTS || item.category.tId === CATEGORY_DESSERTS2) {
-          stickerItem.instructions.push(outOfFridgeItem.properties.externalName);
-          stickerItem.instructions.push('יש להוציא מהמקרר סמוך להגשה');
-        }
-        if (catalogEntry.properties.isFridge) {
-          stickerItem.instructions.push(outOfFridgeItem.properties.externalName);
-        }
-        if (catalogEntry.properties.isHeating) {
-          stickerItem.instructions.push('60 דקות לפני ההגשה ' +
-                                        outOfFridgeItem.properties.generalInstructions);
-        }
-        if (catalogEntry.properties.generalInstructions) {
-          stickerItem.instructions.push(catalogEntry.properties.generalInstructions);
-        }
-        if (catalogEntry.properties.instructions) {
-          stickerItem.instructions.push(catalogEntry.properties.instructionsMinutes +
-                                        ' דקות לפני ההגשה ' + catalogEntry.properties.instructions);
-        }
-
-
-        ordCategories[catInd].items.push(stickerItem);
-
-        // now add exitList stickers
-        catalogEntry.properties.exitList.forEach(function (exitListItem) {
-          var exitListSticker = {
-            type: 2, // exit list sticker
+          var stickerItem = {
+            type: 1, // item sticker
             number: order.order.number,
             label: catalogEntry.properties.stickerLabel,
-            subLabel: exitListItem.item,
-            quantity: 1,
+            quantity: isGlobalCategory ? 0 :  // for global categories, count only exitList sub items
+                Math.ceil(
+                    item.quantity / catalogEntry.properties.priceQuantity * catalogEntry.properties.stickerQuantity
+                ),
             eventDate: order.order.eventDate,
             productionTime: order.productionTime,
             customer: order.customer,
-            color: order.color
+            allergies: angular.copy(allergies),
+            instructions: [],
+            isSensitiveDishSticker: stickerType === 2
           };
-          ordCategories[catInd].items.push(exitListSticker);
-        });
+
+          // calc item allergies
+          catalogEntry.properties.sensitivities.forEach(function (sen) {
+            var allergy = stickerItem.allergies.filter(function (sen2) {
+              return sen2.tId === sen.tId;
+            })[0];
+            if (allergy) {
+              allergy.isContains = !allergy.isContains;
+            }
+          });
+          stickerItem.isAnyContains = stickerItem.allergies.filter(function (sen) {
+            return sen.isContains;
+          }).length > 0;
+          stickerItem.isAnyMayContain = stickerItem.allergies.filter(function (sen) {
+            return !sen.isContains;
+          }).length > 0;
+
+          // calc item instructions
+          if (item.category.tId === CATEGORY_DESSERTS || item.category.tId === CATEGORY_DESSERTS2) {
+            stickerItem.instructions.push(outOfFridgeItem.properties.externalName);
+            stickerItem.instructions.push('יש להוציא מהמקרר סמוך להגשה');
+          }
+          if (catalogEntry.properties.isFridge) {
+            stickerItem.instructions.push(outOfFridgeItem.properties.externalName);
+          }
+          if (catalogEntry.properties.isHeating) {
+            stickerItem.instructions.push('60 דקות לפני ההגשה ' +
+                outOfFridgeItem.properties.generalInstructions);
+          }
+          if (catalogEntry.properties.generalInstructions) {
+            stickerItem.instructions.push(catalogEntry.properties.generalInstructions);
+          }
+          if (catalogEntry.properties.instructions) {
+            stickerItem.instructions.push(catalogEntry.properties.instructionsMinutes +
+                ' דקות לפני ההגשה ' + catalogEntry.properties.instructions);
+          }
+
+
+          ordCategories[catInd].items.push(stickerItem);
+
+          // now add exitList stickers
+          catalogEntry.properties.exitList.forEach(function (exitListItem) {
+            var exitListSticker = {
+              type: 2, // exit list sticker
+              number: order.order.number,
+              label: catalogEntry.properties.stickerLabel,
+              subLabel: exitListItem.item,
+              quantity: 1,
+              eventDate: order.order.eventDate,
+              productionTime: order.productionTime,
+              customer: order.customer,
+              isSensitiveDishSticker: false
+            };
+            ordCategories[catInd].items.push(exitListSticker);
+          });
+        }
       });
     });
     ordCategories.forEach(function (cat) {
@@ -255,12 +258,12 @@ angular.module('myApp')
           eventDate: ord.eventDate,
           productionTime: ord.productionTime,
           customer: ord.customer,
-          color: ord.color,
           quantity: ord.quantity,
           allergies: ord.allergies,
           isAnyContains: ord.isAnyContains,
           isAnyMayContain: ord.isAnyMayContain,
           instructions: ord.instructions,
+          isSensitiveDishSticker: false,
           seq: seq
         });
       });
@@ -272,12 +275,12 @@ angular.module('myApp')
           eventDate: item.eventDate,
           productionTime: item.productionTime,
           customer: item.customer,
-          color: item.color,
           quantity: item.quantity,
           allergies: item.allergies,
           isAnyContains: item.isAnyContains,
           isAnyMayContain: item.isAnyMayContain,
           instructions: item.instructions,
+          isSensitiveDishSticker: item.isSensitiveDishSticker,
           seq: seq
         });
       });

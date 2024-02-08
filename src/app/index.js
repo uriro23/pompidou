@@ -393,7 +393,7 @@ config(function($stateProvider, $urlRouterProvider) {
       }
     })
       .state('woDishStickers', {
-        url: '/woDishStickers/:woId',
+        url: '/woDishStickers/:woId/:stickerType',
         templateUrl: 'app/partials/dishStickers.html',
         controller: 'DishStickersCtrl as dishStickersModel',
         resolve: {
@@ -434,8 +434,8 @@ config(function($stateProvider, $urlRouterProvider) {
           customer: [function() {
             return null;
           }],
-          color: [function() {
-            return null;
+          stickerType: ['$stateParams', function ($stateParams) {
+            return Number($stateParams.stickerType);
           }]
         }
       })
@@ -478,7 +478,7 @@ config(function($stateProvider, $urlRouterProvider) {
         }
       })
       .state('orderDishStickers', {
-        url: '/orderDishStickers/:id/:custId/:colorId',
+        url: '/orderDishStickers/:id/:custId/:stickerType',
         templateUrl: 'app/partials/dishStickers.html',
         controller: 'DishStickersCtrl as dishStickersModel',
         resolve: {
@@ -514,6 +514,10 @@ config(function($stateProvider, $urlRouterProvider) {
               return customers[0].properties;
             });
           }],
+          stickerType: ['$stateParams', function ($stateParams) {
+            return Number($stateParams.stickerType);
+           }]
+          /*
           color: ['$stateParams', 'api', function ($stateParams, api) {
             if ($stateParams.colorId) {
               return api.queryColors().then(function (colors) {
@@ -525,6 +529,7 @@ config(function($stateProvider, $urlRouterProvider) {
               return {};
             }
           }]
+          */
         }
       })
 

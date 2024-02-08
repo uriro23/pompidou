@@ -42,11 +42,13 @@ angular.module('myApp')
       this.order = order;
       this.currentOrder = order.properties;
       this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
-      this.order.packingTime = angular.copy(this.currentOrder.exitTime);
-      this.order.packingTime.setHours(this.order.packingTime.getHours()-1);
-      this.order.expiryTime = angular.copy(this.currentOrder.eventDate);
-      this.order.expiryTime.setHours(this.currentOrder.eventTime.getHours()+12);
-      this.order.expiryTime.setMinutes(this.currentOrder.eventTime.getMinutes());
+      if (this.currentOrder.eventTime) {
+        this.order.packingTime = angular.copy(this.currentOrder.exitTime);
+        this.order.packingTime.setHours(this.order.packingTime.getHours() - 1);
+        this.order.expiryTime = angular.copy(this.currentOrder.eventDate);
+        this.order.expiryTime.setHours(this.currentOrder.eventTime.getHours() + 12);
+        this.order.expiryTime.setMinutes(this.currentOrder.eventTime.getMinutes());
+      }
       this.dishes = this.currentQuote.items.filter(function(item) {
         var catalogItem = catalog.filter(function(cat) {
           return cat.id === item.catalogId;
