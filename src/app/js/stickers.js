@@ -77,7 +77,7 @@ angular.module('myApp')
                   quantity: 0,
                   allergies: angular.copy(allergies),
                   instructions: [],
-                  isSensitiveDishSticker: false
+                  isSensitiveDishSticker: stickerType === 2 && catalogEntry.properties.isSensitiveDish
                 }
               }),
             });
@@ -86,19 +86,25 @@ angular.module('myApp')
           var isGlobalCategory = ordCategories[catInd].category.tId === CATEGORY_SNACKS ||
               ordCategories[catInd].category.tId === CATEGORY_DESSERTS;
           if (isGlobalCategory) {                       // for snacks and desserts produce category stickers
+            console.log('dish in global category: '+item.productName);
             var boxComponent = catalogEntry.properties.components.filter(function (comp) { // instead of item stickers
               return comp.id === config.boxItem;
             });
             if (boxComponent.length > 0) {
+              console.log('box dish in global category: '+item.productName);
               var thisOrd = ordCategories[catInd].orders.filter(function (ord) {
                 return ord.number === order.order.number;
               })[0];
               thisOrd.quantity += item.quantity / catalogEntry.properties.productionQuantity * boxComponent[0].quantity;
+              if (catalogEntry.properties.isSensitiveDish) { // if any dish in category is sensitive print category sticker
+                console.log('sensitive dish in category: '+item.productName);
+                thisOrd.isSensitiveDishSticker = true;
+              }
               catalogEntry.properties.sensitivities.forEach(function (sen) {
                 var allergy = thisOrd.allergies.filter(function (all) {
                   return all.tId === sen.tId;
                 })[0];
-                if (allergy) { // for negative allergies (like nuts) is they appear once, mark contains
+                if (allergy) { // for negative allergies (like nuts) if they appear once, mark contains
                   if (!allergy.isPositive) {
                     allergy.isContains = true;
                   }
@@ -237,13 +243,19 @@ angular.module('myApp')
   }
 
   this.renderSticker = function(sticker) {
-    sticker.seq = seq++;  // for ng-repeat uniqueneness
-    this.stickerList.push(angular.copy(sticker));
+    if (stickerType === 1 || sticker.isSensitiveDishSticker) { // for sensitive dish stickers, skip other stickers
+      sticker.seq = seq++;  // for ng-repeat uniqueneness
+      this.stickerList.push(angular.copy(sticker));
+    }
   };
 
   this.renderStickerGroup = function(stickerGroup) {
-    for (var i = stickerGroup.quantity; i > 0; i--) {
-      this.renderSticker (stickerGroup);
+    if (stickerType === 1) {
+      for (var i = stickerGroup.quantity; i > 0; i--) {
+        this.renderSticker(stickerGroup);
+      }
+    } else {
+      this.renderSticker(stickerGroup);
     }
   };
 
@@ -263,7 +275,7 @@ angular.module('myApp')
           isAnyContains: ord.isAnyContains,
           isAnyMayContain: ord.isAnyMayContain,
           instructions: ord.instructions,
-          isSensitiveDishSticker: false,
+          isSensitiveDishSticker: ord.isSensitiveDishSticker,
           seq: seq
         });
       });
@@ -293,7 +305,7 @@ angular.module('myApp')
   };
 
   var woOrders = workOrder.filter(function(wo) { // create array of all orders in wo
-    return wo.domain===0;
+    return wo.domain===0 && wo.status !== 'del';
   });
   if ($state.current.name === 'woDishStickers') {
     woOrders.forEach(function (wo) {
