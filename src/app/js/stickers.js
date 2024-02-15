@@ -254,7 +254,7 @@ angular.module('myApp')
       for (var i = stickerGroup.quantity; i > 0; i--) {
         this.renderSticker(stickerGroup);
       }
-    } else {
+    } else if (stickerGroup.quantity> 0) {  // for sensitive dish stickers, skip empty categories
       this.renderSticker(stickerGroup);
     }
   };
