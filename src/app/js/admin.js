@@ -1281,6 +1281,69 @@ angular.module('myApp')
       that.isAnySupplierchanged = false;
     };
 
+    this.loadSnacksAndPetifoursBoxes = function () {
+      var that = this;
+      api.queryCatalog()
+          .then(function(catalogItems) {
+            console.log(catalogItems.length+' catalog items read');
+            api.queryOrdersByRange('eventDate', new Date(2023,6,1), new Date(2026,11,31))
+              .then(function(orders) {
+                console.log(orders.length+' orders read');
+                var itemIds = [];
+                orders.forEach(function(order) {
+                  if (order.properties.quotes[order.properties.activeQuote]) {
+                  var items = order.properties.quotes[order.properties.activeQuote].items;
+                  items.forEach(function (item) {
+                    if (item.category.tId === 1 || item.category.tId === 8) {
+                      var temp = itemIds.filter(function (id) {
+                        return id === item.catalogId;
+                      });
+                      if (temp.length === 0) {
+                        itemIds.push(item.catalogId);
+                      }
+                    }
+                  });
+                }
+                });
+                console.log(itemIds.length+' different snacks and petifours in orders');
+                that.catalogDishes = catalogItems.filter(function(cat) {
+                  var temp = itemIds.filter(function(id) {
+                    return id === cat.id;
+                  });
+                  return temp.length>0 && !cat.properties.isDeleted;
+                });
+                console.log(that.catalogDishes.length+' valid dishes from catalog');
+                that.catalogDishes.sort(function(a,b) {
+                  if (a.properties.category > b.properties.category) {
+                    return 1;
+                  } else if (a.properties.category < b.properties.category) {
+                    return -1;
+                  } else if (a.properties.productName > b.properties.productName) {
+                    return 1;
+                  } else if (a.properties.productName < b.properties.productName) {
+                    return -1;
+                  } else {
+                    return 0;
+                  }
+                })
+                that.catalogDishes.forEach(function(dish) {
+                  dish.view = {};
+                  dish.view.category = categories.filter(function(category) {
+                    return category.tId === dish.properties.category;
+                  })[0];
+                  dish.view.dishMeasurementUnit = measurementUnits.filter(function(mu) {
+                    return mu.tId === dish.properties.prodMeasurementUnit;
+                  })[0];
+                  var temp = dish.properties.components.filter(function(comp) {
+                    return comp.id === config.properties.boxItem;
+                  });
+                  dish.view.dishBoxQuantity = temp.length ? temp[0].quantity : undefined;
+                });
+              });
+    });
+  };
+
+
     // customers tab
     this.loadCustomers = function() {
       var that = this;

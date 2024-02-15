@@ -499,6 +499,26 @@
            </table>
          </div>
        </tab>
+       <tab heading="קופסאות חטיפים וקינוחים" select="adminModel.loadSnacksAndPetifoursBoxes()">
+         <table class="table table-hover">
+           <thead>
+           <th>קטגוריה</th>
+           <th>מנה</th>
+           <th>כמות</th>
+           <th>יצור</th>
+           <th>קופסאות</th>
+           </thead>
+           <tbody>
+           <tr ng-repeat="dish in adminModel.catalogDishes track by $index">
+             <td>{{dish.view.category.label}}</td>
+             <td>{{dish.properties.productName}}</td>
+             <td>{{dish.properties.productionQuantity}}</td>
+             <td>{{dish.view.dishMeasurementUnit.label}}</td>
+             <td>{{dish.view.dishBoxQuantity}}</td>
+           </tr>
+           </tbody>
+         </table>
+       </tab>
      </tabset>
    </tab>
    <tab heading="לקוחות" select="adminModel.loadCustomers2()">
