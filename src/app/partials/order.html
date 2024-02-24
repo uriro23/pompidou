@@ -33,6 +33,13 @@
              <label ng-hide="orderModel.order.properties.taskData.encodedAddress">מיקום:</label>
             <span>{{orderModel.order.properties.taskData.location}}</span>
           </span>
+    </div>
+    <div style="display: inline">
+       <span ng-show="!orderModel.order.view.isChanged && orderModel.readOnly.is">
+            <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;אפשר לערוך?</label>
+            <input type="checkbox" ng-model="orderModel.order.view.isEditable"
+                   ng-change="orderModel.setEditable()">
+        </span>
          </div>
     <p></p>
        <div>

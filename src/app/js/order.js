@@ -45,8 +45,12 @@ angular.module('myApp')
     this.setReadOnly = function () {
       this.readOnly.is = (this.order.properties.eventDate &&
                         this.order.properties.eventDate < dater.today() &&
-                        !this.order.properties.template) ||
+                        !this.order.properties.template && !this.order.view.isEditable) ||
                       this.order.view.orderStatus.id === 6;  // canceled
+    };
+
+    this.setEditable = function () {
+      this.setReadOnly();
     };
 
     this.handleVatRateChange = function () {
