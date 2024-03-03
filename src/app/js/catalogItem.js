@@ -220,6 +220,15 @@ angular.module('myApp')
       model.setChanged(true);
     };
 
+     model.setBlastChiller = function() {
+       if (model.item.properties.isBlastChiller) {
+         if (!model.item.properties.externalName) {
+           model.item.errors.externalName = true;
+         }
+       }
+       model.setChanged(true);
+     };
+
      model.createDefaultAction = function() {
        var actionDomain = model.compDomains.filter(function (dom) {
          return dom.id === 4;

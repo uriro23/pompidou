@@ -484,6 +484,13 @@
                   ng-change="catalogItemModel.setChanged(true)">
          </td>
        </tr>
+       <tr ng-show="catalogItemModel.currentDomain.id===4">
+         <td><label>האם נדרש בלאסט צ'ילר?</label></td>
+         <td>
+           <input type="checkbox" ng-model="catalogItemModel.item.properties.isBlastChiller"
+                  ng-change="catalogItemModel.setBlastChiller()">
+         </td>
+       </tr>
      </table>
      <div class="summaryOutline" style="width:20%"
           ng-show="catalogItemModel.currentDomain.id===2 && !catalogItemModel.item.properties.defaultAction">
