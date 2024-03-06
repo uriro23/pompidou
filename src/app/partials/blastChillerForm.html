@@ -1,0 +1,53 @@
+<div id="exitListContainer">
+    <div ng-repeat="category in blastChillerFormModel.categories track by $index">
+    <div ng-repeat="page in category.pages track by $index">
+    <h4 style="width: 100%">
+        <span style="text-align: right">השף בקופסה</span>
+        <span>  --  </span>
+        <span style="text-align: left">054-7514061</span>
+    </h4>
+    <h2>
+        שימוש בבלאסט צ'ילר
+        {{category.label}}
+        לתאריך
+        {{blastChillerFormModel.today | date: 'dd/MM/yy'}}
+    </h2>
+    <p style="height: 0.5cm"></p>
+    <table style="width: 100%">
+        <thead>
+        <tr class="form-line">
+            <th class="form-box" style="width: 16%">שם המזון</th>
+            <th class="form-box" style="width: 14%">שעת הכנסה</th>
+            <th class="form-box" style="width: 14%">טמפ' הכנסה</th>
+            <th class="form-box" style="width: 14%">שעת הוצאה</th>
+            <th class="form-box" style="width: 14%">טמפ' הוצאה</th>
+            <th class="form-box" style="width: 14%">שם הבודק</th>
+            <th class="form-box" style="width: 14%">חתימה</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="form-line" ng-repeat="item in page.items track by $index">
+            <td class="form-box">{{item.name}}</td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+        </tr>
+        <tr class="form-line" ng-repeat="line in page.emptyLines track by line.seq">
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p style="page-break-after: always;">&nbsp;</p>
+    <p style="page-break-before: always;">&nbsp;</p>
+    </div>
+    </div>
+</div>

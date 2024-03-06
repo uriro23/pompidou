@@ -477,6 +477,23 @@ config(function($stateProvider, $urlRouterProvider) {
           }]
         }
       })
+      .state('blastChillerForm', {
+        url: '/blastChillerForm/:woId',
+        templateUrl: 'app/partials/blastChillerForm.html',
+        controller: 'BlastChillerFormCtrl as blastChillerFormModel',
+        resolve: {
+          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryWorkOrder (Number($stateParams.woId)).then (function (workOrder) {
+              return workOrder;
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(4). then (function(catalog) {
+              return catalog;
+            });
+          }]
+        }
+      })
       .state('orderDishStickers', {
         url: '/orderDishStickers/:id/:custId/:stickerType',
         templateUrl: 'app/partials/dishStickers.html',

@@ -1,5 +1,5 @@
 <div ng-class="workOrderModel.isPrint ? 'woPrint' : null">
-<table style="width:90%"  ng-hide="workOrderModel.isPrint">
+<table style="width:100%"  ng-hide="workOrderModel.isPrint">
   <tr>
     <td style="width:8%">
       <span>&nbsp;הצג</span>
@@ -7,14 +7,14 @@
              ng-model="workOrderModel.hierarchicalWorkOrder[workOrderModel.domain].isShowAll"
              ng-change="workOrderModel.setShowAll(workOrderModel.domain)">
     </td>
-    <td style="width:12%;font-size: large">
+    <td style="width:22%;font-size: large">
       {{workOrderModel.domains[workOrderModel.domain].forWorkItem}}
       <span ng-show="workOrderModel.isShowTodayOnly[workOrderModel.domain]">להיום</span>
       <span ng-hide="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
         --- לא מעודכן ---
       </span>
     </td>
-    <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 34%">
+    <td ng-show="workOrderModel.woIndex.properties.domainStatus[2]" style="width: 16%">
       <span>מה להציג?</span>
       <select ng-model="workOrderModel.displayMode"
               ng-options="displayMode.label for displayMode in workOrderModel.displayModes"
@@ -22,7 +22,7 @@
               ng-disabled="workOrderModel.isProcessing || workOrderModel.isShowChanges">
       </select>
     </td>
-    <td style="width: 17%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
+    <td style="width: 11%" ng-show="workOrderModel.woIndex.properties.domainStatus[workOrderModel.domain]">
       <span>הצג פירוט</span>
       <input type="checkbox" ng-model="workOrderModel.isShowDetails[workOrderModel.domain]"
              ng-change="workOrderModel.setGlobalDetail()">
@@ -31,17 +31,20 @@
       <span>כולל מלאי</span>
       <input type="checkbox" ng-model="workOrderModel.isIncludeStock[workOrderModel.domain]">
     </td>
-    <td style="width: 20%">
-      <button class="btn btn-default"
-              ng-disabled="workOrderModel.isProcessing"
-              ng-show="workOrderModel.woIndex.properties.domainStatus[4]">
-      <a href="#/woPackageStickers/{{workOrderModel.woIndex.properties.woId}}/{{workOrderModel.displayMode.id}}"
+    <td style="width: 13%">
+      <a ng-href="#/blastChillerForm/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
+        ng-disabled="workOrderModel.isProcessing"
+        ng-show="workOrderModel.woIndex.properties.domainStatus[4]">
+        בלאסט צ'ילר
+      </a>
+    </td>
+    <td style="width: 13%">
+       <a href="#/woPackageStickers/{{workOrderModel.woIndex.properties.woId}}/{{workOrderModel.displayMode.id}}"
            target="_blank"
            ng-disabled="workOrderModel.isProcessing"
            ng-show="workOrderModel.woIndex.properties.domainStatus[4]">
           מדבקות אריזה
         </a>
-      </button>
     </td>
   </tr>
 </table>

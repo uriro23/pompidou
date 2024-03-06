@@ -66,6 +66,96 @@ angular.module('myApp')
       },1000);
 
     })
+    .controller('BlastChillerFormCtrl', function ($rootScope, $timeout, dater,
+                                                  workOrder, catalog) {
+
+      $rootScope.menuStatus = 'hide';
+      $rootScope.title = "טופס בלאסט צ'ילר";
+
+      var that = this;
+      this.today = dater.today();
+
+      var LPP = 13;
+      var MIN_EMPTY = 5;  // minium empty lines at the end of each category
+
+      this.categories = [];
+      workOrder.forEach(function(woItem) {
+        if (woItem.properties.domain === 4 && woItem.properties.quantityForToday > 0) {
+          var catalogEntry = catalog.filter(function(cat) {
+            return cat.id === woItem.properties.catalogId;
+          })[0];
+          if (catalogEntry.properties.isBlastChiller) {
+            var currCategory = that.categories.filter(function (cat) {
+              return cat.tId === woItem.properties.category.tId;
+            })[0];
+            if (!currCategory) { // new category
+              that.categories.push(woItem.properties.category);
+              currCategory = that.categories[that.categories.length-1];
+              currCategory.items = [];
+            }
+            currCategory.items.push({
+              id: woItem.id,
+              name: catalogEntry.properties.externalName
+            });
+          }
+        }
+        });
+
+      this.categories.forEach(function (category) {
+        category.items.sort(function (a,b) {
+          if (a.name > b.name) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+
+        category.pages = [];
+        var pageInd = 0;
+        var lineInd = 0;
+        category.pages.push({
+          items: [],
+          emptyLines: []
+        });
+        category.items.forEach(function (item) {
+          category.pages[pageInd].items.push(item);
+          lineInd++;
+          if (lineInd >= LPP) {
+            category.pages.push({
+              items: [],
+              emptyLines: []
+            });
+            pageInd++;
+            lineInd = 0;
+          }
+        });
+        // add empty lines to fill last page
+        var emptyLineCnt = LPP-lineInd;
+        for (lineInd=lineInd;lineInd<LPP;lineInd++) {
+          category.pages[pageInd].emptyLines.push({
+            seq: lineInd
+          });
+        }
+        if (emptyLineCnt < MIN_EMPTY) { // add page with all lines empty
+          category.pages.push({
+            items: [],
+            emptyLines: []
+          });
+          pageInd++;
+          for (lineInd=0;lineInd<LPP;lineInd++) {
+            category.pages[pageInd].emptyLines.push({
+              seq: lineInd
+            });
+          }
+        }
+      });
+
+
+      $timeout(function() {
+        window.print();
+      },1000);
+    })
+
 .controller('LogFormCtrl', function ($rootScope, $timeout, dater, workOrder, catalog) {
 
   $rootScope.menuStatus = 'hide';
