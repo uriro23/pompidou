@@ -30,6 +30,7 @@
         <th style="width:20%">שם פנימי</th>
       <th ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4"
           style="width: 20%">שם תוצר</th>
+      <th ng-show="catalogListModel.currentDomain.id===4" style="width: 20%">בלאסט צ'ילר</th>
       <th ng-show="catalogListModel.currentDomain.id===3" style="width:20%">ספק</th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:35%">תיאור להצעת מחיר</th>
       <th ng-show="catalogListModel.currentDomain.id===1" style="width:1%">הצעת</th>
@@ -53,6 +54,9 @@
         </td>
           <td ng-show="catalogListModel.currentDomain.id===2 || catalogListModel.currentDomain.id===4">
               {{catalogItem.properties.externalName}}
+          </td>
+          <td ng-show="catalogListModel.currentDomain.id===4">
+              {{catalogItem.properties.isBlastChiller?'כן':''}}
           </td>
           <td ng-show="catalogListModel.currentDomain.id===3">
               {{catalogItem.properties.supplier}}

@@ -17,7 +17,8 @@ angular.module('myApp')
     this.user = user;
 
     this.toDate = dater.today();
-    this.toDate.setDate(this.toDate.getDate()+1); // do until tomorrow, to include events of today
+    this.toDate.setMonth(this.toDate.getMonth()+1);
+    this.toDate.setDate(0); // do until last date of this month
     this.fromDate = dater.today();
     this.fromDate.setFullYear(this.toDate.getFullYear()-1);
     this.fromDate.setDate(1);
