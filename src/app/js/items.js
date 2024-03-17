@@ -21,6 +21,7 @@ angular.module('myApp')
     this.currentCategory = this.categories[0]; // default to first category
     this.specialTypes = lov.specialTypes;
     this.currentExtraService = this.specialTypes[0];
+    this.nameType = 'desc';
 
     if (this.order.view.quote) {
       this.order.view.quote.items.forEach(function (item) {

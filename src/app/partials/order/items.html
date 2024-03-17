@@ -118,7 +118,12 @@
     <table class="table table-hover" ng-show="itemsModel.order.view.quote.items.length" style="width: 80%">
       <thead>
       <th style="width: 9%">קטגוריה</th>
-      <th style="width: 73%">מוצר</th>
+      <th style="width: 73%">
+        תיאור מוצר
+        <input type="radio" ng-model="itemsModel.nameType" value="desc">
+        שם מוצר
+        <input type="radio" ng-model="itemsModel.nameType" value="name">
+      </th>
       <th style="width: 6%">יח'</th>
       <th style="width: 2%">כמות</th>
       <th style="width: 5%">מחיר</th>
@@ -129,7 +134,7 @@
           ng-class="item.isChanged?'bg-success':null">
         <td ng-hide="item.specialType">{{item.category.label}}</td>
         <td ng-show="item.specialType">{{item.specialTypeObj.name}}</td>
-        <td>
+        <td ng-show="itemsModel.nameType==='desc'">
           <input type="text" size="{{item.isDescChanged ? 86 : 100}}" ng-model="item.productDescription"
                  ng-change="itemsModel.setProductDescription($index)"
                  ng-disabled="itemsModel.readOnly.is"
@@ -146,6 +151,15 @@
                  ng-disabled="itemsModel.readOnly.is"
                  placeholder="הערה למטבח"
                  ng-class="item.errors.productDescription?'bg-danger':null">
+        </td>
+        <td ng-show="itemsModel.nameType==='name'">
+          {{item.productName}}
+          <div ng-show="item.isDescChanged">
+            {{item.productDescription}}
+          </div>
+          <div ng-show="item.isKitchenRemark">
+            {{item.kitchenRemark}}
+          </div>
         </td>
         <td>{{item.measurementUnit.label}}</td>
         <td>
@@ -200,7 +214,15 @@
       </thead>
       <tbody>
       <tr ng-repeat="item in itemsModel.order.view.quote.items track by item.index">
-        <td>{{item.productDescription}}</td>
+        <td>
+          {{item.productName}}
+          <div ng-show="item.isDescChanged">
+            {{item.productDescription}}
+          </div>
+          <div ng-show="item.isKitchenRemark">
+            {{item.kitchenRemark}}
+          </div>
+        </td>
         <td>{{item.quantity}}</td>
         <td>{{item.price | currency}}</td>
          <td>
