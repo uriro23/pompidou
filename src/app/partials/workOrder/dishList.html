@@ -60,8 +60,8 @@
       <span>{{workOrderModel.today | date:'dd/MM/yy'}}</span>
     </h1>
   </div>
-<div ng-show="workOrderModel.woOrders.length>15">
-  יותר מ 15 אירועים בפקודה - לא מוצג פירוט אירועים
+<div ng-show="workOrderModel.woOrders.length>18">
+  יותר מ 18 אירועים בפקודה - לא מוצג פירוט אירועים
 </div>
 <div ng-repeat="cat in workOrderModel.hierarchicalWorkOrder[1].categories track by cat.category.tId"
      ng-show="workOrderModel.isShowCategory(cat)">
@@ -76,7 +76,7 @@
     <th>מנה</th>
     <th colspan="2">כמות</th>
     <th ng-repeat="order in workOrderModel.woOrders track by order.id"
-        ng-show="workOrderModel.woOrders.length<16 &&
+        ng-show="workOrderModel.woOrders.length<19 &&
         (workOrderModel.isShowChanges || !(order.properties.status==='del'))">
       <span ng-class="order.properties.status==='del' ? 'cancel' : null">
         <span>{{order.view.customer.firstName}}</span>
@@ -114,7 +114,7 @@
       </td>
       <td style="width: 10%">{{woItem.properties.measurementUnit.label}}</td>
       <td ng-repeat="order in woItem.view.orderQuant track by $index"
-          ng-show="workOrderModel.woOrders.length<16 &&
+          ng-show="workOrderModel.woOrders.length<19 &&
         (workOrderModel.isShowChanges || !(order.status==='del'))"
           ng-class="workOrderModel.isShowChanges && order.quantity ? (
           order.status==='new' ? 'new' : order.status==='upd' ? 'changed' : order.status==='del' ? 'cancel' : null

@@ -587,7 +587,7 @@
          <td>{{customer.properties.firstName+' '+customer.properties.lastName}}</td>
          <td>{{customer.properties.email}}</td>
          <td>{{customer.properties.mobilePhone}}</td>
-         <td>{{customer.view.pastSuccesses}}</td>
+         <td>{{customer.view.successes}}</td>
          <td>{{customer.view.futureOrders}}</td>
          <td>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</td>
          <td></td>
@@ -615,10 +615,10 @@
      -->
      <div ng-show="adminModel.isCustomersExport">
        <div>
-         <span>email,firstName</span>
+         <span>mobile,firstName</span>
        </div>
        <div ng-repeat="customer in adminModel.customers track by customer.id">
-         <span>{{customer.properties.email}}</span>
+         <span>{{customer.properties.mobilePhone}}</span>
          <span>,</span>
          <span>{{customer.properties.firstName}}</span>
      </div>

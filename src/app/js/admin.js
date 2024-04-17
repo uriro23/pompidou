@@ -1383,36 +1383,25 @@ angular.module('myApp')
 // modified customers tab: only customers who were a success in the past and don't have a future order
     this.loadCustomers2 = function() {
       var that = this;
-      var fields = ['customer','eventDate','orderStatus'];
+      var fields = ['customer','eventDate','orderStatus','template'];
       api.queryCustomers()
         .then(function(customers) {
           api.queryOrdersByRange('eventDate', new Date(2015,5,1),new Date(2099,12,31),fields)
             .then(function(orders) {
               customers.forEach(function(customer) {
                 customer.view = {
-                  pastSuccesses: 0,
-                  futureOrders: 0,
-                  lastEventDate : new Date(2000,1,1)
+                  successes: 0
                 };
                 orders.forEach(function(order) {
-                  if (order.properties.customer === customer.id) {
-                    if (order.properties.eventDate > customer.view.lastEventDate) {
-                      customer.view.lastEventDate = order.properties.eventDate;
-                    }
-                    if (order.properties.eventDate < new Date(2023,9,25) && // put today's date her
+                    if (order.properties.customer === customer.id &&
                         order.properties.orderStatus > 1 &&
-                        order.properties.orderStatus < 6) {
-                      customer.view.pastSuccesses++;
+                        order.properties.orderStatus < 6 && !order.properties.template) {
+                      customer.view.successes++;
                     }
-                    if (order.properties.eventDate > new Date(2023,9,25) &&  // put today's date here
-                        order.properties.orderStatus < 6) {
-                      customer.view.futureOrders++;
-                    }
-                   }
-                })
+                });
               });
               that.customers = customers.filter(function(cust) {
-                return cust.view.pastSuccesses && !cust.view.futureOrders;
+                return (cust.view.successes  > 1);
               });
             });
         });
