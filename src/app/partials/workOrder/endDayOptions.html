@@ -2,7 +2,18 @@
     <h2 class="modal-title">אישור פעולת סוף יום</h2>
 </div>
 <div class="modal-body">
-    <span>ההכנות שבוצעו יועברו למצב "הושלם"</span>
+    <div>ההכנות של היום יועברו למצב "הושלם"</div>
+    <p></p>
+    <div>
+        <div>
+            <input type="radio" ng-model="endDayOptionsModel.option" value="done">
+            <label>רק הכנות שסומנו כ 'בוצע'</label>
+        </div>
+        <div>
+            <input type="radio" ng-model="endDayOptionsModel.option" value="all">
+            <label>כל ההכנות להיום</label>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="endDayOptionsModel.setDone()">העבר</button>

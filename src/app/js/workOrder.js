@@ -958,13 +958,13 @@ angular.module('myApp')
         resolve: {},
         size: 'sm'
       });
-      prepEndDayOptions.result.then(function() {
+      prepEndDayOptions.result.then(function(option) {
         var prepsToUpdate = [];
           that.workOrder.forEach(function(prep) {
             if (prep.properties.domain === 2) {
               var isUpdate = false;
               if (prep.properties.select === 'today') {
-                if (prep.properties.isDone) {
+                if (prep.properties.isDone || option === 'all') {
                   prep.properties.select = 'done';
                   prep.properties.isDone = false;
                   prep.properties.quantity -= prep.properties.manualQuantity;
@@ -974,7 +974,7 @@ angular.module('myApp')
               }
               prep.view.orders.forEach(function(ord) {
                 if (ord.select === 'today') {
-                  if (ord.isDone) {
+                  if (ord.isDone || option === 'all') {
                     ord.select = 'done';
                     ord.isDone = false;
                     isUpdate = true;
@@ -983,7 +983,7 @@ angular.module('myApp')
               });
               prep.properties.orders.forEach(function(ord) {
                 if (ord.select === 'today') {
-                  if (ord.isDone) {
+                  if (ord.isDone || option === 'all') {
                     ord.select = 'done';
                     ord.isDone = false;
                     isUpdate = true;
