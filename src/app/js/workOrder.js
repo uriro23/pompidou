@@ -1008,6 +1008,7 @@ angular.module('myApp')
       },  function() {});
     };
 
+  /* replaced by setPrepCategoryOrder
      this.setOrderServiceToday = function (woItem) {
       api.saveObj(woItem);
       this.workOrder.forEach(function (woi) {
@@ -1027,6 +1028,21 @@ angular.module('myApp')
         }
       });
     };
+*/
+     this.setPrepCategoryOrder = function (category, order, select) {
+       this.workOrder.forEach(function (woi) {
+         if (woi.properties.domain === 2 && woi.properties.category.tId === category.category.tId) {
+           woi.view.orders.forEach(function (ord) {
+             if (ord.id === order.id) {
+               ord.select = select;
+             }
+           });
+           that.computeSelectQuantities(woi);
+           that.setPrepOrderSelect(woi,order);
+         }
+       });
+       category.isOrderFilter = false;
+     };
 
      this.createOrderView = function () {
       this.orderView = [];
@@ -2492,6 +2508,17 @@ angular.module('myApp')
             });
           });
         }
+      });
+
+      // for preps domain only, add list of orders for "mark for today" function
+      this.hierarchicalWorkOrder[2].categories.forEach(function (cat) {
+        cat.orders = [];
+        that.woOrders.forEach(function (ord) {
+          cat.orders.push ({
+            id: ord.id,
+            isForToday: false
+          });
+        })
       });
 
       // for dishes domain only, add list of changed product descriptions per category
