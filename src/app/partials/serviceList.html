@@ -1,10 +1,11 @@
+<div ng-repeat="wo in serviceListModel.workOrder track by wo.id">
 <div id="exitListContainer">
 		<h2>
 		   רשימת סרוויס -
-      {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
-      {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
-      <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
-      <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+      {{wo.customer.firstName+' '+wo.customer.lastName}}
+      {{wo.order.eventDate | date: 'EEE dd/MM/yy'}}
+      <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{wo.color.stickerColor}}.jpg"/>
+      <span ng-show="serviceListModel.isOrderNumbers">[{{wo.color.tId}}]</span>
     </h2>
 
 
@@ -16,42 +17,42 @@
 		      <label>
 		        הזמנה מס':
 		      </label>
-		      <span>{{serviceListModel.currentOrder.number}}</span>
+		      <span>{{wo.order.number}}</span>
 		    </td>
 
           <td>
 		      <label>
 		        תאריך:
 		      </label>
-		      <span>{{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}</span>
+		      <span>{{wo.order.eventDate | date: 'EEE dd/MM/yy'}}</span>
 		    </td>
 
         <td>
           <label>
 שעת מסירה:
           </label>
-          <span>{{serviceListModel.eventTimeStr}}</span>
+          <span>{{wo.eventTimeStr}}</span>
         </td>
 
         <td>
           <label>
 שעת יציאה:
           </label>
-          <span>{{serviceListModel.currentOrder.exitTime | date: 'H:mm'}}</span>
+          <span>{{wo.order.exitTime | date: 'H:mm'}}</span>
         </td>
 
         <td>
           <label>
             משתתפים:
           </label>
-          <span>{{serviceListModel.currentOrder.noOfParticipants}}</span>
+          <span>{{wo.order.noOfParticipants}}</span>
         </td>
 
         <td>
           <label>
             מתוכם ילדים:
           </label>
-          <span>{{serviceListModel.currentOrder.children}}</span>
+          <span>{{wo.order.children}}</span>
         </td>
 
       </tr>
@@ -62,39 +63,39 @@
 		      <label>
 		        לקוח:
 		      </label>
-		      <span>{{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}</span>
+		      <span>{{wo.customer.firstName+' '+wo.customer.lastName}}</span>
 		    </td>
 		    <td>
 		      <label>
 		        נייד:
 		      </label>
-		      <span>{{serviceListModel.customer.mobilePhone}}</span>
+		      <span>{{wo.customer.mobilePhone}}</span>
 		    </td>
 		    <td>
 		      <label>
 		        בית:
 		      </label>
-		      <span>{{serviceListModel.customer.homePhone}}</span>
+		      <span>{{wo.customer.homePhone}}</span>
 		    </td>
 		    <td>
 		      <label>
 		        עבודה:
 		      </label>
-		      <span>{{serviceListModel.customer.workPhone}}</span>
+		      <span>{{wo.customer.workPhone}}</span>
 		    </td>
 		  </tr>
       <tr></tr>
       <tr>
-         <td ng-show="serviceListModel.currentOrder.taskData.isSurpriseParty">
+         <td ng-show="wo.order.taskData.isSurpriseParty">
           <h4>זוהי מסיבת הפתעה!!!</h4>
         </td>
-        <td ng-show="serviceListModel.currentOrder.taskData.surpriseContact">
+        <td ng-show="wo.order.taskData.surpriseContact">
           <label>לדבר עם</label>
-          <span>{{serviceListModel.currentOrder.taskData.surpriseContact}}</span>
+          <span>{{wo.order.taskData.surpriseContact}}</span>
         </td>
-        <td ng-show="serviceListModel.currentOrder.taskData.eventCause">
+        <td ng-show="wo.order.taskData.eventCause">
           <label>מה חוגגים:</label>
-          <span>{{serviceListModel.currentOrder.taskData.eventCause}}</span>
+          <span>{{wo.order.taskData.eventCause}}</span>
         </td>
       </tr>
 
@@ -102,22 +103,22 @@
 		  </tbody>
 		</table>
 
-  <div ng-show="serviceListModel.currentOrder.taskData.kitchenInstructions">
+  <div ng-show="wo.order.taskData.kitchenInstructions">
     <label>הוראות לאירוע:</label>
-    <span>{{serviceListModel.currentOrder.taskData.kitchenInstructions}}</span>
+    <span>{{wo.order.taskData.kitchenInstructions}}</span>
   </div>
-    <h4 ng-show="serviceListModel.currentOrder.taskData.isServiceOnSite">
+    <h4 ng-show="wo.order.taskData.isServiceOnSite">
       נדרש סרוויס באירוע!
     </h4>
-  <div ng-show="serviceListModel.currentOrder.taskData.serviceRemarks">
+  <div ng-show="wo.order.taskData.serviceRemarks">
     <label>הערות לסרוויס:</label>
-    <span>{{serviceListModel.currentOrder.taskData.serviceRemarks}}</span>
+    <span>{{wo.order.taskData.serviceRemarks}}</span>
   </div>
-		<div ng-show="serviceListModel.currentOrder.remarks">
+		<div ng-show="wo.order.remarks">
 		  <label>
 		    הערות:
 		  </label>
-		  <span>{{serviceListModel.currentOrder.remarks}}</span>
+		  <span>{{wo.order.remarks}}</span>
 		</div>
 
 
@@ -129,16 +130,16 @@
     <tr style="height:10mm">
     <th style="width: 70%">
       רשימת סרוויס -
-      {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
-      {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
-      <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
-      <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+      {{wo.customer.firstName+' '+wo.customer.lastName}}
+      {{wo.order.eventDate | date: 'EEE dd/MM/yy'}}
+      <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{wo.color.stickerColor}}.jpg"/>
+      <span ng-show="serviceListModel.isOrderNumbers">[{{wo.color.tId}}]</span>
     </th>
     <th style="width: 30%"></th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="line in serviceListModel.vec track by line.ind">
+    <tr ng-repeat="line in wo.vec track by line.ind">
   <!-- column 1: name -->
       <td ng-show="line.level===0">
         <label>{{line.data.label}}</label></td>
@@ -163,15 +164,15 @@
 
   <div class="row">
     <div class="column">
-      <table border="1" ng-hide="serviceListModel.splitSeparates[0].items.length===0">
+      <table border="1" ng-hide="wo.splitSeparates[0].items.length===0">
         <tbody>
         <tr>
           <td>
-            <span style="font-weight: bold">{{serviceListModel.splitSeparates[0].category.label}}</span>
+            <span style="font-weight: bold">{{wo.splitSeparates[0].category.label}}</span>
           </td>
           <td></td>
         </tr>
-        <tr ng-repeat="item in serviceListModel.splitSeparates[0].items track by item.index">
+        <tr ng-repeat="item in wo.splitSeparates[0].items track by item.index">
           <td>{{item.productName}}
             <div ng-show="item.isDescChanged">
               <label>התאמה אישית:</label>
@@ -184,15 +185,15 @@
       </table>
     </div>
     <div class="column">
-      <table border="1" ng-hide="serviceListModel.splitSeparates[1].items.length===0">
+      <table border="1" ng-hide="wo.splitSeparates[1].items.length===0">
         <tbody>
         <tr>
           <td>
-            <span style="font-weight: bold">{{serviceListModel.splitSeparates[1].category.label}}</span>
+            <span style="font-weight: bold">{{wo.splitSeparates[1].category.label}}</span>
           </td>
           <td></td>
         </tr>
-        <tr ng-repeat="item in serviceListModel.splitSeparates[1].items track by item.index">
+        <tr ng-repeat="item in wo.splitSeparates[1].items track by item.index">
           <td>{{item.productName}}
             <div ng-show="item.isDescChanged">
               <label>התאמה אישית:</label>
@@ -204,15 +205,15 @@
         </tbody>
       </table>
       <p></p>
-      <table border="1" ng-hide="serviceListModel.splitSeparates[2].items.length===0">
+      <table border="1" ng-hide="wo.splitSeparates[2].items.length===0">
         <tbody>
         <tr>
           <td>
-            <span style="font-weight: bold">{{serviceListModel.splitSeparates[2].category.label}}</span>
+            <span style="font-weight: bold">{{wo.splitSeparates[2].category.label}}</span>
           </td>
           <td></td>
         </tr>
-        <tr ng-repeat="item in serviceListModel.splitSeparates[2].items track by item.index">
+        <tr ng-repeat="item in wo.splitSeparates[2].items track by item.index">
           <td>{{item.productName}}
             <div ng-show="item.isDescChanged">
               <label>התאמה אישית:</label>
@@ -232,16 +233,16 @@
   </div>
 
 
-  <div ng-repeat="separate in serviceListModel.separates track by separate.id">
+  <div ng-repeat="separate in wo.separates track by separate.id">
   <div ng-show="separate.items.length > 0">
   <h3>
-    {{serviceListModel.customer.firstName+' '+serviceListModel.customer.lastName}}
-    {{serviceListModel.currentOrder.eventDate | date: 'EEE dd/MM/yy'}}
+    {{wo.customer.firstName+' '+wo.customer.lastName}}
+    {{wo.order.eventDate | date: 'EEE dd/MM/yy'}}
     -
     {{separate.category.label}}
     &nbsp;
-    <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{serviceListModel.color.stickerColor}}.jpg"/>
-    <span ng-show="serviceListModel.isOrderNumbers">[{{serviceListModel.color.tId}}]</span>
+    <img ng-show="serviceListModel.isOrderColors" src="app/img/bigColors/{{wo.color.stickerColor}}.jpg"/>
+    <span ng-show="serviceListModel.isOrderNumbers">[{{wo.color.tId}}]</span>
   </h3>
   <table border="1" style="width:60%">
     <thead>
@@ -262,5 +263,9 @@
   </table>
   </div>
 </div>
-
+    <div ng-hide="$index === serviceListModel.workOrder.length-1">
+        <p style="page-break-after: always;">&nbsp;</p>
+        <p style="page-break-before: always;">&nbsp;</p>
+    </div>
 </div> <!-- End of exitListContainer  -->
+</div>

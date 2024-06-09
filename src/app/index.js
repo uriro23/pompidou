@@ -961,38 +961,92 @@ config(function($stateProvider, $urlRouterProvider) {
         }]
       }
     })
-    .state ('serviceList', {
-      url: '/serviceList/:id',
-      templateUrl: 'app/partials/serviceList.html',
-      controller: 'ServiceListCtrl as serviceListModel',
-      resolve: {
-        order: ['$stateParams', 'api', function ($stateParams, api) {
-          return api.queryOrder ($stateParams.id).then (function (orders) {
-            return orders[0];
-          });
-        }],
-        catalog: ['api', function(api) {
-          return api.queryCatalog(). then (function(catalog) {
-            return catalog;
-          });
-        }],
-        config: ['configPromise', function (configPromise) {
-          return configPromise;
-        }],
-        measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
-          return measurementUnitsPromise;
-        }],
-        pRoles: ['pRolesPromise', function (pRolesPromise) {
-          return pRolesPromise;
-        }],
-        categories: ['categoriesPromise', function (categoriesPromise) {
-          return categoriesPromise;
-        }],
-        colors: ['colorsPromise', function (colorsPromise) {
-          return colorsPromise;
-        }]
-      }
-    })
+      .state ('orderServiceList', {
+        url: '/orderServiceList/:id',
+        templateUrl: 'app/partials/serviceList.html',
+        controller: 'ServiceListCtrl as serviceListModel',
+        resolve: {
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(). then (function(catalog) {
+              return catalog;
+            });
+          }],
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }],
+          measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+            return measurementUnitsPromise;
+          }],
+          pRoles: ['pRolesPromise', function (pRolesPromise) {
+            return pRolesPromise;
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          colors: ['colorsPromise', function (colorsPromise) {
+            return colorsPromise;
+          }],
+          workOrder: [function () {
+            return null;
+          }],
+          customers: ['api', function (api) {
+            return api.queryCustomers()
+                .then(function (objs) {
+                  return objs;
+                });
+          }]
+        }
+      })
+      .state ('woServiceList', {
+        url: '/woServiceList/:woId',
+        templateUrl: 'app/partials/serviceList.html',
+        controller: 'ServiceListCtrl as serviceListModel',
+        resolve: {
+          order: [function() {
+            return null;
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(). then (function(catalog) {
+              return catalog;
+            });
+          }],
+          config: ['configPromise', function (configPromise) {
+            return configPromise;
+          }],
+          measurementUnits: ['measurementUnitsPromise', function (measurementUnitsPromise) {
+            return measurementUnitsPromise;
+          }],
+          pRoles: ['pRolesPromise', function (pRolesPromise) {
+            return pRolesPromise;
+          }],
+          categories: ['categoriesPromise', function (categoriesPromise) {
+            return categoriesPromise;
+          }],
+          colors: ['colorsPromise', function (colorsPromise) {
+            return colorsPromise;
+          }],
+          workOrder: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryWorkOrder(Number($stateParams.woId)).then(function (workItems) {
+              return workItems.map(function (wi) {
+                var att = wi.properties;
+                att.id = wi.id;
+                return att;
+              });
+            });
+          }],
+          customers: ['api', function (api) {
+            return api.queryCustomers()
+                .then(function (objs) {
+                  return objs;
+                });
+          }]
+        }
+      })
       .state ('packingList', {
         url: '/packingList/:id',
         templateUrl: 'app/partials/packingList.html',

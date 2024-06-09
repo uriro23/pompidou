@@ -13,7 +13,7 @@
         --- לא מעודכן ---
       </span>
     </td>
-    <td style="width: 20%">
+    <td style="width: 15%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
               ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
@@ -24,7 +24,7 @@
         </a>
       </button>
     </td>
-    <td style="width: 20%">
+    <td style="width: 15%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
               ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
@@ -35,7 +35,7 @@
         </a>
       </button>
     </td>
-    <td style="width: 20%">
+    <td style="width: 15%">
       <button class="btn btn-default"
               ng-disabled="workOrderModel.isProcessing"
               ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
@@ -43,6 +43,17 @@
            ng-disabled="workOrderModel.isProcessing"
            ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
           חטיפים וקינוחים
+        </a>
+      </button>
+    </td>
+    <td style="width: 15%">
+      <button class="btn btn-default"
+              ng-disabled="workOrderModel.isProcessing"
+              ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
+        <a href="#/woServiceList/{{workOrderModel.woIndex.properties.woId}}" target="_blank"
+           ng-disabled="workOrderModel.isProcessing"
+           ng-show="workOrderModel.woIndex.properties.domainStatus[1]">
+רשימת סרוויס
         </a>
       </button>
     </td>
