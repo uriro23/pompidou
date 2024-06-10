@@ -62,7 +62,7 @@
           מדבקות ללקוח
         </a>
       </td>
-      <td ng-show="documentsModel.printType.id === 1">
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 1">
         <a ng-href="#/orderDishStickers/{{documentsModel.order.id}}/{{documentsModel.order.properties.customer}}/2"
            target="_blank"
            ng-disabled="documentsModel.order.properties.orderStatus<2 || documentsModel.order.properties.orderStatus===6">
@@ -71,35 +71,37 @@
       </td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 1"></td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 1"></td>
-      <td ng-show="documentsModel.printType.id === 2">
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 2">
         <a ng-href="#/orderServiceList/{{documentsModel.order.id}}" target="_blank">
           רשימת סרוויס
         </a>
       </td>
-      <td ng-show="documentsModel.printType.id === 2">
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 2">
         <a ng-href="#/packingList/{{documentsModel.order.id}}" target="_blank">
           רשימת אריזה
         </a>
       </td>
-      <td ng-show="documentsModel.printType.id === 2">
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 2">
         <a ng-href="#/packingListOld/{{documentsModel.order.id}}" target="_blank">
           רשימת אריזה ישנה
         </a>
       </td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 2"></td>
-      <td style="width: 10%" ng-show="documentsModel.printType.id === 2"></td>
-      <td ng-show="documentsModel.printType.id === 3">
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 3">
         <a ng-href="#/samplingForm/{{documentsModel.order.id}}" target="_blank">
           דגימות מזון
         </a>
       </td>
-      <td ng-show="documentsModel.printType.id === 3">
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 3">
         <a ng-href="#/finalCheckForm/{{documentsModel.order.id}}" target="_blank">
           בקרה סופית
         </a>
       </td>
-      <td style="width: 10%" ng-show="documentsModel.printType.id === 3"></td>
-      <td style="width: 10%" ng-show="documentsModel.printType.id === 3"></td>
+      <td style="width: 10%" ng-show="documentsModel.printType.id === 3">
+        <a ng-href="#/combinedForm/{{documentsModel.order.id}}" target="_blank">
+טופס משולב
+        </a>
+      </td>
       <td style="width: 10%" ng-show="documentsModel.printType.id === 3"></td>
     </tr>
     </tbody>

@@ -1,0 +1,96 @@
+<div  id="exitListContainer">
+<div ng-show="combinedFormModel.formType === 1 || combinedFormModel.formType === 3">
+    <h4 style="width: 100%">
+        <span style="text-align: right">השף בקופסה</span>
+        <span>  --  </span>
+        <span style="text-align: left">054-7514061</span>
+    </h4>
+    <h2>
+        טופס בקרת בחינה סופית לאירוע
+        {{combinedFormModel.currentOrder.number}} -
+        {{combinedFormModel.currentOrder.eventDate | date: 'dd/MM/yy'}}
+    </h2>
+    <p style="height: 0.5cm"></p>
+    <table style="width: 100%">
+        <thead>
+        <tr class="form-line">
+            <th class="form-box" style="width: 11%">שעת אריזה</th>
+            <th class="form-box" style="width: 11%">שם המנה</th>
+            <th class="form-box" style="width: 11%">מס' הזמנה</th>
+            <th class="form-box" style="width: 11%">שעת תפוגה</th>
+            <th class="form-box" style="width: 9%">צבע ומרקם</th>
+            <th class="form-box" style="width: 9%">משקל סופי</th>
+            <th class="form-box" style="width: 9%">התאמת אריזה</th>
+            <th class="form-box" style="width: 17%">הערות</th>
+            <th class="form-box" style="width: 12%">שם וחתימה</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="form-line" ng-repeat="dish in combinedFormModel.dishes track by $index">
+            <td class="form-box">{{combinedFormModel.order.packingTime | date: 'HH:mm'}}</td>
+            <td class="form-box">{{dish.stickerLabel}}</td>
+            <td class="form-box">{{combinedFormModel.order.properties.number}}</td>
+            <td class="form-box">{{combinedFormModel.order.expiryTime | date: 'HH:mm dd/MM'}}</td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+            <td class="form-box"></td>
+        </tr>
+        </tbody>
+        <tr style="height: 0.5cm"></tr>
+        <tr>
+            <td colspan="3"><label>שם</label></td>
+            <td><label>חתימה</label></td>
+        </tr>
+        <tr>
+            <td colspan="3">________________</td>
+            <td>________________</td>
+        </tr>
+    </table>
+</div>
+    <div ng-show="combinedFormModel.formType === 3">
+        <p style="page-break-after: always;">&nbsp;</p>
+        <p style="page-break-before: always;">&nbsp;</p>
+    </div>
+    <div ng-show="combinedFormModel.formType === 2 || combinedFormModel.formType === 3">
+        <h4 style="width: 100%">
+            <span style="text-align: right">השף בקופסה</span>
+            <span>  --  </span>
+            <span style="text-align: left">054-7514061</span>
+        </h4>
+        <h2>
+            טופס שימור דגימות מזון לאירוע
+            {{combinedFormModel.currentOrder.number}} -
+            {{combinedFormModel.currentOrder.eventDate | date: 'dd/MM/yy'}}
+        </h2>
+        <p style="height: 0.5cm"></p>
+        <table style="width: 100%">
+            <thead>
+            <tr class="form-line">
+                <th class="form-box" style="width: 25%">מספר הדגימה</th>
+                <th class="form-box" style="width: 25%">תאריך איסוף</th>
+                <th class="form-box" style="width: 25%">שם המנה</th>
+                <th class="form-box" style="width: 25%">שעת איסוף</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="form-line" ng-repeat="sample in combinedFormModel.samples track by $index">
+                <td class="form-box">{{$index+1}}</td>
+                <td class="form-box">{{combinedFormModel.currentOrder.eventDate | date: 'dd/MM/yy'}}</td>
+                <td class="form-box">{{sample.stickerLabel}}</td>
+                <td class="form-box"></td>
+            </tr>
+            </tbody>
+            <tr style="height: 0.5cm"></tr>
+            <tr>
+                <td colspan="3"><label>שם</label></td>
+                <td><label>חתימה</label></td>
+            </tr>
+            <tr>
+                <td colspan="3">________________</td>
+                <td>________________</td>
+            </tr>
+        </table>
+    </div>
+</div>

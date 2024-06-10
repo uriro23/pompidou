@@ -1113,8 +1113,8 @@ config(function($stateProvider, $urlRouterProvider) {
       })
       .state ('samplingForm', {
         url: '/samplingForm/:id',
-        templateUrl: 'app/partials/samplingForm.html',
-        controller: 'SamplingFormCtrl as samplingFormModel',
+        templateUrl: 'app/partials/combinedForm.html',
+        controller: 'CombinedFormCtrl as combinedFormModel',
         resolve: {
           order: ['$stateParams', 'api', function ($stateParams, api) {
             return api.queryOrder ($stateParams.id).then (function (orders) {
@@ -1130,8 +1130,8 @@ config(function($stateProvider, $urlRouterProvider) {
       })
       .state ('finalCheckForm', {
         url: '/finalCheckForm/:id',
-        templateUrl: 'app/partials/finalCheckForm.html',
-        controller: 'FinalCheckFormCtrl as finalCheckFormModel',
+        templateUrl: 'app/partials/combinedForm.html',
+        controller: 'CombinedFormCtrl as combinedFormModel',
         resolve: {
           order: ['$stateParams', 'api', function ($stateParams, api) {
             return api.queryOrder ($stateParams.id).then (function (orders) {
@@ -1140,6 +1140,23 @@ config(function($stateProvider, $urlRouterProvider) {
           }],
           catalog: ['api', function(api) {
             return api.queryCatalog(1,['stickerLabel']). then (function(catalog) {
+              return catalog;
+            });
+          }]
+        }
+      })
+      .state ('combinedForm', {
+        url: '/combinedForm/:id',
+        templateUrl: 'app/partials/combinedForm.html',
+        controller: 'CombinedFormCtrl as combinedFormModel',
+        resolve: {
+          order: ['$stateParams', 'api', function ($stateParams, api) {
+            return api.queryOrder ($stateParams.id).then (function (orders) {
+              return orders[0];
+            });
+          }],
+          catalog: ['api', function(api) {
+            return api.queryCatalog(1,['isSensitiveDish','stickerLabel']). then (function(catalog) {
               return catalog;
             });
           }]
