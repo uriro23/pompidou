@@ -2,40 +2,21 @@
 
 /* Controllers */
 angular.module('myApp')
-    .controller('SamplingFormCtrl', function ($rootScope, $timeout, order, catalog) {
+    .controller('CombinedFormCtrl', function ($rootScope, $state, $timeout, order, catalog) {
+
+      // includes finalCheckForm && samplingForm
 
       $rootScope.menuStatus = 'hide';
-      $rootScope.title = 'טופס דגימות';
-
-      var that = this;
-
-      this.currentOrder = order.properties;
-      this.currentQuote = this.currentOrder.quotes[this.currentOrder.activeQuote];
-
-      this.samples = this.currentQuote.items.filter(function(item) {
-        var catalogItem = catalog.filter(function(cat) {
-          return cat.id === item.catalogId;
-        }).map(function(cat){
-          return {
-            isSensitiveDish: cat.properties.isSensitiveDish,
-            stickerLabel: cat.properties.stickerLabel
-          };
-        })[0];
-        item.stickerLabel = catalogItem.stickerLabel;
-        return catalogItem.isSensitiveDish;
-      });
-      console.log(this.samples);
-
-      $timeout(function() {
-        window.print();
-      },1000);
-
-    })
-
-    .controller('FinalCheckFormCtrl', function ($rootScope, $timeout, order, catalog) {
-
-      $rootScope.menuStatus = 'hide';
-      $rootScope.title = 'טופס בחינה סופית';
+      if ($state.current.name === 'finalCheckForm') {
+        $rootScope.title = 'טופס בחינה סופית';
+        this.formType = 1;
+      } else if ($state.current.name === 'samplingForm') {
+        $rootScope.title = 'טופס דגימות';
+        this.formType = 2;
+      } else {
+        $rootScope.title = 'טופס משולב';
+        this.formType = 3;
+      }
 
       var that = this;
 
@@ -59,6 +40,19 @@ angular.module('myApp')
         })[0];
         item.stickerLabel = catalogItem.stickerLabel;
         return item.category.type < 3;
+      });
+
+      this.samples = this.currentQuote.items.filter(function(item) {
+        var catalogItem = catalog.filter(function(cat) {
+          return cat.id === item.catalogId;
+        }).map(function(cat){
+          return {
+            isSensitiveDish: cat.properties.isSensitiveDish,
+            stickerLabel: cat.properties.stickerLabel
+          };
+        })[0];
+        item.stickerLabel = catalogItem.stickerLabel;
+        return catalogItem.isSensitiveDish;
       });
 
       $timeout(function() {
