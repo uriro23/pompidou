@@ -34,6 +34,7 @@ angular.module('myApp')
       formData.append('MarginRight', 5);
       formData.append('MarginLeft', 5);
       formData.append('PageSize', 'a4');
+      formData.append('version', '117');
       // if (source.documentType === 5) {  // only for quote2
       //   formData.append('ViewportWidth', 1000);
       // }

@@ -288,7 +288,7 @@ angular.module('myApp')
           ? baseUrl + '/bid/' + bid.properties.uuid : baseUrl + '/quote2/' + bid.properties.uuid;
       var encodedSource = encodeURIComponent(sourceUrl);
       var params = "download=attachment&ConversionDelay=7&" +
-        "MarginBottom=5&MarginTop=5&MarginLeft=5&MarginRight=5&PageSize=a4" +
+        "MarginBottom=5&MarginTop=5&MarginLeft=5&MarginRight=5&PageSize=a4&version=117" +
         "&FileName=" +
         encodeURIComponent("הצעת מחיר " +
         bid.properties.customer.firstName + " " +
@@ -316,7 +316,7 @@ angular.module('myApp')
         var sourceUrl = baseUrl + '/equip/' + bid.properties.uuid;
         var encodedSource = encodeURIComponent(sourceUrl);
         var params = "download=attachment&ConversionDelay=4&" +
-          "MarginBottom=5&MarginTop=5&MarginLeft=5&MarginRight=5&PageSize=a4" +
+          "MarginBottom=5&MarginTop=5&MarginLeft=5&MarginRight=5&PageSize=a4&version=117" +
           "&FileName=" +
           encodeURIComponent("השכרת ציוד " +
             bid.properties.customer.firstName + " " +
