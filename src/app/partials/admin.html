@@ -521,7 +521,7 @@
        </tab>
      </tabset>
    </tab>
-   <tab heading="לקוחות" select="adminModel.loadCustomers2()">
+   <tab heading="לקוחות" select="adminModel.loadAllCustomers()">
      <div>
        <label>ליצוא</label>
        <input type="checkbox" ng-model="adminModel.isCustomersExport">
@@ -548,6 +548,7 @@
        </tr>
        </tbody>
      </table>
+     <!--
      <div ng-show="adminModel.isCustomersExport">
        <div>
          <span>name,email,phone,successes,failures,lastEvent</span>
@@ -564,6 +565,17 @@
          <span>{{customer.view.noOfFailures}}</span>
          <span>,</span>
          <span>{{customer.view.lastEventDate | date:'dd/MM/yyyy'}}</span>
+       </div>
+     </div>
+     -->
+     <div ng-show="adminModel.isCustomersExport">
+       <div>
+         <span>name,email</span>
+       </div>
+       <div ng-repeat="customer in adminModel.customers track by customer.id">
+         <span>{{customer.properties.firstName}}</span>
+         <span>,</span>
+         <span>{{customer.properties.email}}</span>
        </div>
      </div>
    </tab>

@@ -1407,6 +1407,14 @@ angular.module('myApp')
         });
     };
 
+    this.loadAllCustomers = function () {
+      var that = this;
+      api.queryCustomers()
+          .then(function (customers) {
+            that.customers = customers;
+          });
+    };
+
 
     // conversions
 
