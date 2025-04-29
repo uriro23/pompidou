@@ -34,10 +34,8 @@ angular.module('myApp')
     var fieldList = [
       'orderStatus','noOfParticipants','eventDate','isDateUnknown', 'closingDate',
       'customer','eventTime','number', 'exitTime','template', 'header',
-      'vatRate', 'referralSource', 'cancelReason', 'createdBy', 'bidDate'
+      'vatRate', 'referralSource', 'cancelReason', 'createdBy', 'bidDate', 'isWholesaleEvent'
     ];
-
-    //this.loadOrders();
 
     this.loadOrders = function() {
       var that = this;
@@ -81,6 +79,7 @@ angular.module('myApp')
           that.filterOrders();
           that.isHideOrders = true;
           that.setOrderTableParams();
+          console.log(filteredOrders);
        })
           };
 
@@ -138,37 +137,51 @@ angular.module('myApp')
           if (!tempVec[segIndex]) {  // first event for index
             tempVec[segIndex] = {
               'label': angular.copy(getLabel(segIndex)),
-              'leads': 1,
               'orders': [order]
             };
-            if (orderAttr.bidDate) {
-              tempVec[segIndex].bids = 1;
-              tempVec[segIndex].bidsTotal = orderAttr.header.totalForStat;
-            } else {
+            if (orderAttr.isWholesaleEvent) {
+              tempVec[segIndex].leads = 0;
               tempVec[segIndex].bids = 0;
-              tempVec[segIndex].bidsTotal = 0;
-            }
-            if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
-              tempVec[segIndex].closed = 1;
-              tempVec[segIndex].closedTotal = orderAttr.header.totalForStat;
-              tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
-            } else {
               tempVec[segIndex].closed = 0;
               tempVec[segIndex].closedTotal = 0;
               tempVec[segIndex].closedParticipants = 0;
+              tempVec[segIndex].wholesaleEvents = 1;
+              tempVec[segIndex].wholesaleTotal = orderAttr.header.totalForStat;
+            } else {
+              tempVec[segIndex].leads = 1;
+              tempVec[segIndex].wholesaleEvents = 0;
+              tempVec[segIndex].wholesaleTotal = 0;
+              if (orderAttr.bidDate) {
+                tempVec[segIndex].bids = 1;
+              } else {
+                tempVec[segIndex].bids = 0;
+              }
+              if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
+                tempVec[segIndex].closed = 1;
+                tempVec[segIndex].closedTotal = orderAttr.header.totalForStat;
+                tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
+              } else {
+                tempVec[segIndex].closed = 0;
+                tempVec[segIndex].closedTotal = 0;
+                tempVec[segIndex].closedParticipants = 0;
+              }
             }
-          } else {
-            tempVec[segIndex].leads++;
-            if (orderAttr.bidDate) {
-              tempVec[segIndex].bids++;
-              tempVec[segIndex].bidsTotal += orderAttr.header.totalForStat;
+          } else {  // not first event
+            if (orderAttr.isWholesaleEvent) {
+              tempVec[segIndex].wholesaleEvents++;
+              tempVec[segIndex].wholesaleTotal += orderAttr.header.totalForStat;
+            } else {
+              tempVec[segIndex].leads++;
+              if (orderAttr.bidDate) {
+                tempVec[segIndex].bids++;
+              }
+              if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
+                tempVec[segIndex].closed++;
+                tempVec[segIndex].closedTotal += orderAttr.header.totalForStat;
+                tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
+              }
+              tempVec[segIndex].orders.push(order);
             }
-            if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
-              tempVec[segIndex].closed++;
-              tempVec[segIndex].closedTotal += orderAttr.header.totalForStat;
-              tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
-            }
-            tempVec[segIndex].orders.push(order);
           }
         }
       });
@@ -184,8 +197,9 @@ angular.module('myApp')
       segArray.splice(0,segArray.length); // clear output array
       tot.leads = 0;
       tot.bids = 0;
-      tot.bidsTotal = 0;
       tot.closed = 0;
+      tot.wholesaleEvents = 0;
+      tot.wholesaleTotal = 0;
       tot.closedTotal = 0;
       tot.closedParticipants = 0;
       for (var j=0;j<tempVec.length;j++) {
@@ -193,8 +207,9 @@ angular.module('myApp')
           segArray.push(tempVec[j]);
           tot.leads += tempVec[j].leads;
           tot.bids += tempVec[j].bids;
-          tot.bidsTotal += tempVec[j].bidsTotal;
           tot.closed += tempVec[j].closed;
+          tot.wholesaleEvents += tempVec[j].wholesaleEvents;
+          tot.wholesaleTotal += tempVec[j].wholesaleTotal;
           tot.closedTotal += tempVec[j].closedTotal;
           tot.closedParticipants += tempVec[j].closedParticipants;
         }
@@ -202,11 +217,12 @@ angular.module('myApp')
 
       avg.leads = tot.leads / segArray.length;
       avg.bids = tot.bids / segArray.length;
-      avg.bidsTotal = tot.bidsTotal / segArray.length;
       avg.closed = tot.closed / segArray.length;
+      avg.wholesaleEvents = tot.wholesaleEvents / segArray.length;
       avg.closedTotal = tot.closedTotal / segArray.length;
       avg.closedParticipants = tot.closedParticipants / segArray.length;
-  }
+      avg.wholesaleTotal = tot.wholesaleTotal / segArray.length;
+    }
 
     this.doStat = function () {
       var that = this;

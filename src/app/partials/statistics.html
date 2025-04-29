@@ -85,19 +85,21 @@
   <tabset>
     <tab heading="חודש" deselect="statisticsModel.deselectTab(statisticsModel.monthStats)">
       <div ng-hide="statisticsModel.isForExport">
-        <table class="table table-hover" style="width: 80%">
+        <table class="table table-hover" style="width: 100%">
           <thead ng-show="statisticsModel.monthStats.length">
           <th><label>חודש</label></th>
           <th><label>פניות</label></th>
           <th><label>הצעות</label></th>
-          <th><label>סכום הצעות</label></th>
           <th><label>סגירות</label></th>
+          <th><label>סיטונות</label></th>
           <th><label>% מפניות</label></th>
           <th><label>% מהצעות</label></th>
-          <th><label>סכום</label></th>
+          <th><label>סכום אירועים</label></th>
           <th><label>ממוצע לאירוע</label></th>
           <th><label>מס' משתתפים</label></th>
           <th><label>מחיר לאורח</label></th>
+          <th><label>סכום סיטונות</label></th>
+          <th><label>סכום כללי</label></th>
           </thead>
           <tbody>
           <tr ng-repeat="line in statisticsModel.monthStats track by line.label"
@@ -106,41 +108,47 @@
                 ng-click="statisticsModel.setupLineOrders(statisticsModel.monthStats,line)">{{line.label | date: 'MM.yy'}}</td>
             <td>{{line.leads}}</td>
             <td>{{line.bids}}</td>
-            <td>{{line.bidsTotal | currency}}</td>
             <td>{{line.closed}}</td>
+            <td>{{line.wholesaleEvents}}</td>
             <td>{{(line.closed / line.leads) * 100 | number:1}}</td>
             <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
             <td>{{line.closedTotal | currency}}</td>
             <td>{{line.closedTotal / line.closed | currency}}</td>
             <td>{{line.closedParticipants / line.closed | number:1}}</td>
             <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
+            <td>{{line.wholesaleTotal | currency}}</td>
+            <td>{{line.closedTotal + line.wholesaleTotal | currency}}</td>
           </tr>
           <tr><td></td></tr>
           <tr ng-show="statisticsModel.monthStats.length">
             <td><label>ס"ה</label></td>
             <td>{{statisticsModel.monthTot.leads}}</td>
             <td>{{statisticsModel.monthTot.bids}}</td>
-            <td>{{statisticsModel.monthTot.bidsTotal | currency}}</td>
             <td>{{statisticsModel.monthTot.closed}}</td>
+            <td>{{statisticsModel.monthTot.wholesaleEvents}}</td>
             <td></td>
             <td></td>
             <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
             <td></td>
             <td></td>
             <td></td>
+            <td>{{statisticsModel.monthTot.wholesaleTotal | currency}}</td>
+            <td>{{statisticsModel.monthTot.closedTotal + statisticsModel.monthTot.wholesaleTotal | currency}}</td>
           </tr>
           <tr ng-show="statisticsModel.monthStats.length">
             <td><label>ממוצע</label></td>
             <td>{{statisticsModel.monthAvg.leads | number:2}}</td>
             <td>{{statisticsModel.monthAvg.bids | number:2}}</td>
-            <td>{{statisticsModel.monthAvg.bidsTotal | currency}}</td>
             <td>{{statisticsModel.monthAvg.closed | number:2}}</td>
+            <td>{{statisticsModel.monthAvg.wholesaleEvents | number:2}}</td>
             <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.leads) * 100 | number:1}}</td>
             <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
             <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
             <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
             <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
             <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
+            <td>{{statisticsModel.monthAvg.wholesaleTotal | currency}}</td>
+            <td>{{statisticsModel.monthAvg.closedTotal + statisticsModel.monthAvg.wholesaleTotal | currency}}</td>
           </tr>
           </tbody>
         </table>
@@ -284,7 +292,6 @@
         </tbody>
       </table>
     </tab>
-    </tab>
     <tab heading="מחיר לאורח" deselect="statisticsModel.deselectTab(statisticsModel.totalPerParticipantStats)">
       <table class="table table-hover" style="width: 80%">
         <thead ng-show="statisticsModel.totalPerParticipantStats.length">
@@ -345,7 +352,6 @@
         </tr>
         </tbody>
       </table>
-    </tab>
     </tab>
     <tab heading="סוג תפריט" deselect="statisticsModel.deselectTab(statisticsModel.menuTypeStats)">
       <table class="table table-hover" style="width: 80%">
