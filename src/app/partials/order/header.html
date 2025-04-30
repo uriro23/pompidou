@@ -5,7 +5,10 @@
       <td style="width: 50%">
       <table>
         <tr>
-      <td><label>לקוח</label></td>
+      <td><label>
+        <span ng-hide="headerModel.order.view.customer.isWholesaleCustomer">לקוח</span>
+        <span ng-show="headerModel.order.view.customer.isWholesaleCustomer">סיטונאי</span>
+      </label></td>
       <td>
         <button ng-click="headerModel.setCustomer(1,'בחירת לקוח')"
                 ng-class="headerModel.order.view.errors.customer?'btn btn-danger':'btn btn-default'"
@@ -161,20 +164,23 @@
              ng-disabled="headerModel.readOnly.is"
              ng-change="headerModel.setKnownDate()">
     </td>
-    <td style="width: 14%">
+    <td style="width: 14%" ng-hide="headerModel.order.properties.isWholesaleEvent">
       <label>משתתפים:</label>&nbsp;<input type="number" min=1 max="9999"
                                           ng-model="headerModel.order.properties.noOfParticipants"
                                           ng-change="headerModel.setNoOfParticipants()"
                                           ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.noOfParticipants?'bg-danger':null">
     </td>
-    <td style="width: 12%">
+    <td style="width: 12%" ng-hide="headerModel.order.properties.isWholesaleEvent">
       <label>ילדים:</label>&nbsp;<input type="number" min="-999" max="9999"
                                           placeholder="מתוכם"
                                           ng-model="headerModel.order.properties.children"
                                           ng-change="headerModel.setChildren()"
                                           ng-disabled="headerModel.readOnly.is"
                                           ng-class="headerModel.order.view.errors.children?'bg-danger':null">
+    </td>
+    <td style="width: 26%; font-size: x-large" ng-show="headerModel.order.properties.isWholesaleEvent">
+      <label>אירוע סיטונאי</label>
     </td>
     <td  ng-show="!orderModel.order.properties.template"
          style="width: 15%">

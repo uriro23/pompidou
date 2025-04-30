@@ -94,7 +94,7 @@ angular.module('myApp')
         quote.totalForStat = quote.fixedPrice / (1 + order.properties.vatRate);  // stat is before vat
       } else {
         quote.totalForStat = subTotalForStat + quote.discount + quote.couponDiscount + quote.priceIncrease;
-        quote.totalBeforeVat = quote.subTotal + quote.discount + quote.couponDiscount + quote.priceIncrease + quote.extraServices;;
+        quote.totalBeforeVat = quote.subTotal + quote.discount + quote.couponDiscount + quote.priceIncrease + quote.extraServices;
         if (order.properties.isBusinessEvent) {
           quote.vat = Math.round(quote.totalBeforeVat * order.properties.vatRate);
           quote.total = quote.totalBeforeVat + quote.vat;

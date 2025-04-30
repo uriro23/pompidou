@@ -57,6 +57,13 @@ angular.module('myApp')
         if (custType === 1) {
           that.order.view.customer = cust;
           that.order.properties.customer = cust.id;
+          if (cust.isWholesaleCustomer) {
+            that.order.properties.isWholesaleEvent = true;
+            if (!that.order.properties.noOfParticipants)
+            {
+              that.order.properties.noOfParticipants = 1; // so it won't cause problems later
+            }
+          }
           that.order.properties.taskData.address = cust.address;
           orderService.orderChanged(that.order,'customer');
           orderService.upgradeOrderStatus(that.order);

@@ -61,6 +61,9 @@ angular.module('myApp')
       var thisOrder = this.order.properties;
 
       if (thisOrder.isWholesaleEvent) {
+        if (!thisOrder.noOfParticipants) {
+          thisOrder.noOfParticipants = 1; // to prevent troubles later on
+        }
         // use this opportunity to copy wholesalePrice from catalog to all items of order
         // first create array of all item catalog ids in order
         var itemIds = [];

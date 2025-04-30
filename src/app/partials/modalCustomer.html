@@ -32,13 +32,14 @@
   </div>
   <table class="table table-hover" style="width:100%">
     <thead>
-    <th>פרטי</th>
-    <th>משפחה</th>
-    <th>        טל' נייד    </th>
-    <th>        טל' בית    </th>
-    <th>        טל' עבודה    </th>
-    <th>        דוא"ל    </th>
-    <th>        כתובת    </th>
+    <th style="width: 10%">פרטי</th>
+    <th style="width: 10%">משפחה</th>
+    <th style="width: 10%">        טל' נייד    </th>
+    <th style="width: 10%">        טל' בית    </th>
+    <th style="width: 10%">        טל' עבודה    </th>
+    <th style="width: 20%">        דוא"ל    </th>
+    <th style="width: 10%">סיטונאי?</th>
+    <th style="width: 20%">        כתובת    </th>
     </thead>
     <tbody>
     <tr ng-class="modalCustomerModel.isCustomerChanged?'bg-success':null">
@@ -65,10 +66,14 @@
                ng-change="modalCustomerModel.customerChanged()">
       </td>
       <td>
-        <input style="text-align: left" type="text" size=27 ng-model="modalCustomerModel.currentCustomer.properties.email"
+        <input style="text-align: left" type="text" size=15 ng-model="modalCustomerModel.currentCustomer.properties.email"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
-      <td>
+        <td>
+            <input type="checkbox" ng-model="modalCustomerModel.currentCustomer.properties.isWholesaleCustomer"
+                   ng-change="modalCustomerModel.customerChanged()">
+        </td>
+        <td>
         <input type="text" size=20 ng-model="modalCustomerModel.currentCustomer.properties.address"
                ng-change="modalCustomerModel.customerChanged()">
       </td>
@@ -97,13 +102,19 @@
       <td ng-class="!customer.isSelected&&customer.matches.homePhone?'bg-warning':null">
         <a href="tel:{{customer.properties.homePhone}}">{{customer.properties.homePhone}}</a>
       </td>
-      <td ng-class="!customer.isSelected&&customer.matches.workPhone?'bg-warning':null">
-        <a href="tel:{{customer.properties.workPhone}}">{{customer.properties.workPhone}}</a>
-      </td>
-      <td style="text-align: left" ng-class="!customer.isSelected&&customer.matches.email?'bg-warning':null">
+        <td ng-class="!customer.isSelected&&customer.matches.workPhone?'bg-warning':null">
+            <a href="tel:{{customer.properties.workPhone}}">{{customer.properties.workPhone}}</a>
+        </td>
+        <td style="text-align: left;font-size: x-small" ng-class="!customer.isSelected&&customer.matches.email?'bg-warning':null">
         <a href="mailto:{{customer.properties.email}}">{{customer.properties.email}}</a>
       </td>
-      <td ng-click="modalCustomerModel.selectLine($index)">{{customer.properties.address}}</td>
+        <td ng-class="!customer.isSelected&&customer.matches.isWholesaleCustomer?'bg-warning':null"
+            ng-click="modalCustomerModel.selectLine($index)">
+            {{customer.properties.isWholesaleCustomer?"כן":""}}
+        </td>
+        <td style="font-size: x-small" ng-click="modalCustomerModel.selectLine($index)">
+            {{customer.properties.address}}
+        </td>
     </tr>
     </tbody>
   </table>
