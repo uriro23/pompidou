@@ -2519,6 +2519,37 @@ angular.module('myApp')
     };
      */
 
+    this.externalServicesForStat = function () {
+      var changedOrders = 0;
+      var changedQuotes = 0;
+      var ordersToUpdate = [];
+      var from = new Date(2022,0,1);
+      var to = new Date(2030,11,31);
+      api.queryOrdersByRange('eventDate',from,to)
+          .then(function(orders) {
+            console.log(orders.length + ' orders read');
+            orders.forEach(function(order) {
+                if (order.properties.quotes) {
+                  order.properties.quotes.forEach(function(quote, ind) {
+                    var oldTotal = quote.total;
+                    orderService.calcTotal(quote,order,true); // don't do the checkTasks part
+                    if (quote.total != oldTotal){
+                      console.log('order '+order.properties.number+' quote '+ind+' total changed from '+oldTotal+' to '+quote.total);
+                    }
+                    changedQuotes++
+                    if (ind === order.properties.activeQuote) {
+                      orderService.setupOrderHeader(order.properties);
+                    }
+                  });
+                  changedOrders++;
+                  ordersToUpdate.push(order);
+                }
+            });
+            console.log(changedOrders+ ' orders changed');
+            console.log(changedQuotes+ ' quotes changed');
+            saveSlices(ordersToUpdate);
+          });
+          };
     // end conversions
 
   });

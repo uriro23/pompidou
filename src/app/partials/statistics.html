@@ -95,9 +95,10 @@
           <th><label>% מפניות</label></th>
           <th><label>% מהצעות</label></th>
           <th><label>סכום אירועים</label></th>
-          <th><label>ממוצע לאירוע</label></th>
-          <th><label>מס' משתתפים</label></th>
-          <th><label>מחיר לאורח</label></th>
+          <th><label>ממוצע</label></th>
+          <th><label>ש' נלווים</label></th>
+          <th><label>משתתפים</label></th>
+          <th><label>לאורח</label></th>
           <th><label>סכום סיטונות</label></th>
           <th><label>סכום כללי</label></th>
           </thead>
@@ -114,10 +115,11 @@
             <td>{{(line.closed / line.bids) * 100 | number:1}}</td>
             <td>{{line.closedTotal | currency}}</td>
             <td>{{line.closedTotal / line.closed | currency}}</td>
+            <td>{{line.extraservices | currency}}</td>
             <td>{{line.closedParticipants / line.closed | number:1}}</td>
             <td>{{line.closedTotal / line.closedParticipants | currency}}</td>
             <td>{{line.wholesaleTotal | currency}}</td>
-            <td>{{line.closedTotal + line.wholesaleTotal | currency}}</td>
+            <td>{{line.closedTotal + line.extraservices + line.wholesaleTotal | currency}}</td>
           </tr>
           <tr><td></td></tr>
           <tr ng-show="statisticsModel.monthStats.length">
@@ -130,6 +132,7 @@
             <td></td>
             <td>{{statisticsModel.monthTot.closedTotal | currency}}</td>
             <td></td>
+            <td>{{statisticsModel.monthTot.extraservices | currency}}</td>
             <td></td>
             <td></td>
             <td>{{statisticsModel.monthTot.wholesaleTotal | currency}}</td>
@@ -145,6 +148,7 @@
             <td>{{(statisticsModel.monthAvg.closed / statisticsModel.monthAvg.bids) * 100 | number:1}}</td>
             <td>{{statisticsModel.monthAvg.closedTotal | currency}}</td>
             <td>{{statisticsModel.monthAvg.closedTotal / statisticsModel.monthAvg.closed | currency}}</td>
+            <td>{{statisticsModel.monthAvg.extraservices | currency}}</td>
             <td>{{statisticsModel.monthAvg.closedParticipants / statisticsModel.monthAvg.closed | number:1}}</td>
             <td>{{statisticsModel.monthTot.closedTotal / statisticsModel.monthTot.closedParticipants | currency}}</td>
             <td>{{statisticsModel.monthAvg.wholesaleTotal | currency}}</td>

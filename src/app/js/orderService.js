@@ -16,13 +16,14 @@ angular.module('myApp')
     };
 
 
-    this.calcTotal = function (quote, order) {
+    this.calcTotal = function (quote, order, isDontCheckTasks) {
       var subTotal = 0;
-      var subTotalForStat = 0; // doest not include extra services, except disposables and liquids
+      var subTotalForStat = 0; // doest not include extra services
       var foodPrice = 0;
       var transportation = 0;
       var priceIncrease = 0;
       var extraServices = 0;
+      var extraservicesForStat = 0; // does not include waiters
       var operationalServices = 0;
       var boxCount = 0;
       var satiety = 0;
@@ -32,11 +33,10 @@ angular.module('myApp')
         if (thisItem.category.type !== 4) {  // not priceIncrease
           if (!thisItem.isFreeItem) {
             if (thisItem.category.type === 5) {
-              // exclude extraServices from total for stats, except disposables and liquids
-              if (thisItem.specialType === 1 || thisItem.specialType === 5 ) {
-                subTotalForStat += thisItem.price;
-              }
               extraServices += thisItem.price;
+              if (thisItem.specialType != 3) {  // don't include waiters in stat
+                extraservicesForStat += thisItem.price;
+              }
            } else if (thisItem.category.type === 6) { // don't include operational services in total
               operationalServices += thisItem.price;
             } else {
@@ -92,8 +92,10 @@ angular.module('myApp')
         quote.total = quote.fixedPrice;
         quote.totalBeforeVat = quote.transportationInclVat = quote.vat = 0;
         quote.totalForStat = quote.fixedPrice / (1 + order.properties.vatRate);  // stat is before vat
+        quote.extraservicesForStat = 0;
       } else {
         quote.totalForStat = subTotalForStat + quote.discount + quote.couponDiscount + quote.priceIncrease;
+        quote.extraservicesForStat = extraservicesForStat;
         quote.totalBeforeVat = quote.subTotal + quote.discount + quote.couponDiscount + quote.priceIncrease + quote.extraServices;
         if (order.properties.isBusinessEvent) {
           quote.vat = Math.round(quote.totalBeforeVat * order.properties.vatRate);
@@ -103,11 +105,14 @@ angular.module('myApp')
           quote.vat = 0;
           quote.total = quote.totalBeforeVat;
           quote.totalForStat = quote.totalForStat / (1 + order.properties.vatRate);  // stat is before vat
+          quote.extraservicesForStat = quote.extraservicesForStat / (1 + order.properties.vatRate);  // stat is before vat
           quote.transportationInclVat = quote.transportation;
         }
       }
       quote.balance = quote.total - quote.advance;
-      this.checkTasks(order);
+      if (!isDontCheckTasks) {
+        this.checkTasks(order);
+      }
     };
 
     this.calcSpecialTypes = function(order) {
@@ -583,6 +588,7 @@ angular.module('myApp')
           'menuType': currentQuote.menuType,
           'total': currentQuote.total,
           'totalForStat': currentQuote.totalForStat,
+          'extraservicesForStat': currentQuote.extraservicesForStat,
           'totalBeforeVat': currentQuote.totalBeforeVat,
           'balance': currentQuote.balance,
           'transportationInclVat': currentQuote.transportationInclVat,
@@ -599,6 +605,7 @@ angular.module('myApp')
           'menuType': null,
           'total': 0,
           'totalForStat': 0,
+          'extraservicesForStat': 0,
           'balance': 0,
           'transportationInclVat': 0,
           'discountRate': 0,

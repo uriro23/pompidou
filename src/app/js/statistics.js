@@ -144,6 +144,7 @@ angular.module('myApp')
               tempVec[segIndex].bids = 0;
               tempVec[segIndex].closed = 0;
               tempVec[segIndex].closedTotal = 0;
+              tempVec[segIndex].extraservices = 0;
               tempVec[segIndex].closedParticipants = 0;
               tempVec[segIndex].wholesaleEvents = 1;
               tempVec[segIndex].wholesaleTotal = orderAttr.header.totalForStat;
@@ -159,10 +160,12 @@ angular.module('myApp')
               if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
                 tempVec[segIndex].closed = 1;
                 tempVec[segIndex].closedTotal = orderAttr.header.totalForStat;
+                tempVec[segIndex].extraservices = orderAttr.header.extraservicesForStat;
                 tempVec[segIndex].closedParticipants = orderAttr.noOfParticipants;
               } else {
                 tempVec[segIndex].closed = 0;
                 tempVec[segIndex].closedTotal = 0;
+                tempVec[segIndex].extraservices = 0;
                 tempVec[segIndex].closedParticipants = 0;
               }
             }
@@ -178,6 +181,7 @@ angular.module('myApp')
               if (orderAttr.orderStatus >= 2 && orderAttr.orderStatus <= 5) {  // actually happens
                 tempVec[segIndex].closed++;
                 tempVec[segIndex].closedTotal += orderAttr.header.totalForStat;
+                tempVec[segIndex].extraservices += orderAttr.header.extraservicesForStat;
                 tempVec[segIndex].closedParticipants += orderAttr.noOfParticipants;
               }
               tempVec[segIndex].orders.push(order);
@@ -201,6 +205,7 @@ angular.module('myApp')
       tot.wholesaleEvents = 0;
       tot.wholesaleTotal = 0;
       tot.closedTotal = 0;
+      tot.extraservices = 0;
       tot.closedParticipants = 0;
       for (var j=0;j<tempVec.length;j++) {
         if (tempVec[j]) {
@@ -211,6 +216,7 @@ angular.module('myApp')
           tot.wholesaleEvents += tempVec[j].wholesaleEvents;
           tot.wholesaleTotal += tempVec[j].wholesaleTotal;
           tot.closedTotal += tempVec[j].closedTotal;
+          tot.extraservices += tempVec[j].extraservices;
           tot.closedParticipants += tempVec[j].closedParticipants;
         }
       }
@@ -220,6 +226,7 @@ angular.module('myApp')
       avg.closed = tot.closed / segArray.length;
       avg.wholesaleEvents = tot.wholesaleEvents / segArray.length;
       avg.closedTotal = tot.closedTotal / segArray.length;
+      avg.extraservices = tot.extraservices / segArray.length;
       avg.closedParticipants = tot.closedParticipants / segArray.length;
       avg.wholesaleTotal = tot.wholesaleTotal / segArray.length;
     }
