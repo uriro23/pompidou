@@ -124,10 +124,10 @@
       </td>
   </tbody>
   </table>
-<table style="width: 99%">
+<table style="width: 100%">
   <tr ng-class="headerModel.order.view.changes.header?'bg-success':null">
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
-         style="width: 22%">
+         style="width: 24%">
       <label>תאריך:</label>&nbsp;
       <input type='date' ng-model="headerModel.order.properties.eventDate"
                                  ng-change="headerModel.setEventDate()" required
@@ -135,19 +135,21 @@
       <button class="btn btn-default btn-small"
               ng-click="headerModel.setDateUnknown()"
               ng-hide="orderModel.order.view.orderStatus.id > 1 && orderModel.order.view.orderStatus.id < 6">X</button>
-      <span>בעבר?</span>
-      <input type="checkbox" ng-model="headerModel.order.view.isAllowPastDate"
-             ng-change="headerModel.checkEventDate()">
+      <span ng-show="headerModel.isShowAllowPast()">
+        <span>בעבר?</span>
+        <input type="checkbox" ng-model="headerModel.order.view.isAllowPastDate"
+               ng-change="headerModel.checkEventDate()">
+      </span>
     </td>
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
-         style="width: 13%">
+         style="width: 12%">
     <label>מסירה עד:</label>&nbsp
       <input type="time" ng-model="headerModel.order.properties.eventTime"
                                ng-disabled="headerModel.readOnly.is"
                                ng-change="headerModel.setEventTime()">
     </td>
     <td  ng-hide="orderModel.order.properties.template || !orderModel.order.properties.eventTime"
-         style="width: 12%">
+         style="width: 11%">
       <label>מ-</label>&nbsp
       <select ng-model="headerModel.order.view.eventTimeRange"
               ng-change="headerModel.setEventTime()"
@@ -155,7 +157,7 @@
       </select>
     </td>
     <td  ng-hide="orderModel.order.properties.template || orderModel.order.properties.isDateUnknown"
-         style="width: 12%">
+         style="width: 11%">
       <label>יציאה:</label>&nbsp
       <input type="time" ng-model="headerModel.order.properties.exitTime"
                                ng-disabled="headerModel.readOnly.is"

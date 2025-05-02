@@ -140,6 +140,11 @@ angular.module('myApp')
       }
       };
 
+    this.isShowAllowPast = function() {
+      var thisOrder = this.order.properties;
+      return thisOrder.eventDate && thisOrder.eventDate < dater.today();
+    };
+
     this.setEventDate = function () {
       var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
