@@ -131,11 +131,20 @@ angular.module('myApp')
       orderService.orderChanged(this.order,'header');
     };
 
+    this.checkEventDate = function () {
+      var thisOrder = this.order.properties;
+      this.order.view.errors.eventDate = !thisOrder.eventDate ||
+          (!this.order.view.isAllowPastDate && thisOrder.eventDate < dater.today());
+      if (thisOrder.eventDate >= dater.today()) {
+        this.order.view.isAllowPastDate = false;
+      }
+      };
+
     this.setEventDate = function () {
       var thisOrder = this.order.properties;
       orderService.orderChanged(this.order,'header');
-      this.order.view.errors.eventDate = !thisOrder.eventDate || thisOrder.eventDate < dater.today();  // past dates not allowed
-      if (thisOrder.eventDate > orderService.horizonDate()) {
+      this.checkEventDate();
+      if (thisOrder.eventDate > orderService.horizonDate() || thisOrder.eventDate < dater.today()) {
         api.unset(this.order,'color');
         this.order.view.color = undefined;
         orderService.orderChanged(this.order,'color');
@@ -160,7 +169,7 @@ angular.module('myApp')
       this.order.view.errors.eventDate = false;
     };
 
-    this.setEventTime = function () {
+   this.setEventTime = function () {
       var thisOrder = this.order.properties;
       orderService.setRangeLabels (thisOrder.eventTime, this.eventTimeRanges);
       if (!this.order.view.eventTimeRange) { // set range to default
