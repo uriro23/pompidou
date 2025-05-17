@@ -176,7 +176,8 @@ angular.module('myApp')
       var fieldList = [
         'orderStatus','noOfParticipants','eventDate','isDateUnknown',
         'customer','eventTime','number', 'referralSource', 'cancelReason','cancelReasonText',
-        'exitTime','template','remarks','header', 'activities', 'tasks', 'taskData', 'color', 'createdBy'
+        'exitTime','template','remarks','header', 'activities', 'tasks', 'taskData', 'color',
+        'createdBy', 'isWholesaleEvent'
       ];
       if (this.queryType !== 'year') {
         this.queryYear = undefined;

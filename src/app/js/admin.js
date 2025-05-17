@@ -2517,7 +2517,6 @@ angular.module('myApp')
                 });
           });
     };
-     */
 
     this.externalServicesForStat = function () {
       var changedOrders = 0;
@@ -2551,6 +2550,7 @@ angular.module('myApp')
           });
           };
     // end conversions
+     */
 
   });
 

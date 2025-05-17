@@ -81,7 +81,12 @@
     <td ng-show="orderTableModel.queryType==='invoices'">
       {{order.properties.taskData.invoiceName}}
     </td>
-    <td>{{order.properties.noOfParticipants}}</td>
+    <td ng-hide="order.properties.isWholesaleEvent">
+        {{order.properties.noOfParticipants}}
+    </td>
+    <td ng-show="order.properties.isWholesaleEvent">
+        <img src="app/img/shop.png">
+    </td>
     <td ng-show="order.view.orderStatus.id === 0">
       {{order.view.referralSource.label}}
     </td>
