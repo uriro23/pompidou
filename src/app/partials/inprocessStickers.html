@@ -72,6 +72,29 @@
         <div class="inprocess-detail">תאריך פתיחה: ________________</div>
         <div class="inprocess-detail">תוקף חדש: ___________________</div>
     </div>
+    <div ng-show="inprocessStickersModel.type === 4">
+        <div style="font-size: 16pt">תערובת חומרי גלם</div>
+        <p style="height: 0.5cm"></p>
+        <div class="inprocess-table-head" ng-show="inprocessStickersModel.isContent">
+            <span>{{inprocessStickersModel.productName}}</span>
+            <span>תוקף:</span>
+            <span>{{inprocessStickersModel.validUntil | date: 'dd/MM/yy'}}</span>
+        </div>
+        <table class="table">
+            <thead>
+            <th>חומר</th>
+            <th>יצרן</th>
+            <th>תוקף</th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="material in inprocessStickersModel.materials track by material.id">
+                <td>{{material.name}}</td>
+                <td>{{material.supplier}}</td>
+                <td>{{material.validUntil | date : 'dd/MM/yy'}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
     <div ng-show="inprocessStickersModel.type === 3">
         <div style="font-size: 10pt; font-weight: bold">
             <span>השף בקופסא</span>

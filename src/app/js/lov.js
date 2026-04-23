@@ -448,6 +448,10 @@ angular.module('myApp')
         label: 'חומר גלם'
       },
       {
+        id: 4,
+        label: 'תערובת חומרי גלם'
+      },
+      {
         id: 3,
         label: 'מנה'
       }

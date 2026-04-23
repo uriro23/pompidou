@@ -854,6 +854,58 @@
          </td>
        </tr>
      </table>
+     <div style="width: 50%" class="table" ng-show="adminModel.stickerType.id===4">
+       <div>
+         <span>
+           <input type="text"
+                  ng-model="adminModel.stickerParams.properties.productName"
+                  ng-change="adminModel.stickerDataChanged()"
+                  size="49" placeholder="שם מוצר">
+         </span>
+         <span>
+           <span>תוקף</span>
+           <input type="date"
+                  ng-model="adminModel.stickerParams.properties.validUntil"
+                  ng-change="adminModel.stickerDataChanged()">
+         </span>
+       </div>
+       <div>
+         <table class="table" style="width: 70%">
+           <thead>
+           <th style="width: 40%">חומר גלם</th>
+           <th style="width: 40%">יצרן</th>
+           <th style="width: 20%">תוקף</th>
+           </thead>
+           <tbody>
+           <tr ng-repeat="material in adminModel.stickerParams.properties.materials track by material.id">
+             <td>
+               <input type="text" ng-model="material.name" ng-change="adminModel.stickerDataChanged()">
+             </td>
+             <td>
+               <input type="text" ng-model="material.supplier" ng-change="adminModel.stickerDataChanged()">
+             </td>
+             <td>
+               <input type="date" ng-model="material.validUntil" ng-change="adminModel.stickerDataChanged()">
+             </td>
+           </tr>
+           </tbody>
+         </table>
+       </div>
+       <div>
+         <span>
+           <button class="btn btn-default btn-small" ng-click="adminModel.clearMaterials()">
+             נקה
+           </button>
+         </span>
+         <span>
+           <button class="btn btn-default btn-small"
+                   ng-click="adminModel.saveStickerParams()"
+                   ng-disabled="adminModel.isStickeParamsSaved">
+             שמור
+           </button>
+         </span>
+       </div>
+     </div>
      <table style="width: 30%" class="table" ng-show="adminModel.stickerType.id===3">
        <tr>
          <td style="width: 40%">
@@ -909,6 +961,7 @@
      <p></p>
      <div>
        <input type="number" min="1" max="999"
+              ng-hide="adminModel.stickerType.id === undefined"
               ng-model="adminModel.stickerQuantity"
               ng-change="adminModel.renderStickers()"
               placeholder="כמות">

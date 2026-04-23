@@ -5,7 +5,7 @@ angular.module('myApp')
   .controller('AdminCtrl', function (api, $state, $rootScope, orderService,
                                      lov, config, bidTextTypes, menuTypes,
                                      measurementUnits, categories, allCategories, sensitivities,
-                                     discountCauses, role, employees, pRoles,
+                                     discountCauses, role, employees, pRoles, dater,
                                      phases, taskTypes, taskDetails) {
 
     $rootScope.menuStatus = 'show';
@@ -170,17 +170,37 @@ angular.module('myApp')
             var dd = angular.copy(d);
             dd.setHours(0,0,0,0);
             that.stickerParams.properties.stickerType = that.stickerType.id;
-            that.stickerParams.properties.productName = undefined;
-            api.unset(that.stickerParams,'productName');
+            if (that.stickerType.id !== 4) {
+              that.stickerParams.properties.productName = undefined;
+              api.unset(that.stickerParams, 'productName');
+            }
             that.stickerParams.properties.productionDate = angular.copy(d);
             that.stickerParams.properties.freezeDate = angular.copy(d);
             that.stickerParams.properties.customerName = undefined;
             api.unset(that.stickerParams,'customerName');
             that.stickerParams.properties.eventDate = dd;
-            that.isStickerEmpty = true;
+            if (!that.stickerParams.properties.materials[0]) {
+              that.clearMaterials();
+            }
+            if (that.stickerParams.properties.stickerType !== 4) {
+              that.isStickerEmpty = true;
+            }
             that.isStickeParamsSaved = false;
           });
     };
+
+    this.clearMaterials = function () {
+      this.stickerParams.properties.materials = [];
+      for (var i=0;i<9;i++) {
+        this.stickerParams.properties.materials.push({
+          id: i,
+          name: '',
+          supplier: '',
+          validUntil: undefined
+        });
+      }
+      this.stickerDataChanged();
+  };
 
     this.stickerDataChanged = function () {
       this.isStickeParamsSaved = false;

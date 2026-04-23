@@ -221,3 +221,8 @@ a:link, a:visited  {
     font-size: 10pt;
     height: 1.0cm;
 }
+.inprocess-table-head {
+     font-size: 12pt;
+     font-weight: bold;
+     height: 1.0cm;
+ }

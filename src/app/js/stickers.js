@@ -489,6 +489,7 @@ angular.module('myApp')
               that.validUntil = stickerParams.properties.validUntil;
               that.customerName = stickerParams.properties.customerName;
               that.eventDate = stickerParams.properties.eventDate;
+              that.materials = stickerParams.properties.materials;
               $timeout(function() {
                 window.print();
               });
